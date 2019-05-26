@@ -4,6 +4,14 @@ from django.contrib.auth.models import User
 
 
 class ApiKey(models.Model):
+    class Meta:
+        # TODO actual permissions - this is just an example before api has been designed
+        permissions = [
+            (
+                'read_commons_updates', 'Can access Commons database updates'
+            )
+        ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     enabled = models.BooleanField(default=False)
     key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)

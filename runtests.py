@@ -3,10 +3,10 @@ To enable a module for testing:
 - Create a Django settings file called test_settings.py in {appname}/tests//config/
 - Add the module name to TEST_APPS in this file.
 """
-import os
 import sys
-from importlib import import_module
 from importlib.util import find_spec
+
+import colorama
 
 import django
 from django.apps import apps
@@ -17,7 +17,9 @@ from defaulttestconfig.test_settings_default import *
 
 TEST_APPS = [
     'api',
-    'serviceglue',
+    'repository',
+    'crawlers.parliamentdotuk',
+    'crawlers.theyworkforyou',
 ]
 
 
@@ -53,9 +55,18 @@ def run_app_tests(app_name):
 
 
 def _print_results(test_results):
+    print()
     print('Results:')
+    colorama.init()
     for app, result in test_results.items():
-        print(f'  {app}  {"OK" if result == 0 else result}')
+        if result == 0:
+            background_color = colorama.Back.RESET
+            result_text = f'{colorama.Fore.GREEN}OK{colorama.Fore.RESET}'
+        else:
+            background_color = colorama.Back.RED
+            result_text = f'{colorama.Style.BRIGHT}{colorama.Fore.WHITE}{result} '
+        print(f'{colorama.Style.BRIGHT} {background_color} {result_text.rjust(4)} {app} {colorama.Back.RESET} ')
+    print()
 
 
 if __name__ == '__main__':
@@ -66,8 +77,9 @@ if __name__ == '__main__':
         results[module] = failures
         all_passed = all_passed and bool(failures)
 
+    _print_results(results)
+
     if all_passed:
         sys.exit(1)
 
-    _print_results(results)
     sys.exit(0)

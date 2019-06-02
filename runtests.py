@@ -75,11 +75,7 @@ if __name__ == '__main__':
     for module in TEST_APPS:
         failures = run_app_tests(module)
         results[module] = failures
-        all_passed = all_passed and bool(failures)
+        all_passed = all_passed and not bool(failures)
 
     _print_results(results)
-
-    if all_passed:
-        sys.exit(1)
-
-    sys.exit(0)
+    sys.exit(all_passed)

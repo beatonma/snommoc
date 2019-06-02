@@ -1,4 +1,5 @@
 beautifulsoup4==4.7.1
+colorama==0.4.1
 Django==2.2.1
 django_nose==1.4.6
 pinocchio==0.4.2

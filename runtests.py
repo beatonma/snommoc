@@ -13,7 +13,7 @@ from django.apps import apps
 from django.conf import settings
 from django.test.utils import get_runner
 
-from defaulttestconfig.test_settings_default import *
+from basetest.test_settings_default import *
 
 TEST_APPS = [
     'api',

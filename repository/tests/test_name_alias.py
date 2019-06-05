@@ -1,6 +1,6 @@
-from django.test import TestCase
-
-from repository.models.people import NameAlias, SuggestedAlias, Mp
+from basetest.testcase import LocalTestCase
+from repository.models.people import NameAlias, SuggestedAlias
+from repository.models.houseofcommons.mp import Mp
 
 EXAMPLE_NAME = 'John Bercow'
 EXAMPLE_ALIAS = 'Jonny Bercow'
@@ -8,7 +8,7 @@ EXAMPLE_PUK_ID = 17
 EXAMPLE_TWFY_ID = 10040
 
 
-class MpTest(TestCase):
+class MpMergeTest(LocalTestCase):
     """"""
     def setUp(self) -> None:
         self.complete = Mp.create(
@@ -52,7 +52,7 @@ class MpTest(TestCase):
         self.assertEqual(suggested.person, self.complete)
 
 
-class SuggestedAliasTest(TestCase):
+class SuggestedAliasTest(LocalTestCase):
     """"""
     def setUp(self) -> None:
         self.complete = Mp.create(
@@ -105,7 +105,7 @@ class SuggestedAliasTest(TestCase):
         self.assertEqual(len(SuggestedAlias.objects.all()), 0)
 
 
-class NameAliasTest(TestCase):
+class NameAliasTest(LocalTestCase):
     """Tests for basic interactions of NameAlias and PersonID."""
     def setUp(self) -> None:
         self.canonical = Mp.objects.create(

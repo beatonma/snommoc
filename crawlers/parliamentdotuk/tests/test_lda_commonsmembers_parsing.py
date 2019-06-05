@@ -3,9 +3,9 @@
 """
 
 import logging
-from unittest import TestCase
 
 from basetest.test_util import inject_context_manager
+from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.lda.commons_members import (
     create_members,
     CommonsMember,
@@ -51,7 +51,7 @@ EXAMPLE_MEMBER_JSON_ITEMS = [
 inject_context_manager(CommonsMember)
 
 
-class TestCommonsMemberParsing(TestCase):
+class TestCommonsMemberParsing(LocalTestCase):
     """"""
 
     def test_create_members(self):

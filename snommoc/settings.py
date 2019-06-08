@@ -27,7 +27,9 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'phonenumber_field',
+]
 SNOMMOC_APPS = [
     'api',
     'repository',

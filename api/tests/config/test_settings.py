@@ -1,4 +1,4 @@
-from defaulttestconfig.test_settings_default import *
+from basetest.test_settings_default import *
 
 ROOT_URLCONF = 'api.tests.config.test_urls'
 

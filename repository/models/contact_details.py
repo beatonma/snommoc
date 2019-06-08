@@ -1,9 +1,14 @@
+from typing import (
+    Optional,
+    List,
+)
+
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
-from repository.models import GenericPersonForeignKeyMixin, Optional, List
+from repository.models import GenericPersonForeignKeyMixin
 
 PHONE_NUMBER_REGION = 'GB'
 

@@ -65,7 +65,8 @@ def _print_results(test_results):
         else:
             background_color = colorama.Back.RED
             result_text = f'{colorama.Style.BRIGHT}{colorama.Fore.WHITE}{result} '
-        print(f'{colorama.Style.BRIGHT} {background_color} {result_text.rjust(4)} {app} {colorama.Back.RESET} ')
+        print(f'{colorama.Style.BRIGHT} {background_color} '
+              f'{result_text.rjust(4)} {app} {colorama.Back.RESET} ')
     print()
 
 

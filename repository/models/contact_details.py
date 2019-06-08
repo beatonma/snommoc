@@ -48,6 +48,7 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
                 phone_constituency = None
 
         links = cls(
+            person=person,
             email=email,
             wikipedia=wikipedia,
             phone_constituency=phone_constituency,

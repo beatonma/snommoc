@@ -1,7 +1,8 @@
-requests
 beautifulsoup4==4.7.1
 colorama==0.4.1
 Django==2.2.2
 django_nose==1.4.6
+phonenumberslite==8.10.13
 pinocchio==0.4.2
 psycopg2-binary==2.8.2
+requests==2.22.0

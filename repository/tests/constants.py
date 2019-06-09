@@ -1,5 +1,9 @@
 EXAMPLE_NAME = 'Frank Spencer'
-EXAMPLE_ALIAS = 'Franky Spencer'
+EXAMPLE_ALIAS = 'Frankie Spencer'
+EXAMPLE_ALIASES = [
+    EXAMPLE_ALIAS,
+    'Francis Spencer',
+]
 EXAMPLE_PUK_ID = 17
 EXAMPLE_TWFY_ID = 10040
 
@@ -15,7 +19,7 @@ PHONE_CONSTITUENCY = '03069990924'
 PHONE_PARLIAMENT = '02079460513'
 
 WIKIPEDIA = 'Frank_Spencer_(Fake_Politician)'
-WEBSITE = 'https://fakefrankspencermp.co.uk'
+WEBLINKS = ['https://fakefrankspencermp.co.uk']
 
-INTEREST_POLITICAL = 'Giraffes'
-INTEREST_COUNTRY = 'Utopia Planitia'
+INTEREST_POLITICAL = ['Giraffes']
+INTEREST_COUNTRY = ['Utopia Planitia']

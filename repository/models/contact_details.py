@@ -1,6 +1,7 @@
 from typing import (
     Optional,
     List,
+    Dict,
 )
 
 from django.db import models
@@ -8,6 +9,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
+from api import contract
 from repository.models import GenericPersonForeignKeyMixin
 
 PHONE_NUMBER_REGION = 'GB'
@@ -38,7 +40,11 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
             phone_constituency: Optional[str] = None,
             phone_parliament: Optional[str] = None,
             weblinks: Optional[List[str]] = None,
-    ):
+    ) -> Optional['PersonalLinks']:
+        if not (email or wikipedia or phone_constituency
+                or phone_parliament or weblinks):
+            return None
+
         if phone_parliament:
             try:
                 phone_parliament = PhoneNumber.from_string(
@@ -67,9 +73,34 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
                     url=url).save()
         return links
 
+    @property
+    def phone_numbers(self) -> Dict:
+        obj = {}
+        if self.phone_constituency:
+            obj[contract.PHONE_CONSTITUENCY] = self.phone_constituency.as_national
+
+        if self.phone_parliament:
+            obj[contract.PHONE_PARLIAMENT] = self.phone_parliament.as_national
+
+        return obj
+
+    def to_json(self):
+        json = {
+            contract.EMAIL: self.email,
+            contract.WIKIPEDIA: self.wikipedia,
+            contract.PHONE: self.phone_numbers,
+            contract.WEBLINKS: [
+                x.url for x in WebLink.objects.filter(links=self)
+            ]
+        }
+        for key, value in json.items():
+            if not value:
+                del json[key]
+        return json
+
 
 class WebLink(models.Model):
-    """Twitter, Facebook, personal sites, etc"""
+    """Social media, personal sites, etc"""
     links = models.ForeignKey(
         PersonalLinks,
         on_delete=models.CASCADE,

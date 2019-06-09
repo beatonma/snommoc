@@ -6,6 +6,8 @@ EXAMPLE_NAME = 'John Bercow'
 EXAMPLE_ALIAS = 'Jonny Bercow'
 EXAMPLE_PUK_ID = 17
 EXAMPLE_TWFY_ID = 10040
+EXAMPLE_PUK_ID_ALT = 18
+EXAMPLE_TWFY_ID_ALT = 10041
 
 
 class MpMergeTest(LocalTestCase):
@@ -15,30 +17,28 @@ class MpMergeTest(LocalTestCase):
             name=EXAMPLE_NAME,
             puk=EXAMPLE_PUK_ID,
             twfy=EXAMPLE_TWFY_ID)
-        self.complete.save()
 
         self.puk_only = Mp.create(
             name=EXAMPLE_NAME,
-            puk=EXAMPLE_PUK_ID)
+            puk=EXAMPLE_PUK_ID_ALT)
 
         self.twfy_only = Mp.create(
             name=EXAMPLE_NAME,
-            twfy=EXAMPLE_TWFY_ID)
+            twfy=EXAMPLE_TWFY_ID_ALT)
 
         self.different_name = Mp.create(
             name=EXAMPLE_ALIAS)
-        self.different_name.save()
 
     def test_merge_puk_into_twfy(self):
         merged, _ = self.twfy_only.merge(self.puk_only)
-        self.assertEqual(merged.theyworkforyou, EXAMPLE_TWFY_ID)
-        self.assertEqual(merged.parliamentdotuk, EXAMPLE_PUK_ID)
+        self.assertEqual(merged.theyworkforyou, EXAMPLE_TWFY_ID_ALT)
+        self.assertEqual(merged.parliamentdotuk, EXAMPLE_PUK_ID_ALT)
         self.assertEqual(merged.name, EXAMPLE_NAME)
 
     def test_merge_twfy_into_puk(self):
         merged, _ = self.puk_only.merge(self.twfy_only)
-        self.assertEqual(merged.theyworkforyou, EXAMPLE_TWFY_ID)
-        self.assertEqual(merged.parliamentdotuk, EXAMPLE_PUK_ID)
+        self.assertEqual(merged.theyworkforyou, EXAMPLE_TWFY_ID_ALT)
+        self.assertEqual(merged.parliamentdotuk, EXAMPLE_PUK_ID_ALT)
         self.assertEqual(merged.name, EXAMPLE_NAME)
 
     def test_merge_different_name(self):

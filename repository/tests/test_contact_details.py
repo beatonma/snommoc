@@ -1,3 +1,4 @@
+from api import contract as api_contract
 from basetest.testcase import LocalTestCase
 from repository.models import Mp
 from repository.models.contact_details import PersonalLinks
@@ -27,3 +28,16 @@ class ContactDetailsTest(LocalTestCase):
     def test_links_dot_create_with_no_data_should_be_none(self):
         links = PersonalLinks.create(person=self.mp)
         self.assertIsNone(links)
+
+    def test_links_to_json(self):
+        links = PersonalLinks.create(
+            person=self.mp,
+            email=constants.EMAIL,
+            phone_parliament=constants.PHONE_PARLIAMENT,
+            phone_constituency=constants.PHONE_CONSTITUENCY,
+            weblinks=constants.WEBLINKS,
+            wikipedia=constants.WIKIPEDIA)
+
+        json = links.to_json()
+        self.assertEqual(json.get(api_contract.EMAIL), constants.EMAIL)
+        self.assertListEqual(json.get(api_contract.WEBLINKS), constants.WEBLINKS)

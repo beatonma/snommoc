@@ -6,13 +6,19 @@ from typing import (
 
 from django.db import models
 
+from api import contract
 from repository.models import (
     Person,
     NameAlias,
     SuggestedAlias,
-    Party
+    Party,
+    Constituency,
 )
 from repository.models.contact_details import PersonalLinks
+from repository.models.interests import (
+    CountryOfInterest,
+    PoliticalInterest,
+)
 from repository.models.util.models import get_or_none
 
 
@@ -47,17 +53,17 @@ class Mp(Person):
             weblinks: Optional[List[str]] = None,
             interests_political: Optional[List[str]] = None,
             interests_countries: Optional[List[str]] = None,
-            wikipedia_path: Optional[str] = None,
-            save: bool = False
+            wikipedia_path: Optional[str] = None
     ) -> 'Mp':
-        # return cls(name=name, parliamentdotuk=puk, theyworkforyou=twfy)
         mp = cls(name=name, parliamentdotuk=puk, theyworkforyou=twfy)
         if party:
             mp.party = get_or_none(Party, name=party)
         if constituency:
-            mp.constituency = get_or_none('Constituency', name=constituency)
+            mp.constituency = get_or_none(Constituency, name=constituency)
 
-        links = PersonalLinks.create(
+        mp.save()
+
+        PersonalLinks.create(
             mp,
             email=email,
             phone_constituency=phone_constituency,
@@ -66,13 +72,17 @@ class Mp(Person):
             wikipedia=wikipedia_path
         )
 
-        if save:
-            mp.save()
+        if interests_political:
+            PoliticalInterest.create(mp, interests_political)
+
+        if interests_countries:
+            CountryOfInterest.create(mp, interests_countries)
+
         return mp
 
     @property
     def aliases(self) -> List[str]:
-        return [a.name for a in NameAlias.objects.filter(**self.filter_query)]
+        return [a.name for a in self.filtered(NameAlias)]
 
     def merge(
             self,
@@ -80,6 +90,8 @@ class Mp(Person):
             delete_other: bool = False
     ) -> Tuple['Mp', Optional['SuggestedAlias']]:
         """
+        TODO UPDATE TO COMBINE ALL FIELDS
+
         Merge other into self. If names are different then a SuggestedAlias will
         be created and returned along with the merged PersonID.
         """
@@ -96,3 +108,37 @@ class Mp(Person):
             other.delete()
 
         return self, suggestion
+
+    @property
+    def political_interests(self):
+        return [item.description for item in self.filtered(PoliticalInterest)]
+
+    @property
+    def countries_of_interest(self):
+        return [item.country for item in self.filtered(CountryOfInterest)]
+
+    @property
+    def links(self) -> Optional[PersonalLinks]:
+        try:
+            return self.get(PersonalLinks)
+        except PersonalLinks.DoesNotExist:
+            return None
+
+    def to_json(self):
+        json = {
+            contract.NAME: self.name,
+            contract.ALIASES: self.aliases,
+            contract.THEYWORKFORYOU_ID: self.theyworkforyou,
+            contract.PARLIAMENTDOTUK_ID: self.parliamentdotuk,
+            contract.PARTY: self.party.name,
+            contract.CONSTITUENCY: self.constituency.name,
+            contract.INTERESTS: {
+                contract.INTERESTS_POLITICAL: self.political_interests,
+                contract.INTERESTS_COUNTRIES: self.countries_of_interest,
+            },
+        }
+        links = self.links
+        if links:
+            json[contract.PERSONAL_LINKS] = links.to_json()
+
+        return json

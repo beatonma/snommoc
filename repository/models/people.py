@@ -1,5 +1,9 @@
 import logging
-from typing import Optional
+from typing import (
+    Optional,
+    Type,
+    List,
+)
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -32,6 +36,28 @@ class Person(GetSubclassesMixin, models.Model):
             'person_id': self.id,
             'person_content_type': ContentType.objects.get_for_model(self)
         }
+
+    def filtered(
+            self,
+            model_class: Type['GenericPersonForeignKeyMixin'],
+            **kwargs
+    ):
+        """Convenience method for `filter_query`"""
+        return model_class.objects.filter(**self.filter_query, **kwargs)
+
+    def get(
+            self,
+            model_class: Type['GenericPersonForeignKeyMixin'],
+            **kwargs
+    ):
+        return model_class.objects.get(**self.filter_query, **kwargs)
+
+    def get_or_create(
+            self,
+            model_class: Type['GenericPersonForeignKeyMixin'],
+            **kwargs
+    ):
+        return model_class.objects.get_or_create(**self.filter_query, **kwargs)
 
 
 class GenericPersonForeignKeyMixin(models.Model):

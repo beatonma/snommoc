@@ -1,19 +1,53 @@
 """Standard key names for JSON responses returned by this API.
 """
 
+""""
+Example MP API response::
+    {
+        NAME: str,
+        ALIASES: List[str],
+        THEYWORKFORYOU_ID: int,
+        PARLIAMENTDOTUK_ID: int,
+        PARTY: str,
+        CONSTITUENCY: str,
+
+        INTERESTS: Dict {
+            INTERESTS_POLITICAL: List[str],
+            INTERESTS_COUNTRIES: List[str]
+        },
+
+        PERSONAL_LINKS: Dict {
+            EMAIL: str,
+            WIKIPEDIA: str,
+            PHONE: Dict {
+                PHONE_CONSTITUENCY: str,
+                PHONE_PARLIAMENT: str
+            },
+            WEBLINKS: List[str]
+        }
+    }
+"""
+
+# Identifying info
 NAME = 'name'
 ALIASES = 'aliases'
+THEYWORKFORYOU_ID = 'twfy_id'
+PARLIAMENTDOTUK_ID = 'puk_id'
+
+# Political affiliations
 PARTY = 'party'
 CONSTITUENCY = 'constituency'
+
+# Interests
 INTERESTS = 'interests'
 INTERESTS_POLITICAL = 'interests_political'
 INTERESTS_COUNTRIES = 'interests_countries'
-THEYWORKFORYOU_ID = 'twfy_id',
-PARLIAMENTDOTUK_ID = 'puk_id',
 
+# Contact/links
 PERSONAL_LINKS = 'links'
 EMAIL = 'email'
 WEBLINKS = 'weblinks'
-WIKIPEDIA = 'wikipedia',
+WIKIPEDIA = 'wikipedia'
+PHONE = 'phone'
 PHONE_CONSTITUENCY = 'phone_constituency'
-PHONE_PARLIAMENTARY = 'phone_parliamentary'
+PHONE_PARLIAMENT = 'phone_parliamentary'

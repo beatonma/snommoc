@@ -7,12 +7,13 @@ import sys
 from importlib.util import find_spec
 
 import colorama
-
 import django
 from django.apps import apps
 from django.conf import settings
 from django.test.utils import get_runner
 
+# Not used here but needs to be initiated before nose runs (heh)
+from basetest.args import RUNTESTS_CLARGS
 from basetest.test_settings_default import *
 
 TEST_APPS = [
@@ -23,7 +24,27 @@ TEST_APPS = [
 ]
 
 
-def reset_settings():
+def run_app_tests(app_name):
+    settings_path = f'{app_name}.tests.config.test_settings'
+    try:
+        # Load settings from module if the module has its own settings file
+        if find_spec(settings_path):
+            print(f'Using app settings file {settings_path}')
+            os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
+    except ModuleNotFoundError:
+        print(f'App \'{app_name}\' is using the default test settings')
+
+    _reset_settings()
+    settings.INSTALLED_APPS.append(app_name)
+    django.setup()
+    apps.set_installed_apps(settings.INSTALLED_APPS)
+
+    test_runner = get_runner(settings)()
+    test_results = test_runner.run_tests([f'{app_name}.tests'])
+    return test_results
+
+
+def _reset_settings():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'defaulttestconfig.test_settings_default')
     settings.ALLOWED_HOSTS = ALLOWED_HOSTS
     settings.INSTALLED_APPS = INSTALLED_APPS
@@ -33,25 +54,6 @@ def reset_settings():
     settings.LANGUAGE_CODE = LANGUAGE_CODE
     settings.TEST_RUNNER = TEST_RUNNER
     settings.NOSE_ARGS = NOSE_ARGS
-
-
-def run_app_tests(app_name):
-    settings_path = f'{app_name}.tests.config.test_settings'
-    try:
-        if find_spec(settings_path):
-            print(f'Using app settings file {settings_path}')
-            os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
-    except ModuleNotFoundError:
-        print(f'App \'{app_name}\' is using the default test settings')
-
-    reset_settings()
-    settings.INSTALLED_APPS.append(app_name)
-    django.setup()
-    apps.set_installed_apps(settings.INSTALLED_APPS)
-
-    test_runner = get_runner(settings)()
-    test_results = test_runner.run_tests([f'{app_name}.tests'])
-    return test_results
 
 
 def _print_results(test_results):
@@ -70,7 +72,7 @@ def _print_results(test_results):
     print()
 
 
-if __name__ == '__main__':
+def _main():
     all_passed = True
     results = {}
     for module in TEST_APPS:
@@ -79,4 +81,14 @@ if __name__ == '__main__':
         all_passed = all_passed and not bool(failures)
 
     _print_results(results)
+
+    if not RUNTESTS_CLARGS.network:
+        print(f'\n{colorama.Fore.CYAN}'
+              'WARNING:\n  NetworkTestCase implementations were not executed!\n'
+              '  Add `-network` flag to command line arguments when you want '
+              'to run network tests.')
     sys.exit(all_passed)
+
+
+if __name__ == '__main__':
+    _main()

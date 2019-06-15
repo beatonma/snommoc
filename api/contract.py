@@ -1,4 +1,5 @@
-"""Standard key names for JSON responses returned by this API.
+"""Standard key names for JSON responses returned by this API,
+or GET parameters in requests.
 """
 
 """"
@@ -51,3 +52,7 @@ WIKIPEDIA = 'wikipedia'
 PHONE = 'phone'
 PHONE_CONSTITUENCY = 'phone_constituency'
 PHONE_PARLIAMENT = 'phone_parliamentary'
+
+
+# API
+API_KEY = 'key'

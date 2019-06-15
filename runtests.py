@@ -35,7 +35,10 @@ def run_app_tests(app_name):
         print(f'App \'{app_name}\' is using the default test settings')
 
     _reset_settings()
-    settings.INSTALLED_APPS.append(app_name)
+
+    if app_name not in settings.INSTALLED_APPS:
+        settings.INSTALLED_APPS.append(app_name)
+
     django.setup()
     apps.set_installed_apps(settings.INSTALLED_APPS)
 

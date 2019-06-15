@@ -4,6 +4,7 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest, HttpResponse
 
+from api import contract
 from api.models import ApiKey
 
 log = logging.getLogger(__name__)
@@ -23,9 +24,9 @@ def api_key_required(f):
         try:
             if 'key' not in request.GET:
                 return HttpResponse('API key required', status=400)
-            key = ApiKey.objects.get(key=request.GET.get('key'))
+            key = ApiKey.objects.get(key=request.GET.get(contract.API_KEY))
             if key.enabled:
-                log.debug(f'Key verified for User=\'{key.user}\'')
+                log.debug(f'API Key verified for User=\'{key.user}\'')
                 return f(view, request, *args, user=key.user, **kwargs)
             else:
                 raise ApiKeyDisabled(f'Key disabled for User=\'{key.user}\'')

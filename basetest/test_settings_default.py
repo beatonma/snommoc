@@ -1,4 +1,5 @@
 import os
+import uuid
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -30,3 +31,5 @@ PASSWORD_HASHERS = [
 ]
 
 LANGUAGE_CODE = 'en-gb'
+
+TEST_API_KEY = uuid.uuid4()

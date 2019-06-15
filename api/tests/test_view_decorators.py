@@ -1,19 +1,14 @@
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
 from api.models import ApiKey, uuid
+from basetest.test_util import create_test_user
 
 
 class ApiKeyRequiredDecoratorTest(TestCase):
     """Tests for @api_key_required View decorator."""
     def setUp(self):
-        testuser = User.objects.create(
-            username='testuser',
-            password=uuid.uuid4(),
-            email='testuser@snommoc.org'
-        )
-        testuser.save()
+        testuser = create_test_user()
         self.enabled_api_key = ApiKey.objects.create(user=testuser, enabled=True)
         self.enabled_api_key.save()
 

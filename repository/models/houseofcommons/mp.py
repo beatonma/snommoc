@@ -43,6 +43,7 @@ class Mp(Person):
     def create(
             cls,
             name: str,
+            aliases: Optional[List[str]] = None,
             puk: Optional[int] = None,
             twfy: Optional[int] = None,
             party: Optional[str] = None,
@@ -62,6 +63,9 @@ class Mp(Person):
             mp.constituency = get_or_none(Constituency, name=constituency)
 
         mp.save()
+
+        if aliases:
+            NameAlias.create(mp, aliases)
 
         PersonalLinks.create(
             mp,

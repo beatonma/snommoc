@@ -6,6 +6,7 @@ from repository.tests import values
 
 
 class ContactDetailsTest(LocalTestCase):
+    """"""
     def setUp(self) -> None:
         self.mp = Mp.create(name=values.EXAMPLE_NAME)
 

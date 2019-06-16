@@ -9,6 +9,9 @@ from api import contract
 from api.views.decorators import api_key_required
 from repository.models import Mp
 
+VIEW_GET_MP = 'get_mp_view'
+VIEW_GET_ALL_MPS = 'get_all_mps_view'
+
 
 def remove_none(obj):
     remove_keys = []
@@ -22,6 +25,7 @@ def remove_none(obj):
 
 class GetMpView(View):
     """/get_mp"""
+
     @api_key_required
     def dispatch(self, request, *args, **kwargs):
         query = {
@@ -41,3 +45,14 @@ class GetMpView(View):
             )
         except Mp.DoesNotExist:
             return Http404()
+
+
+class GetAllMPsView(View):
+    """/get_all_mps"""
+
+    @api_key_required
+    def dispatch(self, request, *args, **kwargs):
+        mps = Mp.objects.all()
+        return JsonResponse({
+            contract.MPS: [mp.to_json() for mp in mps]
+        })

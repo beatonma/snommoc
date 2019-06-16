@@ -32,11 +32,13 @@ Example MP API response::
 # Identifying info
 NAME = 'name'
 ALIASES = 'aliases'
-THEYWORKFORYOU_ID = 'twfy_id'
-PARLIAMENTDOTUK_ID = 'puk_id'
+THEYWORKFORYOU_ID = 'theyworkforyou'
+PARLIAMENTDOTUK_ID = 'parliamentdotuk'
 
 # Political affiliations
 PARTY = 'party'
+PARTY_LONG = 'party_longname'
+PARTY_SHORT = 'party_shortname'
 CONSTITUENCY = 'constituency'
 
 # Interests

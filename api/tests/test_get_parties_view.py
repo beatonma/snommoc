@@ -17,8 +17,8 @@ class GetPartiesTest(LocalTestCase):
         self.query = query
         Party.create(
             name=values.PARTY_NAME,
-            shortname=values.PARTY_NAME_SHORT,
-            longname=values.PARTY_NAME_LONG)
+            short_name=values.PARTY_NAME_SHORT,
+            long_name=values.PARTY_NAME_LONG)
 
     def test_get_parties_view(self):
         response = self.client.get(

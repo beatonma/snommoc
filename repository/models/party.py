@@ -11,8 +11,8 @@ class Party(models.Model):
     long_name = models.CharField(max_length=64)
 
     @classmethod
-    def create(cls, name, shortname, longname) -> 'Party':
-        party = cls(name=name, short_name=shortname, long_name=longname)
+    def create(cls, name, short_name, long_name) -> 'Party':
+        party = cls(name=name, short_name=short_name, long_name=long_name)
         party.save()
         return party
 

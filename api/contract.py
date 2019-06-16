@@ -35,7 +35,10 @@ ALIASES = 'aliases'
 THEYWORKFORYOU_ID = 'theyworkforyou'
 PARLIAMENTDOTUK_ID = 'parliamentdotuk'
 
+MPS = 'mps'
+
 # Political affiliations
+PARTIES = 'parties'
 PARTY = 'party'
 PARTY_LONG = 'party_longname'
 PARTY_SHORT = 'party_shortname'

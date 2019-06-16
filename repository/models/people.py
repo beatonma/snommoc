@@ -77,6 +77,15 @@ class NameAlias(GenericPersonForeignKeyMixin, models.Model):
     def canonical(self) -> Optional[str]:
         return self.person.name if self.person else None
 
+    @classmethod
+    def create(cls, person, names: List[str]) -> List['NameAlias']:
+        aliases = []
+        for name in names:
+            alias = cls.objects.create(person=person, name=name)
+            alias.save()
+            aliases.append(alias)
+        return aliases
+
 
 class SuggestedAlias(GenericPersonForeignKeyMixin, models.Model):
     class Meta:

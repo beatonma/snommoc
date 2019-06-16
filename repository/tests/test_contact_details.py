@@ -2,26 +2,26 @@ from api import contract as api_contract
 from basetest.testcase import LocalTestCase
 from repository.models import Mp
 from repository.models.contact_details import PersonalLinks
-from repository.tests import constants
+from repository.tests import values
 
 
 class ContactDetailsTest(LocalTestCase):
     def setUp(self) -> None:
-        self.mp = Mp.create(name=constants.EXAMPLE_NAME)
+        self.mp = Mp.create(name=values.EXAMPLE_NAME)
 
     def test_linksdotcreate(self):
         links = PersonalLinks.create(
             person=self.mp,
-            email=constants.EMAIL,
-            phone_parliament=constants.PHONE_PARLIAMENT,
-            phone_constituency=constants.PHONE_CONSTITUENCY,
-            weblinks=constants.WEBLINKS,
-            wikipedia=constants.WIKIPEDIA)
+            email=values.EMAIL,
+            phone_parliament=values.PHONE_PARLIAMENT,
+            phone_constituency=values.PHONE_CONSTITUENCY,
+            weblinks=values.WEBLINKS,
+            wikipedia=values.WIKIPEDIA)
 
         self.assertEqual(len(links.weblinks.all()), 1)
-        self.assertEqual(links.weblinks.first().url, constants.WEBLINKS[0])
-        self.assertEqual(links.email, constants.EMAIL)
-        self.assertEqual(links.wikipedia, constants.WIKIPEDIA)
+        self.assertEqual(links.weblinks.first().url, values.WEBLINKS[0])
+        self.assertEqual(links.email, values.EMAIL)
+        self.assertEqual(links.wikipedia, values.WIKIPEDIA)
         self.assertEqual(links.phone_constituency, '+443069990924')
         self.assertEqual(links.phone_parliament, '+442079460513')
 
@@ -32,12 +32,12 @@ class ContactDetailsTest(LocalTestCase):
     def test_links_to_json(self):
         links = PersonalLinks.create(
             person=self.mp,
-            email=constants.EMAIL,
-            phone_parliament=constants.PHONE_PARLIAMENT,
-            phone_constituency=constants.PHONE_CONSTITUENCY,
-            weblinks=constants.WEBLINKS,
-            wikipedia=constants.WIKIPEDIA)
+            email=values.EMAIL,
+            phone_parliament=values.PHONE_PARLIAMENT,
+            phone_constituency=values.PHONE_CONSTITUENCY,
+            weblinks=values.WEBLINKS,
+            wikipedia=values.WIKIPEDIA)
 
         json = links.to_json()
-        self.assertEqual(json.get(api_contract.EMAIL), constants.EMAIL)
-        self.assertListEqual(json.get(api_contract.WEBLINKS), constants.WEBLINKS)
+        self.assertEqual(json.get(api_contract.EMAIL), values.EMAIL)
+        self.assertListEqual(json.get(api_contract.WEBLINKS), values.WEBLINKS)

@@ -35,6 +35,8 @@ class MpPropertiesTest(LocalTestCase):
 
 
 class CompleteMpPropertiesTest(LocalTestCase):
+    """"""
+
     def setUp(self) -> None:
         Party.objects.create(
             name=values.PARTY_NAME,

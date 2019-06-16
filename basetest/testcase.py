@@ -6,12 +6,9 @@ from basetest.args import RUNTESTS_CLARGS
 
 
 class BaseTestCase(TestCase):
-    def assert_nospace_equal(self, first, second, msg=''):
-        """Assert that the two values are the same, ignoring spaces."""
-        self.assertEqual(
-            first.replace(r' ', ''),
-            second.replace(r' ', ''),
-            msg=msg)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
 
 
 class LocalTestCase(BaseTestCase):

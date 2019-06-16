@@ -77,10 +77,10 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
     def phone_numbers(self) -> Dict:
         obj = {}
         if self.phone_constituency:
-            obj[contract.PHONE_CONSTITUENCY] = self.phone_constituency.as_national
+            obj[contract.PHONE_CONSTITUENCY] = self.phone_constituency.as_national.replace(' ', '')
 
         if self.phone_parliament:
-            obj[contract.PHONE_PARLIAMENT] = self.phone_parliament.as_national
+            obj[contract.PHONE_PARLIAMENT] = self.phone_parliament.as_national.replace(' ', '')
 
         return obj
 

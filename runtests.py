@@ -21,6 +21,7 @@ TEST_APPS = [
     'repository',
     'crawlers.parliamentdotuk',
     'crawlers.theyworkforyou',
+    'notifications',
 ]
 
 

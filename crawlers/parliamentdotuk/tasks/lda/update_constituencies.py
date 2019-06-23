@@ -1,4 +1,6 @@
 import logging
+from typing import Optional
+
 from celery import shared_task
 
 from crawlers.parliamentdotuk.tasks.lda import endpoints
@@ -14,12 +16,11 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def update_constituencies(report=True):
+def update_constituencies(report: bool = True) -> None:
     """
     :param report: Create a TaskNotification with the results of this task
-    :return:
     """
-    def build_constituency(json_data):
+    def build_constituency(json_data) -> Optional[str]:
         if json_data.get('endedDate'):
             log.debug(f'Skipping obsolete constituency: {get_value(json_data, "label")}')
             return

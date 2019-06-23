@@ -1,10 +1,15 @@
 """
 To enable a module for testing:
-- Create a Django settings file called test_settings.py in {appname}/tests//config/
 - Add the module name to TEST_APPS in this file.
+- Optionally, add custom settings to the file {app_name}.tests.config.test_settings
+  - Any values here will be appended to, or replace, the default values
+    found in basetest.test_settings_default
+
+Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
+import importlib
 import sys
-from importlib.util import find_spec
+from typing import Dict
 
 import colorama
 import django
@@ -18,46 +23,57 @@ from basetest.test_settings_default import *
 
 TEST_APPS = [
     'api',
-    'repository',
     'crawlers.parliamentdotuk',
     'crawlers.theyworkforyou',
     'notifications',
+    'repository',
 ]
 
 
 def run_app_tests(app_name):
-    settings_path = f'{app_name}.tests.config.test_settings'
+    print(f'Running tests for app `{app_name}`')
+    state = {
+        'INSTALLED_APPS': [*settings.INSTALLED_APPS],
+        'ROOT_URLCONF': getattr(settings, 'ROOT_URLCONF', ''),
+        'TEMPLATES': settings.TEMPLATES,
+        'LANGUAGE_CODE': settings.LANGUAGE_CODE,
+        'STATIC_URL': settings.STATIC_URL,
+        'STATIC_ROOT': settings.STATIC_ROOT,
+        'MIDDLEWARE': settings.MIDDLEWARE,
+    }
+
     try:
-        # Load settings from module if the module has its own settings file
-        if find_spec(settings_path):
-            print(f'Using app settings file {settings_path}')
-            os.environ['DJANGO_SETTINGS_MODULE'] = settings_path
+        # Check if this app defines a custom settings configuration.
+        settings_path = f'{app_name}.tests.config.test_settings'
+        if importlib.util.find_spec(settings_path):
+            app_settings = importlib.import_module(settings_path)
+            if hasattr(app_settings, 'INSTALLED_APPS'):
+                settings.INSTALLED_APPS += [*app_settings.INSTALLED_APPS]
+            if hasattr(app_settings, 'ROOT_URLCONF'):
+                settings.ROOT_URLCONF = app_settings.ROOT_URLCONF
+
     except ModuleNotFoundError:
-        print(f'App \'{app_name}\' is using the default test settings')
+        pass
 
-    _reset_settings()
+    settings.INSTALLED_APPS.append(app_name)
 
-    if app_name not in settings.INSTALLED_APPS:
-        settings.INSTALLED_APPS.append(app_name)
+    # Ensure there are no duplicates
+    settings.INSTALLED_APPS = list(set(settings.INSTALLED_APPS))
 
-    django.setup()
+    print(f'INSTALLED_APPS: {settings.INSTALLED_APPS}')
     apps.set_installed_apps(settings.INSTALLED_APPS)
 
     test_runner = get_runner(settings)()
     test_results = test_runner.run_tests([f'{app_name}.tests'])
+
+    _reset_settings(state)
+
     return test_results
 
 
-def _reset_settings():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'defaulttestconfig.test_settings_default')
-    settings.ALLOWED_HOSTS = ALLOWED_HOSTS
-    settings.INSTALLED_APPS = INSTALLED_APPS
-    settings.MIDDLEWARE = MIDDLEWARE
-    settings.DATABASES = DATABASES
-    settings.SECRET_KEY = SECRET_KEY
-    settings.LANGUAGE_CODE = LANGUAGE_CODE
-    settings.TEST_RUNNER = TEST_RUNNER
-    settings.NOSE_ARGS = NOSE_ARGS
+def _reset_settings(state: Dict):
+    for key, value in state.items():
+        setattr(settings, key, value)
 
 
 def _print_results(test_results):
@@ -77,6 +93,10 @@ def _print_results(test_results):
 
 
 def _main():
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'basetest.test_settings_default'
+
+    django.setup()
+
     all_passed = True
     results = {}
     for module in TEST_APPS:

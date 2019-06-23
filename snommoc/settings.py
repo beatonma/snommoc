@@ -17,6 +17,7 @@ from .local_settings import (
     SECRET_KEY,
     ALLOWED_HOSTS,
     DATABASES,
+    HTTP_REQUEST_HEADERS,
 )
 
 DJANGO_APPS = [
@@ -35,6 +36,7 @@ SNOMMOC_APPS = [
     'repository',
     'crawlers.parliamentdotuk',
     'crawlers.theyworkforyou',
+    'notifications',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + SNOMMOC_APPS
 

@@ -2,6 +2,7 @@ import logging
 from celery import shared_task
 
 from crawlers.parliamentdotuk.tasks.lda import endpoints
+from notifications.models import TaskNotification
 from repository.models import Constituency
 from .util import (
     get_value,
@@ -13,23 +14,32 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def update_constituencies():
+def update_constituencies(report=True):
+    """
+    :param report: Create a TaskNotification with the results of this task
+    :return:
+    """
     def build_constituency(json_data):
         if json_data.get('endedDate'):
             log.debug(f'Skipping obsolete constituency: {get_value(json_data, "label")}')
             return
 
-        constituency, _ = Constituency.objects.update_or_create(
-            name=get_value(json_data, 'label'),
+        name = get_value(json_data, 'label')
+        constituency, created = Constituency.objects.update_or_create(
+            name=name,
             defaults={
+                'name': name,
                 'gss_code': get_value(json_data, 'gssCode'),
                 'ordinance_survey_name': get_value(json_data, 'osName'),
                 'constituency_type': get_value(json_data, 'constituencyType')
             }
         )
-        print(constituency)
         constituency.save()
 
+        if created:
+            return name
+
+    new_constituencies = []
     page_number = 0
     next_page = 'next-page-placeholder'
     while next_page is not None:
@@ -49,8 +59,22 @@ def update_constituencies():
             return
 
         for item in items:
-            build_constituency(item)
+            new_name = build_constituency(item)
+            if new_name:
+                new_constituencies.append(new_name)
 
         page_number += 1
         next_page = get_next_page_url(data)
 
+    if report:
+        title = 'Constituencies updated'
+        if new_constituencies:
+            constituency_list_text = '\n  '.join(new_constituencies)
+            content = f'{len(new_constituencies)} new constituencies:\n{constituency_list_text}'
+        else:
+            content = 'No new constituencies'
+
+        TaskNotification.objects.create(
+            title=title,
+            content=content
+        ).save()

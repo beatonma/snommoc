@@ -8,8 +8,7 @@ from notifications.models import TaskNotification
 from repository.models import Constituency
 from .util import (
     get_value,
-    get_page,
-    get_next_page_url,
+    update_model,
 )
 
 log = logging.getLogger(__name__)
@@ -40,42 +39,16 @@ def update_constituencies(report: bool = True) -> None:
         if created:
             return name
 
-    new_constituencies = []
-    page_number = 0
-    next_page = 'next-page-placeholder'
-    while next_page is not None:
-        response = get_page(endpoints.CONSTITUENCIES_BASE_URL, page_number=page_number)
-
-        if response.status_code != 200:
-            log.warning(
-                f'Failed to update constituencies: {response.url} '
-                f'returned status={response.status_code}')
-            return
-
-        try:
-            data = response.json()
-            items = data.get('result').get('items')
-        except AttributeError as e:
-            log.warning(f'Could not read constituency list: {e}')
-            return
-
-        for item in items:
-            new_name = build_constituency(item)
-            if new_name:
-                new_constituencies.append(new_name)
-
-        page_number += 1
-        next_page = get_next_page_url(data)
-
-    if report:
+    def build_report(new_constituencies):
         title = 'Constituencies updated'
         if new_constituencies:
             constituency_list_text = '\n  '.join(new_constituencies)
             content = f'{len(new_constituencies)} new constituencies:\n{constituency_list_text}'
         else:
             content = 'No new constituencies'
+        return title, content
 
-        TaskNotification.objects.create(
-            title=title,
-            content=content
-        ).save()
+    update_model(
+        endpoints.CONSTITUENCIES_BASE_URL,
+        update_item_func=build_constituency,
+        report_func=build_report)

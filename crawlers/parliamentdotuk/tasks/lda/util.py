@@ -1,6 +1,10 @@
+import time
 from typing import (
     Dict,
     Optional,
+    Callable,
+    List,
+    Tuple,
 )
 
 import logging
@@ -12,7 +16,7 @@ from crawlers.parliamentdotuk.tasks.lda.endpoints import (
     PARAM_PAGE_SIZE,
     PARAM_PAGE,
 )
-
+from notifications.models import TaskNotification
 
 log = logging.getLogger(__name__)
 
@@ -46,6 +50,7 @@ def get_page(
         page_number: int = 0,
         page_size: int = MAX_PAGE_SIZE
 ) -> requests.Response:
+    print(endpoint)
     response = requests.get(
         endpoint,
         headers=settings.HTTP_REQUEST_HEADERS,
@@ -55,3 +60,44 @@ def get_page(
         })
 
     return response
+
+
+def update_model(
+        endpoint_url: str,
+        update_item_func: Callable[[Dict], Optional[str]],
+        report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
+        page_size=MAX_PAGE_SIZE,
+        page_load_delay: int = 5  # Basic rate limiting
+) -> None:
+    new_items = []
+    page_number = 0
+    next_page = 'next-page-placeholder'
+
+    while next_page is not None:
+        time.sleep(page_load_delay)
+        response = get_page(endpoint_url, page_number=page_number, page_size=page_size)
+
+        if response.status_code != 200:
+            log.warning(f'Failed to update: {response.url} [status={response.status_code}]')
+
+        try:
+            data = response.json()
+            items = data.get('result').get('items')
+        except AttributeError as e:
+            log.warning(f'Could not read item list: {e}')
+            return
+
+        for item in items:
+            new_name = update_item_func(item)
+            if new_name:
+                new_items.append(new_name)
+
+        page_number += 1
+        next_page = get_next_page_url(data)
+
+    if report_func:
+        title, content = report_func(new_items)
+        TaskNotification.objects.create(
+            title=title,
+            content=content
+        ).save()

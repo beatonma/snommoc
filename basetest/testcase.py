@@ -1,4 +1,7 @@
-from unittest import skipIf
+from unittest import (
+    skipIf,
+    skipUnless,
+)
 
 from django.test import TestCase
 
@@ -19,7 +22,7 @@ class LocalTestCase(BaseTestCase):
     pass
 
 
-@skipIf(not RUNTESTS_CLARGS.network, reason='Network calls disabled by default')
+@skipUnless(RUNTESTS_CLARGS.network, reason='Network calls disabled by default')
 class NetworkTestCase(BaseTestCase):
     """Tests that interact a remote server.
 

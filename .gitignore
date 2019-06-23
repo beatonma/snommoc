@@ -2,3 +2,4 @@ env/
 .idea/
 */**/__pycache__/
 */local_settings.py
+*/local_urls.py

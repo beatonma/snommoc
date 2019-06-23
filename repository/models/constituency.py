@@ -13,6 +13,12 @@ class Constituency(models.Model):
         max_length=10, null=True,
         help_text='Borough, county...')
 
+    def __str__(self):
+        return f'{self.name}: {self.mp if self.mp else "No MP"}'
+
+    class Meta:
+        verbose_name_plural = 'Constituencies'
+
 
 class ConstituencyBoundary(models.Model):
     constituency = models.OneToOneField(Constituency, on_delete=models.CASCADE)

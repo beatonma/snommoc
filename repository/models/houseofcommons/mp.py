@@ -1,6 +1,6 @@
 from typing import (
-    Optional,
     List,
+    Optional,
     Tuple,
 )
 
@@ -8,18 +8,18 @@ from django.db import models
 
 from api import contract
 from repository.models import (
-    Person,
-    NameAlias,
-    SuggestedAlias,
-    Party,
     Constituency,
+    NameAlias,
+    Party,
+    Person,
+    SuggestedAlias,
 )
 from repository.models.contact_details import PersonalLinks
 from repository.models.interests import (
     CountryOfInterest,
     PoliticalInterest,
 )
-from repository.models.util.models import get_or_none
+from repository.models.util.queryset import get_or_none
 
 
 class Mp(Person):
@@ -43,6 +43,8 @@ class Mp(Person):
     def create(
             cls,
             name: str,
+            given_name: Optional[str] = None,
+            family_name: Optional[str] = None,
             aliases: Optional[List[str]] = None,
             puk: Optional[int] = None,
             twfy: Optional[int] = None,
@@ -56,7 +58,9 @@ class Mp(Person):
             interests_countries: Optional[List[str]] = None,
             wikipedia_path: Optional[str] = None
     ) -> 'Mp':
-        mp = cls(name=name, parliamentdotuk=puk, theyworkforyou=twfy)
+        mp = cls(
+            name=name, given_name=given_name, family_name=family_name,
+            parliamentdotuk=puk, theyworkforyou=twfy)
         if party:
             mp.party = get_or_none(Party, name=party)
         if constituency:
@@ -146,3 +150,7 @@ class Mp(Person):
             json[contract.PERSONAL_LINKS] = links.to_json()
 
         return json
+
+    class Meta:
+        verbose_name_plural = 'MPs'
+        verbose_name = 'MP'

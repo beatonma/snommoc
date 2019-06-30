@@ -1,15 +1,13 @@
-from basetest.testcase import LocalTestCase
 from repository.models import (
     Mp,
     Party,
     Constituency,
 )
 from repository.tests import values
+from repository.tests.base import BaseRepositoryLocalTestCase
 
 
-class MpPropertiesTest(LocalTestCase):
-    """"""
-
+class MpPropertiesTest(BaseRepositoryLocalTestCase):
     def setUp(self) -> None:
         self.mp = Mp.create(
             name=values.EXAMPLE_NAME,
@@ -34,9 +32,7 @@ class MpPropertiesTest(LocalTestCase):
             values.CONSTITUENCY)
 
 
-class CompleteMpPropertiesTest(LocalTestCase):
-    """"""
-
+class CompleteMpPropertiesTest(BaseRepositoryLocalTestCase):
     def setUp(self) -> None:
         Party.objects.create(
             name=values.PARTY_NAME,

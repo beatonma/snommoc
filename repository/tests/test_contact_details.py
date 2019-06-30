@@ -1,11 +1,11 @@
 from api import contract as api_contract
-from basetest.testcase import LocalTestCase
 from repository.models import Mp
 from repository.models.contact_details import PersonalLinks
 from repository.tests import values
+from repository.tests.base import BaseRepositoryLocalTestCase
 
 
-class ContactDetailsTest(LocalTestCase):
+class ContactDetailsTest(BaseRepositoryLocalTestCase):
     """"""
     def setUp(self) -> None:
         self.mp = Mp.create(name=values.EXAMPLE_NAME)

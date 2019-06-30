@@ -1,6 +1,7 @@
 from basetest.testcase import LocalTestCase
 from repository.models.people import NameAlias, SuggestedAlias
 from repository.models.houseofcommons.mp import Mp
+from repository.tests.base import BaseRepositoryLocalTestCase
 
 EXAMPLE_NAME = 'John Bercow'
 EXAMPLE_ALIAS = 'Jonny Bercow'
@@ -10,7 +11,7 @@ EXAMPLE_PUK_ID_ALT = 18
 EXAMPLE_TWFY_ID_ALT = 10041
 
 
-class MpMergeTest(LocalTestCase):
+class MpMergeTest(BaseRepositoryLocalTestCase):
     """"""
     def setUp(self) -> None:
         self.complete = Mp.create(
@@ -52,7 +53,7 @@ class MpMergeTest(LocalTestCase):
         self.assertEqual(suggested.person, self.complete)
 
 
-class SuggestedAliasTest(LocalTestCase):
+class SuggestedAliasTest(BaseRepositoryLocalTestCase):
     """"""
     def setUp(self) -> None:
         self.complete = Mp.create(
@@ -105,7 +106,7 @@ class SuggestedAliasTest(LocalTestCase):
         self.assertEqual(len(SuggestedAlias.objects.all()), 0)
 
 
-class NameAliasTest(LocalTestCase):
+class NameAliasTest(BaseRepositoryLocalTestCase):
     """Tests for basic interactions of NameAlias and PersonID."""
     def setUp(self) -> None:
         self.canonical = Mp.objects.create(

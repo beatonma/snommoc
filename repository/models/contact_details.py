@@ -10,7 +10,7 @@ from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
 from api import contract
-from repository.models import GenericPersonForeignKeyMixin
+from repository.models.people import GenericPersonForeignKeyMixin
 
 PHONE_NUMBER_REGION = 'GB'
 
@@ -97,6 +97,9 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
             if not value:
                 del json[key]
         return json
+
+    class Meta:
+        verbose_name_plural = 'Personal links'
 
 
 class WebLink(models.Model):

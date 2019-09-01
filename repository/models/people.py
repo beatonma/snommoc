@@ -12,7 +12,7 @@ from django.db import models
 from .util.generics import GetSubclassesMixin
 
 UNKNOWN_ID = 0
-NAME_MAX_LENGTH = 128
+NAME_MAX_LENGTH = 72
 
 log = logging.getLogger(__name__)
 
@@ -24,6 +24,16 @@ class Person(GetSubclassesMixin, models.Model):
     name = models.CharField(
         max_length=NAME_MAX_LENGTH,
         help_text='Canonical name for this person.')
+
+    given_name = models.CharField(
+        max_length=NAME_MAX_LENGTH,
+        help_text='First name',
+        null=True)
+
+    family_name = models.CharField(
+        max_length=NAME_MAX_LENGTH,
+        help_text='Last name',
+        null=True)
 
     @property
     def filter_query(self):

@@ -50,7 +50,7 @@ def get_page(
         page_number: int = 0,
         page_size: int = MAX_PAGE_SIZE
 ) -> requests.Response:
-    print(endpoint)
+    log.debug(endpoint)
     response = requests.get(
         endpoint,
         headers=settings.HTTP_REQUEST_HEADERS,
@@ -67,14 +67,13 @@ def update_model(
         update_item_func: Callable[[Dict], Optional[str]],
         report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
         page_size=MAX_PAGE_SIZE,
-        page_load_delay: int = 5  # Basic rate limiting
+        page_load_delay: int = 5  # Basic rate limiting,
 ) -> None:
     new_items = []
     page_number = 0
     next_page = 'next-page-placeholder'
 
     while next_page is not None:
-        time.sleep(page_load_delay)
         response = get_page(endpoint_url, page_number=page_number, page_size=page_size)
 
         if response.status_code != 200:
@@ -94,6 +93,8 @@ def update_model(
 
         page_number += 1
         next_page = get_next_page_url(data)
+        if next_page:
+            time.sleep(page_load_delay)
 
     if report_func:
         title, content = report_func(new_items)

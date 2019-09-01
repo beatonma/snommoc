@@ -1,9 +1,9 @@
-"""JSON keys as used in http://lda.data.parliament.uk/commonsmembers.json
-"""
+"""JSON keys as used in http://lda.data.parliament.uk/commonsmembers.json"""
+
 NAME_FULL = 'fullName'
-NAME_FIRST = 'givenName'
-NAME_LAST = 'familyName'
-NAME_MIDDLE = 'additionalName'
+NAME_GIVEN = 'givenName'
+NAME_FAMILY = 'familyName'
+NAME_ADDITIONAL = 'additionalName'
 CONSTITUENCY = 'constituency'
 GENDER = 'gender'
 PARTY = 'party'

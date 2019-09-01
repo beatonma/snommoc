@@ -14,11 +14,13 @@ from crawlers.parliamentdotuk.tasks.lda.util import (
 from repository.models import (
     Mp,
     Party,
+    Constituency,
 )
 
 
 def update_mps():
     parties = Party.objects.all()
+    constituencies = Constituency.objects.all()
 
     def build_mp(json_data) -> Optional[str]:
         def _get_parliamentdotuk_id(url) -> Optional[int]:
@@ -34,6 +36,8 @@ def update_mps():
                 'parliamentdotuk': _get_parliamentdotuk_id(get_value(json_data, mp_contract.ABOUT)),
                 'given_name': get_value(json_data, mp_contract.NAME_GIVEN),
                 'family_name': get_value(json_data, mp_contract.NAME_FAMILY),
+                'party': parties.get(name=get_value(json_data, mp_contract.PARTY)),
+                'constituency': constituencies.get(name=get_value(json_data, mp_contract.CONSTITUENCY)),
                 # ''party' TODO get from `parties` cache to avoid many lookups
                 # 'constituency' TODO avoid many lookups
                 # TODO handle contact details. this update_or_create thing might not work for this

@@ -1,5 +1,4 @@
-"""JSON keys as used in http://lda.data.parliament.uk/constituencies.json
-"""
+"""JSON keys as used in http://lda.data.parliament.uk/constituencies.json"""
 
 NAME = 'label'
 TYPE = 'constituencyType'

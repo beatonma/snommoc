@@ -1,6 +1,7 @@
 from functools import wraps
 import logging
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest, HttpResponse
 
@@ -21,6 +22,9 @@ def api_key_required(f):
     """
     @wraps(f)
     def verify_api_key(view, request: HttpRequest, *args, **kwargs):
+        if settings.DEBUG:
+            return f(view, request, *args, user=request.user, **kwargs)
+
         try:
             if 'key' not in request.GET:
                 return HttpResponse('API key required', status=400)

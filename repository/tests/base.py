@@ -1,7 +1,10 @@
 import logging
 
 from basetest.testcase import LocalTestCase
-from repository.models import GenericPersonForeignKeyMixin
+from repository.models.people import (
+    GenericPersonOneToOneMixin,
+    GenericPersonForeignKeyMixin,
+)
 
 log = logging.getLogger(__name__)
 
@@ -10,4 +13,4 @@ class BaseRepositoryLocalTestCase(LocalTestCase):
     """"""
 
     def tearDown(self) -> None:
-        GenericPersonForeignKeyMixin.objects.all().delete()
+        self.delete_instances_of(GenericPersonForeignKeyMixin, GenericPersonOneToOneMixin)

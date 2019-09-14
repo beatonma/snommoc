@@ -1,27 +1,24 @@
 from typing import (
     List,
     Optional,
-    Tuple,
 )
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from api import contract
 from repository.models import (
-    Constituency,
-    NameAlias,
     Party,
-    Person,
-    SuggestedAlias,
+    Constituency,
 )
 from repository.models.contact_details import PersonalLinks
-from repository.models.interests import (
-    CountryOfInterest,
-    PoliticalInterest,
-)
+from repository.models import Interest
+from repository.models.people import Person
 from repository.models.util.queryset import get_or_none
 
 
+# TODO Instead of extending Person and creating a bunch of generic
+#       relation issues, just have a foreign key to Person
 class Mp(Person):
     parliamentdotuk = models.PositiveIntegerField(
         unique=True,
@@ -38,6 +35,24 @@ class Mp(Person):
         related_name='parties',
         related_query_name='party',
         null=True)
+
+    contact = GenericRelation(
+        PersonalLinks,
+        object_id_field='person_id',
+        content_type_field='person_content_type',
+    )
+
+    # countries_of_interest = GenericRelation(
+    #     CountryOfInterest,
+    #     object_id_field='person_id',
+    #     content_type_field='person_content_type',
+    # )
+    #
+    # political_interests = GenericRelation(
+    #     PoliticalInterest,
+    #     object_id_field='person_id',
+    #     content_type_field='person_content_type',
+    # )
 
     @classmethod
     def create(
@@ -68,8 +83,8 @@ class Mp(Person):
 
         mp.save()
 
-        if aliases:
-            NameAlias.create(mp, aliases)
+        # if aliases:
+        #     NameAlias.create(mp, aliases)
 
         PersonalLinks.create(
             mp,
@@ -81,49 +96,49 @@ class Mp(Person):
         )
 
         if interests_political:
-            PoliticalInterest.create(mp, interests_political)
+            Interest.create(mp, interests_political)
 
         if interests_countries:
-            CountryOfInterest.create(mp, interests_countries)
+            Interest.create_countries(mp, interests_countries)
 
         return mp
 
-    @property
-    def aliases(self) -> List[str]:
-        return [a.name for a in self.filtered(NameAlias)]
+    # @property
+    # def aliases(self) -> List[str]:
+    #     return [a.name for a in self.filtered(NameAlias)]
 
-    def merge(
-            self,
-            other: 'Mp',
-            delete_other: bool = False
-    ) -> Tuple['Mp', Optional['SuggestedAlias']]:
-        """
-        TODO UPDATE TO COMBINE ALL FIELDS
+    # def merge(
+    #         self,
+    #         other: 'Mp',
+    #         delete_other: bool = False
+    # ) -> Tuple['Mp', Optional['SuggestedAlias']]:
+    #     """
+    #     TODO UPDATE TO COMBINE ALL FIELDS
+    #
+    #     Merge other into self. If names are different then a SuggestedAlias will
+    #     be created and returned along with the merged PersonID.
+    #     """
+    #     self.parliamentdotuk = self.parliamentdotuk or other.parliamentdotuk
+    #     self.theyworkforyou = self.theyworkforyou or other.theyworkforyou
+    #     suggestion = None
+    #     if self.name != other.name:
+    #         alias, _ = NameAlias.objects.get_or_create(name=other.name)
+    #         suggestion, _ = SuggestedAlias.objects.get_or_create(
+    #             alias=alias,
+    #             **self.filter_query)
+    #
+    #     if delete_other:
+    #         other.delete()
+    #
+    #     return self, suggestion
 
-        Merge other into self. If names are different then a SuggestedAlias will
-        be created and returned along with the merged PersonID.
-        """
-        self.parliamentdotuk = self.parliamentdotuk or other.parliamentdotuk
-        self.theyworkforyou = self.theyworkforyou or other.theyworkforyou
-        suggestion = None
-        if self.name != other.name:
-            alias, _ = NameAlias.objects.get_or_create(name=other.name)
-            suggestion, _ = SuggestedAlias.objects.get_or_create(
-                alias=alias,
-                **self.filter_query)
-
-        if delete_other:
-            other.delete()
-
-        return self, suggestion
-
-    @property
-    def political_interests(self):
-        return [item.description for item in self.filtered(PoliticalInterest)]
-
-    @property
-    def countries_of_interest(self):
-        return [item.country for item in self.filtered(CountryOfInterest)]
+    # @property
+    # def political_interests(self):
+    #     return [item.description for item in self.filtered(PoliticalInterest)]
+    #
+    # @property
+    # def countries_of_interest(self):
+    #     return [item.country for item in self.filtered(CountryOfInterest)]
 
     @property
     def links(self) -> Optional[PersonalLinks]:
@@ -135,7 +150,7 @@ class Mp(Person):
     def to_json(self):
         json = {
             contract.NAME: self.name,
-            contract.ALIASES: self.aliases,
+            # contract.ALIASES: self.aliases,
             contract.THEYWORKFORYOU_ID: self.theyworkforyou,
             contract.PARLIAMENTDOTUK_ID: self.parliamentdotuk,
             contract.PARTY: self.party.name,
@@ -154,3 +169,6 @@ class Mp(Person):
     class Meta:
         verbose_name_plural = 'MPs'
         verbose_name = 'MP'
+
+    def __str__(self):
+        return self.name

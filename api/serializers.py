@@ -11,6 +11,7 @@ from repository.models import (
     Constituency,
     Party,
 )
+from repository.models.contact_details import PersonalLinks
 
 log = logging.getLogger(__name__)
 
@@ -70,6 +71,24 @@ class InlineConstituencySerializer(InlineSerializer):
         ]
 
 
+class PersonalLinksSerializer(DetailedSerializer):
+    class Meta:
+        model = PersonalLinks
+        fields = [
+            'email',
+            'phone_constituency',
+            'phone_parliament',
+            'weblinks',
+            'wikipedia',
+        ]
+
+
+class PersonalLinksRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        serializer = PersonalLinksSerializer(value.get_queryset()[0])
+        return serializer.data
+
+
 class PartySerializer(DetailedSerializer):
     class Meta:
         model = Party
@@ -83,13 +102,19 @@ class PartySerializer(DetailedSerializer):
 class MpSerializer(DetailedSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
+    contact = PersonalLinksRelatedField(read_only=True)
 
     class Meta:
         model = Mp
         fields = [
             'name',
+            'parliamentdotuk',
+            'theyworkforyou',
             'party',
             'constituency',
+            'contact',
+            'countries_of_interest',
+            'political_interests',
         ]
 
 

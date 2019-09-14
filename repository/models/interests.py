@@ -2,22 +2,28 @@ from typing import List
 
 from django.db import models
 
-from repository.models.people import GenericPersonForeignKeyMixin
+from repository.models.person import Person
+
+INTEREST_CATEGORY_GENERIC = 'political'
+INTEREST_CATEGORY_COUNTRY = 'country'
 
 
-INTEREST_CLASSIFICATION_GENERIC = 'political'
-INTEREST_CLASSIFICATION_COUNTRY = 'country'
+class Interest(models.Model):
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name='interests',
+        related_query_name='interest'
+    )
 
-
-class Interest(GenericPersonForeignKeyMixin, models.Model):
     description = models.CharField(max_length=48)
-    classification = models.CharField(
+    category = models.CharField(
         max_length=16,
         choices=[
-            (INTEREST_CLASSIFICATION_GENERIC, INTEREST_CLASSIFICATION_GENERIC),
-            (INTEREST_CLASSIFICATION_COUNTRY, INTEREST_CLASSIFICATION_COUNTRY),
+            (INTEREST_CATEGORY_GENERIC, INTEREST_CATEGORY_GENERIC),
+            (INTEREST_CATEGORY_COUNTRY, INTEREST_CATEGORY_COUNTRY),
         ],
-        default='political',
+        default=INTEREST_CATEGORY_GENERIC,
     )
 
     @classmethod
@@ -34,7 +40,7 @@ class Interest(GenericPersonForeignKeyMixin, models.Model):
             Interest.objects.create(
                 person=person,
                 description=country,
-                classification=INTEREST_CLASSIFICATION_COUNTRY,
+                category=INTEREST_CATEGORY_COUNTRY,
             ).save()
 
     def __str__(self):

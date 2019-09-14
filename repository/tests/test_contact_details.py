@@ -1,6 +1,6 @@
 from api import contract as api_contract
 from repository.models import Mp
-from repository.models.contact_details import PersonalLinks
+from repository.models.contact_details import Links
 from repository.tests import values
 from repository.tests.base import BaseRepositoryLocalTestCase
 
@@ -11,7 +11,7 @@ class ContactDetailsTest(BaseRepositoryLocalTestCase):
         self.mp = Mp.create(name=values.EXAMPLE_NAME)
 
     def test_linksdotcreate(self):
-        links = PersonalLinks.create(
+        links = Links.create(
             person=self.mp,
             email=values.EMAIL,
             phone_parliament=values.PHONE_PARLIAMENT,
@@ -27,11 +27,11 @@ class ContactDetailsTest(BaseRepositoryLocalTestCase):
         self.assertEqual(links.phone_parliament, '+442079460513')
 
     def test_links_dot_create_with_no_data_should_be_none(self):
-        links = PersonalLinks.create(person=self.mp)
+        links = Links.create(person=self.mp)
         self.assertIsNone(links)
 
     def test_mpreverserelation(self):
-        links = PersonalLinks.create(
+        links = Links.create(
             person=self.mp,
             email=values.EMAIL,
             phone_parliament=values.PHONE_PARLIAMENT,
@@ -42,7 +42,7 @@ class ContactDetailsTest(BaseRepositoryLocalTestCase):
         self.assertEqual(self.mp.links, links)
 
     def test_links_to_json(self):
-        links = PersonalLinks.create(
+        links = Links.create(
             person=self.mp,
             email=values.EMAIL,
             phone_parliament=values.PHONE_PARLIAMENT,
@@ -55,4 +55,4 @@ class ContactDetailsTest(BaseRepositoryLocalTestCase):
         self.assertListEqual(json.get(api_contract.WEBLINKS), values.WEBLINKS)
 
     def tearDown(self) -> None:
-        self.delete_instances_of(PersonalLinks, Mp)
+        self.delete_instances_of(Links, Mp)

@@ -1,5 +1,5 @@
 """
-
+Model serializers
 """
 
 import logging
@@ -7,11 +7,11 @@ import logging
 from rest_framework import serializers
 
 from repository.models import (
-    Mp,
     Constituency,
+    Mp,
     Party,
 )
-from repository.models.contact_details import PersonalLinks
+from repository.models.contact_details import Links
 
 log = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class InlineMpSerializer(InlineSerializer):
         read_only=True
     )
     party = InlinePartySerializer()
+    name = serializers.CharField(source='person.name')
 
     class Meta:
         model = Mp
@@ -71,9 +72,11 @@ class InlineConstituencySerializer(InlineSerializer):
         ]
 
 
-class PersonalLinksSerializer(DetailedSerializer):
+class LinksSerializer(DetailedSerializer):
+    weblinks = serializers.StringRelatedField(many=True, read_only=True)
+
     class Meta:
-        model = PersonalLinks
+        model = Links
         fields = [
             'email',
             'phone_constituency',
@@ -81,12 +84,6 @@ class PersonalLinksSerializer(DetailedSerializer):
             'weblinks',
             'wikipedia',
         ]
-
-
-class PersonalLinksRelatedField(serializers.RelatedField):
-    def to_representation(self, value):
-        serializer = PersonalLinksSerializer(value.get_queryset()[0])
-        return serializer.data
 
 
 class PartySerializer(DetailedSerializer):
@@ -102,7 +99,10 @@ class PartySerializer(DetailedSerializer):
 class MpSerializer(DetailedSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
-    contact = PersonalLinksRelatedField(read_only=True)
+    name = serializers.CharField(source='person.name')
+    links = LinksSerializer()
+    countries_of_interest = serializers.StringRelatedField(many=True, read_only=True)
+    generic_interests = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Mp
@@ -112,9 +112,9 @@ class MpSerializer(DetailedSerializer):
             'theyworkforyou',
             'party',
             'constituency',
-            'contact',
+            'links',
             'countries_of_interest',
-            'political_interests',
+            'generic_interests',
         ]
 
 

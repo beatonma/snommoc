@@ -3,6 +3,7 @@ from repository.models import (
     Party,
     Constituency,
 )
+from repository.models.contact_details import PersonalLinks
 from repository.tests import values
 from repository.tests.base import BaseRepositoryLocalTestCase
 
@@ -30,6 +31,9 @@ class MpPropertiesTest(BaseRepositoryLocalTestCase):
         self.assertEqual(
             self.mp.constituency.name,
             values.CONSTITUENCY)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(Mp, Constituency)
 
 
 class CompleteMpPropertiesTest(BaseRepositoryLocalTestCase):
@@ -68,3 +72,6 @@ class CompleteMpPropertiesTest(BaseRepositoryLocalTestCase):
     def test_mp_to_json(self):
         json_data = self.mp.to_json()
         self.assertEqual(json_data, values.MP_STRUCTURE)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(PersonalLinks, Mp, Party, Constituency)

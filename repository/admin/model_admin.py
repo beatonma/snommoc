@@ -14,7 +14,7 @@ from repository.models import (
 
 
 from repository.models.interests import Interest
-from repository.models.people import Person
+from repository.models.person import Person
 
 
 class InterestInline(TabularInline):

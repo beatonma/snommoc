@@ -18,6 +18,7 @@ from .local_settings import (
     ALLOWED_HOSTS,
     DATABASES,
     HTTP_REQUEST_HEADERS,
+    REST_FRAMEWORK,
 )
 
 DJANGO_APPS = [
@@ -30,6 +31,7 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'phonenumber_field',
+    'rest_framework',
 ]
 SNOMMOC_APPS = [
     'api',

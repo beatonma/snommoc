@@ -10,12 +10,12 @@ from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
 from api import contract
-from repository.models.people import GenericPersonForeignKeyMixin
+from repository.models.people import GenericPersonOneToOneMixin
 
 PHONE_NUMBER_REGION = 'GB'
 
 
-class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
+class PersonalLinks(GenericPersonOneToOneMixin, models.Model):
     """Contact details and related web links. Telephony stuff."""
     phone_parliament = PhoneNumberField(
         null=True,
@@ -49,13 +49,13 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
             try:
                 phone_parliament = PhoneNumber.from_string(
                     phone_parliament, region=PHONE_NUMBER_REGION)
-            except NumberParseException:
+            except (NumberParseException, ValueError):
                 phone_parliament = None
         if phone_constituency:
             try:
                 phone_constituency = PhoneNumber.from_string(
                     phone_constituency, region=PHONE_NUMBER_REGION)
-            except NumberParseException:
+            except (NumberParseException, ValueError):
                 phone_constituency = None
 
         links = cls(
@@ -101,6 +101,9 @@ class PersonalLinks(GenericPersonForeignKeyMixin, models.Model):
     class Meta:
         verbose_name_plural = 'Personal links'
 
+    def __str__(self):
+        return f'{self.person}'
+
 
 class WebLink(models.Model):
     """Social media, personal sites, etc"""
@@ -110,3 +113,6 @@ class WebLink(models.Model):
         related_name='weblinks',
         related_query_name='weblink')
     url = models.URLField(unique=True)
+
+    def __str__(self):
+        return self.url

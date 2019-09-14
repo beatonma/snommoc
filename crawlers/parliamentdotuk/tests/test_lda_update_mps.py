@@ -222,9 +222,7 @@ class UpdateMPsTest(LocalTestCase):
         new_mps = Mp.objects.all()
 
     def tearDown(self) -> None:
-        Constituency.objects.all().delete()
-        Party.objects.all().delete()
-        Mp.objects.all().delete()
+        self.delete_instances_of(Constituency, Party, Mp)
 
 # inject_context_manager(CommonsMember)
 #

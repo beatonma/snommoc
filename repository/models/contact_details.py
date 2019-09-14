@@ -10,24 +10,37 @@ from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
 from api import contract
-from repository.models.people import GenericPersonOneToOneMixin
+from repository.models.person import Person
 
 PHONE_NUMBER_REGION = 'GB'
 
 
-class PersonalLinks(GenericPersonOneToOneMixin, models.Model):
+class Links(models.Model):
+    person = models.OneToOneField(
+        Person,
+        on_delete=models.CASCADE,
+        related_name='links',
+        related_query_name='links'
+    )
+
     """Contact details and related web links. Telephony stuff."""
     phone_parliament = PhoneNumberField(
         null=True,
+        blank=True,
         help_text='National office phone number')
     phone_constituency = PhoneNumberField(
         null=True,
+        blank=True,
         help_text='Local office phone number')
 
-    email = models.EmailField(null=True)
+    email = models.EmailField(
+        null=True,
+        blank=True,
+    )
 
     wikipedia = models.CharField(
         null=True,
+        blank=True,
         max_length=64,
         help_text='Path section of a wikipedia url (e.g. \'John_Baron_(politician)\')')
 
@@ -40,7 +53,7 @@ class PersonalLinks(GenericPersonOneToOneMixin, models.Model):
             phone_constituency: Optional[str] = None,
             phone_parliament: Optional[str] = None,
             weblinks: Optional[List[str]] = None,
-    ) -> Optional['PersonalLinks']:
+    ) -> Optional['Links']:
         if not (email or wikipedia or phone_constituency
                 or phone_parliament or weblinks):
             return None
@@ -108,7 +121,7 @@ class PersonalLinks(GenericPersonOneToOneMixin, models.Model):
 class WebLink(models.Model):
     """Social media, personal sites, etc"""
     links = models.ForeignKey(
-        PersonalLinks,
+        Links,
         on_delete=models.CASCADE,
         related_name='weblinks',
         related_query_name='weblink')

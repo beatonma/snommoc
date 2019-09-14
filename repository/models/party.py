@@ -25,3 +25,6 @@ class Party(models.Model):
 
     class Meta:
         verbose_name_plural = 'Parties'
+
+    def __str__(self):
+        return self.name

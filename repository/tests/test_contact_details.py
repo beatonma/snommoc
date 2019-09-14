@@ -30,6 +30,17 @@ class ContactDetailsTest(BaseRepositoryLocalTestCase):
         links = PersonalLinks.create(person=self.mp)
         self.assertIsNone(links)
 
+    def test_mpreverserelation(self):
+        links = PersonalLinks.create(
+            person=self.mp,
+            email=values.EMAIL,
+            phone_parliament=values.PHONE_PARLIAMENT,
+            phone_constituency=values.PHONE_CONSTITUENCY,
+            weblinks=values.WEBLINKS,
+            wikipedia=values.WIKIPEDIA)
+
+        self.assertEqual(self.mp.links, links)
+
     def test_links_to_json(self):
         links = PersonalLinks.create(
             person=self.mp,
@@ -42,3 +53,6 @@ class ContactDetailsTest(BaseRepositoryLocalTestCase):
         json = links.to_json()
         self.assertEqual(json.get(api_contract.EMAIL), values.EMAIL)
         self.assertListEqual(json.get(api_contract.WEBLINKS), values.WEBLINKS)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(PersonalLinks, Mp)

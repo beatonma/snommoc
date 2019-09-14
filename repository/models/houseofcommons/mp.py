@@ -3,7 +3,6 @@ from typing import (
     Optional,
 )
 
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from api import contract
@@ -11,48 +10,51 @@ from repository.models import (
     Party,
     Constituency,
 )
-from repository.models.contact_details import PersonalLinks
-from repository.models import Interest
-from repository.models.people import Person
+from repository.models.contact_details import Links
+from repository.models.interests import (
+    Interest,
+    INTEREST_CATEGORY_COUNTRY,
+    INTEREST_CATEGORY_GENERIC,
+)
+from repository.models.mixins import (
+    ParliamentDotUkMixin,
+    TheyWorkForYouMixin,
+    PeriodMixin,
+)
+from repository.models.person import Person
 from repository.models.util.queryset import get_or_none
 
 
-# TODO Instead of extending Person and creating a bunch of generic
-#       relation issues, just have a foreign key to Person
-class Mp(Person):
-    parliamentdotuk = models.PositiveIntegerField(
-        unique=True,
-        null=True,
-        help_text='ID used on parliament.uk website')
-    theyworkforyou = models.PositiveIntegerField(
-        unique=True,
-        null=True,
-        help_text='ID used on theyworkforyou.com')
+class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name='people',
+        related_query_name='person'
+    )
 
     party = models.ForeignKey(
         Party,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         related_name='parties',
         related_query_name='party',
         null=True)
 
-    contact = GenericRelation(
-        PersonalLinks,
-        object_id_field='person_id',
-        content_type_field='person_content_type',
-    )
+    @property
+    def links(self):
+        return self.person.links
 
-    # countries_of_interest = GenericRelation(
-    #     CountryOfInterest,
-    #     object_id_field='person_id',
-    #     content_type_field='person_content_type',
-    # )
-    #
-    # political_interests = GenericRelation(
-    #     PoliticalInterest,
-    #     object_id_field='person_id',
-    #     content_type_field='person_content_type',
-    # )
+    @property
+    def interests(self):
+        return self.person.interests
+
+    @property
+    def countries_of_interest(self):
+        return self.person.interests.filter(category=INTEREST_CATEGORY_COUNTRY)
+
+    @property
+    def generic_interests(self):
+        return self.person.interests.filter(category=INTEREST_CATEGORY_GENERIC)
 
     @classmethod
     def create(
@@ -86,7 +88,7 @@ class Mp(Person):
         # if aliases:
         #     NameAlias.create(mp, aliases)
 
-        PersonalLinks.create(
+        Links.create(
             mp,
             email=email,
             phone_constituency=phone_constituency,
@@ -140,16 +142,16 @@ class Mp(Person):
     # def countries_of_interest(self):
     #     return [item.country for item in self.filtered(CountryOfInterest)]
 
-    @property
-    def links(self) -> Optional[PersonalLinks]:
-        try:
-            return self.get(PersonalLinks)
-        except PersonalLinks.DoesNotExist:
-            return None
+    # @property
+    # def links(self) -> Optional[Links]:
+    #     try:
+    #         return self.get(Links)
+    #     except Links.DoesNotExist:
+    #         return None
 
     def to_json(self):
         json = {
-            contract.NAME: self.name,
+            contract.NAME: self.person.name,
             # contract.ALIASES: self.aliases,
             contract.THEYWORKFORYOU_ID: self.theyworkforyou,
             contract.PARLIAMENTDOTUK_ID: self.parliamentdotuk,
@@ -171,4 +173,4 @@ class Mp(Person):
         verbose_name = 'MP'
 
     def __str__(self):
-        return self.name
+        return self.person.name

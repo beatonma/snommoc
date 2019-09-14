@@ -4,11 +4,14 @@ from django.http import JsonResponse
 from django.urls import reverse
 
 from api import contract
+from api import endpoints as api_endpoints
 from api.tests.views import with_api_key
-from api.views.parties import VIEW_GET_PARTIES
 from basetest.testcase import LocalTestCase
 from repository.models import Party
 from repository.tests import values
+
+
+# TODO UPDATE TESTS FOR DJANGO REST FRAMEWORK
 
 
 class GetPartiesTest(LocalTestCase):
@@ -22,7 +25,7 @@ class GetPartiesTest(LocalTestCase):
 
     def test_get_parties_view(self):
         response = self.client.get(
-            reverse(VIEW_GET_PARTIES),
+            reverse(api_endpoints.endpoint_list(api_endpoints.PARTY)),
             data={**self.query}
         )
         self.assertEqual(response.status_code, 200)

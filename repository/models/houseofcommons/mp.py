@@ -149,25 +149,6 @@ class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
     #     except Links.DoesNotExist:
     #         return None
 
-    def to_json(self):
-        json = {
-            contract.NAME: self.person.name,
-            # contract.ALIASES: self.aliases,
-            contract.THEYWORKFORYOU_ID: self.theyworkforyou,
-            contract.PARLIAMENTDOTUK_ID: self.parliamentdotuk,
-            contract.PARTY: self.party.name,
-            contract.CONSTITUENCY: self.constituency.name,
-            contract.INTERESTS: {
-                contract.INTERESTS_POLITICAL: self.political_interests,
-                contract.INTERESTS_COUNTRIES: self.countries_of_interest,
-            },
-        }
-        links = self.links
-        if links:
-            json[contract.PERSONAL_LINKS] = links.to_json()
-
-        return json
-
     class Meta:
         verbose_name_plural = 'MPs'
         verbose_name = 'MP'

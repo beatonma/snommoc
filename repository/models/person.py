@@ -2,7 +2,6 @@ import logging
 
 from django.db import models
 
-UNKNOWN_ID = 0
 NAME_MAX_LENGTH = 72
 
 log = logging.getLogger(__name__)

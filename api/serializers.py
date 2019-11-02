@@ -11,7 +11,6 @@ from repository.models import (
     Mp,
     Party,
 )
-from repository.models.person import Person
 from repository.models.contact_details import Links
 
 log = logging.getLogger(__name__)
@@ -101,7 +100,6 @@ class MpSerializer(DetailedSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
     name = serializers.CharField(source='person.name')
-    parliamentdotuk = serializers.CharField(source='person.parliamentdotuk')
     links = LinksSerializer()
     countries_of_interest = serializers.StringRelatedField(many=True, read_only=True)
     generic_interests = serializers.StringRelatedField(many=True, read_only=True)

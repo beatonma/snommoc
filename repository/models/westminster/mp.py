@@ -5,7 +5,6 @@ from typing import (
 
 from django.db import models
 
-from api import contract
 from repository.models import (
     Party,
     Constituency,
@@ -17,15 +16,15 @@ from repository.models.interests import (
     INTEREST_CATEGORY_GENERIC,
 )
 from repository.models.mixins import (
-    ParliamentDotUkMixin,
     TheyWorkForYouMixin,
     PeriodMixin,
+    ParliamentDotUkMixin,
 )
 from repository.models.person import Person
 from repository.models.util.queryset import get_or_none
 
 
-class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
+class Mp(ParliamentDotUkMixin, TheyWorkForYouMixin, PeriodMixin, models.Model):
     person = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
@@ -46,7 +45,7 @@ class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
 
     @property
     def interests(self):
-        return self.person.interests
+        return self.person.interests.all()
 
     @property
     def countries_of_interest(self):
@@ -60,10 +59,10 @@ class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
     def create(
             cls,
             name: str,
+            puk: int,
             given_name: Optional[str] = None,
             family_name: Optional[str] = None,
             aliases: Optional[List[str]] = None,
-            puk: Optional[int] = None,
             twfy: Optional[int] = None,
             party: Optional[str] = None,
             constituency: Optional[str] = None,
@@ -75,9 +74,20 @@ class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
             interests_countries: Optional[List[str]] = None,
             wikipedia_path: Optional[str] = None
     ) -> 'Mp':
+        person, _ = Person.objects.update_or_create(
+            name=name,
+            defaults={
+                'name': name,
+                'given_name': given_name,
+                'family_name': family_name,
+            })
+
         mp = cls(
-            name=name, given_name=given_name, family_name=family_name,
-            parliamentdotuk=puk, theyworkforyou=twfy)
+            # name=name, given_name=given_name, family_name=family_name,
+            person=person,
+            parliamentdotuk=puk,
+            theyworkforyou=twfy,
+        )
         if party:
             mp.party = get_or_none(Party, name=party)
         if constituency:
@@ -89,7 +99,7 @@ class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
         #     NameAlias.create(mp, aliases)
 
         Links.create(
-            mp,
+            person,
             email=email,
             phone_constituency=phone_constituency,
             phone_parliament=phone_parliamentary,
@@ -98,10 +108,10 @@ class Mp(TheyWorkForYouMixin, ParliamentDotUkMixin, PeriodMixin, models.Model):
         )
 
         if interests_political:
-            Interest.create(mp, interests_political)
+            Interest.create(person, interests_political)
 
         if interests_countries:
-            Interest.create_countries(mp, interests_countries)
+            Interest.create_countries(person, interests_countries)
 
         return mp
 

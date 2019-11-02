@@ -11,8 +11,8 @@ log = logging.getLogger(__name__)
 
 class PeriodMixin(models.Model):
     """For models that represent something with a start/end date"""
-    start = models.DateField()
-    end = models.DateField(null=True)
+    start = models.DateField(null=True)
+    end = models.DateField(null=True, blank=True)
 
     class Meta:
         abstract = True

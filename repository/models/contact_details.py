@@ -97,20 +97,6 @@ class Links(models.Model):
 
         return obj
 
-    def to_json(self):
-        json = {
-            contract.EMAIL: self.email,
-            contract.WIKIPEDIA: self.wikipedia,
-            contract.PHONE: self.phone_numbers,
-            contract.WEBLINKS: [
-                x.url for x in WebLink.objects.filter(links=self)
-            ]
-        }
-        for key, value in json.items():
-            if not value:
-                del json[key]
-        return json
-
     class Meta:
         verbose_name_plural = 'Personal links'
 

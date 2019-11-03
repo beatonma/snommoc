@@ -10,12 +10,13 @@ from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
 from api import contract
+from repository.models.mixins import WikipediaMixin
 from repository.models.person import Person
 
 PHONE_NUMBER_REGION = 'GB'
 
 
-class Links(models.Model):
+class Links(WikipediaMixin, models.Model):
     person = models.OneToOneField(
         Person,
         on_delete=models.CASCADE,
@@ -37,12 +38,6 @@ class Links(models.Model):
         null=True,
         blank=True,
     )
-
-    wikipedia = models.CharField(
-        null=True,
-        blank=True,
-        max_length=64,
-        help_text='Path section of a wikipedia url (e.g. \'John_Baron_(politician)\')')
 
     @classmethod
     def create(

@@ -38,3 +38,14 @@ class TheyWorkForYouMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class WikipediaMixin(models.Model):
+    wikipedia = models.CharField(
+        null=True,
+        blank=True,
+        max_length=64,
+        help_text='Path section of a wikipedia url (e.g. \'John_Baron_(politician)\')')
+
+    class Meta:
+        abstract = True

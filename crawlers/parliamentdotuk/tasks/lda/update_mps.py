@@ -4,10 +4,11 @@ from typing import (
 )
 
 import re
+import logging
 
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import commonsmembers as mp_contract
-from crawlers.parliamentdotuk.tasks.lda.util import (
+from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_value,
     update_model,
 )
@@ -16,6 +17,13 @@ from repository.models import (
     Party,
     Constituency,
 )
+from repository.models.contact_details import (
+    Links,
+    WebLink,
+)
+from repository.models.person import Person
+
+log = logging.getLogger(__name__)
 
 
 def update_mps():
@@ -28,27 +36,49 @@ def update_mps():
             if matches:
                 return int(matches[0])
 
-        name = get_value(json_data, 'full_name')
-        mp, created = Mp.objects.update_or_create(
-            name=name,
+        name = get_value(json_data, mp_contract.NAME_FULL)
+        puk = _get_parliamentdotuk_id(get_value(json_data, mp_contract.ABOUT))
+        person, _ = Person.objects.update_or_create(name=name, defaults={
+            'name': name,
+            'given_name': get_value(json_data, mp_contract.NAME_GIVEN),
+            'family_name': get_value(json_data, mp_contract.NAME_FAMILY),
+            'additional_name': get_value(json_data, mp_contract.NAME_ADDITIONAL),
+            'gender': get_value(json_data, mp_contract.GENDER),
+        })
+        mp, _ = Mp.objects.update_or_create(
+            parliamentdotuk=puk,
             defaults={
-                'name': name,
-                'parliamentdotuk': _get_parliamentdotuk_id(get_value(json_data, mp_contract.ABOUT)),
-                'given_name': get_value(json_data, mp_contract.NAME_GIVEN),
-                'family_name': get_value(json_data, mp_contract.NAME_FAMILY),
-                'party': parties.get(name=get_value(json_data, mp_contract.PARTY)),
-                'constituency': constituencies.get(name=get_value(json_data, mp_contract.CONSTITUENCY)),
-                # ''party' TODO get from `parties` cache to avoid many lookups
-                # 'constituency' TODO avoid many lookups
-                # TODO handle contact details. this update_or_create thing might not work for this
-                # TODO ... fill all fields
+                'person': person,
+                'parliamentdotuk': puk,
+                'party': parties.get_or_create(name=get_value(json_data, mp_contract.PARTY))[0],
             }
         )
+        constituency, _ = constituencies.get_or_create(
+            name=get_value(json_data, mp_contract.CONSTITUENCY),
+            defaults={
+                'mp': mp,
+            })
+
+        contact_details, _ = Links.objects.get_or_create(person=person)
+        weblinks = [
+            get_value(json_data, mp_contract.TWITTER),
+            get_value(json_data, mp_contract.HOMEPAGE),
+        ]
+        for url in [x for x in weblinks if x]:
+            log.debug(f'creating url {url}')
+            WebLink.objects.update_or_create(
+                url=url,
+                defaults={
+                    'links': contact_details,
+                    'url': url,
+                }
+            )
+        return mp
 
     def build_report(new_mps) -> Tuple[str, str]:
         title = 'MPs updated'
         if new_mps:
-            mp_list_test = '\n  '.join(new_mps)
+            mp_list_test = '\n  '.join([x.__str__() for x in new_mps])
             content = f'{len(new_mps)} new MPs:\n{mp_list_test}'
         else:
             content = 'No new MPs'

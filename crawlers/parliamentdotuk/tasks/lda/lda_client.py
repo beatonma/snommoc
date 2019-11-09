@@ -48,7 +48,7 @@ def get_value(data: Dict, key: str) -> Optional[str]:
 def get_page(
         endpoint: str,
         page_number: int = 0,
-        page_size: int = MAX_PAGE_SIZE
+        page_size: int = MAX_PAGE_SIZE,
 ) -> requests.Response:
     log.debug(endpoint)
     response = requests.get(
@@ -67,7 +67,7 @@ def update_model(
         update_item_func: Callable[[Dict], Optional[str]],
         report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
         page_size=MAX_PAGE_SIZE,
-        page_load_delay: int = 5  # Basic rate limiting,
+        page_load_delay: int = 5,  # Basic rate limiting
 ) -> None:
     new_items = []
     page_number = 0

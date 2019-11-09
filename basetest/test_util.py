@@ -1,9 +1,8 @@
+import logging
 import uuid
 
-from django.conf import settings
 from django.contrib.auth.models import User
-
-from api import contract
+from django.db.models import Model
 
 
 def inject_context_manager(cls):
@@ -29,3 +28,21 @@ def create_test_user(
         email=email)
     user.save()
     return user
+
+
+def log_dump(obj, logger: logging.Logger):
+    """Expects obj to be an instance of Model, or a collection of Model instances"""
+    if isinstance(obj, Model):
+        logger.debug(f'MODEL: [{obj.__class__.__name__}] {obj}')
+        fields = obj._meta.get_fields(include_parents=True, include_hidden=True)
+        logger.debug(f'FIELDS: {[field.name for field in fields]}')
+        for field in fields:
+            try:
+                logger.debug(f' FIELD: [{field.name}] {getattr(obj, field.name)}')
+            except Exception as e:
+                logger.warning(f'  Unable to read value for field="{field.name}"')
+                logger.error(e)
+    else:
+        logger.debug('Unpacking model collection...')
+        for model_instance in obj:
+            log_dump(model_instance, logger)

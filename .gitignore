@@ -4,3 +4,4 @@ env/
 */local_settings.py
 */local_urls.py
 static/
+uwsgi.ini

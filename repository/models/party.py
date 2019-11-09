@@ -5,10 +5,12 @@ from repository.models.mixins import WikipediaMixin
 
 class Party(WikipediaMixin, models.Model):
     name = models.CharField(max_length=32, unique=True)
-    short_name = models.CharField(max_length=16, unique=True)
+    short_name = models.CharField(max_length=16, unique=True, null=True, blank=True)
     long_name = models.CharField(
         max_length=64,
         unique=True,
+        null=True,
+        blank=True,
         help_text='Official name',
     )
     homepage = models.URLField(null=True, blank=True)

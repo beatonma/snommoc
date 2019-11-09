@@ -3,14 +3,19 @@ from django.db import models
 
 class Constituency(models.Model):
     name = models.CharField(max_length=64)
-    mp = models.OneToOneField('Mp', on_delete=models.SET_NULL, null=True)
+    mp = models.OneToOneField(
+        'Mp',
+        on_delete=models.SET_NULL,
+        related_name='constituency',
+        null=True)
 
-    ordinance_survey_name = models.CharField(max_length=64, null=True)
+    ordinance_survey_name = models.CharField(max_length=64, null=True, blank=True)
     gss_code = models.CharField(
-        max_length=12, null=True,
+        max_length=12, null=True, blank=True,
         help_text='Government Statistical Service ID')
     constituency_type = models.CharField(
         max_length=10, null=True,
+        default='county',
         choices=[
             ('county', 'County'),
             ('borough', 'Borough'),

@@ -96,7 +96,7 @@ class Links(WikipediaMixin, models.Model):
         verbose_name_plural = 'Personal links'
 
     def __str__(self):
-        return f'{self.person}'
+        return f'Contact details for {self.person}'
 
 
 class WebLink(models.Model):

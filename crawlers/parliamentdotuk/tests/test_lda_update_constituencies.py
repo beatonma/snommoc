@@ -4,7 +4,7 @@ from unittest import mock
 import requests
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.lda import util as lda_util
+from crawlers.parliamentdotuk.tasks.lda import lda_client
 from crawlers.parliamentdotuk.tasks.lda.update_constituencies import (
     update_constituencies,
 )
@@ -36,7 +36,7 @@ class UpdateConstituenciesTest(LocalTestCase):
         mock.Mock(side_effect=get_mock_json_response),
     )
     @mock.patch.object(
-        lda_util, 'get_next_page_url',
+        lda_client, 'get_next_page_url',
         mock.Mock(side_effect=lambda x: None)
     )
     def test_update_constituencies(self):

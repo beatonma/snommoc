@@ -6,7 +6,7 @@ from celery import shared_task
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import constituencies as constituencies_contract
 from repository.models import Constituency
-from .util import (
+from .lda_client import (
     get_value,
     update_model,
 )

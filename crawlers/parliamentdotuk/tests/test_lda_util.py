@@ -8,7 +8,7 @@ from basetest.testcase import (
     LocalTestCase,
     NetworkTestCase,
 )
-from crawlers.parliamentdotuk.tasks.lda import util as lda_util
+from crawlers.parliamentdotuk.tasks.lda import lda_client
 
 log = logging.getLogger(__name__)
 
@@ -19,16 +19,16 @@ EXAMPLE_ITEM = {"_about": "http://data.parliament.uk/resources/146747","constitu
 
 class LdaUtilTests(LocalTestCase):
     def test_get_next_page_url(self):
-        next_page_url = lda_util.get_next_page_url(EXAMPLE_RESPONSE)
+        next_page_url = lda_client.get_next_page_url(EXAMPLE_RESPONSE)
         self.assertEqual(
             next_page_url,
             'http://eldaddp.azurewebsites.net/constituencies.json?_page=1')
 
     def test_get_value(self):
-        name = lda_util.get_value(EXAMPLE_ITEM, 'label')
+        name = lda_client.get_value(EXAMPLE_ITEM, 'label')
         self.assertEqual(name, 'Aberavon')
 
-        started_date = lda_util.get_value(EXAMPLE_ITEM, 'startedDate')
+        started_date = lda_client.get_value(EXAMPLE_ITEM, 'startedDate')
         self.assertEqual(started_date, '2010-05-06')
 
 
@@ -37,7 +37,7 @@ class LdaRemoteUtilTests(NetworkTestCase):
     def test_get_page(self):
         page_number = 1
         items_per_page = 15
-        response = lda_util.get_page(
+        response = lda_client.get_page(
             'http://lda.data.parliament.uk/constituencies.json',
             page_number=page_number,
             page_size=items_per_page)

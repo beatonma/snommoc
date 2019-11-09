@@ -3,21 +3,25 @@
 """
 
 import logging
-from unittest import (
-    mock,
-    skip,
-)
+from unittest import mock
 
 import requests
 
+from basetest.test_util import log_dump
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.lda import util as lda_util
+from crawlers.parliamentdotuk.tasks.lda import lda_client
 from crawlers.parliamentdotuk.tasks.lda.update_mps import update_mps
 from repository.models import (
     Constituency,
     Party,
     Mp,
 )
+from repository.models.contact_details import (
+    Links,
+    WebLink,
+)
+from repository.models.person import Person
+from repository.tasks.init_parties import init_parties
 
 log = logging.getLogger(__name__)
 
@@ -204,8 +208,8 @@ def get_mock_json_response(*args, **kwargs):
     return MockJsonResponse(args[0], EXAMPLE_RESPONSE, 200)
 
 
-@skip(reason='Not yet implemented')
-class UpdateMPsTest(LocalTestCase):
+# @skip(reason='Not yet implemented')
+class UpdateMpsTest(LocalTestCase):
     """"""
 
     @mock.patch.object(
@@ -213,13 +217,40 @@ class UpdateMPsTest(LocalTestCase):
         mock.Mock(side_effect=get_mock_json_response),
     )
     @mock.patch.object(
-        lda_util, 'get_next_page_url',
+        lda_client, 'get_next_page_url',
         mock.Mock(side_effect=lambda x: None),
     )
     def test_update_mps(self):
         self.assertEqual(len(Mp.objects.all()), 0)
         update_mps()
         new_mps = Mp.objects.all()
+        self.assertEqual(new_mps.count(), 10)
+
+        diane_abbott_mp: Mp = new_mps.first()
+        log_dump(diane_abbott_mp, log)
+        diane_abbott: Person = diane_abbott_mp.person
+        log_dump(diane_abbott, log)
+        diane_abbott_links: Links = diane_abbott.links
+        log_dump(diane_abbott_links, log)
+        diane_abbott_weblinks: WebLink = diane_abbott_links.weblinks.all()
+        log_dump(diane_abbott_weblinks, log)
+
+        self.assertEqual(diane_abbott_mp.parliamentdotuk, 172)
+        self.assertEqual(diane_abbott.name.lower(), 'ms diane abbott')
+        self.assertEqual(diane_abbott.family_name.lower(), 'abbott')
+        self.assertEqual(diane_abbott.given_name.lower(), 'diane')
+        self.assertEqual(diane_abbott.additional_name.lower(), 'julie')
+        self.assertEqual(diane_abbott.gender.lower(), 'female')
+        self.assertEqual(diane_abbott_mp.party.name.lower(), 'labour')
+
+        self.assertEqual(
+            diane_abbott_mp.constituency.name.lower(),
+            'hackney north and stoke newington')
+
+        self.assertIsNotNone(
+            diane_abbott_links.weblinks.get(url='http://www.dianeabbott.org.uk'))
+        self.assertIsNotNone(
+            diane_abbott_links.weblinks.get(url='https://twitter.com/HackneyAbbott'))
 
     def tearDown(self) -> None:
         self.delete_instances_of(Constituency, Party, Mp)

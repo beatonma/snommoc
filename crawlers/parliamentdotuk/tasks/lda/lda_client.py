@@ -73,6 +73,11 @@ def update_model(
     page_number = 0
     next_page = 'next-page-placeholder'
 
+    TaskNotification.objects.create(
+        title='Task started',
+        content=f'An update cycle has started for endpoint {endpoint_url}'
+    ).save()
+
     while next_page is not None:
         response = get_page(endpoint_url, page_number=page_number, page_size=page_size)
 

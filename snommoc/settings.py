@@ -39,6 +39,7 @@ SNOMMOC_APPS = [
     'crawlers.parliamentdotuk',
     'crawlers.theyworkforyou',
     'notifications',
+    'dashboard',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + SNOMMOC_APPS
 

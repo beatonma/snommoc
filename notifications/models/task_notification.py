@@ -23,6 +23,7 @@ class TaskNotification(models.Model):
     title = models.CharField(max_length=80, blank=True, null=True)
     content = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4)
+    read = models.BooleanField(default=False)
 
     @classmethod
     def create(cls, content: str, title: str = 'Task notification'):

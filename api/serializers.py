@@ -41,23 +41,6 @@ class InlinePartySerializer(InlineSerializer):
         ]
 
 
-class InlineMpSerializer(InlineSerializer):
-    detail_url = serializers.HyperlinkedIdentityField(
-        view_name='mp-detail',
-        read_only=True
-    )
-    party = InlinePartySerializer()
-    name = serializers.CharField(source='person.name')
-
-    class Meta:
-        model = Mp
-        fields = [
-            'name',
-            'party',
-            'detail_url',
-        ]
-
-
 class InlineConstituencySerializer(InlineSerializer):
     detail_url = serializers.HyperlinkedIdentityField(
         view_name='constituency-detail',
@@ -68,6 +51,25 @@ class InlineConstituencySerializer(InlineSerializer):
         model = Constituency
         fields = [
             'name',
+            'detail_url',
+        ]
+
+
+class InlineMpSerializer(InlineSerializer):
+    detail_url = serializers.HyperlinkedIdentityField(
+        view_name='mp-detail',
+        read_only=True
+    )
+    party = InlinePartySerializer()
+    name = serializers.CharField(source='person.name')
+    constituency = InlineConstituencySerializer()
+
+    class Meta:
+        model = Mp
+        fields = [
+            'name',
+            'party',
+            'constituency',
             'detail_url',
         ]
 

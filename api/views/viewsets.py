@@ -10,6 +10,7 @@ from api.serializers import (
     MpSerializer,
     ConstituencySerializer,
     PartySerializer,
+    InlineMpSerializer,
 )
 from api.views.decorators import api_key_required
 from repository.models import (
@@ -41,5 +42,10 @@ class ConstituencyViewSet(KeyRequiredViewSet):
 
 class MpViewSet(KeyRequiredViewSet):
     """Member of Parliament"""
-    queryset = Mp.objects.all()
-    serializer_class = MpSerializer
+    queryset = Mp.objects.all().prefetch_related('party', 'constituency')
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return MpSerializer
+        else:
+            return InlineMpSerializer

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.views import View
 
 from crawlers.parliamentdotuk.tasks.lda.update_constituencies import update_constituencies
@@ -10,6 +10,9 @@ VIEW_UPDATE_CONSTITUENCIES = 'update_constituencies_view'
 
 class UpdateConstituenciesView(View):
     def get(self, request):
+        if not request.user.is_superuser:
+            return HttpResponseForbidden()
+
         if request.user.is_superuser and request.GET.get('update'):
             update_constituencies()
 

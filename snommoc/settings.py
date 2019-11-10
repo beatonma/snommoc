@@ -11,15 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from .local_settings import (
-    BASE_DIR,
-    DEBUG,
-    SECRET_KEY,
-    ALLOWED_HOSTS,
-    DATABASES,
-    HTTP_REQUEST_HEADERS,
-    REST_FRAMEWORK,
-)
+from .local_settings import *
 
 DJANGO_APPS = [
     'django.contrib.admin',

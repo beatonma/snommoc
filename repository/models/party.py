@@ -10,7 +10,7 @@ class Party(WikipediaMixin, models.Model):
         unique=True,
         null=True,
         blank=True,
-        default='',
+        default=None,
     )
     long_name = models.CharField(
         max_length=64,
@@ -18,7 +18,7 @@ class Party(WikipediaMixin, models.Model):
         null=True,
         blank=True,
         help_text='Official name',
-        default='',
+        default=None,
     )
     homepage = models.URLField(null=True, blank=True)
     year_founded = models.PositiveSmallIntegerField(default=0)

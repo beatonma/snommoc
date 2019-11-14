@@ -1,0 +1,23 @@
+{% extends '_dashboard-all-abstract.html' %}
+
+{% block title %}Constituencies{% endblock %}
+
+{% block items_title %}constituencies{% endblock %}
+
+{% block table_headers %}
+    <th>Name</th>
+    <th>Mp</th>
+    <th>OS name</th>
+    <th>GSS</th>
+    <th>Type</th>
+{% endblock %}
+
+{% block data_row %}
+    {% with constituency=item %}
+    <td>{{ constituency.name }}</td>
+    <td>{{ constituency.mp.person.name }}</td>
+    <td>{{ constituency.ordinancce_survey_name }}</td>
+    <td>{{ constituency.gss_code }}</td>
+    <td>{{ constituency.constituency_type }}</td>
+    {% endwith %}
+{% endblock %}

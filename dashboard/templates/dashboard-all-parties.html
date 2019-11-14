@@ -1,0 +1,23 @@
+{% extends '_dashboard-all-abstract.html' %}
+
+{% block title %}Parties{% endblock %}
+
+{% block items_title %}parties{% endblock %}
+
+{% block table_headers %}
+    <th>Name</th>
+    <th>Short name</th>
+    <th>Long name</th>
+    <th>Founded</th>
+    <th>Homepage</th>
+{% endblock %}
+
+{% block data_row %}
+    {% with party=item %}
+    <td>{{ party.name }}</td>
+    <td>{{ party.short_name }}</td>
+    <td>{{ party.long_name }}</td>
+    <td>{{ party.year_founded }}</td>
+    <td>{{ party.homepage }}</td>
+    {% endwith %}
+{% endblock %}

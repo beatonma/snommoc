@@ -1,0 +1,31 @@
+{% extends '_dashboard-all-abstract.html' %}
+
+{% block title %}MPs{% endblock %}
+
+{% block items_title %}MPs{% endblock %}
+
+{% block table_headers %}
+    <th>Full name</th>
+    <th>Given name</th>
+    <th>Additional name(s)</th>
+    <th>Family name</th>
+    <th>Gender</th>
+    <th>Party</th>
+    <th>Constituency</th>
+    <th>parliamentdotuk</th>
+    <th>theyworkforyou</th>
+{% endblock %}
+
+{% block data_row %}
+    {% with mp=item %}
+    <td>{{ mp.person.name }}</td>
+    <td>{{ mp.person.given_name }}</td>
+    <td>{{ mp.person.additional_name }}</td>
+    <td>{{ mp.person.family_name }}</td>
+    <td>{{ mp.person.gender }}</td>
+    <td>{{ mp.party.name }}</td>
+    <td>{{ mp.constituency.name }}</td>
+    <td>{{ mp.parliamentdotuk }}</td>
+    <td>{{ mp.theyworkforyou }}</td>
+    {% endwith %}
+{% endblock %}

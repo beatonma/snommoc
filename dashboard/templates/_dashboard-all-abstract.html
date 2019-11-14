@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}TITLE{% endblock %}</title>
+</head>
+<body>
+<header>{% include 'dashboard-header-fragment.html' %}</header>
+<h1>{{ items|length }} {% block items_title %}items{% endblock %}</h1>
+<table>
+    <tr>
+        <th>#</th>
+        {% block table_headers %}{% endblock %}
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        {% block data_row %}{% endblock %}
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

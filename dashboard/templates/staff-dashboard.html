@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Dashboard</title>
 </head>
 <body>
-<header>{% include 'new-notifications.html' %}</header>
-<div class="mps"></div>
+<header>{% include 'new-notifications-fragment.html' %}</header>
+    <div>
+        <span>We have data for:</span>
+        <a href="{% url 'dashboard-mps' %}"><div>{{ mp_count }} MPs</div></a>
+        <a href="{% url 'dashboard-constituencies' %}"><div>{{ constituency_count }} constituencies</div></a>
+        <a href="{% url 'dashboard-parties' %}"><div>{{ party_count }} parties</div></a>
+    </div>
 </body>
 </html>

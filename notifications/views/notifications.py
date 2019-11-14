@@ -10,6 +10,7 @@ from django.http import (
     HttpResponseBadRequest,
     HttpResponseNotFound,
 )
+from django.shortcuts import render
 from django.views import View
 
 from notifications.models import TaskNotification
@@ -25,10 +26,13 @@ VIEW_DISMISS_NOTIFICATION = 'dismiss_notification_view'
 
 class PendingNotificationsView(UserPassesTestMixin, View):
     def get(self, request):
-        notifications = [x.__str__() for x in TaskNotification.objects.all()]
-        html = '<br/>'.join(notifications)
-
-        return HttpResponse(html)
+        return render(
+            request,
+            'unread-notifications.html',
+            {
+                'notifications': TaskNotification.objects.filter(read=False),
+            }
+        )
 
     def test_func(self):
         return self.request.user.has_perm(

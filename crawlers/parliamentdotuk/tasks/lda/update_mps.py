@@ -78,7 +78,7 @@ def update_mps():
     def build_report(new_mps) -> Tuple[str, str]:
         title = 'MPs updated'
         if new_mps:
-            mp_list_test = '\n  '.join([x.__str__() for x in new_mps])
+            mp_list_test = '\n'.join([x.__str__() for x in new_mps])
             content = f'{len(new_mps)} new MPs:\n{mp_list_test}'
         else:
             content = 'No new MPs'

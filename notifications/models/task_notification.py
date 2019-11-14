@@ -24,6 +24,7 @@ class TaskNotification(models.Model):
     content = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4)
     read = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
     @classmethod
     def create(cls, content: str, title: str = 'Task notification'):

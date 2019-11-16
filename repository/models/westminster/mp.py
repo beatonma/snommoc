@@ -1,11 +1,5 @@
-from typing import (
-    List,
-    Optional,
-)
-
 from django.db import models
 
-from repository.models import Party
 from repository.models.interests import (
     INTEREST_CATEGORY_COUNTRY,
     INTEREST_CATEGORY_GENERIC,
@@ -22,15 +16,14 @@ class Mp(ParliamentDotUkMixin, TheyWorkForYouMixin, PeriodMixin, models.Model):
     person = models.ForeignKey(
         Person,
         on_delete=models.CASCADE,
-        related_name='people',
-        related_query_name='person'
+        related_name='mp',
+        related_query_name='mp'
     )
 
     party = models.ForeignKey(
-        Party,
+        'Party',
         on_delete=models.DO_NOTHING,
-        related_name='parties',
-        related_query_name='party',
+        related_name='mps',
         null=True)
 
     @property

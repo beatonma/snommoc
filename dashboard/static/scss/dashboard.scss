@@ -1,0 +1,65 @@
+$primary: var(--text-primary);
+$secondary: var(--text-secondary);
+$tertiary: var(--text-tertiary);
+$accent: var(--accent);
+$accent-secondary: var(--accent-secondary);
+$font: 'Open Sans', sans-serif;
+$table-border: var(--table-border) 1px solid;
+$padding: 6px 12px;
+$border: 6px;
+
+body {
+  background: var(--tabletop);
+  color: $primary;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+header {
+  margin-bottom: 24px;
+}
+
+table {
+  background: var(--card-background);
+  color: var(--text-primary);
+  border: $table-border;
+  border-collapse: collapse;
+
+  th {
+    border-bottom: $table-border;
+  }
+
+  th, td {
+    padding: $padding;
+    border-left: $table-border;
+    border-right: $table-border;
+  }
+}
+
+td.numeric {
+  text-align: center;
+}
+
+a {
+  color: $accent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: $accent-secondary;
+}
+
+
+.action {
+  background: var(--warn);
+  color: var(--text-light-primary) !important;
+  padding: $padding;
+  margin-right: 16px;
+  border-radius: $border;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.busy {
+  background: var(--text-tertiary);
+  cursor: no-drop;
+}

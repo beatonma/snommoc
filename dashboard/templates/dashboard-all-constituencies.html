@@ -6,18 +6,24 @@
 
 {% block table_headers %}
     <th>Name</th>
+    <th>parliamentdotuk</th>
     <th>Mp</th>
     <th>OS name</th>
     <th>GSS</th>
     <th>Type</th>
+    <th>Start</th>
+    <th>End</th>
 {% endblock %}
 
 {% block data_row %}
     {% with constituency=item %}
     <td>{{ constituency.name }}</td>
-    <td>{{ constituency.mp.person.name }}</td>
-    <td>{{ constituency.ordinancce_survey_name }}</td>
-    <td>{{ constituency.gss_code }}</td>
+    <td class="numeric">{{ constituency.parliamentdotuk }}</td>
+    <td>{{ constituency.mp.person.name|default_if_none:'-' }}</td>
+    <td>{{ constituency.ordinancce_survey_name|default_if_none:'-' }}</td>
+    <td>{{ constituency.gss_code|default_if_none:'-' }}</td>
     <td>{{ constituency.constituency_type }}</td>
+    <td>{{ constituency.start|default_if_none:'-' }}</td>
+    <td>{{ constituency.end|default_if_none:'-' }}</td>
     {% endwith %}
 {% endblock %}

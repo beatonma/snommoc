@@ -6,6 +6,7 @@
 
 {% block table_headers %}
     <th>Name</th>
+    <th>Active MPs</th>
     <th>Short name</th>
     <th>Long name</th>
     <th>Founded</th>
@@ -15,9 +16,10 @@
 {% block data_row %}
     {% with party=item %}
     <td>{{ party.name }}</td>
-    <td>{{ party.short_name }}</td>
-    <td>{{ party.long_name }}</td>
-    <td>{{ party.year_founded }}</td>
-    <td>{{ party.homepage }}</td>
+    <td class="numeric">{{ party.mps.all|length }}</td>
+    <td>{{ party.short_name|default_if_none:'-' }}</td>
+    <td>{{ party.long_name|default_if_none:'-' }}</td>
+    <td class="numeric">{{ party.year_founded }}</td>
+    <td>{{ party.homepage|default_if_none:'-' }}</td>
     {% endwith %}
 {% endblock %}

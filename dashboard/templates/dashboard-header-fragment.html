@@ -1,7 +1,10 @@
 <div>
     <a href="{% url 'dashboard' %}">Dashboard</a> |
     <a href="{% url 'dashboard-mps' %}">MPs</a> |
+    <a href="{% url 'dashboard-mps' requirement='active' %}">Active MPs</a> |
     <a href="{% url 'dashboard-constituencies' %}">Constituencies</a> |
-    <a href="{% url 'dashboard-parties' %}">Parties</a>
+    <a href="{% url 'dashboard-constituencies' requirement='active' %}">Active constituencies</a> |
+    <a href="{% url 'dashboard-parties' %}">Parties</a> |
+    <a href="{% url 'dashboard-parties' requirement='active' %}">Active parties</a>
 </div>
 {% include 'new-notifications-fragment.html' %}

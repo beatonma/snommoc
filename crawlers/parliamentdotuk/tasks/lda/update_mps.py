@@ -3,7 +3,6 @@ from typing import (
     Tuple,
 )
 
-import re
 import logging
 
 from crawlers.parliamentdotuk.tasks.lda import endpoints
@@ -11,6 +10,7 @@ from crawlers.parliamentdotuk.tasks.lda.contract import commonsmembers as mp_con
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_value,
     update_model,
+    get_parliamentdotuk_id,
 )
 from repository.models import (
     Mp,
@@ -26,18 +26,13 @@ from repository.models.person import Person
 log = logging.getLogger(__name__)
 
 
-def update_mps():
+def update_mps(follow_pagination=True):
     parties = Party.objects.all()
     constituencies = Constituency.objects.all()
 
     def build_mp(json_data) -> Optional[str]:
-        def _get_parliamentdotuk_id(url) -> Optional[int]:
-            matches = re.findall(r'.*?/([\d]+)$', url)
-            if matches:
-                return int(matches[0])
-
         name = get_value(json_data, mp_contract.NAME_FULL)
-        puk = _get_parliamentdotuk_id(get_value(json_data, mp_contract.ABOUT))
+        puk = get_parliamentdotuk_id(get_value(json_data, mp_contract.ABOUT))
         person, _ = Person.objects.update_or_create(name=name, defaults={
             'name': name,
             'given_name': get_value(json_data, mp_contract.NAME_GIVEN),
@@ -87,4 +82,5 @@ def update_mps():
     update_model(
         endpoints.COMMONS_MEMBERS_BASE_URL,
         update_item_func=build_mp,
-        report_func=build_report)
+        report_func=build_report,
+        follow_pagination=follow_pagination)

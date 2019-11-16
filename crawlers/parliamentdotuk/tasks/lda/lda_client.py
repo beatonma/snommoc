@@ -1,4 +1,6 @@
+import re
 import time
+import datetime
 from typing import (
     Dict,
     Optional,
@@ -45,6 +47,27 @@ def get_value(data: Dict, key: str) -> Optional[str]:
                 return None
 
 
+def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
+    as_string = get_value(data, key)
+    log.debug(f'date string: {key}: {as_string}')
+
+    if as_string:
+        try:
+            from django.utils.dateparse import parse_date
+            parsed = parse_date(as_string)
+            log.debug(f'{as_string} -> {parsed}')
+            return parsed
+        except ValueError:
+            log.warning(f'Unable to parse date from string "{as_string}"')
+    return None
+
+
+def get_parliamentdotuk_id(about_url: str) -> Optional[int]:
+    matches = re.findall(r'.*?/([\d]+)$', about_url)
+    if matches:
+        return int(matches[0])
+
+
 def get_page(
         endpoint: str,
         page_number: int = 0,
@@ -68,6 +91,7 @@ def update_model(
         report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
         page_size=MAX_PAGE_SIZE,
         page_load_delay: int = 5,  # Basic rate limiting
+        follow_pagination: bool = True,
 ) -> None:
     new_items = []
     page_number = 0
@@ -97,8 +121,9 @@ def update_model(
                 new_items.append(new_name)
 
         page_number += 1
-        next_page = get_next_page_url(data)
+        next_page = get_next_page_url(data) if follow_pagination else None
         if next_page:
+            log.debug(f'Fetching page {next_page} in {page_load_delay} seconds...')
             time.sleep(page_load_delay)
 
     if report_func:

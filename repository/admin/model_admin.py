@@ -22,7 +22,6 @@ class InterestInline(TabularInline):
 
 
 @admin.register(*[
-    Constituency,
     Party,
     Links,
     WebLink,
@@ -31,6 +30,16 @@ class InterestInline(TabularInline):
 class DefaultAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(Constituency)
+class ConstituencyAdmin(DefaultAdmin):
+    ordering = ['name']
+    list_display = [
+        'name',
+        'mp',
+        'start',
+        'end',
+    ]
 
 @admin.register(Person)
 class PersonAdmin(DefaultAdmin):

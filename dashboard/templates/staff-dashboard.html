@@ -3,14 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    {% include 'style-fragment.html' %}
 </head>
 <body>
-<header>{% include 'new-notifications-fragment.html' %}</header>
-    <div>
-        <span>We have data for:</span>
-        <a href="{% url 'dashboard-mps' %}"><div>{{ mp_count }} MPs</div></a>
-        <a href="{% url 'dashboard-constituencies' %}"><div>{{ constituency_count }} constituencies</div></a>
-        <a href="{% url 'dashboard-parties' %}"><div>{{ party_count }} parties</div></a>
-    </div>
+<header>{% include 'dashboard-header-fragment.html' %}</header>
+<div>
+    <span>We have data for:</span>
+    <a href="{% url 'dashboard-mps' %}"><div>{{ mp_count }} MPs</div></a>
+    <a href="{% url 'dashboard-constituencies' %}"><div>{{ constituency_count }} constituencies</div></a>
+    <a href="{% url 'dashboard-parties' %}"><div>{{ party_count }} parties</div></a>
+</div>
+
+<div>
+    <h1>Actions</h1>
+    <span id="update_constituencies" class="action" >Update constituencies</span>
+    <span id="update_mps" class="action">Update MPs</span>
+</div>
 </body>
+<script type="text/javascript">
+    (() => {
+        function updateConstituencies() {
+            const button = document.getElementById('update_constituencies');
+            const buttonText = button.innerText;
+            button.innerText = 'Busy...';
+            button.classList.add('busy');
+            button.removeEventListener('click', updateConstituencies);
+            console.log('Updating constituencies...');
+            fetch('{% url "action-update-constituencies" %}', {
+                method: 'GET',
+                credentials: 'same-origin'
+            }).then((response) => {
+                button.classList.remove('busy');
+                button.innerText = buttonText;
+                console.log('Constituencies updated');
+                console.log(`${response.status}: ${response.text()}`);
+                button.addEventListener('click', updateConstituencies);
+            });
+        }
+
+        function updateMps() {
+            const button = document.getElementById('update_mps');
+            const buttonText = button.innerText;
+            button.innerText = 'Busy...';
+            button.classList.add('busy');
+            button.removeEventListener('click', updateMps);
+            console.log('Updating mps...');
+            fetch('{% url "action-update-mps" %}', {
+                method: 'GET',
+                credentials: 'same-origin'
+            }).then((response) => {
+                button.classList.remove('busy');
+                button.innerText = buttonText;
+                console.log('MPs updated');
+                console.log(`${response.status}: ${response.text()}`);
+                button.addEventListener('click', updateMps);
+            });
+        }
+
+        document.getElementById('update_constituencies').addEventListener('click', updateConstituencies);
+        document.getElementById('update_mps').addEventListener('click', updateMps);
+    })();
+</script>
 </html>

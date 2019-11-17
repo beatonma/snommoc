@@ -7,18 +7,25 @@
 </head>
 <body>
 <header>{% include 'dashboard-header-fragment.html' %}</header>
-<div>
-    <span>We have data for:</span>
-    <a href="{% url 'dashboard-mps' %}"><div>{{ mp_count }} MPs</div></a>
-    <a href="{% url 'dashboard-constituencies' %}"><div>{{ constituency_count }} constituencies</div></a>
-    <a href="{% url 'dashboard-parties' %}"><div>{{ party_count }} parties</div></a>
-</div>
+<section>
+    <h1>Dashboard</h1>
+    <a class="button" href="{% url 'dashboard-mps' %}">{{ mp_count }} MPs</a>
+    <a class="button" href="{% url 'dashboard-constituencies' %}">{{ constituency_count }} constituencies</a>
+    <a class="button" href="{% url 'dashboard-parties' %}">{{ party_count }} parties</a>
+</section>
 
-<div>
+<section>
+    <h1>API</h1>
+    <a class="button" href="{% url 'mp-list' %}">MPs</a>
+    <a class="button" href="{% url 'constituency-list' %}">Constituencies</a>
+    <a class="button" href="{% url 'party-list' %}">Parties</a>
+</section>
+
+<section>
     <h1>Actions</h1>
     <span id="update_constituencies" class="action" >Update constituencies</span>
     <span id="update_mps" class="action">Update MPs</span>
-</div>
+</section>
 </body>
 <script type="text/javascript">
     (() => {

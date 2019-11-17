@@ -5,8 +5,8 @@ $accent: var(--accent);
 $accent-secondary: var(--accent-secondary);
 $font: 'Open Sans', sans-serif;
 $table-border: var(--table-border) 1px solid;
-$padding: 6px 12px;
 $border: 6px;
+$padding: $border 12px;
 
 body {
   background: var(--tabletop);
@@ -15,8 +15,18 @@ body {
 }
 
 header {
-  margin-bottom: 24px;
+  font-size: 1rem;
+  font-family: monospace;
 }
+
+header, h1 {
+  margin-bottom: 1.2rem;
+}
+
+section {
+  margin-bottom: 3em;
+}
+
 
 table {
   background: var(--card-background);
@@ -33,6 +43,10 @@ table {
     border-left: $table-border;
     border-right: $table-border;
   }
+
+  tr:hover {
+    background: var(--text-tertiary-invert);
+  }
 }
 
 td.numeric {
@@ -48,18 +62,23 @@ a:visited {
   color: $accent-secondary;
 }
 
-
-.action {
-  background: var(--warn);
+.button {
+  background: $accent-secondary;
   color: var(--text-light-primary) !important;
   padding: $padding;
   margin-right: 16px;
   border-radius: $border;
   font-weight: 600;
   cursor: pointer;
+  margin-bottom: 16px;
 }
 
 .busy {
   background: var(--text-tertiary);
   cursor: no-drop;
+}
+
+.action {
+  @extend .button;
+  background: var(--warn);
 }

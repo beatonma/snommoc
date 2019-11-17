@@ -5,7 +5,16 @@ body {
 }
 
 header {
-  margin-bottom: 24px;
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+header, h1 {
+  margin-bottom: 1.2rem;
+}
+
+section {
+  margin-bottom: 3em;
 }
 
 table {
@@ -22,6 +31,9 @@ table th, table td {
   border-left: var(--table-border) 1px solid;
   border-right: var(--table-border) 1px solid;
 }
+table tr:hover {
+  background: var(--text-tertiary-invert);
+}
 
 td.numeric {
   text-align: center;
@@ -36,19 +48,24 @@ a:visited {
   color: var(--accent-secondary);
 }
 
-.action {
-  background: var(--warn);
+.button, .action {
+  background: var(--accent-secondary);
   color: var(--text-light-primary) !important;
   padding: 6px 12px;
   margin-right: 16px;
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
+  margin-bottom: 16px;
 }
 
 .busy {
   background: var(--text-tertiary);
   cursor: no-drop;
+}
+
+.action {
+  background: var(--warn);
 }
 
 /*# sourceMappingURL=dashboard.css.map */

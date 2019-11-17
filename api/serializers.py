@@ -128,4 +128,6 @@ class ConstituencySerializer(DetailedSerializer):
         fields = [
             'name',
             'mp',
+            'start',
+            'end',
         ]

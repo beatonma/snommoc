@@ -11,6 +11,8 @@ from api.serializers import (
     ConstituencySerializer,
     PartySerializer,
     InlineMpSerializer,
+    InlineConstituencySerializer,
+    InlinePartySerializer,
 )
 from api.views.decorators import api_key_required
 from repository.models import (
@@ -31,13 +33,23 @@ class KeyRequiredViewSet(viewsets.ReadOnlyModelViewSet):
 class PartyViewSet(KeyRequiredViewSet):
     """Political party"""
     queryset = Party.objects.all()
-    serializer_class = PartySerializer
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return PartySerializer
+        else:
+            return InlinePartySerializer
 
 
 class ConstituencyViewSet(KeyRequiredViewSet):
     """Parliamentary constituency"""
     queryset = Constituency.objects.all()
-    serializer_class = ConstituencySerializer
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ConstituencySerializer
+        else:
+            return InlineConstituencySerializer
 
 
 class MpViewSet(KeyRequiredViewSet):

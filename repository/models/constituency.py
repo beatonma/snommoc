@@ -41,5 +41,8 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, models.Model):
 
 
 class ConstituencyBoundary(models.Model):
-    constituency = models.OneToOneField(Constituency, on_delete=models.CASCADE)
+    constituency = models.OneToOneField(
+        Constituency,
+        on_delete=models.DO_NOTHING,
+    )
     boundary = models.TextField(help_text='KML file content')

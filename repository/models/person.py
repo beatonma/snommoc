@@ -1,6 +1,10 @@
+import datetime
 import logging
+from typing import Optional
 
 from django.db import models
+
+from repository.models.util.time import years_since
 
 NAME_MAX_LENGTH = 72
 
@@ -34,6 +38,21 @@ class Person(models.Model):
         null=True,
         blank=True
     )
+
+    date_of_birth = models.DateField(
+        default=None,
+        null=True,
+        blank=True,
+    )
+    date_of_death = models.DateField(
+        default=None,
+        null=True,
+        blank=True,
+    )
+
+    @property
+    def age(self) -> Optional[int]:
+        return years_since(self.date_of_birth)
 
     def __str__(self):
         return self.name

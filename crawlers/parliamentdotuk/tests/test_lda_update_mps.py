@@ -21,9 +21,13 @@ from repository.models.contact_details import (
     WebLink,
 )
 from repository.models.person import Person
-from repository.tasks.init_parties import init_parties
 
 log = logging.getLogger(__name__)
+
+
+def _dump(obj):
+    log_dump(obj, log)
+
 
 EXAMPLE_RESPONSE = {
     "format": "linked-data-api",
@@ -208,9 +212,19 @@ def get_mock_json_response(*args, **kwargs):
     return MockJsonResponse(args[0], EXAMPLE_RESPONSE, 200)
 
 
-# @skip(reason='Not yet implemented')
 class UpdateMpsTest(LocalTestCase):
     """"""
+
+    def setUp(self) -> None:
+        constituency_names = [
+            'Carmarthen West & South Pembrokeshire',
+            'Hackney North and Stoke Newington',
+            'Oldham East and Saddleworth',
+            'Paisly North',
+            'Selby',
+        ]
+        for c in constituency_names:
+            Constituency.objects.create(name=c).save()
 
     @mock.patch.object(
         requests, 'get',
@@ -227,57 +241,30 @@ class UpdateMpsTest(LocalTestCase):
         self.assertEqual(new_mps.count(), 10)
 
         diane_abbott_mp: Mp = new_mps.first()
-        log_dump(diane_abbott_mp, log)
+        _dump(diane_abbott_mp)
         diane_abbott: Person = diane_abbott_mp.person
-        log_dump(diane_abbott, log)
+        _dump(diane_abbott)
         diane_abbott_links: Links = diane_abbott.links
-        log_dump(diane_abbott_links, log)
+        _dump(diane_abbott_links)
         diane_abbott_weblinks: WebLink = diane_abbott_links.weblinks.all()
-        log_dump(diane_abbott_weblinks, log)
+        _dump(diane_abbott_weblinks)
 
         self.assertEqual(diane_abbott_mp.parliamentdotuk, 172)
-        self.assertEqual(diane_abbott.name.lower(), 'ms diane abbott')
-        self.assertEqual(diane_abbott.family_name.lower(), 'abbott')
-        self.assertEqual(diane_abbott.given_name.lower(), 'diane')
-        self.assertEqual(diane_abbott.additional_name.lower(), 'julie')
-        self.assertEqual(diane_abbott.gender.lower(), 'female')
-        self.assertEqual(diane_abbott_mp.party.name.lower(), 'labour')
+        self.assertEqualIgnoreCase(diane_abbott.name, 'ms diane abbott')
+        self.assertEqualIgnoreCase(diane_abbott.family_name, 'abbott')
+        self.assertEqualIgnoreCase(diane_abbott.given_name, 'diane')
+        self.assertEqualIgnoreCase(diane_abbott.additional_name, 'julie')
+        self.assertEqualIgnoreCase(diane_abbott.gender, 'female')
+        self.assertEqualIgnoreCase(diane_abbott_mp.party.name, 'labour')
 
-        self.assertEqual(
-            diane_abbott_mp.constituency.name.lower(),
+        self.assertEqualIgnoreCase(
+            diane_abbott_mp.constituency.name,
             'hackney north and stoke newington')
 
         self.assertIsNotNone(
-            diane_abbott_links.weblinks.get(url='http://www.dianeabbott.org.uk'))
+            diane_abbott_weblinks.get(url='http://www.dianeabbott.org.uk'))
         self.assertIsNotNone(
-            diane_abbott_links.weblinks.get(url='https://twitter.com/HackneyAbbott'))
+            diane_abbott_weblinks.get(url='https://twitter.com/HackneyAbbott'))
 
     def tearDown(self) -> None:
         self.delete_instances_of(Constituency, Party, Mp)
-
-# inject_context_manager(CommonsMember)
-#
-#
-# class TestCommonsMemberParsing(LocalTestCase):
-#     """"""
-#
-#     def test_create_members(self):
-#         members = create_members(EXAMPLE_MEMBER_JSON_ITEMS)
-#
-#         with members[0] as member:
-#             self.assertEqual(member.family_name, "Abbott")
-#             self.assertEqual(member.given_name, "Diane")
-#             self.assertEqual(member.gender, "Female")
-#             self.assertEqual(member.home_page, "http://www.dianeabbott.org.uk")
-#             self.assertEqual(member.party, "Labour")
-#             self.assertEqual(member.twitter, "https://twitter.com/HackneyAbbott")
-#             self.assertEqual(member.constituency, "Hackney North and Stoke Newington")
-#
-#         with members[1] as member:
-#             self.assertEqual(member.family_name, "Abrahams")
-#             self.assertEqual(member.given_name, "Deborah")
-#             self.assertEqual(member.gender, "Female")
-#             self.assertEqual(member.home_page, "http://www.debbieabrahams.org.uk/")
-#             self.assertEqual(member.party, "Labour")
-#             self.assertEqual(member.twitter, "https://twitter.com/Debbie_abrahams")
-#             self.assertEqual(member.constituency, "Oldham East and Saddleworth")

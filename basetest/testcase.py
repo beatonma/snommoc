@@ -24,6 +24,9 @@ class BaseTestCase(TestCase):
             except Exception as e:
                 log.warning(e)
 
+    def assertEqualIgnoreCase(self, first: str, second: str, msg=None):
+        self.assertEqual(first.lower(), second.lower(), msg=msg)
+
 
 class LocalTestCase(BaseTestCase):
     """Tests that use only local data - no external network calls!

@@ -25,6 +25,7 @@ TEST_APPS = [
     'api',
     'crawlers.parliamentdotuk',
     'crawlers.theyworkforyou',
+    'dashboard',
     'notifications',
     'repository',
 ]

@@ -1,7 +1,7 @@
 """
 
 """
-
+import datetime
 import logging
 
 from basetest.testcase import (
@@ -9,6 +9,7 @@ from basetest.testcase import (
     NetworkTestCase,
 )
 from crawlers.parliamentdotuk.tasks.lda import lda_client
+from crawlers.parliamentdotuk.tasks.lda.contract import constituencies as constituencies_contract
 
 log = logging.getLogger(__name__)
 
@@ -17,22 +18,31 @@ EXAMPLE_RESPONSE = {"format": "linked-data-api","version": "0.2","result": {"_ab
 EXAMPLE_ITEM = {"_about": "http://data.parliament.uk/resources/146747","constituencyType": "County","gssCode": "W07000049","label": {"_value": "Aberavon"},"osName": "","startedDate": {"_value": "2010-05-06","_datatype": "dateTime"}}
 
 
-class LdaUtilTests(LocalTestCase):
+class LdaClientTests(LocalTestCase):
     def test_get_next_page_url(self):
         next_page_url = lda_client.get_next_page_url(EXAMPLE_RESPONSE)
         self.assertEqual(
             next_page_url,
             'http://eldaddp.azurewebsites.net/constituencies.json?_page=1')
 
+    def test_get_parliamentdotuk_id(self):
+        parliamentdotuk = lda_client.get_parliamentdotuk_id(lda_client.get_value(EXAMPLE_ITEM, constituencies_contract.ABOUT))
+        self.assertEqual(parliamentdotuk, 146747)
+
     def test_get_value(self):
-        name = lda_client.get_value(EXAMPLE_ITEM, 'label')
+        name = lda_client.get_value(EXAMPLE_ITEM, constituencies_contract.NAME)
         self.assertEqual(name, 'Aberavon')
 
-        started_date = lda_client.get_value(EXAMPLE_ITEM, 'startedDate')
+        started_date = lda_client.get_value(EXAMPLE_ITEM, constituencies_contract.DATE_STARTED)
         self.assertEqual(started_date, '2010-05-06')
 
+    def test_get_date(self):
+        started_date = lda_client.get_date(EXAMPLE_ITEM, constituencies_contract.DATE_STARTED)
+        self.assertEqual(started_date, datetime.date(year=2010, month=5, day=6))
 
-class LdaRemoteUtilTests(NetworkTestCase):
+
+
+class LdaRemoteClientTests(NetworkTestCase):
     """Ensure lda.data.parliament.uk responses are correct"""
     def test_get_page(self):
         page_number = 1

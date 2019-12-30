@@ -12,10 +12,15 @@ from repository.models.mixins import (
 from repository.models.person import Person
 
 
-class Mp(ParliamentDotUkMixin, TheyWorkForYouMixin, PeriodMixin, models.Model):
+class Mp(
+    ParliamentDotUkMixin,
+    TheyWorkForYouMixin,
+    PeriodMixin,
+    models.Model
+):
     person = models.ForeignKey(
         Person,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='mp',
         related_query_name='mp'
     )

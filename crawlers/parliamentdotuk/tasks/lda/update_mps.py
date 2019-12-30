@@ -48,7 +48,7 @@ def update_mps(follow_pagination=True):
                 'party': parties.get_or_create(name=get_value(json_data, mp_contract.PARTY))[0],
             }
         )
-        constituency, _ = constituencies.get_or_create(
+        constituency, _ = constituencies.update_or_create(
             name=get_value(json_data, mp_contract.CONSTITUENCY),
             defaults={
                 'mp': mp,
@@ -60,7 +60,6 @@ def update_mps(follow_pagination=True):
             get_value(json_data, mp_contract.HOMEPAGE),
         ]
         for url in [x for x in weblinks if x]:
-            log.debug(f'creating url {url}')
             WebLink.objects.update_or_create(
                 url=url,
                 defaults={

@@ -7,16 +7,16 @@ import logging
 from rest_framework import viewsets
 
 from api.serializers import (
-    MpSerializer,
+    # MpSerializer,
     ConstituencySerializer,
     PartySerializer,
-    InlineMpSerializer,
+    # InlineMpSerializer,
     InlineConstituencySerializer,
     InlinePartySerializer,
 )
 from api.views.decorators import api_key_required
 from repository.models import (
-    Mp,
+    # Mp,
     Constituency,
     Party,
 )
@@ -52,12 +52,12 @@ class ConstituencyViewSet(KeyRequiredViewSet):
             return InlineConstituencySerializer
 
 
-class MpViewSet(KeyRequiredViewSet):
-    """Member of Parliament"""
-    queryset = Mp.objects.all().prefetch_related('party', 'constituency')
-
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return MpSerializer
-        else:
-            return InlineMpSerializer
+# class MpViewSet(KeyRequiredViewSet):
+#     """Member of Parliament"""
+#     queryset = Mp.objects.all().prefetch_related('party', 'constituency')
+#
+#     def get_serializer_class(self):
+#         if self.action == 'retrieve':
+#             return MpSerializer
+#         else:
+#             return InlineMpSerializer

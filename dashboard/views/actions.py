@@ -4,11 +4,14 @@
 
 import logging
 
-from django.http import HttpResponse
+from django.http import (
+    HttpResponse,
+    Http404,
+)
 
 from crawlers.parliamentdotuk.tasks import (
     update_constituencies,
-    update_mps,
+    # update_mps,
 )
 from dashboard.views.dashboard import BaseDashboardView
 
@@ -24,6 +27,7 @@ class UpdateConstituenciesView(BaseDashboardView):
 
 class UpdateMpsView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
-        follow_pagination = kwargs.get('requirement') != 'debug'
-        update_mps(follow_pagination=follow_pagination)
-        return HttpResponse('OK')
+        return Http404('Deprecated model!')
+        # follow_pagination = kwargs.get('requirement') != 'debug'
+        # update_mps(follow_pagination=follow_pagination)
+        # return HttpResponse('OK')

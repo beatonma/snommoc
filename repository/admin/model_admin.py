@@ -7,7 +7,7 @@ from repository.models.contact_details import (
 )
 
 from repository.models import (
-    Mp,
+    # Mp,
     Party,
     Constituency,
 )
@@ -25,10 +25,14 @@ class InterestInline(TabularInline):
     Party,
     Links,
     WebLink,
-    Mp,
 ])
 class DefaultAdmin(admin.ModelAdmin):
     pass
+
+
+# @admin.register(Mp)
+# class MpAdmin(DefaultAdmin):
+#     ordering = ['person__family_name']
 
 
 @admin.register(Constituency)
@@ -43,6 +47,9 @@ class ConstituencyAdmin(DefaultAdmin):
 
 @admin.register(Person)
 class PersonAdmin(DefaultAdmin):
+    ordering = [
+        'family_name',
+    ]
     inlines = [
         InterestInline,
     ]

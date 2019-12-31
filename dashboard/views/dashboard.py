@@ -1,14 +1,16 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import (
     Count,
+    QuerySet,
 )
+from django.http import Http404
 from django.shortcuts import render
 from django.views import View
 
 from notifications.models import TaskNotification
 from repository.models import (
     Constituency,
-    Mp,
+    # Mp,
     Party,
 )
 
@@ -34,7 +36,7 @@ class DashboardView(BaseDashboardView):
             request,
             'staff-dashboard.html',
             with_unread_notifications({
-                'mp_count': Mp.objects.count(),
+                # 'mp_count': Mp.objects.count(),
                 'constituency_count': Constituency.objects.count(),
                 'party_count': Party.objects.count(),
             })
@@ -43,22 +45,26 @@ class DashboardView(BaseDashboardView):
 
 class MpDashboardView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
-        if kwargs.get('requirement') == 'active':
-            # Only show MPs that are attached to an extant constituency
-            # i.e. they are a current MP, not just historic.
-            mps = Mp.objects.prefetch_related('party') \
-                .exclude(constituency__isnull=True) \
-                .order_by('person__family_name')
-        else:
-            mps = Mp.objects.prefetch_related('party') \
-                .order_by('person__family_name')
-        return render(
-            request,
-            'dashboard-all-mps.html',
-            with_unread_notifications({
-                'items': mps,
-            })
-        )
+        return Http404('Deprecated model')
+        # if kwargs.get('requirement') == 'active':
+        #     # Only show MPs that are attached to an extant constituency
+        #     # i.e. they are a current MP, not just historic.
+        #     mps = Mp.objects.all()
+        #     active_mp_ids = [mp.id for mp in mps if hasattr(mp, 'constituency') and mp.constituency.is_extant]
+        #     mps: QuerySet = Mp.objects.prefetch_related('party') \
+        #         .filter(id__in=active_mp_ids) \
+        #         .order_by('person__family_name')
+        #
+        # else:
+        #     mps = Mp.objects.prefetch_related('party') \
+        #         .order_by('person__family_name')
+        # return render(
+        #     request,
+        #     'dashboard-all-mps.html',
+        #     with_unread_notifications({
+        #         'items': mps,
+        #     })
+        # )
 
 
 class ConstituencyDashboardView(BaseDashboardView):

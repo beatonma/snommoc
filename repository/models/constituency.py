@@ -3,13 +3,14 @@ from django.db import models
 from repository.models.mixins import (
     PeriodMixin,
     ParliamentDotUkMixin,
+    BaseModel,
 )
 
 
-class Constituency(ParliamentDotUkMixin, PeriodMixin, models.Model):
+class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     name = models.CharField(max_length=64)
     mp = models.OneToOneField(
-        'Mp',
+        'Person',
         on_delete=models.SET_NULL,
         related_name='constituency',
         null=True)
@@ -40,7 +41,24 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, models.Model):
         verbose_name_plural = 'Constituencies'
 
 
-class ConstituencyBoundary(models.Model):
+class ConstituencyResult(BaseModel):
+    election = models.ForeignKey(
+        'Election',
+        on_delete=models.CASCADE,
+    )
+
+    mp = models.ForeignKey(
+        'Person',
+        on_delete=models.CASCADE,
+    )
+
+    constituency = models.ForeignKey(
+        'Constituency',
+        on_delete=models.CASCADE,
+    )
+
+
+class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(
         Constituency,
         on_delete=models.DO_NOTHING,

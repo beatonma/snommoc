@@ -79,6 +79,7 @@ def _reset_settings(state: Dict):
 
 def _print_results(test_results):
     print()
+    print(f'Django version: {django.get_version()}')
     print('Results:')
     colorama.init()
     for app, result in test_results.items():

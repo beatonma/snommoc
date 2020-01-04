@@ -12,8 +12,10 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     mp = models.OneToOneField(
         'Person',
         on_delete=models.SET_NULL,
-        related_name='constituency',
-        null=True)
+        related_name='+',
+        null=True,
+        help_text='Current representative',
+    )
 
     ordinance_survey_name = models.CharField(max_length=64, null=True, blank=True)
     gss_code = models.CharField(
@@ -41,7 +43,7 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         verbose_name_plural = 'Constituencies'
 
 
-class ConstituencyResult(BaseModel):
+class ConstituencyResult(PeriodMixin, BaseModel):
     election = models.ForeignKey(
         'Election',
         on_delete=models.CASCADE,
@@ -57,6 +59,11 @@ class ConstituencyResult(BaseModel):
         on_delete=models.CASCADE,
     )
 
+    class Meta:
+        unique_together = [
+            ['election', 'constituency'],
+        ]
+
 
 class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(
@@ -64,3 +71,6 @@ class ConstituencyBoundary(BaseModel):
         on_delete=models.DO_NOTHING,
     )
     boundary = models.TextField(help_text='KML file content')
+
+    class Meta:
+        verbose_name_plural = 'Constituency Boundaries'

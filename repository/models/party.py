@@ -1,10 +1,14 @@
 from django.db import models
 from django.db.models import DO_NOTHING
 
-from repository.models.mixins import WikipediaMixin
+from repository.models.mixins import (
+    WikipediaMixin,
+    BaseModel,
+    PeriodMixin,
+)
 
 
-class Party(WikipediaMixin, models.Model):
+class Party(WikipediaMixin, BaseModel):
     name = models.CharField(max_length=32, unique=True)
     short_name = models.CharField(
         max_length=16,
@@ -42,7 +46,26 @@ class Party(WikipediaMixin, models.Model):
         return self.name
 
 
-class PartyTheme(models.Model):
+class PartyAssociation(PeriodMixin, BaseModel):
+    """Allow tracking of people that have moved between different parties."""
+    party = models.ForeignKey(
+        'Party',
+        on_delete=models.CASCADE,
+    )
+
+    person = models.ForeignKey(
+        'Person',
+        on_delete=models.CASCADE,
+        related_name='parties',
+    )
+
+    class Meta:
+        unique_together = [
+            ['start', 'person'],
+        ]
+
+
+class PartyTheme(BaseModel):
     TEXT_COLOR_OPTIONS = [
         ('light', 'light'),
         ('dark', 'dark'),

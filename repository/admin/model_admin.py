@@ -62,3 +62,7 @@ class PersonAdmin(DefaultAdmin):
     inlines = [
         InterestInline,
     ]
+
+    search_fields = [
+        'name',
+    ]

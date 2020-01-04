@@ -10,19 +10,21 @@
 <section>
     <h1>Dashboard</h1>
     <a class="button" href="{% url 'dashboard-mps' %}">{{ mp_count }} MPs</a>
+    <a class="button" href="{% url 'dashboard-lords' %}">{{ lord_count }} Lords</a>
     <a class="button" href="{% url 'dashboard-constituencies' %}">{{ constituency_count }} constituencies</a>
     <a class="button" href="{% url 'dashboard-parties' %}">{{ party_count }} parties</a>
 </section>
 
 <section>
     <h1>API</h1>
-    <a class="button" href="{% url 'mp-list' %}">MPs</a>
+    <a class="button" href="{% url 'person-list' %}">MPs</a>
     <a class="button" href="{% url 'constituency-list' %}">Constituencies</a>
     <a class="button" href="{% url 'party-list' %}">Parties</a>
 </section>
 
 <section>
     <h1>Actions</h1>
+    <span id="update_parties" class="action" >Update parties</span>
     <span id="update_constituencies" class="action" >Update constituencies</span>
     <span id="update_mps" class="action">Update MPs</span>
 </section>
@@ -67,8 +69,28 @@
             });
         }
 
+        function updateParties() {
+            const button = document.getElementById('update_parties');
+            const buttonText = button.innerText;
+            button.innerText = 'Busy...';
+            button.classList.add('busy');
+            button.removeEventListener('click', updateParties);
+            console.log('Updating parties...');
+            fetch('{% url "action-update-parties" %}', {
+                method: 'GET',
+                credentials: 'same-origin'
+            }).then((response) => {
+                button.classList.remove('busy');
+                button.innerText = buttonText;
+                console.log('Parties updated');
+                console.log(`${response.status}: ${response.text()}`);
+                button.addEventListener('click', updateParties);
+            });
+        }
+
         document.getElementById('update_constituencies').addEventListener('click', updateConstituencies);
         document.getElementById('update_mps').addEventListener('click', updateMps);
+        document.getElementById('update_parties').addEventListener('click', updateParties);
     })();
 </script>
 </html>

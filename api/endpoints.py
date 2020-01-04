@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 
 CONSTITUENCY = 'constituency'
 PARTY = 'party'
-MP = 'mp'
+MP = 'person'
 
 
 def endpoint_list(endpoint_name):

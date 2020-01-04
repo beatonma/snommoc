@@ -11,6 +11,7 @@
     <th>Long name</th>
     <th>Founded</th>
     <th>Homepage</th>
+    <th>Wikipedia</th>
 {% endblock %}
 
 {% block data_row %}
@@ -20,6 +21,7 @@
     <td>{{ party.short_name|default_if_none:'-' }}</td>
     <td>{{ party.long_name|default_if_none:'-' }}</td>
     <td class="numeric">{{ party.year_founded }}</td>
-    <td>{{ party.homepage|default_if_none:'-' }}</td>
+    <td>{% if party.homepage %}<a href="{{ party.homepage }}">{{ party.homepage }}</a>{% else %}-{% endif %}</td>
+    <td>{% if party.wikipedia %}<a href="https://en.wikipedia.org/wiki/{{ party.wikipedia }}">{{ party.wikipedia }}</a>{% else %}-{% endif %}</td>
     {% endwith %}
 {% endblock %}

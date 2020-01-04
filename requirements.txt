@@ -1,7 +1,7 @@
 beautifulsoup4==4.8.1
 celery==4.3.0
 colorama==0.4.1
-Django==2.2.6
+Django==2.2.8
 django-phonenumber-field==3.0.1
 django_nose==1.4.6
 djangorestframework==3.10.3

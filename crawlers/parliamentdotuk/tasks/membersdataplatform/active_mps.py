@@ -16,13 +16,22 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     ConstituencyResponseData,
     HouseMembershipResponseData,
     BasicInfoResponseData,
+    PartyResponseData,
+    SpeechResponseData,
+    CommitteeResponseData,
 )
 from repository.models import (
     ConstituencyResult,
     Constituency,
     Election,
     Country,
+    PartyAssociation,
+    Party,
+    MaidenSpeech,
+    Committee,
+    CommitteeMember,
 )
+from repository.models.committees import CommitteeChair
 from repository.models.geography import Town
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
@@ -47,21 +56,24 @@ def update_active_mps_details():
     for parliamentdotuk_id in active_mp_parliamentdotuk_ids:
         update_members(
             endpoints.member_biography(parliamentdotuk_id),
-            update_member_func=update_member_biography,
+            update_member_func=_update_member_biography,
             report_func=None,
             response_class=MemberBiographyResponseData,
         )
         time.sleep(1)
 
 
-def update_member_biography(data: MemberBiographyResponseData) -> Optional[str]:
+def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]:
     parliamentdotuk: int = data.get_parliament_id()
 
     person = Person.objects.get(parliamentdotuk=parliamentdotuk)
+    log.info(f'Updating detail for mp: {person}')
 
     _update_basic_details(person, data.get_basic_info())
     _update_house_membership(person, data.get_house_memberships())
     _update_historical_constituencies(person, data.get_constituencies())
+    _update_party_associations(person, data.get_parties())
+    _update_maiden_speeches(person, data.get_maiden_speeches())
 
 
 def _update_basic_details(person: Person, data: BasicInfoResponseData):
@@ -86,7 +98,7 @@ def _update_basic_details(person: Person, data: BasicInfoResponseData):
 def _update_house_membership(
         person: Person,
         memberships: List[HouseMembershipResponseData]
-):
+) -> None:
     for hm in memberships:
         house, _ = House.objects.get_or_create(name=hm.get_house())
         HouseMembership.objects.update_or_create(
@@ -102,7 +114,7 @@ def _update_house_membership(
 def _update_historical_constituencies(
         person: Person,
         historical_constituencies: List[ConstituencyResponseData]
-):
+) -> None:
     for c in historical_constituencies:
         constituency, _ = Constituency.objects.get_or_create(
             parliamentdotuk=c.get_constituency_id(),
@@ -126,3 +138,72 @@ def _update_historical_constituencies(
                 'mp': person,
             }
         )
+
+
+def _update_party_associations(
+        person: Person,
+        historical_parties: List[PartyResponseData]
+) -> None:
+    for p in historical_parties:
+        party, _ = Party.objects.get_or_create(name=p.get_party_name())
+        PartyAssociation.objects.update_or_create(
+            person=person,
+            party=party,
+            start=p.get_start_date(),
+            defaults={
+                'end': p.get_end_date(),
+            }
+        )
+
+
+def _update_committees(
+        person: Person,
+        committees: List[CommitteeResponseData]
+) -> None:
+    for c in committees:
+        committee, _ = Committee.objects.update_or_create(
+            parliamentdotuk=c.get_committee_id(),
+            defaults={
+                'name': c.get_committee_name()
+            },
+        )
+
+        committee_membership, _ = CommitteeMember.objects.update_or_create(
+            person=person,
+            committee=committee,
+            start=c.get_start_date(),
+            defaults={
+                'end':  c.get_end_date(),
+            }
+        )
+
+        for chair in c.get_chair():
+            CommitteeChair.objects.update_or_create(
+                member=committee_membership,
+                start=chair.get_start_date(),
+                defaults={
+                    'end': chair.get_end_date(),
+                }
+            )
+
+
+def _update_parliamentary_posts(person: Person, posts: List) -> None:
+    pass
+
+
+def _update_maiden_speeches(
+        person: Person,
+        maiden_speeches: List[SpeechResponseData]
+) -> None:
+    for speech in maiden_speeches:
+        house, _ = House.objects.get_or_create(name=speech.get_house())
+        MaidenSpeech.objects.update_or_create(
+            person=person,
+            house=house,
+            defaults={
+                'date': speech.get_date(),
+                'subject': speech.get_subject(),
+                'hansard': speech.get_hansard(),
+            }
+        )
+

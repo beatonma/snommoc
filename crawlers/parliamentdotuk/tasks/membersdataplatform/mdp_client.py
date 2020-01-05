@@ -135,10 +135,10 @@ class ResponseData:
     def __init__(self, json_data: dict):
         self.data = json_data
 
-    def get_value(self, key: str):
+    def _get_value(self, key: str):
         """Nested values may be accessed by inserting a dot between nested keys.
 
-        e.g. get_value('top.middle.bottom') -> top.get('middle').get('bottom')"""
+        e.g. _get_value('top.middle.bottom') -> top.get('middle').get('bottom')"""
         if '.' in key:
             return _get_nested_value(self.data, key)
 
@@ -150,19 +150,19 @@ class ResponseData:
         return result
 
     def _get_list(self, key: str) -> List:
-        return _coerce_to_list(self.get_value(key))
+        return _coerce_to_list(self._get_value(key))
 
     def _get_str(self, key: str) -> Optional[str]:
-        return _coerce_to_str(self.get_value(key))
+        return _coerce_to_str(self._get_value(key))
 
     def _get_int(self, key: str) -> Optional[int]:
-        return _coerce_to_int(self.get_value(key))
+        return _coerce_to_int(self._get_value(key))
 
     def _get_boolean(self, key: str) -> Optional[bool]:
-        return _coerce_to_boolean(self.get_value(key))
+        return _coerce_to_boolean(self._get_value(key))
 
     def _get_date(self, key: str) -> Optional[datetime.date]:
-        return _coerce_to_date(self.get_value(key))
+        return _coerce_to_date(self._get_value(key))
 
     def _get_response_list(self, key, response_class: Type):
         objects = self._get_list(key)
@@ -227,7 +227,7 @@ class BasicInfoResponseData(ResponseData):
 
 class ConstituencyResponseData(ResponseData):
     def _get_election_value(self, key: str):
-        return self.get_value(f'{constituencies_contract.ELECTION}.{key}')
+        return self._get_value(f'{constituencies_contract.ELECTION}.{key}')
 
     def get_constituency_id(self) -> Optional[int]:
         return self._get_int(constituencies_contract.PARLIAMENTDOTUK)
@@ -379,12 +379,12 @@ class InterestCategoryResponseData(ResponseData):
         return self._get_int(interests_contract.PARLIAMENTDOTUK)
 
     def get_category_name(self) -> Optional[str]:
-        return self._get_int(interests_contract.CATEGORY_NAME)
+        return self._get_str(interests_contract.CATEGORY_NAME)
 
     def get_interests(self) -> List[InterestResponseData]:
         return [
             InterestResponseData(interest) for interest in
-            _coerce_to_list(self.get_value(interests_contract.INTEREST_GROUP_KEY))
+            _coerce_to_list(self._get_value(interests_contract.INTEREST_GROUP_KEY))
         ]
 
 
@@ -415,7 +415,7 @@ class BiographyEntriesResponseData(ResponseData):
 
 class MemberBiographyResponseData(MemberResponseData):
     def get_basic_info(self) -> 'BasicInfoResponseData':
-        return BasicInfoResponseData(self.get_value(basic_contract.BASIC_DETAILS))
+        return BasicInfoResponseData(self._get_value(basic_contract.BASIC_DETAILS))
 
     def get_house_memberships(self) -> List['HouseMembershipResponseData']:
         return self._get_response_list(houses_contract.GROUP_KEY, HouseMembershipResponseData)
@@ -425,6 +425,9 @@ class MemberBiographyResponseData(MemberResponseData):
 
     def get_parties(self) -> List['PartyResponseData']:
         return self._get_response_list(party_contract.GROUP_KEY, PartyResponseData)
+
+    def get_committees(self) -> List['CommitteeResponseData']:
+        return self._get_response_list(committee_contract.GROUP_KEY, CommitteeResponseData)
 
     def get_maiden_speeches(self) -> List['SpeechResponseData']:
         return self._get_response_list(speech_contract.GROUP_KEY, SpeechResponseData)

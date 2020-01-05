@@ -5,41 +5,62 @@
 import logging
 import time
 from typing import (
-    Optional,
     List,
+    Optional,
+    Type,
 )
 
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
-    update_members,
-    MemberBiographyResponseData,
-    ConstituencyResponseData,
-    HouseMembershipResponseData,
+    AddressResponseData,
     BasicInfoResponseData,
-    PartyResponseData,
-    SpeechResponseData,
+    BiographyEntriesResponseData,
     CommitteeResponseData,
+    ConstituencyResponseData,
+    ExperiencesResponseData,
+    HouseMembershipResponseData,
+    InterestCategoryResponseData,
+    MemberBiographyResponseData,
+    PartyResponseData,
+    PostResponseData,
+    SpeechResponseData,
+    update_members,
 )
 from repository.models import (
-    ConstituencyResult,
-    Constituency,
-    Election,
-    Country,
-    PartyAssociation,
-    Party,
-    MaidenSpeech,
     Committee,
     CommitteeMember,
+    Constituency,
+    ConstituencyResult,
+    Country,
+    Election,
+    InterestCategory,
+    MaidenSpeech,
+    Party,
+    PartyAssociation,
+    Interest,
+)
+from repository.models.address import (
+    PhysicalAddress,
+    WebAddress,
 )
 from repository.models.committees import CommitteeChair
 from repository.models.geography import Town
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
     House,
-    HOUSE_OF_LORDS,
     HouseMembership,
 )
 from repository.models.person import Person
+from repository.models.posts import (
+    BasePost,
+    BasePostMember,
+    GovernmentPost,
+    GovernmentPostMember,
+    OppositionPost,
+    OppositionPostMember,
+    ParliamentaryPost,
+    ParliamentaryPostMember,
+)
 
 log = logging.getLogger(__name__)
 
@@ -74,6 +95,14 @@ def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]
     _update_historical_constituencies(person, data.get_constituencies())
     _update_party_associations(person, data.get_parties())
     _update_maiden_speeches(person, data.get_maiden_speeches())
+    _update_committees(person, data.get_committees())
+    _update_addresses(person, data.get_addresses())
+    _update_interests(person, data.get_interest_categories())
+    _update_experiences(person, data.get_experiences())
+    _update_biography_entries(person, data.get_biography_entries())
+    _update_government_posts(person, data.get_goverment_posts())
+    _update_parliamentary_posts(person, data.get_parliament_posts())
+    _update_opposition_posts(person, data.get_opposition_posts())
 
 
 def _update_basic_details(person: Person, data: BasicInfoResponseData):
@@ -173,7 +202,7 @@ def _update_committees(
             committee=committee,
             start=c.get_start_date(),
             defaults={
-                'end':  c.get_end_date(),
+                'end': c.get_end_date(),
             }
         )
 
@@ -187,8 +216,91 @@ def _update_committees(
             )
 
 
-def _update_parliamentary_posts(person: Person, posts: List) -> None:
-    pass
+def _update_posts(
+        person: Person,
+        posts: List[PostResponseData],
+        post_class: Type[BasePost],
+        membership_class: Type[BasePostMember]
+) -> None:
+    for p in posts:
+        post, _ = post_class.objects.update_or_create(
+            parliamentdotuk=p.get_post_id(),
+            defaults={
+                'name': p.get_post_name(),
+                'hansard_name': p.get_post_hansard_name(),
+            }
+        )
+
+        membership_class.objects.update_or_create(
+            person=person,
+            post=post,
+            start=p.get_start_date(),
+            defaults={
+                'end': p.get_end_date(),
+            }
+        )
+
+
+def _update_government_posts(
+        person: Person,
+        posts: List[PostResponseData]
+) -> None:
+    _update_posts(
+        person,
+        posts,
+        GovernmentPost,
+        GovernmentPostMember
+    )
+
+
+def _update_parliamentary_posts(
+        person: Person,
+        posts: List[PostResponseData]
+) -> None:
+    _update_posts(
+        person,
+        posts,
+        ParliamentaryPost,
+        ParliamentaryPostMember
+    )
+
+
+def _update_opposition_posts(
+        person: Person,
+        posts: List[PostResponseData]
+) -> None:
+    _update_posts(
+        person,
+        posts,
+        OppositionPost,
+        OppositionPostMember
+    )
+
+
+def _update_addresses(
+        person: Person,
+        addresses: List[AddressResponseData]
+) -> None:
+    for a in addresses:
+        if a.get_is_physical():
+            PhysicalAddress.objects.update_or_create(
+                person=person,
+                description=a.get_type(),
+                defaults={
+                    'address': a.get_address(),
+                    'postcode': a.get_postcode(),
+                    'phone': a.get_phone(),
+                    'fax': a.get_fax(),
+                }
+            )
+        else:
+            WebAddress.objects.update_or_create(
+                person=person,
+                description=a.get_type(),
+                defaults={
+                    'url': a.get_address(),
+                }
+            )
 
 
 def _update_maiden_speeches(
@@ -207,3 +319,45 @@ def _update_maiden_speeches(
             }
         )
 
+
+def _update_interests(
+        person: Person,
+        interest_categories: List[InterestCategoryResponseData]
+) -> None:
+    for c in interest_categories:
+        category, _ = InterestCategory.objects.update_or_create(
+            parliamentdotuk=c.get_category_id(),
+            defaults={
+                'name': c.get_category_name(),
+            })
+
+        interests = c.get_interests()
+        for interest in interests:
+            Interest.objects.update_or_create(
+                person=person,
+                parliamentdotuk=interest.get_interest_id(),
+                defaults={
+                    'category': category,
+                    'description': interest.get_title(),
+                    'created': interest.get_date_created(),
+                    'amended': interest.get_date_amended(),
+                    'deleted': interest.get_date_deleted(),
+                    'registered_late': interest.get_registered_late(),
+                }
+            )
+
+
+def _update_biography_entries(
+        person: Person,
+        interests: List[BiographyEntriesResponseData]
+) -> None:
+    # TODO Implement!
+    pass
+
+
+def _update_experiences(
+        person: Person,
+        interests: List[ExperiencesResponseData]
+) -> None:
+    # TODO Implement!
+    pass

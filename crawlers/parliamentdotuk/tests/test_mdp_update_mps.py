@@ -56,15 +56,15 @@ class ResponseDataTest(LocalTestCase):
     def test_nested_get_value(self):
         responsedata = ResponseData(EXAMPLE_JSON_SINGLE_MP)
 
-        self.assertEquals(responsedata.get_value('@Member_Id'), '172')
-        self.assertEquals(responsedata.get_value('Party.#text'), 'Labour')
-        self.assertEquals(responsedata.get_value('CurrentStatus.StartDate'), "2019-12-12T00:00:00")
-        self.assertIsNone(responsedata.get_value('DateOfDeath'))
-        self.assertIsNone(responsedata.get_value('CurrentStatus.Reason'))
-        self.assertIsNone(responsedata.get_value('Some nonsense'))
-        self.assertIsNone(responsedata.get_value('.'))
-        self.assertIsNone(responsedata.get_value('.....'))
-        self.assertIsNone(responsedata.get_value(''))
+        self.assertEquals(responsedata._get_value('@Member_Id'), '172')
+        self.assertEquals(responsedata._get_value('Party.#text'), 'Labour')
+        self.assertEquals(responsedata._get_value('CurrentStatus.StartDate'), "2019-12-12T00:00:00")
+        self.assertIsNone(responsedata._get_value('DateOfDeath'))
+        self.assertIsNone(responsedata._get_value('CurrentStatus.Reason'))
+        self.assertIsNone(responsedata._get_value('Some nonsense'))
+        self.assertIsNone(responsedata._get_value('.'))
+        self.assertIsNone(responsedata._get_value('.....'))
+        self.assertIsNone(responsedata._get_value(''))
 
 
 class MdpUpdateMpsTest(LocalTestCase):

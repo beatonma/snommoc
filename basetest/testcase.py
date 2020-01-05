@@ -1,6 +1,5 @@
 import logging
 from unittest import (
-    skipIf,
     skipUnless,
 )
 
@@ -26,6 +25,9 @@ class BaseTestCase(TestCase):
 
     def assertEqualIgnoreCase(self, first: str, second: str, msg=None):
         self.assertEqual(first.lower(), second.lower(), msg=msg)
+
+    def assertLengthEquals(self, collection, expected_length: int, msg=None):
+        self.assertEqual(len(collection), expected_length, msg)
 
 
 class LocalTestCase(BaseTestCase):

@@ -3,6 +3,9 @@
 """
 import datetime
 import logging
+from unittest import mock
+
+import requests
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.membersdataplatform import active_mps
@@ -10,6 +13,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     HouseMembershipResponseData,
     ConstituencyResponseData,
     BasicInfoResponseData,
+    CommitteeResponseData,
 )
 from repository.models import (
     House,
@@ -18,7 +22,15 @@ from repository.models import (
     ConstituencyResult,
     Constituency,
     Country,
+    MaidenSpeech,
+    Committee,
+    Election,
 )
+from repository.models.committees import (
+    CommitteeChair,
+    CommitteeMember,
+)
+from repository.models.election import ContestedElection
 from repository.models.geography import Town
 from repository.models.houses import (
     HOUSE_OF_LORDS,
@@ -33,13 +45,37 @@ SAMPLE_BIOGRAPHY_RESPONSE = {"Members":{"Member":{"@Member_Id":"965","@Dods_Id":
 SAMPLE_BASIC_INFO = {"GivenSurname": "Abbott", "GivenMiddleNames": "Julie", "GivenForename": "Diane ", "TownOfBirth": "London", "CountryOfBirth": "England", "Gender": "F", "DateOfBirth": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "DateOfRetirement": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "DateOfDeath": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "LordsDetails": None}
 SAMPLE_HISTORICAL_CONSTITUENCIES = [{"@Id": "2800", "Name": "Stockton South", "StartDate": "1983-06-09T00:00:00", "EndDate": "1987-06-11T00:00:00", "Election": {"@Id": "12", "Name": "1983 General Election", "Date": "1983-06-09T00:00:00", "Type": "General Election"}, "EndReason": "Defeated", "EntryType": "Continuation", "Notes": "", "SwearInOrder": "0", "SwornInForename": None, "SwornInMiddleNames": None, "SwornInSurname": None, "SwornInTitle": None}, {"@Id": "2920", "Name": "Thornaby", "StartDate": "1979-05-03T00:00:00", "EndDate": "1983-06-09T00:00:00", "Election": {"@Id": "11", "Name": "1979 General Election", "Date": "1979-05-03T00:00:00", "Type": "General Election"}, "EndReason": "General Election", "EntryType": "Continuation", "Notes": None, "SwearInOrder": "0", "SwornInForename": None, "SwornInMiddleNames": None, "SwornInSurname": None, "SwornInTitle": None}, {"@Id": "2920", "Name": "Thornaby", "StartDate": "1974-10-10T00:00:00", "EndDate": "1979-05-03T00:00:00", "Election": {"@Id": "10", "Name": "1974 (Oct) General Election", "Date": "1974-10-10T00:00:00", "Type": "General Election"}, "EndReason": "General Election", "EntryType": "Continuation", "Notes": None, "SwearInOrder": "0", "SwornInForename": None, "SwornInMiddleNames": None, "SwornInSurname": None, "SwornInTitle": None}, {"@Id": "2920", "Name": "Thornaby", "StartDate": "1974-02-28T00:00:00", "EndDate": "1974-10-10T00:00:00", "Election": {"@Id": "9", "Name": "1974 (Feb) General Election", "Date": "1974-02-28T00:00:00", "Type": "General Election"}, "EndReason": "General Election", "EntryType": "First entry", "Notes": None, "SwearInOrder": "0", "SwornInForename": None, "SwornInMiddleNames": None, "SwornInSurname": None, "SwornInTitle": None}]
 SAMPLE_HOUSE_MEMBERSHIP = [{"House": "Lords", "StartDate": "2013-09-05T00:00:00", "EndDate": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "EndReason": None, "EndNotes": None}, {"House": "Commons", "StartDate": "1974-02-28T00:00:00", "EndDate": "1987-06-11T00:00:00", "EndReason": None, "EndNotes": None}]
+SAMPLE_MAIDEN_SPEECHES = [{"House": "Lords", "SpeechDate": "2013-10-24T00:00:00", "Hansard": None, "Subject": None}, {"House": "Commons", "SpeechDate": "1974-03-25T00:00:00", "Hansard": "871 c77-9", "Subject": None}]
+SAMPLE_COMMITTEES = [{"@Id": "156", "Name": "Urban Affairs Sub-Committee", "StartDate": "2001-07-16T00:00:00", "EndDate": "2002-07-22T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "155", "Name": "Transport, Local Government & The Regions", "StartDate": "2001-07-16T00:00:00", "EndDate": "2002-07-22T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "61", "Name": "Transport Sub-committee", "StartDate": "2000-12-19T00:00:00", "EndDate": "2001-06-01T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "145", "Name": "Standards and Privileges ", "StartDate": "2010-07-26T00:00:00", "EndDate": "2013-01-07T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "126", "Name": "Procedure Committee", "StartDate": "1997-07-31T00:00:00", "EndDate": "2001-05-11T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "121", "Name": "Office of the Deputy Prime Minister: Housing, Planning, Local Government and the Regions Committee", "StartDate": "2002-07-22T00:00:00", "EndDate": "2005-07-11T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "121", "Name": "Office of the Deputy Prime Minister: Housing, Planning, Local Government and the Regions Committee", "StartDate": "2005-07-12T00:00:00", "EndDate": "2006-06-27T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "107", "Name": "Members Estimate", "StartDate": "2015-07-09T00:00:00", "EndDate": "2017-05-03T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "True", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "398", "Name": "Liaison Committee Sub-committee on the effectiveness and influence of the select committee system", "StartDate": "2019-02-13T00:00:00", "EndDate": "2019-11-06T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "True", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "103", "Name": "Liaison Committee (Commons)", "StartDate": "2015-09-10T00:00:00", "EndDate": "2017-05-03T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "True", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "103", "Name": "Liaison Committee (Commons)", "StartDate": "2017-11-06T00:00:00", "EndDate": "2019-11-06T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "True", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "17", "Name": "Housing, Communities and Local Government Committee", "StartDate": "2006-06-27T00:00:00", "EndDate": "2010-05-06T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "348", "Name": "House of Commons Commission", "StartDate": "2015-07-09T00:00:00", "EndDate": "2019-11-06T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "True", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "77", "Name": "Finance and Services Committee", "StartDate": "2010-07-26T00:00:00", "EndDate": "2015-03-30T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "59", "Name": "Environment, Transport & Regional Affairs", "StartDate": "2000-12-13T00:00:00", "EndDate": "2001-06-01T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "60", "Name": "Environment Sub-committee", "StartDate": "2000-12-13T00:00:00", "EndDate": "2001-06-01T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "42", "Name": "Education", "StartDate": "1992-04-27T00:00:00", "EndDate": "1994-10-27T00:00:00", "EndNote": None, "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "290", "Name": "Committee on Standards", "StartDate": "2013-01-07T00:00:00", "EndDate": "2015-03-30T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "290", "Name": "Committee on Standards", "StartDate": "2015-09-09T00:00:00", "EndDate": "2017-05-03T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "289", "Name": "Committee on Privileges", "StartDate": "2013-01-07T00:00:00", "EndDate": "2015-03-30T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "289", "Name": "Committee on Privileges", "StartDate": "2015-10-28T00:00:00", "EndDate": "2017-05-03T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": None}, {"@Id": "2", "Name": "Administration Committee", "StartDate": "2015-07-20T00:00:00", "EndDate": "2017-05-03T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": {"ChairDate": {"StartDate": "2015-07-21T00:00:00", "EndDate": "2017-05-03T00:00:00"}}}, {"@Id": "2", "Name": "Administration Committee", "StartDate": "2017-10-30T00:00:00", "EndDate": "2019-11-06T00:00:00", "EndNote": "Dissolution of Parliament", "IsExOfficio": "False", "IsAlternate": "False", "IsCoOpted": "False", "ChairDates": {"ChairDate": {"StartDate": "2017-11-06T00:00:00", "EndDate": "2019-11-06T00:00:00"}}}]
+SAMPLE_GOVERNMENT_POSTS = []
+SAMPLE_OPPOSITION_POSTS = []
+SAMPLE_PARLIAMENTARY_POSTS = []
+SAMPLE_INTERESTS = []
+SAMPLE_ADDRESSES = []
+SAMPLE_BIOGRAPHY_ENTRIES = []
+SAMPLE_EXPERIENCES = [{"@Type_Id": "3", "Type": "Political", "Organisation": "Liberal Democrats", "Title": "National Treasurer", "StartDate": {"Day": None, "Month": None, "Year": "2012"}, "EndDate": {"Day": None, "Month": None, "Year": "2015"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Regional Growth Fund Advisory Board", "Title": "Deputy Chairman", "StartDate": {"Day": None, "Month": None, "Year": "2012"}, "EndDate": {"Day": None, "Month": None, "Year": "2015"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "Port of Tyne", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "2005"}, "EndDate": {"Day": None, "Month": None, "Year": "2012"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Baltic Centre for Contemporary Art", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "2005"}, "EndDate": {"Day": None, "Month": None, "Year": "2009"}}, {"@Type_Id": "3", "Type": "Political", "Organisation": None, "Title": "Liberal Democrats Trustees", "StartDate": {"Day": None, "Month": None, "Year": "2002"}, "EndDate": {"Day": None, "Month": None, "Year": "2012"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Tyne Tees Television", "Title": "Director", "StartDate": {"Day": None, "Month": None, "Year": "2002"}, "EndDate": {"Day": None, "Month": None, "Year": "2005"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Newcastle Gateshead Initiative", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1999"}, "EndDate": {"Day": None, "Month": None, "Year": "2004"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "Prima Europe and GPC", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1996"}, "EndDate": {"Day": None, "Month": None, "Year": "2000"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "UK Land Estates", "Title": "Founding Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1995"}, "EndDate": {"Day": None, "Month": None, "Year": "2009"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Teeside University Board of Governors", "Title": "Member & Deputy Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1993"}, "EndDate": {"Day": None, "Month": None, "Year": "2002"}}, {"@Type_Id": "3", "Type": "Political", "Organisation": "Liberal Democrats", "Title": "President", "StartDate": {"Day": None, "Month": None, "Year": "1988"}, "EndDate": {"Day": None, "Month": None, "Year": "1990"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "John Lilvingston and Sons and Fairfield Industries", "Title": "Deputy Chairman and Director", "StartDate": {"Day": None, "Month": None, "Year": "1988"}, "EndDate": {"Day": None, "Month": None, "Year": "1995"}}]
+SAMPLE_ELECTIONS_CONTESTED = [{"Election": {"@Id": "15", "Name": "1997 General Election", "Date": "1997-05-01T00:00:00", "Type": "General Election"}, "Constituency": "Clwyd South"}]
+
+
+def get_mock_biography_response(*args, **kwargs):
+    class MockJsonResponse:
+        def __init__(self, url, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+            print(f'MOCK RESPONSE: {url}')
+
+        def json(self):
+            return self.json_data
+
+    return MockJsonResponse(args[0], SAMPLE_BIOGRAPHY_RESPONSE, 200)
 
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
     def setUp(self) -> None:
         commons, _ = House.objects.update_or_create(name=HOUSE_OF_COMMONS)
+        House.objects.update_or_create(name=HOUSE_OF_LORDS)
         self.person = Person.objects.create(
-            parliamentdotuk=values.EXAMPLE_PUK_ID,
+            parliamentdotuk=965,  # ID for Lord Wrigglesworth, used in SAMPLE_BIOGRAPHY_RESPONSE
             name=values.EXAMPLE_NAME,
             active=True,
             house=commons,
@@ -77,7 +113,6 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             constituency__name='Thornaby'
         )), 3)
 
-
     def test__update_basic_info(self):
         basic_info = BasicInfoResponseData(SAMPLE_BASIC_INFO)
         active_mps._update_basic_details(self.person, basic_info)
@@ -88,11 +123,59 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         self.assertEqualIgnoreCase(self.person.town_of_birth.name, 'London')
         self.assertEqualIgnoreCase(self.person.country_of_birth.name, 'England')
 
-    def test__update_member_biography(self):
+    def test__update_maiden_speeches(self):
         raise NotImplementedError()
 
-    def test_update_active_mps_details(self):
+    def test__update_committees(self):
+        committees = [CommitteeResponseData(c) for c in SAMPLE_COMMITTEES]
+        active_mps._update_committees(self.person, committees)
+
+        self.assertEquals(len(Committee.objects.all()), 18)
+        self.assertEquals(
+            len(CommitteeMember.objects.filter(person=self.person)),
+            23
+        )
+        self.assertEquals(
+            len(CommitteeChair.objects.filter(member__person=self.person)),
+            2
+        )
+
+    def test__update_party_associations(self):
         raise NotImplementedError()
+
+    @mock.patch.object(
+        requests, 'get',
+        mock.Mock(side_effect=get_mock_biography_response),
+    )
+    def test_update_active_mps_details(self):
+        puk = 965
+
+        active_mps.update_active_mps_details()
+
+        person = Person.objects.get(parliamentdotuk=puk)
+
+        self.assertEqualIgnoreCase(person.given_name, 'Ian')
+        self.assertEqualIgnoreCase(person.family_name, 'Wrigglesworth')
+        self.assertIsNone(person.town_of_birth)
+        self.assertIsNone(person.country_of_birth)
+
+        memberships = HouseMembership.objects.filter(person__parliamentdotuk=puk)
+        self.assertEquals(len(memberships), 2)
+
+        constituencies = ConstituencyResult.objects.filter(mp__parliamentdotuk=puk)
+        self.assertEquals(len(constituencies), 4)
 
     def tearDown(self) -> None:
-        self.delete_instances_of(Person, House, HouseMembership, Town, Country)
+        self.delete_instances_of(
+            Person,
+            House,
+            HouseMembership,
+            Town,
+            Country,
+            MaidenSpeech,
+            Committee,
+            CommitteeChair,
+            CommitteeMember,
+            Election,
+            ContestedElection,
+        )

@@ -1,47 +1,24 @@
-from typing import List
-
 from django.db import models
 
-from repository.models.person import Person
+from repository.models.mixins import (
+    BaseModel,
+    PersonMixin,
+    ParliamentDotUkMixin,
+)
 
-INTEREST_CATEGORY_GENERIC = 'political'
-INTEREST_CATEGORY_COUNTRY = 'country'
+
+class InterestCategory(ParliamentDotUkMixin, BaseModel):
+    name = models.CharField(max_length=64)
 
 
-class Interest(models.Model):
-    person = models.ForeignKey(
-        Person,
-        on_delete=models.CASCADE,
-        related_name='interests',
-        related_query_name='interest'
+class Interest(ParliamentDotUkMixin, PersonMixin, BaseModel):
+    category = models.ForeignKey(
+        'InterestCategory',
+        on_delete=models.CASCADE
     )
+    description = models.CharField(max_length=160)
 
-    description = models.CharField(max_length=48)
-    category = models.CharField(
-        max_length=16,
-        choices=[
-            (INTEREST_CATEGORY_GENERIC, INTEREST_CATEGORY_GENERIC),
-            (INTEREST_CATEGORY_COUNTRY, INTEREST_CATEGORY_COUNTRY),
-        ],
-        default=INTEREST_CATEGORY_GENERIC,
-    )
-
-    @classmethod
-    def create(cls, person, interests: List[str]):
-        for description in interests:
-            Interest.objects.create(
-                person=person,
-                description=description
-            ).save()
-
-    @classmethod
-    def create_countries(cls, person, countries: List[str]):
-        for country in countries:
-            Interest.objects.create(
-                person=person,
-                description=country,
-                category=INTEREST_CATEGORY_COUNTRY,
-            ).save()
-
-    def __str__(self):
-        return f'{self.description}'
+    created = models.DateField(blank=True, null=True)
+    amended = models.DateField(blank=True, null=True)
+    deleted = models.DateField(blank=True, null=True)
+    registered_late = models.BooleanField()

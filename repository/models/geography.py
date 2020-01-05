@@ -26,7 +26,7 @@ class Town(BaseModel):
 
 
 class Country(BaseModel):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
     class Meta:
         verbose_name_plural = 'Countries'

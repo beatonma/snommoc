@@ -10,5 +10,10 @@ import logging
 
 log = logging.getLogger(__name__)
 
+PARTIES = 'Parties'
 PARTY = 'Party'
-PARTY_NAME = '#text'
+GROUP_KEY = f'{PARTIES}.{PARTY}'
+
+PARTY_NAME = 'Name'
+START_DATE = 'StartDate'
+END_DATE = 'EndDate'

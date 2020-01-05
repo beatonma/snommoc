@@ -1,5 +1,5 @@
 """
 Points of interest in the API:
-- Election Results http://explore.data.parliament.uk/?learnmore=Election%20Results
-- Elections: http://lda.data.parliament.uk/elections.json
+- Election Results https://explore.data.parliament.uk/?learnmore=Election%20Results
+- Elections: https://lda.data.parliament.uk/elections.json
 """

@@ -16,8 +16,21 @@ log = logging.getLogger(__name__)
 
 class MaidenSpeech(PersonMixin, BaseModel):
     date = models.DateField()
-    subject = models.CharField(max_length=32)
-    hansard = models.CharField(max_length=16, help_text='Hansard ID')
+    house = models.ForeignKey(
+        'House',
+        on_delete=models.CASCADE,
+    )
+    subject = models.CharField(
+        max_length=32,
+        blank=True,
+        null=True,
+    )
+    hansard = models.CharField(
+        max_length=16,
+        blank=True,
+        null=True,
+        help_text='Hansard ID',
+    )
 
     class Meta:
         verbose_name_plural = 'Maiden Speeches'

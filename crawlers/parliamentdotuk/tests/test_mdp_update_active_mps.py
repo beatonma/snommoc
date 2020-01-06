@@ -16,6 +16,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     CommitteeResponseData,
     InterestCategoryResponseData,
     PostResponseData,
+    AddressResponseData,
 )
 from repository.models import (
     House,
@@ -33,6 +34,8 @@ from repository.models import (
     OppositionPostMember,
     ParliamentaryPost,
     ParliamentaryPostMember,
+    PhysicalAddress,
+    WebAddress,
 )
 from repository.models.committees import (
     CommitteeChair,
@@ -64,7 +67,7 @@ SAMPLE_GOVERNMENT_POSTS = []
 SAMPLE_OPPOSITION_POSTS = [{"@Id": "1171", "Name": "Shadow Home Secretary", "HansardName": "Shadow Home Secretary", "StartDate": "2016-10-06T00:00:00", "EndDate": None, "Note": None, "EndNote": "Dissolution of Parliament", "IsJoint": "False", "IsUnpaid": "False", "Email": None}, {"@Id": "863", "Name": "Shadow Secretary of State for Health", "HansardName": "Shadow Secretary of State for Health", "StartDate": "2016-06-27T00:00:00", "EndDate": "2016-10-06T00:00:00", "Note": None, "EndNote": None, "IsJoint": "False", "IsUnpaid": "False", "Email": None}, {"@Id": "870", "Name": "Shadow Secretary of State for International Development", "HansardName": "Shadow Secretary of State for International Development", "StartDate": "2015-09-14T00:00:00", "EndDate": "2016-06-27T00:00:00", "Note": None, "EndNote": None, "IsJoint": "False", "IsUnpaid": "False", "Email": None}, {"@Id": "1003", "Name": "Shadow Minister (Public Health)", "HansardName": "Shadow Minister (Public Health)", "StartDate": "2010-10-08T00:00:00", "EndDate": "2013-10-07T00:00:00", "Note": None, "EndNote": None, "IsJoint": "False", "IsUnpaid": "False", "Email": None}]
 SAMPLE_PARLIAMENTARY_POSTS = [{"@Id": "803", "Name": "Member, Labour Party National Executive Committee", "HansardName": None, "StartDate": "1994-01-01T00:00:00", "EndDate": "1997-01-01T00:00:00", "Note": None, "EndNote": None, "IsJoint": "False", "IsUnpaid": "False", "Email": None, "LayingMinisterName": None}]
 SAMPLE_INTERESTS = [{"@Id": "1", "@Name": "Category 1: Directorships", "Interest": [{"@Id": "12485", "@ParentId": "", "@LastAmendment": "2013-12-02T16:54:20", "@LastAmendmentType": "C", "RegisteredInterest": "Director, Durham Group Estates Ltd", "RegisteredLate": "False", "Created": "2013-12-02T16:54:20", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}, {"@Id": "12486", "@ParentId": "", "@LastAmendment": "2013-12-02T16:54:36", "@LastAmendmentType": "C", "RegisteredInterest": "Director, Durham Group Investments Ltd", "RegisteredLate": "False", "Created": "2013-12-02T16:54:36", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}, {"@Id": "12487", "@ParentId": "", "@LastAmendment": "2013-12-02T16:55:00", "@LastAmendmentType": "C", "RegisteredInterest": "Director, Rudchester Estates Ltd (non-trading)", "RegisteredLate": "False", "Created": "2013-12-02T16:55:00", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}, {"@Id": "12488", "@ParentId": "", "@LastAmendment": "2013-12-02T16:55:33", "@LastAmendmentType": "C", "RegisteredInterest": "Director, Northern Corporate Finance Ltd (non-trading)", "RegisteredLate": "False", "Created": "2013-12-02T16:55:33", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}]}, {"@Id": "4", "@Name": "Category 4: Shareholdings (a)", "Interest": [{"@Id": "12489", "@ParentId": "", "@LastAmendment": "2013-12-02T16:56:24", "@LastAmendmentType": "C", "RegisteredInterest": "Durham Group Estates Ltd (commercial property company)", "RegisteredLate": "False", "Created": "2013-12-02T16:56:24", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}, {"@Id": "12490", "@ParentId": "", "@LastAmendment": "2013-12-02T16:56:49", "@LastAmendmentType": "C", "RegisteredInterest": "Durham Group Investments Ltd (commercial property company)", "RegisteredLate": "False", "Created": "2013-12-02T16:56:49", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}, {"@Id": "12491", "@ParentId": "", "@LastAmendment": "2013-12-02T16:57:08", "@LastAmendmentType": "C", "RegisteredInterest": "Rudchester Estates Ltd (non-trading)", "RegisteredLate": "False", "Created": "2013-12-02T16:57:08", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}, {"@Id": "12492", "@ParentId": "", "@LastAmendment": "2013-12-02T16:57:27", "@LastAmendmentType": "C", "RegisteredInterest": "Northern Corporate Finance Ltd (non-trading)", "RegisteredLate": "False", "Created": "2013-12-02T16:57:27", "Amended": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}, "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}]}, {"@Id": "12", "@Name": "Category 4: Shareholdings (b)", "Interest": {"@Id": "24419", "@ParentId": "", "@LastAmendment": "2018-06-21T16:02:35", "@LastAmendmentType": "U", "RegisteredInterest": "Machine Delta (a division of Caspian Learning Ltd providing intelligent quality assurance using artificial intelligence)", "RegisteredLate": "False", "Created": "2015-12-31T21:08:44", "Amended": "2018-06-21T16:02:35", "Deleted": {"@xsi:nil": "true", "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"}}}]
-SAMPLE_ADDRESSES = []
+SAMPLE_ADDRESSES = [{"@Type_Id": "6", "Type": "Website", "IsPreferred": "False", "IsPhysical": "False", "Note": None, "Address1": "http://www.molevalleyconservatives.org.uk/"}, {"@Type_Id": "4", "Type": "Constituency", "IsPreferred": "False", "IsPhysical": "True", "Note": None, "Address1": "Mole Valley Conservative Association", "Address2": "212 Barnett Wood Lane", "Address3": "Ashtead", "Address4": None, "Address5": None, "Postcode": "KT21 2DB", "Phone": "01306 883312", "Fax": None, "Email": "office@molevalleyconservatives.org.uk", "OtherAddress": None}, {"@Type_Id": "1", "Type": "Parliamentary", "IsPreferred": "False", "IsPhysical": "True", "Note": None, "Address1": "House of Commons", "Address2": None, "Address3": None, "Address4": None, "Address5": "London", "Postcode": "SW1A 0AA", "Phone": "020 7219 5018", "Fax": None, "Email": "annie.winsbury@parliament.uk", "OtherAddress": None}]
 SAMPLE_BIOGRAPHY_ENTRIES = []
 SAMPLE_EXPERIENCES = [{"@Type_Id": "3", "Type": "Political", "Organisation": "Liberal Democrats", "Title": "National Treasurer", "StartDate": {"Day": None, "Month": None, "Year": "2012"}, "EndDate": {"Day": None, "Month": None, "Year": "2015"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Regional Growth Fund Advisory Board", "Title": "Deputy Chairman", "StartDate": {"Day": None, "Month": None, "Year": "2012"}, "EndDate": {"Day": None, "Month": None, "Year": "2015"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "Port of Tyne", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "2005"}, "EndDate": {"Day": None, "Month": None, "Year": "2012"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Baltic Centre for Contemporary Art", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "2005"}, "EndDate": {"Day": None, "Month": None, "Year": "2009"}}, {"@Type_Id": "3", "Type": "Political", "Organisation": None, "Title": "Liberal Democrats Trustees", "StartDate": {"Day": None, "Month": None, "Year": "2002"}, "EndDate": {"Day": None, "Month": None, "Year": "2012"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Tyne Tees Television", "Title": "Director", "StartDate": {"Day": None, "Month": None, "Year": "2002"}, "EndDate": {"Day": None, "Month": None, "Year": "2005"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Newcastle Gateshead Initiative", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1999"}, "EndDate": {"Day": None, "Month": None, "Year": "2004"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "Prima Europe and GPC", "Title": "Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1996"}, "EndDate": {"Day": None, "Month": None, "Year": "2000"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "UK Land Estates", "Title": "Founding Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1995"}, "EndDate": {"Day": None, "Month": None, "Year": "2009"}}, {"@Type_Id": "2", "Type": "Public life", "Organisation": "Teeside University Board of Governors", "Title": "Member & Deputy Chairman", "StartDate": {"Day": None, "Month": None, "Year": "1993"}, "EndDate": {"Day": None, "Month": None, "Year": "2002"}}, {"@Type_Id": "3", "Type": "Political", "Organisation": "Liberal Democrats", "Title": "President", "StartDate": {"Day": None, "Month": None, "Year": "1988"}, "EndDate": {"Day": None, "Month": None, "Year": "1990"}}, {"@Type_Id": "1", "Type": "Non political", "Organisation": "John Lilvingston and Sons and Fairfield Industries", "Title": "Deputy Chairman and Director", "StartDate": {"Day": None, "Month": None, "Year": "1988"}, "EndDate": {"Day": None, "Month": None, "Year": "1995"}}]
 SAMPLE_ELECTIONS_CONTESTED = [{"Election": {"@Id": "15", "Name": "1997 General Election", "Date": "1997-05-01T00:00:00", "Type": "General Election"}, "Constituency": "Clwyd South"}]
@@ -211,6 +214,35 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         self.assertEqual(member.start, datetime.date(year=1994, month=1, day=1))
         self.assertEqual(member.end, datetime.date(year=1997, month=1, day=1))
 
+    def test__update_addresses(self):
+        addresses = [AddressResponseData(a) for a in SAMPLE_ADDRESSES]
+        active_mps._update_addresses(self.person, addresses)
+
+        self.assertLengthEquals(PhysicalAddress.objects.all(), 2)
+        self.assertLengthEquals(WebAddress.objects.all(), 1)
+
+        parliamentary_address = PhysicalAddress.objects.get(postcode='SW1A 0AA')
+        self.assertEqual(
+            parliamentary_address.address,
+            'House of Commons, London'
+        )
+        self.assertEqual(parliamentary_address.description, 'Parliamentary')
+        self.assertEqual(parliamentary_address.phone.as_national, '020 7219 5018')
+        self.assertIsNone(parliamentary_address.fax)
+        self.assertEqual(parliamentary_address.email, 'annie.winsbury@parliament.uk')
+
+        constituency_address = PhysicalAddress.objects.get(postcode='KT21 2DB')
+        self.assertEqual(constituency_address.description, 'Constituency')
+        self.assertEqual(
+            constituency_address.address,
+            'Mole Valley Conservative Association, 212 Barnett Wood Lane, Ashtead'
+        )
+        self.assertEqual(constituency_address.email, 'office@molevalleyconservatives.org.uk')
+        self.assertEqual(constituency_address.phone.as_national, '01306 883312')
+
+        website = WebAddress.objects.get(description='Website')
+        self.assertEqual(website.url, "http://www.molevalleyconservatives.org.uk/")
+
     def test__update_maiden_speeches(self):
         # TODO
         raise NotImplementedError()
@@ -228,10 +260,6 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         raise NotImplementedError()
 
     def test__update_experiences(self):
-        # TODO
-        raise NotImplementedError()
-
-    def test__update_addresses(self):
         # TODO
         raise NotImplementedError()
 

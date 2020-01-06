@@ -8,18 +8,117 @@ To enable a module for testing:
 Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
 import importlib
+import re
 import sys
-from typing import Dict
+from typing import (
+    Dict,
+)
+from unittest import TextTestResult
 
 import colorama
 import django
 from django.apps import apps
 from django.conf import settings
-from django.test.utils import get_runner
-
 # Not used here but needs to be initiated before nose runs (heh)
+from django_nose import BasicNoseRunner
+
 from basetest.args import RUNTESTS_CLARGS
 from basetest.test_settings_default import *
+
+TEST_METHOD_REGEX = re.compile(r'(test_[^\s]+)')
+ASSERTION_REGEX = re.compile(r'.*(line [\d]+).*AssertionError: (.*?)\n', re.DOTALL)
+
+
+def _highlight_foreground(text, color):
+    return f'{color}{text}{colorama.Fore.RESET}'
+
+
+def _highlight_good(text):
+    return _highlight_foreground(text, colorama.Fore.LIGHTGREEN_EX)
+
+
+def _highlight_bad(text):
+    return _highlight_foreground(text, colorama.Fore.BLUE)
+
+
+def _highlight_warning(text):
+    return _highlight_foreground(text, colorama.Fore.CYAN)
+
+
+class VerboseResult:
+
+    def __init__(self, result: TextTestResult):
+        self.tests_run = result.testsRun
+        self.not_implemented = [x for x in result.errors if 'NotImplementedError' in x.__str__()]
+        self.errors = [x for x in result.errors if x not in self.not_implemented]
+        self.failures = [VerboseFailure(x) for x in result.failures]
+        self.successful = self.tests_run - len(result.errors) - len(result.failures)
+
+    def passed(self) -> bool:
+        return len(self.not_implemented) + len(self.errors) == 0
+
+    def report(self, app_name) -> str:
+        def report_success(indent=2):
+            if not self.successful:
+                return ''
+            return f'{" " * indent}{_highlight_good(str(self.successful)).rjust(2)} passed\n'
+
+        def report_errors(indent=2):
+            if not self.errors:
+                return ''
+            return f'{" " * indent}{_highlight_bad(str(len(self.errors)).rjust(2))} errors\n'
+
+        def report_not_implemented(indent=2):
+            if not self.not_implemented:
+                return ''
+            return f'{" " * indent}{_highlight_warning(str(len(self.not_implemented)).rjust(2))} not implemented\n'
+
+        def report_failures(indent=2):
+            if not self.failures:
+                return ''
+            return f'{" " * indent}{_highlight_bad(str(len(self.failures)).rjust(2))} failures:\n' + \
+                   '\n'.join([f'{" " * indent * 3}{x.report()}' for x in self.failures])
+
+        if self.passed():
+            return f'  {_highlight_good("OK")}  [{_highlight_good(self.successful)}] {app_name}'
+        else:
+            return (
+                '\n'
+                f'! {_highlight_bad(app_name)}:\n'
+                f'{report_success(indent=2)}'
+                f'{report_not_implemented(indent=2)}'
+                f'{report_errors(indent=2)}'
+                f'{report_failures(indent=2)}'
+            )
+
+
+class VerboseFailure:
+    def __init__(self, failure):
+        _testcase, _message = failure
+        self.test_method_name = re.match(
+            TEST_METHOD_REGEX,
+            _testcase.__str__()
+        ).group(1)
+        assertion_matches = re.match(
+            ASSERTION_REGEX,
+            _message
+        )
+        self.line = assertion_matches.group(1)
+        self.failed_assertion = assertion_matches.group(2)
+
+    def report(self) -> str:
+        return f'{self.test_method_name} [{self.line}]: {self.failed_assertion}'
+
+
+class VerboseTestRunner(BasicNoseRunner):
+
+    def suite_result(self, suite, result, **kwargs):
+        # Overrides BasicNoseRunner.suite_result
+        return self.verbose_suite_result(suite, result, **kwargs)
+
+    def verbose_suite_result(self, suite, result: TextTestResult, **kwargs):
+        return VerboseResult(result)
+
 
 TEST_APPS = [
     'api',
@@ -64,7 +163,7 @@ def run_app_tests(app_name):
     print(f'INSTALLED_APPS: {settings.INSTALLED_APPS}')
     apps.set_installed_apps(settings.INSTALLED_APPS)
 
-    test_runner = get_runner(settings)()
+    test_runner = VerboseTestRunner()
     test_results = test_runner.run_tests([f'{app_name}.tests'])
 
     _reset_settings(state)
@@ -77,21 +176,20 @@ def _reset_settings(state: Dict):
         setattr(settings, key, value)
 
 
-def _print_results(test_results):
+def _print_results(test_results: Dict[str, VerboseResult], tests_passed: int, tests_run: int):
     print()
     print(f'Django version: {django.get_version()}')
     print('Results:')
     colorama.init()
-    for app, result in test_results.items():
-        if result == 0:
-            background_color = colorama.Back.RESET
-            result_text = f'{colorama.Fore.GREEN}OK{colorama.Fore.RESET}'
-        else:
-            background_color = colorama.Back.RED
-            result_text = f'{colorama.Style.BRIGHT}{colorama.Fore.WHITE}{result} '
-        print(f'{colorama.Style.BRIGHT} {background_color} '
-              f'{result_text.rjust(4)} {app} {colorama.Back.RESET} ')
+    ordered_apps = sorted(test_results.keys(), key=lambda x: not test_results[x].passed())
+    for app in ordered_apps:
+        result = test_results.get(app)
+        print(result.report(app_name=app))
     print()
+    if tests_passed == tests_run:
+        print(_highlight_good(f'All {tests_run} tests passed'))
+    else:
+        print(_highlight_warning(f'{tests_passed}/{tests_run} tests passed'))
 
 
 def _main():
@@ -100,13 +198,17 @@ def _main():
     django.setup()
 
     all_passed = True
-    results = {}
+    tests_run = 0
+    tests_passed = 0
+    app_results = {}
     for module in TEST_APPS:
-        failures = run_app_tests(module)
-        results[module] = failures
-        all_passed = all_passed and not bool(failures)
+        results = run_app_tests(module)
+        app_results[module] = results
+        all_passed = all_passed and results.passed()
+        tests_run += results.tests_run
+        tests_passed += results.successful
 
-    _print_results(results)
+    _print_results(app_results, tests_passed=tests_passed, tests_run=tests_run)
 
     if not RUNTESTS_CLARGS.network:
         print(f'\n{colorama.Fore.CYAN}'

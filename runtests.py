@@ -26,6 +26,7 @@ from basetest.args import RUNTESTS_CLARGS
 from basetest.test_settings_default import *
 
 TEST_METHOD_REGEX = re.compile(r'(test_[^\s]+)')
+ERROR_REGEX = re.compile(r'.*\n([^\n]+)', re.DOTALL)
 ASSERTION_REGEX = re.compile(r'.*(line [\d]+).*AssertionError: (.*?)\n', re.DOTALL)
 
 
@@ -45,12 +46,23 @@ def _highlight_warning(text):
     return _highlight_foreground(text, colorama.Fore.CYAN)
 
 
+def _get_test_method_name(test):
+    try:
+        return re.match(
+            TEST_METHOD_REGEX,
+            test.__str__()
+        ).group(1)
+    except Exception:
+        return 'runTest'
+
+
 class VerboseResult:
 
     def __init__(self, result: TextTestResult):
         self.tests_run = result.testsRun
-        self.not_implemented = [x for x in result.errors if 'NotImplementedError' in x.__str__()]
-        self.errors = [x for x in result.errors if x not in self.not_implemented]
+        not_implemented_errors = [x for x in result.errors if 'NotImplementedError' in x.__str__()]
+        self.not_implemented = [_get_test_method_name(x[0]) for x in not_implemented_errors]
+        self.errors = [VerboseError(x) for x in result.errors if x not in not_implemented_errors]
         self.failures = [VerboseFailure(x) for x in result.failures]
         self.successful = self.tests_run - len(result.errors) - len(result.failures)
 
@@ -66,12 +78,16 @@ class VerboseResult:
         def report_errors(indent=2):
             if not self.errors:
                 return ''
-            return f'{" " * indent}{_highlight_bad(str(len(self.errors)).rjust(2))} errors\n'
+            return f'{" " * indent}{_highlight_bad(str(len(self.errors)).rjust(2))} errors:\n' + \
+                   '\n'.join([f'{" " * indent * 3}{x.report()}' for x in self.errors]) + \
+                   '\n'
 
         def report_not_implemented(indent=2):
             if not self.not_implemented:
                 return ''
-            return f'{" " * indent}{_highlight_warning(str(len(self.not_implemented)).rjust(2))} not implemented\n'
+            return f'{" " * indent}{_highlight_warning(str(len(self.not_implemented)).rjust(2))} not implemented:\n' + \
+                   '\n'.join([f'{" " * indent * 3}{x}' for x in self.not_implemented]) + \
+                   '\n'
 
         def report_failures(indent=2):
             if not self.failures:
@@ -92,13 +108,21 @@ class VerboseResult:
             )
 
 
+class VerboseError:
+    def __init__(self, error):
+        _testcase, _message = error
+        self.test_method_name = _get_test_method_name(_testcase)
+        print('REGEX:', re.match(ERROR_REGEX, _message).groups())
+        self.exception = re.match(ERROR_REGEX, _message).group(1)
+
+    def report(self) -> str:
+        return f'{self.test_method_name}: {self.exception}'
+
+
 class VerboseFailure:
     def __init__(self, failure):
         _testcase, _message = failure
-        self.test_method_name = re.match(
-            TEST_METHOD_REGEX,
-            _testcase.__str__()
-        ).group(1)
+        self.test_method_name = _get_test_method_name(_testcase)
         assertion_matches = re.match(
             ASSERTION_REGEX,
             _message

@@ -374,7 +374,7 @@ class InterestResponseData(ResponseData):
         return self._get_date(interests_contract.INTEREST_DELETED)
 
 
-class InterestCategoryResponseData(ResponseData):
+class DeclaredInterestCategoryResponseData(ResponseData):
     def get_category_id(self) -> Optional[int]:
         return self._get_int(interests_contract.PARLIAMENTDOTUK)
 
@@ -405,7 +405,7 @@ class ExperiencesResponseData(ResponseData):
         return self._get_date(experience_contract.END_DATE)
 
 
-class BiographyEntriesResponseData(ResponseData):
+class SubjectsOfInterestResponseData(ResponseData):
     def get_category(self) -> Optional[str]:
         return self._get_str(bio_entries_contract.CATEGORY)
 
@@ -444,11 +444,11 @@ class MemberBiographyResponseData(MemberResponseData):
     def get_addresses(self) -> List['AddressResponseData']:
         return self._get_response_list(address_contract.GROUP_KEY, AddressResponseData)
 
-    def get_biography_entries(self) -> List['BiographyEntriesResponseData']:
-        return self._get_response_list(bio_entries_contract.GROUP_KEY, BiographyEntriesResponseData)
+    def get_subjects_of_interest(self) -> List['SubjectsOfInterestResponseData']:
+        return self._get_response_list(bio_entries_contract.GROUP_KEY, SubjectsOfInterestResponseData)
 
-    def get_interest_categories(self) -> List['InterestCategoryResponseData']:
-        return self._get_response_list(interests_contract.CATEGORY_GROUP_KEY, InterestCategoryResponseData)
+    def get_declared_interest_categories(self) -> List['DeclaredInterestCategoryResponseData']:
+        return self._get_response_list(interests_contract.CATEGORY_GROUP_KEY, DeclaredInterestCategoryResponseData)
 
     def get_experiences(self) -> List['ExperiencesResponseData']:
         return self._get_response_list(experience_contract.GROUP_KEY, ExperiencesResponseData)

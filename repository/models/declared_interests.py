@@ -7,13 +7,15 @@ from repository.models.mixins import (
 )
 
 
-class InterestCategory(ParliamentDotUkMixin, BaseModel):
+class DeclaredInterestCategory(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(max_length=64)
 
 
-class Interest(ParliamentDotUkMixin, PersonMixin, BaseModel):
+class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
+    """Declared investments/involvements/relationships that a person has with
+    organisations that could potentially influence their work in Parliament."""
     category = models.ForeignKey(
-        'InterestCategory',
+        'DeclaredInterestCategory',
         on_delete=models.CASCADE
     )
     description = models.CharField(max_length=160)

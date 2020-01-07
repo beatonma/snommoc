@@ -11,6 +11,10 @@ from .constituency import (
     ConstituencyBoundary,
     ConstituencyResult,
 )
+from .declared_interests import (
+    DeclaredInterest,
+    DeclaredInterestCategory,
+)
 from .election import (
     Election,
     ElectionNationalResult,
@@ -19,10 +23,6 @@ from .geography import Country
 from .houses import (
     House,
     HouseMembership,
-)
-from .interests import (
-    Interest,
-    InterestCategory,
 )
 from .maiden_speech import MaidenSpeech
 from .party import (
@@ -37,4 +37,8 @@ from .posts import (
     OppositionPostMember,
     ParliamentaryPost,
     ParliamentaryPostMember,
+)
+from .subjects_of_interest import (
+    SubjectOfInterest,
+    SubjectOfInterestCategory,
 )

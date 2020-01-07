@@ -10,21 +10,24 @@ from typing import (
     Type,
 )
 
+from phonenumber_field.phonenumber import PhoneNumber
+from phonenumbers import NumberParseException
+
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     AddressResponseData,
     BasicInfoResponseData,
-    BiographyEntriesResponseData,
+    SubjectsOfInterestResponseData,
     CommitteeResponseData,
     ConstituencyResponseData,
     ExperiencesResponseData,
     HouseMembershipResponseData,
-    InterestCategoryResponseData,
     MemberBiographyResponseData,
     PartyResponseData,
     PostResponseData,
     SpeechResponseData,
     update_members,
+    DeclaredInterestCategoryResponseData,
 )
 from repository.models import (
     Committee,
@@ -33,15 +36,16 @@ from repository.models import (
     ConstituencyResult,
     Country,
     Election,
-    InterestCategory,
     MaidenSpeech,
     Party,
     PartyAssociation,
-    Interest,
+    DeclaredInterestCategory,
+    DeclaredInterest,
 )
 from repository.models.address import (
     PhysicalAddress,
     WebAddress,
+    PHONE_NUMBER_REGION,
 )
 from repository.models.committees import CommitteeChair
 from repository.models.geography import Town
@@ -97,9 +101,9 @@ def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]
     _update_maiden_speeches(person, data.get_maiden_speeches())
     _update_committees(person, data.get_committees())
     _update_addresses(person, data.get_addresses())
-    _update_interests(person, data.get_interest_categories())
+    _update_declared_interests(person, data.get_declared_interest_categories())
     _update_experiences(person, data.get_experiences())
-    _update_biography_entries(person, data.get_biography_entries())
+    _update_subjects_of_interest(person, data.get_subjects_of_interest())
     _update_government_posts(person, data.get_goverment_posts())
     _update_parliamentary_posts(person, data.get_parliament_posts())
     _update_opposition_posts(person, data.get_opposition_posts())
@@ -281,16 +285,24 @@ def _update_addresses(
         person: Person,
         addresses: List[AddressResponseData]
 ) -> None:
+    def _str_to_phonenumber(number: str):
+        try:
+            return PhoneNumber.from_string(number, region=PHONE_NUMBER_REGION)
+        except NumberParseException:
+            return None
+
     for a in addresses:
         if a.get_is_physical():
+
             PhysicalAddress.objects.update_or_create(
                 person=person,
                 description=a.get_type(),
                 defaults={
                     'address': a.get_address(),
                     'postcode': a.get_postcode(),
-                    'phone': a.get_phone(),
-                    'fax': a.get_fax(),
+                    'phone': _str_to_phonenumber(a.get_phone()),
+                    'fax': _str_to_phonenumber(a.get_fax()),
+                    'email': a.get_email(),
                 }
             )
         else:
@@ -320,12 +332,12 @@ def _update_maiden_speeches(
         )
 
 
-def _update_interests(
+def _update_declared_interests(
         person: Person,
-        interest_categories: List[InterestCategoryResponseData]
+        interest_categories: List[DeclaredInterestCategoryResponseData]
 ) -> None:
     for c in interest_categories:
-        category, _ = InterestCategory.objects.update_or_create(
+        category, _ = DeclaredInterestCategory.objects.update_or_create(
             parliamentdotuk=c.get_category_id(),
             defaults={
                 'name': c.get_category_name(),
@@ -333,7 +345,7 @@ def _update_interests(
 
         interests = c.get_interests()
         for interest in interests:
-            Interest.objects.update_or_create(
+            DeclaredInterest.objects.update_or_create(
                 person=person,
                 parliamentdotuk=interest.get_interest_id(),
                 defaults={
@@ -347,11 +359,12 @@ def _update_interests(
             )
 
 
-def _update_biography_entries(
+def _update_subjects_of_interest(
         person: Person,
-        interests: List[BiographyEntriesResponseData]
+        subjects_of_interest: List[SubjectsOfInterestResponseData]
 ) -> None:
-    # TODO Implement!
+    for interest in subjects_of_interest:
+        pass
     pass
 
 

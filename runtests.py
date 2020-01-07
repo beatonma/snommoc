@@ -112,7 +112,6 @@ class VerboseError:
     def __init__(self, error):
         _testcase, _message = error
         self.test_method_name = _get_test_method_name(_testcase)
-        print('REGEX:', re.match(ERROR_REGEX, _message).groups())
         self.exception = re.match(ERROR_REGEX, _message).group(1)
 
     def report(self) -> str:

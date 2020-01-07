@@ -17,17 +17,17 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     AddressResponseData,
     BasicInfoResponseData,
-    SubjectsOfInterestResponseData,
     CommitteeResponseData,
     ConstituencyResponseData,
+    DeclaredInterestCategoryResponseData,
     ExperiencesResponseData,
     HouseMembershipResponseData,
     MemberBiographyResponseData,
     PartyResponseData,
     PostResponseData,
     SpeechResponseData,
+    SubjectsOfInterestResponseData,
     update_members,
-    DeclaredInterestCategoryResponseData,
 )
 from repository.models import (
     Committee,
@@ -35,17 +35,19 @@ from repository.models import (
     Constituency,
     ConstituencyResult,
     Country,
+    DeclaredInterest,
+    DeclaredInterestCategory,
     Election,
     MaidenSpeech,
     Party,
     PartyAssociation,
-    DeclaredInterestCategory,
-    DeclaredInterest,
+    SubjectOfInterest,
+    SubjectOfInterestCategory,
 )
 from repository.models.address import (
+    PHONE_NUMBER_REGION,
     PhysicalAddress,
     WebAddress,
-    PHONE_NUMBER_REGION,
 )
 from repository.models.committees import CommitteeChair
 from repository.models.geography import Town
@@ -364,8 +366,15 @@ def _update_subjects_of_interest(
         subjects_of_interest: List[SubjectsOfInterestResponseData]
 ) -> None:
     for interest in subjects_of_interest:
-        pass
-    pass
+        category, _ = SubjectOfInterestCategory.objects.update_or_create(
+            title=interest.get_category())
+        SubjectOfInterest.objects.update_or_create(
+            person=person,
+            category=category,
+            defaults={
+                'subject': interest.get_entry(),
+            }
+        )
 
 
 def _update_experiences(

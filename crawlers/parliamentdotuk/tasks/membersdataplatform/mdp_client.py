@@ -19,19 +19,21 @@ from django.conf import settings
 
 from notifications.models import TaskNotification
 from .contract import (
+    addresses as address_contract,
     basic_details as basic_contract,
+    biography_entries as bio_entries_contract,
+    committees as committee_contract,
     constituencies as constituencies_contract,
+    election as election_contract,
+    elections_contested as contested_contract,
+    experience as experience_contract,
     houses as houses_contract,
+    interests as interests_contract,
     maiden_speeches as speech_contract,
     member as member_contract,
     party as party_contract,
-    status as status_contract,
-    committees as committee_contract,
     posts as posts_contract,
-    addresses as address_contract,
-    biography_entries as bio_entries_contract,
-    interests as interests_contract,
-    experience as experience_contract,
+    status as status_contract,
 )
 
 log = logging.getLogger(__name__)
@@ -45,7 +47,7 @@ Get MP status: http://data.parliament.uk/membersdataplatform/services/mnis/membe
 def get(url: str):
     """Get the url using our standard headers and fix response encoding."""
     response = requests.get(url, headers=settings.HTTP_REQUEST_HEADERS)
-    response.encoding = 'utf-8-sig'
+    response.encoding = "utf-8-sig"
     return response
 
 
@@ -79,9 +81,9 @@ def _coerce_to_boolean(value) -> Optional[bool]:
         return None
 
     if isinstance(value, str):
-        if value.lower() == 'true':
+        if value.lower() == "true":
             return True
-        elif value.lower() == 'false':
+        elif value.lower() == "false":
             return False
 
     return bool(value)
@@ -95,14 +97,14 @@ def _coerce_to_date(value) -> Optional[datetime.date]:
 
     if isinstance(value, dict):
         try:
-            # Default to xmas day - we will use this to assume the day.month
+            # Default to xmas day - we will use this to assume the day/month
             # values are missing.
             return datetime.date(
-                year=_coerce_to_int(value.get('Year')),
-                month=_coerce_to_int(value.get('Month', 12)),
-                day=_coerce_to_int(value.get('Day', 25))
+                year=_coerce_to_int(value.get("Year")),
+                month=_coerce_to_int(value.get("Month"), default=12),
+                day=_coerce_to_int(value.get("Day"), default=25),
             )
-        except ValueError:
+        except (TypeError, ValueError):
             pass
 
     return None
@@ -113,16 +115,16 @@ def _is_xml_null(obj: dict) -> bool:
 
     Return True iff the given object is an instance of xml-wrapped null.
     """
-    return isinstance(obj, dict) and obj.get('@xsi:nil', '').lower() == 'true'
+    return isinstance(obj, dict) and obj.get("@xsi:nil", "").lower() == "true"
 
 
 def _get_nested_value(obj: dict, key: str):
-    parts = key.split('.')
+    parts = key.split(".")
     parent = obj
     while len(parts) > 1:
         parent = parent.get(parts.pop(0))
         if parent is None or not isinstance(parent, dict):
-            log.warning(f'Nested key \'{key}\' not accessible in this object')
+            log.warning(f"Nested key '{key}' not accessible in this object")
             return None
 
     result = parent.get(parts.pop())
@@ -139,7 +141,7 @@ class ResponseData:
         """Nested values may be accessed by inserting a dot between nested keys.
 
         e.g. _get_value('top.middle.bottom') -> top.get('middle').get('bottom')"""
-        if '.' in key:
+        if "." in key:
             return _get_nested_value(self.data, key)
 
         result = self.data.get(key)
@@ -168,9 +170,11 @@ class ResponseData:
         objects = self._get_list(key)
         return [response_class(o) for o in objects]
 
+    def __str__(self):
+        return f'{self.data}'
+
 
 class MemberResponseData(ResponseData):
-
     def get_parliament_id(self) -> int:
         return self._get_int(member_contract.MEMBER_ID)
 
@@ -202,10 +206,12 @@ class MemberResponseData(ResponseData):
         return self._get_date(member_contract.DATE_HOUSE_LEFT)
 
     def get_party(self) -> Optional[str]:
-        return self._get_str(f'{member_contract.PARTY}.{member_contract.PARTY_NAME}')
+        return self._get_str(f"{member_contract.PARTY}.{member_contract.PARTY_NAME}")
 
     def get_is_active(self) -> bool:
-        return self._get_boolean(f'{status_contract.CURRENT_STATUS}.{status_contract.IS_ACTIVE}')
+        return self._get_boolean(
+            f"{status_contract.CURRENT_STATUS}.{status_contract.IS_ACTIVE}"
+        )
 
 
 class BasicInfoResponseData(ResponseData):
@@ -226,9 +232,6 @@ class BasicInfoResponseData(ResponseData):
 
 
 class ConstituencyResponseData(ResponseData):
-    def _get_election_value(self, key: str):
-        return self._get_value(f'{constituencies_contract.ELECTION}.{key}')
-
     def get_constituency_id(self) -> Optional[int]:
         return self._get_int(constituencies_contract.PARLIAMENTDOTUK)
 
@@ -241,14 +244,22 @@ class ConstituencyResponseData(ResponseData):
     def get_end_date(self) -> datetime.date:
         return self._get_date(constituencies_contract.END_DATE)
 
+    def get_election(self) -> Optional["ElectionResponseData"]:
+        return ElectionResponseData(self._get_value(election_contract.ELECTION))
+
+
+class ElectionResponseData(ResponseData):
     def get_election_id(self) -> Optional[int]:
-        return _coerce_to_int(self._get_election_value(constituencies_contract.PARLIAMENTDOTUK))
+        return self._get_int(election_contract.PARLIAMENTDOTUK)
 
     def get_election_name(self) -> str:
-        return _coerce_to_str(self._get_election_value(constituencies_contract.NAME))
+        return self._get_str(election_contract.NAME)
 
     def get_election_date(self) -> datetime.date:
-        return _coerce_to_date(self._get_election_value(constituencies_contract.ELECTION_DATE))
+        return self._get_date(election_contract.DATE)
+
+    def get_election_type(self) -> Optional[str]:
+        return self._get_str(election_contract.TYPE)
 
 
 class PartyResponseData(ResponseData):
@@ -300,8 +311,10 @@ class CommitteeResponseData(ResponseData):
     def get_end_date(self) -> Optional[datetime.date]:
         return self._get_date(committee_contract.END_DATE)
 
-    def get_chair(self) -> List['CommitteeChairResponseData']:
-        return self._get_response_list(committee_contract.CHAIR_GROUP_KEY, CommitteeChairResponseData)
+    def get_chair(self) -> List["CommitteeChairResponseData"]:
+        return self._get_response_list(
+            committee_contract.CHAIR_GROUP_KEY, CommitteeChairResponseData
+        )
 
 
 class CommitteeChairResponseData(ResponseData):
@@ -328,6 +341,9 @@ class PostResponseData(ResponseData):
     def get_end_date(self) -> Optional[datetime.date]:
         return self._get_date(posts_contract.END_DATE)
 
+    def __str__(self):
+        return f'{self.data}'
+
 
 class AddressResponseData(ResponseData):
     def get_type(self) -> Optional[str]:
@@ -338,7 +354,7 @@ class AddressResponseData(ResponseData):
 
     def get_address(self) -> Optional[str]:
         address_lines = [self._get_str(key) for key in address_contract.ADDRESS_LINES]
-        address = ', '.join([x for x in address_lines if x])
+        address = ", ".join([x for x in address_lines if x])
         return address
 
     def get_postcode(self) -> Optional[str]:
@@ -383,8 +399,10 @@ class DeclaredInterestCategoryResponseData(ResponseData):
 
     def get_interests(self) -> List[InterestResponseData]:
         return [
-            InterestResponseData(interest) for interest in
-            _coerce_to_list(self._get_value(interests_contract.INTEREST_GROUP_KEY))
+            InterestResponseData(interest)
+            for interest in _coerce_to_list(
+                self._get_value(interests_contract.INTEREST_GROUP_KEY)
+            )
         ]
 
 
@@ -413,73 +431,106 @@ class SubjectsOfInterestResponseData(ResponseData):
         return self._get_str(bio_entries_contract.ENTRY)
 
 
+class ContestedElectionResponseData(ResponseData):
+    def get_election(self) -> Optional[ElectionResponseData]:
+        return ElectionResponseData(self._get_value(contested_contract.ELECTION))
+
+    def get_constituency_name(self) -> Optional[str]:
+        return self._get_str(contested_contract.CONSTITUENCY)
+
+
 class MemberBiographyResponseData(MemberResponseData):
-    def get_basic_info(self) -> 'BasicInfoResponseData':
+    def get_basic_info(self) -> "BasicInfoResponseData":
         return BasicInfoResponseData(self._get_value(basic_contract.BASIC_DETAILS))
 
-    def get_house_memberships(self) -> List['HouseMembershipResponseData']:
-        return self._get_response_list(houses_contract.GROUP_KEY, HouseMembershipResponseData)
+    def get_house_memberships(self) -> List["HouseMembershipResponseData"]:
+        return self._get_response_list(
+            houses_contract.GROUP_KEY, HouseMembershipResponseData
+        )
 
-    def get_constituencies(self) -> List['ConstituencyResponseData']:
-        return self._get_response_list(constituencies_contract.GROUP_KEY, ConstituencyResponseData)
+    def get_constituencies(self) -> List["ConstituencyResponseData"]:
+        return self._get_response_list(
+            constituencies_contract.GROUP_KEY, ConstituencyResponseData
+        )
 
-    def get_parties(self) -> List['PartyResponseData']:
+    def get_parties(self) -> List["PartyResponseData"]:
         return self._get_response_list(party_contract.GROUP_KEY, PartyResponseData)
 
-    def get_committees(self) -> List['CommitteeResponseData']:
-        return self._get_response_list(committee_contract.GROUP_KEY, CommitteeResponseData)
+    def get_committees(self) -> List["CommitteeResponseData"]:
+        return self._get_response_list(
+            committee_contract.GROUP_KEY, CommitteeResponseData
+        )
 
-    def get_maiden_speeches(self) -> List['SpeechResponseData']:
+    def get_maiden_speeches(self) -> List["SpeechResponseData"]:
         return self._get_response_list(speech_contract.GROUP_KEY, SpeechResponseData)
 
-    def get_goverment_posts(self) -> List['PostResponseData']:
-        return self._get_response_list(posts_contract.GOVERNMENT_GROUP_KEY, PostResponseData)
+    def get_goverment_posts(self) -> List["PostResponseData"]:
+        return self._get_response_list(
+            posts_contract.GOVERNMENT_GROUP_KEY, PostResponseData
+        )
 
-    def get_parliament_posts(self) -> List['PostResponseData']:
-        return self._get_response_list(posts_contract.PARLIAMENTARY_GROUP_KEY, PostResponseData)
+    def get_parliament_posts(self) -> List["PostResponseData"]:
+        return self._get_response_list(
+            posts_contract.PARLIAMENTARY_GROUP_KEY, PostResponseData
+        )
 
-    def get_opposition_posts(self) -> List['PostResponseData']:
-        return self._get_response_list(posts_contract.OPPOSITION_GROUP_KEY, PostResponseData)
+    def get_opposition_posts(self) -> List["PostResponseData"]:
+        return self._get_response_list(
+            posts_contract.OPPOSITION_GROUP_KEY, PostResponseData
+        )
 
-    def get_addresses(self) -> List['AddressResponseData']:
+    def get_addresses(self) -> List["AddressResponseData"]:
         return self._get_response_list(address_contract.GROUP_KEY, AddressResponseData)
 
-    def get_subjects_of_interest(self) -> List['SubjectsOfInterestResponseData']:
-        return self._get_response_list(bio_entries_contract.GROUP_KEY, SubjectsOfInterestResponseData)
+    def get_subjects_of_interest(self) -> List["SubjectsOfInterestResponseData"]:
+        return self._get_response_list(
+            bio_entries_contract.GROUP_KEY, SubjectsOfInterestResponseData
+        )
 
-    def get_declared_interest_categories(self) -> List['DeclaredInterestCategoryResponseData']:
-        return self._get_response_list(interests_contract.CATEGORY_GROUP_KEY, DeclaredInterestCategoryResponseData)
+    def get_declared_interest_categories(
+        self,
+    ) -> List["DeclaredInterestCategoryResponseData"]:
+        return self._get_response_list(
+            interests_contract.CATEGORY_GROUP_KEY, DeclaredInterestCategoryResponseData
+        )
 
-    def get_experiences(self) -> List['ExperiencesResponseData']:
-        return self._get_response_list(experience_contract.GROUP_KEY, ExperiencesResponseData)
+    def get_experiences(self) -> List["ExperiencesResponseData"]:
+        return self._get_response_list(
+            experience_contract.GROUP_KEY, ExperiencesResponseData
+        )
+
+    def get_contested_elections(self) -> List["ContestedElectionResponseData"]:
+        return self._get_response_list(
+            contested_contract.GROUP_KEY, ContestedElectionResponseData
+        )
 
 
 def update_members(
-        endpoint_url: str,
-        update_member_func: Callable[[Type[ResponseData]], Optional[str]],
-        report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
-        response_class=MemberResponseData,
+    endpoint_url: str,
+    update_member_func: Callable[[Type[ResponseData]], Optional[str]],
+    report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
+    response_class=MemberResponseData,
 ) -> None:
     update_id = uuid.uuid4().hex[:6]
     new_members: List[str] = []
     TaskNotification.objects.create(
-        title=f'Task started [id={update_id}]',
-        content=f'An update cycle has started for endpoint {endpoint_url}'
+        title=f"Task started [id={update_id}]",
+        content=f"An update cycle has started for endpoint {endpoint_url}",
     ).save()
 
     response = get(endpoint_url)
     try:
         data = response.json()
-        members = data.get('Members').get('Member')
+        members = data.get("Members").get("Member")
 
         if not isinstance(members, list):
             members = [members]
 
     except AttributeError as e:
-        log.warning(f'Could not read item list: {e}')
+        log.warning(f"Could not read item list: {e}")
         TaskNotification.objects.create(
-            title=f'Task failed [id={update_id}]',
-            content=f'Update failed for endpoint {endpoint_url}: {e}'
+            title=f"Task failed [id={update_id}]",
+            content=f"Update failed for endpoint {endpoint_url}: {e}",
         ).save()
         return
 
@@ -491,6 +542,5 @@ def update_members(
     if report_func:
         title, content = report_func(new_members)
         TaskNotification.objects.create(
-            title=f'[id={update_id} finished] {title}',
-            content=content
+            title=f"[id={update_id} finished] {title}", content=content
         ).save()

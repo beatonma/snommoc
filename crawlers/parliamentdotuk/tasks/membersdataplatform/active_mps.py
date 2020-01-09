@@ -8,6 +8,7 @@ from typing import (
     List,
     Optional,
     Type,
+    Tuple,
 )
 
 from phonenumber_field.phonenumber import PhoneNumber
@@ -28,6 +29,8 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     SpeechResponseData,
     SubjectsOfInterestResponseData,
     update_members,
+    ContestedElectionResponseData,
+    ElectionResponseData,
 )
 from repository.models import (
     Committee,
@@ -43,6 +46,8 @@ from repository.models import (
     PartyAssociation,
     SubjectOfInterest,
     SubjectOfInterestCategory,
+    ExperienceCategory,
+    Experience,
 )
 from repository.models.address import (
     PHONE_NUMBER_REGION,
@@ -50,6 +55,10 @@ from repository.models.address import (
     WebAddress,
 )
 from repository.models.committees import CommitteeChair
+from repository.models.election import (
+    ElectionType,
+    ContestedElection,
+)
 from repository.models.geography import Town
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
@@ -109,6 +118,21 @@ def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]
     _update_government_posts(person, data.get_goverment_posts())
     _update_parliamentary_posts(person, data.get_parliament_posts())
     _update_opposition_posts(person, data.get_opposition_posts())
+    _update_elections_contested(person, data.get_contested_elections())
+
+
+def _update_or_create_election(data: Optional[ElectionResponseData]) -> Tuple[Election, bool]:
+    """Convenience function as elections can be created via multiple routes
+    including _update_historical_constituencies and _update_elections_contested."""
+    election_type, _ = ElectionType.objects.update_or_create(name=data.get_election_type())
+    election, created = Election.objects.update_or_create(
+        parliamentdotuk=data.get_election_id(),
+        defaults={
+            'name': data.get_election_name(),
+            'election_type': election_type,
+            'date': data.get_election_date(),
+        })
+    return election, created
 
 
 def _update_basic_details(person: Person, data: BasicInfoResponseData):
@@ -157,12 +181,8 @@ def _update_historical_constituencies(
                 'name': c.get_constituency_name()
             }
         )
-        election, _ = Election.objects.update_or_create(
-            parliamentdotuk=c.get_election_id(),
-            defaults={
-                'name': c.get_election_name(),
-                'date': c.get_election_date(),
-            })
+
+        election, _ = _update_or_create_election(c.get_election())
 
         result, _ = ConstituencyResult.objects.update_or_create(
             constituency=constituency,
@@ -379,7 +399,36 @@ def _update_subjects_of_interest(
 
 def _update_experiences(
         person: Person,
-        interests: List[ExperiencesResponseData]
+        experiences: List[ExperiencesResponseData]
 ) -> None:
-    # TODO Implement!
-    pass
+    for exp in experiences:
+        category, _ = ExperienceCategory.objects.update_or_create(name=exp.get_type())
+        Experience.objects.update_or_create(
+            person=person,
+            organisation=exp.get_organisation(),
+            title=exp.get_title(),
+            defaults={
+                'category': category,
+                'title': exp.get_title(),
+                'start': exp.get_start_date(),
+                'end': exp.get_end_date(),
+            }
+        )
+
+
+def _update_elections_contested(
+        person: Person,
+        contested: List[ContestedElectionResponseData]
+) -> None:
+    for c in contested:
+        election, _ = _update_or_create_election(c.get_election())
+        constituency, _ = Constituency.objects.get_or_create(name=c.get_constituency_name())
+
+        contested, _ = ContestedElection.objects.update_or_create(
+            person=person,
+            election=election,
+            defaults={
+                'constituency': constituency,
+            }
+        )
+

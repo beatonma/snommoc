@@ -15,12 +15,22 @@ from repository.models.mixins import (
 log = logging.getLogger(__name__)
 
 
+class ElectionType(BaseModel):
+    name = models.CharField(max_length=32)
+
+
 class Election(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(
         max_length=32,
         unique=True,
     )
     date = models.DateField()
+    election_type = models.ForeignKey(
+        'ElectionType',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
 
 
 class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):

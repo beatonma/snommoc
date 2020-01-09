@@ -2,13 +2,11 @@ from typing import List
 
 from django.apps import apps
 from django.contrib import admin
-from django.contrib.admin import TabularInline
 from django.db import models
 
 from repository.models import (
     Constituency,
 )
-from repository.models.interests import Interest
 from repository.models.person import Person
 
 # Models that have an explicit ModelAdmin associated with them
@@ -22,10 +20,6 @@ GENERIC_ADMIN_MODELS: List[models.Model] = [
     model for model in repository_config.get_models()
     if model not in DEDICATED_ADMIN_MODELS
 ]
-
-
-class InterestInline(TabularInline):
-    model = Interest
 
 
 class DefaultAdmin(admin.ModelAdmin):
@@ -58,9 +52,6 @@ class PersonAdmin(DefaultAdmin):
         'house',
         'active',
         'party',
-    ]
-    inlines = [
-        InterestInline,
     ]
 
     search_fields = [

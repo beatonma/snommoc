@@ -29,6 +29,9 @@ class BaseTestCase(TestCase):
     def assertLengthEquals(self, collection, expected_length: int, msg=None):
         self.assertEqual(len(collection), expected_length, msg)
 
+    def assertQuerysetSize(self, queryset, expected_length: int, msg=None):
+        self.assertLengthEquals(queryset.all(), expected_length, msg=msg)
+
 
 class LocalTestCase(BaseTestCase):
     """Tests that use only local data - no external network calls!

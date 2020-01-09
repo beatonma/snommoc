@@ -1,11 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
 GROUP_KEY = 'Experiences.Experience'
 
 TYPE = 'Type'

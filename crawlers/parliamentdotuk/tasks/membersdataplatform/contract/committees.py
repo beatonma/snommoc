@@ -1,15 +1,4 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
-
-COMMITTEES = 'Committees'
-COMMITTEE = 'Committee'
-GROUP_KEY = f'{COMMITTEES}.{COMMITTEE}'
+GROUP_KEY = 'Committees.Committee'
 
 PARLIAMENTDOTUK = '@Id'
 NAME = 'Name'

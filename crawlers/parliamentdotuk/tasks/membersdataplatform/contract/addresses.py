@@ -1,12 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
-
 GROUP_KEY = 'Addresses.Address'
 TYPE = 'Type'
 IS_PHYSICAL = 'IsPhysical'

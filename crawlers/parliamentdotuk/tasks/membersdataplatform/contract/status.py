@@ -9,10 +9,6 @@ Sample response:
     }
 """
 
-import logging
-
-log = logging.getLogger(__name__)
-
 
 CURRENT_STATUS = 'CurrentStatus'
 IS_ACTIVE = '@IsActive'

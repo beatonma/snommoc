@@ -1,12 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
-
 CATEGORY_GROUP_KEY = 'Interests.Category'
 CATEGORY_NAME = '@Name'
 

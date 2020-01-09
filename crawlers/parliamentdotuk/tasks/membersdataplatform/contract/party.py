@@ -6,13 +6,8 @@ Sample response:
     }
 """
 
-import logging
 
-log = logging.getLogger(__name__)
-
-PARTIES = 'Parties'
-PARTY = 'Party'
-GROUP_KEY = f'{PARTIES}.{PARTY}'
+GROUP_KEY = 'Parties.Party'
 
 PARTY_NAME = 'Name'
 START_DATE = 'StartDate'

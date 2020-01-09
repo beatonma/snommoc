@@ -10,9 +10,6 @@ Sample response:
     }
 """
 
-import logging
-
-log = logging.getLogger(__name__)
 
 BASIC_DETAILS = 'BasicDetails'
 

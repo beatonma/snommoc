@@ -1,11 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
 MEMBER_ID = '@Member_Id'
 
 # Name stuff

@@ -1,11 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
 GOVERNMENT_GROUP_KEY = 'GovernmentPosts.GovernmentPost'
 PARLIAMENTARY_GROUP_KEY = 'ParliamentaryPosts.ParliamentaryPost'
 OPPOSITION_GROUP_KEY = 'OppositionPosts.OppositionPost'

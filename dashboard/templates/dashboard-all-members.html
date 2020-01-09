@@ -1,0 +1,33 @@
+{% extends '_dashboard-all-abstract.html' %}
+
+{% block title %}Members (MPs and Lords){% endblock %}
+
+{% block items_title %}Members (MPs and Lords){% endblock %}
+
+{% block table_headers %}
+    <th>Full name</th>
+    <th>Given name</th>
+    <th>Additional name(s)</th>
+    <th>Family name</th>
+    <th>House</th>
+    <th>Gender</th>
+    <th>Party</th>
+    <th>Constituency</th>
+    <th>parliamentdotuk</th>
+    <th>theyworkforyou</th>
+{% endblock %}
+
+{% block data_row %}
+    {% with member=item %}
+    <td>{{ member.name }}</td>
+    <td>{{ member.given_name|default_if_none:'-' }}</td>
+    <td>{{ member.additional_name|default_if_none:'-' }}</td>
+    <td>{{ member.family_name|default_if_none:'-' }}</td>
+    <td>{{ member.house.name }}</td>
+    <td>{{ member.gender|default_if_none:'-' }}</td>
+    <td>{{ member.party.name|default_if_none:'-' }}</td>
+    <td>{{ member.constituency.name|default_if_none:'-' }}</td>
+    <td class="numeric">{{ member.parliamentdotuk|default_if_none:'-' }}</td>
+    <td class="numeric">{{ member.theyworkforyou|default_if_none:'-' }}</td>
+    {% endwith %}
+{% endblock %}

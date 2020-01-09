@@ -18,6 +18,11 @@ from .declared_interests import (
 from .election import (
     Election,
     ElectionNationalResult,
+    ElectionType,
+)
+from .experiences import (
+    Experience,
+    ExperienceCategory,
 )
 from .geography import Country
 from .houses import (

@@ -27,9 +27,8 @@ class UpdateConstituenciesView(BaseDashboardView):
 
 class UpdateMpsView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
-        log.info('Updating member data (debug_max_updates=10)')
         update_all_members_basic_info()
-        update_active_member_details(debug_max_updates=10)
+        update_active_member_details()
         return HttpResponse('OK')
 
 

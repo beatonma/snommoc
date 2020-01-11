@@ -8,11 +8,11 @@ from api.views.routers import SnommocRouter
 from api.views.viewsets import (
     PartyViewSet,
     ConstituencyViewSet,
-    MpViewSet,
+    MemberViewSet,
 )
 
 router = SnommocRouter()
-router.register(api_endpoints.MP, MpViewSet)
+router.register(api_endpoints.MEMBER, MemberViewSet, basename=api_endpoints.MEMBER)
 router.register(api_endpoints.PARTY, PartyViewSet)
 router.register(api_endpoints.CONSTITUENCY, ConstituencyViewSet)
 

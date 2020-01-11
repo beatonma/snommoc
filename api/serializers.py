@@ -12,7 +12,7 @@ from repository.models import (
     Party,
     Person,
 )
-from repository.models.contact_details import Links
+from repository.models.geography import Town
 
 log = logging.getLogger(__name__)
 
@@ -56,74 +56,74 @@ class InlineConstituencySerializer(InlineSerializer):
         ]
 
 
-class InlineMpSerializer(InlineSerializer):
+class InlineTownSerializer(InlineSerializer):
+    town = serializers.CharField(source='name')
+    country = serializers.StringRelatedField(many=False, read_only=True)
+
+    class Meta:
+        model = Town
+        fields = [
+            'town',
+            'country',
+        ]
+
+
+class InlineMemberSerializer(InlineSerializer):
     detail_url = serializers.HyperlinkedIdentityField(
-        view_name=f'{api_endpoints.MP}-detail',
+        view_name=f'{api_endpoints.MEMBER}-detail',
         read_only=True
     )
     party = InlinePartySerializer()
-    # name = serializers.CharField(source='person.name')
     constituency = InlineConstituencySerializer()
 
     class Meta:
         model = Person
         fields = [
             'name',
+            'detail_url',
             'party',
             'constituency',
-            'detail_url',
-        ]
-
-
-class LinksSerializer(DetailedSerializer):
-    weblinks = serializers.StringRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Links
-        fields = [
-            'email',
-            'phone_constituency',
-            'phone_parliament',
-            'weblinks',
-            'wikipedia',
         ]
 
 
 class PartySerializer(DetailedSerializer):
+
     class Meta:
         model = Party
         fields = [
             'name',
             'short_name',
             'long_name',
+            'homepage',
+            'year_founded',
+            'wikipedia',
         ]
 
 
-class MpSerializer(DetailedSerializer):
+class MemberSerializer(DetailedSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
-    # name = serializers.CharField(source='person.name')
-
-    # links = LinksSerializer()
-    # countries_of_interest = serializers.StringRelatedField(many=True, read_only=True)
-    # generic_interests = serializers.StringRelatedField(many=True, read_only=True)
+    place_of_birth = InlineTownSerializer(source='town_of_birth')
 
     class Meta:
         model = Person
         fields = [
             'name',
+            'full_title',
             'parliamentdotuk',
             'theyworkforyou',
             'party',
             'constituency',
-            # 'links',
-            # 'countries_of_interest',
-            # 'generic_interests',
+            'is_mp',
+            'is_lord',
+            'age',
+            'gender',
+            'place_of_birth',
         ]
 
 
 class ConstituencySerializer(DetailedSerializer):
-    mp = InlineMpSerializer()
+    mp = InlineMemberSerializer()
 
     class Meta:
         model = Constituency

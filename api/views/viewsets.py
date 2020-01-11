@@ -9,9 +9,9 @@ from rest_framework import viewsets
 from api.serializers import (
     ConstituencySerializer,
     InlineConstituencySerializer,
-    InlineMpSerializer,
+    InlineMemberSerializer,
     InlinePartySerializer,
-    MpSerializer,
+    MemberSerializer,
     PartySerializer,
 )
 from api.views.decorators import api_key_required
@@ -52,13 +52,13 @@ class ConstituencyViewSet(KeyRequiredViewSet):
             return InlineConstituencySerializer
 
 
-class MpViewSet(KeyRequiredViewSet):
+class MemberViewSet(KeyRequiredViewSet):
     """Member of Parliament"""
     queryset = Person.objects.all() \
         .prefetch_related('party', 'constituency')
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
-            return MpSerializer
+            return MemberSerializer
         else:
-            return InlineMpSerializer
+            return InlineMemberSerializer

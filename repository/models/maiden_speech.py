@@ -32,5 +32,8 @@ class MaidenSpeech(PersonMixin, BaseModel):
         help_text='Hansard ID',
     )
 
+    def __str__(self):
+        return f'{self.person}: {self.house}'
+
     class Meta:
         verbose_name_plural = 'Maiden Speeches'

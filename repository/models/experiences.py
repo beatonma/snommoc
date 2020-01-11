@@ -18,6 +18,9 @@ log = logging.getLogger(__name__)
 class ExperienceCategory(BaseModel):
     name = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.name
+
 
 class Experience(PersonMixin, PeriodMixin, BaseModel):
     category = models.ForeignKey(

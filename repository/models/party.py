@@ -33,11 +33,11 @@ class Party(WikipediaMixin, BaseModel):
         """Returns number of MPs associated with this party"""
         return self.objects.count()
 
-    @classmethod
-    def create(cls, name, short_name, long_name) -> 'Party':
-        party = cls(name=name, short_name=short_name, long_name=long_name)
-        party.save()
-        return party
+    # @classmethod
+    # def create(cls, name, short_name, long_name) -> 'Party':
+    #     party = cls(name=name, short_name=short_name, long_name=long_name)
+    #     party.save()
+    #     return party
 
     class Meta:
         verbose_name_plural = 'Parties'
@@ -58,6 +58,9 @@ class PartyAssociation(PeriodMixin, BaseModel):
         on_delete=models.CASCADE,
         related_name='parties',
     )
+
+    def __str__(self):
+        return f'{self.person}: {self.party}'
 
     class Meta:
         unique_together = [
@@ -91,3 +94,6 @@ class PartyTheme(BaseModel):
         choices=TEXT_COLOR_OPTIONS,
         help_text='Color for text that overlays accent_color',
     )
+
+    def __str__(self):
+        return f'Theme: {self.party}'

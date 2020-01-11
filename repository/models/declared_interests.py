@@ -10,6 +10,9 @@ from repository.models.mixins import (
 class DeclaredInterestCategory(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.name
+
 
 class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
     """Declared investments/involvements/relationships that a person has with
@@ -24,3 +27,6 @@ class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
     amended = models.DateField(blank=True, null=True)
     deleted = models.DateField(blank=True, null=True)
     registered_late = models.BooleanField()
+
+    def __str__(self):
+        return f'{self.person}: {self.description}'

@@ -25,6 +25,9 @@ class BasePost(ParliamentDotUkMixin, BaseModel):
         blank=True,
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         abstract = True
 
@@ -52,6 +55,9 @@ class GovernmentPostMember(BasePostMember):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return f'{self.person}: {self.post}'
+
 
 class ParliamentaryPostMember(BasePostMember):
     post = models.ForeignKey(
@@ -59,9 +65,15 @@ class ParliamentaryPostMember(BasePostMember):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return f'{self.person}: {self.post}'
+
 
 class OppositionPostMember(BasePostMember):
     post = models.ForeignKey(
         'OppositionPost',
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return f'{self.person}: {self.post}'

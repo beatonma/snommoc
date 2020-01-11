@@ -29,6 +29,9 @@ class PhysicalAddress(PersonMixin, BaseModel):
     fax = PhoneNumberField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.person} {self.description}'
+
 
 class WebAddress(PersonMixin, BaseModel):
     description = models.CharField(
@@ -37,3 +40,6 @@ class WebAddress(PersonMixin, BaseModel):
     )
 
     url = models.URLField()
+
+    def __str__(self):
+        return f'{self.person} {self.description}'

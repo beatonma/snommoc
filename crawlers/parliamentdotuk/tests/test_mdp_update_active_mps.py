@@ -8,7 +8,7 @@ from unittest import mock
 import requests
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.membersdataplatform import active_mps
+from crawlers.parliamentdotuk.tasks.membersdataplatform import active_members
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     AddressResponseData,
     BasicInfoResponseData,
@@ -54,7 +54,6 @@ from repository.models.committees import (
 )
 from repository.models.election import (
     ContestedElection,
-    ElectionType,
 )
 from repository.models.geography import Town
 from repository.models.houses import (
@@ -82,6 +81,7 @@ def get_mock_biography_response(*args, **kwargs):
 
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
+    """"""
     def setUp(self) -> None:
         commons, _ = House.objects.update_or_create(name=HOUSE_OF_COMMONS)
         House.objects.update_or_create(name=HOUSE_OF_LORDS)
@@ -98,7 +98,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             HouseMembershipResponseData(hm) for hm in SAMPLE_HOUSE_MEMBERSHIP
         ]
 
-        active_mps._update_house_membership(self.person, house_memberships)
+        active_members._update_house_membership(self.person, house_memberships)
 
         lords_membership = HouseMembership.objects.get(
             person=self.person, house=House.objects.get(name=HOUSE_OF_LORDS)
@@ -123,7 +123,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             ConstituencyResponseData(c) for c in SAMPLE_HISTORICAL_CONSTITUENCIES
         ]
 
-        active_mps._update_historical_constituencies(
+        active_members._update_historical_constituencies(
             self.person, historical_constituencies
         )
 
@@ -142,7 +142,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_basic_details(self):
         basic_info = BasicInfoResponseData(SAMPLE_BASIC_INFO)
-        active_mps._update_basic_details(self.person, basic_info)
+        active_members._update_basic_details(self.person, basic_info)
 
         self.assertEqualIgnoreCase(self.person.additional_name, "Julie")
         self.assertEqualIgnoreCase(self.person.given_name, "Diane")
@@ -152,7 +152,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_committees(self):
         committees = [CommitteeResponseData(c) for c in SAMPLE_COMMITTEES]
-        active_mps._update_committees(self.person, committees)
+        active_members._update_committees(self.person, committees)
 
         self.assertEqual(len(Committee.objects.all()), 18)
         self.assertEqual(len(CommitteeMember.objects.filter(person=self.person)), 23)
@@ -173,7 +173,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         interest_categories = [
             DeclaredInterestCategoryResponseData(c) for c in SAMPLE_INTERESTS
         ]
-        active_mps._update_declared_interests(self.person, interest_categories)
+        active_members._update_declared_interests(self.person, interest_categories)
 
         self.assertLengthEquals(DeclaredInterestCategory.objects.all(), 3)
 
@@ -208,7 +208,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_opposition_posts(self):
         opposition_posts = [PostResponseData(p) for p in SAMPLE_OPPOSITION_POSTS]
-        active_mps._update_opposition_posts(self.person, opposition_posts)
+        active_members._update_opposition_posts(self.person, opposition_posts)
 
         self.assertLengthEquals(OppositionPost.objects.all(), 4)
         self.assertLengthEquals(
@@ -226,7 +226,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_parliamentary_posts(self):
         parliamentary_posts = [PostResponseData(p) for p in SAMPLE_PARLIAMENTARY_POSTS]
-        active_mps._update_parliamentary_posts(self.person, parliamentary_posts)
+        active_members._update_parliamentary_posts(self.person, parliamentary_posts)
 
         self.assertLengthEquals(ParliamentaryPost.objects.all(), 1)
         self.assertLengthEquals(
@@ -248,7 +248,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_addresses(self):
         addresses = [AddressResponseData(a) for a in SAMPLE_ADDRESSES]
-        active_mps._update_addresses(self.person, addresses)
+        active_members._update_addresses(self.person, addresses)
 
         self.assertLengthEquals(PhysicalAddress.objects.all(), 2)
         self.assertLengthEquals(WebAddress.objects.all(), 1)
@@ -276,7 +276,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_maiden_speeches(self):
         speeches = [SpeechResponseData(s) for s in SAMPLE_MAIDEN_SPEECHES]
-        active_mps._update_maiden_speeches(self.person, speeches)
+        active_members._update_maiden_speeches(self.person, speeches)
 
         lords = MaidenSpeech.objects.get(house__name="Lords")
         self.assertEqual(lords.date, datetime.date(year=2013, month=10, day=24))
@@ -290,7 +290,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_party_associations(self):
         parties = [PartyResponseData(p) for p in SAMPLE_PARTY_ASSOCIATIONS]
-        active_mps._update_party_associations(self.person, parties)
+        active_members._update_party_associations(self.person, parties)
 
         self.assertLengthEquals(PartyAssociation.objects.filter(person=self.person), 3)
 
@@ -306,7 +306,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_government_posts(self):
         government_posts = [PostResponseData(p) for p in SAMPLE_GOVERNMENT_POSTS]
-        active_mps._update_government_posts(self.person, government_posts)
+        active_members._update_government_posts(self.person, government_posts)
 
         pm = GovernmentPost.objects.get(parliamentdotuk=661)
         self.assertEqual(
@@ -339,7 +339,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_experiences(self):
         experiences = [ExperiencesResponseData(e) for e in SAMPLE_EXPERIENCES]
-        active_mps._update_experiences(self.person, experiences)
+        active_members._update_experiences(self.person, experiences)
 
         self.assertLengthEquals(Experience.objects.all(), 12)
         uk_land_estates = Experience.objects.get(organisation="UK Land Estates")
@@ -357,7 +357,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         contested = [
             ContestedElectionResponseData(e) for e in SAMPLE_ELECTIONS_CONTESTED
         ]
-        active_mps._update_elections_contested(self.person, contested)
+        active_members._update_elections_contested(self.person, contested)
 
         election = Election.objects.get(parliamentdotuk=15)
         constituency = Constituency.objects.get(name='Clwyd South')
@@ -375,7 +375,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         experiences = [
             SubjectsOfInterestResponseData(e) for e in SAMPLE_BIOGRAPHY_ENTRIES
         ]
-        active_mps._update_subjects_of_interest(self.person, experiences)
+        active_members._update_subjects_of_interest(self.person, experiences)
 
         self.assertLengthEquals(SubjectOfInterestCategory.objects.all(), 3)
         self.assertLengthEquals(SubjectOfInterest.objects.all(), 3)
@@ -395,7 +395,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
     @mock.patch.object(
         requests, "get", mock.Mock(side_effect=get_mock_biography_response),
     )
-    def test_update_active_mps_details(self):
+    def test_update_active_member_details(self):
         """Check that all of the update methods have been called.
 
         The other tests here ensure the methods work correctly so we just need to
@@ -404,7 +404,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
         puk = 965
 
-        active_mps.update_active_mps_details()
+        active_members.update_active_member_details()
 
         person = Person.objects.get(parliamentdotuk=puk)
 
@@ -453,7 +453,6 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
         # Elections contested
         self.assertQuerysetSize(person.contestedelection_set, 1)
-
 
     def tearDown(self) -> None:
         self.delete_instances_of(

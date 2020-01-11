@@ -11,6 +11,8 @@ log = logging.getLogger(__name__)
 
 
 class MdpClientTests(LocalTestCase):
+    """"""
+
     def test__coerce_to_list(self):
         test_func = mdp_client._coerce_to_list
 

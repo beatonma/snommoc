@@ -133,7 +133,7 @@ class Person(
         return self.active and self.house.name == HOUSE_OF_LORDS
 
     def __str__(self):
-        return self.name
+        return f'{self.name} [{self.parliamentdotuk}]'
 
     class Meta:
         ordering = ['name']

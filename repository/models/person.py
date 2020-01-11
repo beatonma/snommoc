@@ -124,11 +124,11 @@ class Person(
     )
 
     @property
-    def age(self) -> Optional[int]:
+    def age(self) -> int:
         return years_since(self.date_of_birth)
 
     @property
-    def is_birthday(self):
+    def is_birthday(self) -> bool:
         return is_anniversary(self.date_of_birth)
 
     @property

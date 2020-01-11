@@ -3,11 +3,15 @@
 """
 import datetime
 import logging
+from typing import Optional
 
 log = logging.getLogger(__name__)
 
 
-def years_since(date: datetime.date, now=datetime.datetime.now()) -> int:
+def years_since(date: Optional[datetime.date], now=datetime.datetime.now()) -> int:
+    if not date:
+        return 0
+
     difference = now.year - date.year
     if now.month < date.month:
         difference = difference - 1
@@ -17,5 +21,8 @@ def years_since(date: datetime.date, now=datetime.datetime.now()) -> int:
     return max(difference, 0)
 
 
-def is_anniversary(date: datetime.date, now=datetime.datetime.now()) -> int:
+def is_anniversary(date: Optional[datetime.date], now=datetime.datetime.now()) -> int:
+    if not date:
+        return False
+
     return now.month == date.month and now.day == date.day

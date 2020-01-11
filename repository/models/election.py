@@ -18,6 +18,9 @@ log = logging.getLogger(__name__)
 class ElectionType(BaseModel):
     name = models.CharField(max_length=32)
 
+    def __str__(self):
+        return self.name
+
 
 class Election(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(
@@ -32,6 +35,9 @@ class Election(ParliamentDotUkMixin, BaseModel):
         blank=True
     )
 
+    def __str__(self):
+        return self.name
+
 
 class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):
     election = models.ForeignKey(
@@ -43,6 +49,9 @@ class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):
         'Party',
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return f'{self.election}: {self.winning_party}'
 
 
 class ContestedElection(PersonMixin, BaseModel):
@@ -56,3 +65,6 @@ class ContestedElection(PersonMixin, BaseModel):
         'Constituency',
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return f'{self.election}: {self.constituency}'

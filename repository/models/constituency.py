@@ -59,9 +59,13 @@ class ConstituencyResult(PeriodMixin, BaseModel):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return f'{self.election}: {self.constituency}'
+
     class Meta:
         unique_together = [
             ['election', 'constituency'],
+            ['election', 'mp'],
         ]
 
 
@@ -71,6 +75,9 @@ class ConstituencyBoundary(BaseModel):
         on_delete=models.DO_NOTHING,
     )
     boundary = models.TextField(help_text='KML file content')
+
+    def __str__(self):
+        return self.constituency
 
     class Meta:
         verbose_name_plural = 'Constituency Boundaries'

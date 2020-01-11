@@ -15,3 +15,7 @@ def years_since(date: datetime.date, now=datetime.datetime.now()) -> int:
         difference = difference - 1
 
     return max(difference, 0)
+
+
+def is_anniversary(date: datetime.date, now=datetime.datetime.now()) -> int:
+    return now.month == date.month and now.day == date.day

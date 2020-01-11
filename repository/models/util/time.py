@@ -21,7 +21,7 @@ def years_since(date: Optional[datetime.date], now=datetime.datetime.now()) -> i
     return max(difference, 0)
 
 
-def is_anniversary(date: Optional[datetime.date], now=datetime.datetime.now()) -> int:
+def is_anniversary(date: Optional[datetime.date], now=datetime.datetime.now()) -> bool:
     if not date:
         return False
 

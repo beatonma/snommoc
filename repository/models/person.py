@@ -50,6 +50,8 @@ class Person(
     full_title = models.CharField(
         max_length=NAME_MAX_LENGTH,
         help_text='Official name with honorifics.',
+        blank=True,
+        null=True,
     )
 
     gender = models.CharField(

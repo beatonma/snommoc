@@ -507,16 +507,17 @@ class MemberBiographyResponseData(MemberResponseData):
 
 def update_members(
     endpoint_url: str,
-    update_member_func: Callable[[Type[ResponseData]], Optional[str]],
+    update_member_func: Callable[[ResponseData], Optional[str]],
     report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
-    response_class=MemberResponseData,
+    response_class: Type[ResponseData],
 ) -> None:
-    update_id = uuid.uuid4().hex[:6]
+    short_url = endpoint_url[24:]
     new_members: List[str] = []
-    TaskNotification.objects.create(
-        title=f"Task started [id={update_id}]",
+    task_started_notification = TaskNotification.objects.create(
+        title=f"[starting] ...{short_url}",
         content=f"An update cycle has started for endpoint {endpoint_url}",
-    ).save()
+    )
+    task_started_notification.save()
 
     response = get(endpoint_url)
     try:
@@ -528,19 +529,29 @@ def update_members(
 
     except AttributeError as e:
         log.warning(f"Could not read item list: {e}")
-        TaskNotification.objects.create(
-            title=f"Task failed [id={update_id}]",
+        failed_task_notification = TaskNotification.objects.create(
+            title=f"[failed] ...{short_url}",
             content=f"Update failed for endpoint {endpoint_url}: {e}",
-        ).save()
+            parent=task_started_notification,
+        )
+        failed_task_notification.mark_as_failed()
+        task_started_notification.mark_as_failed()
         return
 
     for member in members:
-        new_name = update_member_func(response_class(member))
-        if new_name:
-            new_members.append(new_name)
+        try:
+            new_name = update_member_func(response_class(member))
+            if new_name:
+                new_members.append(new_name)
+        except Exception as e:
+            log.warning(f'Failed to update member=[{member}]: {e}')
 
     if report_func:
         title, content = report_func(new_members)
-        TaskNotification.objects.create(
-            title=f"[id={update_id} finished] {title}", content=content
-        ).save()
+        complete_task_notification = TaskNotification.objects.create(
+            title=f"[finished] ...{short_url} {title}",
+            content=content,
+        )
+        complete_task_notification.mark_as_complete()
+        task_started_notification.mark_as_complete()
+

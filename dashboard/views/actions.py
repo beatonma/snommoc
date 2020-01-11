@@ -11,6 +11,7 @@ from django.http import (
 from crawlers.parliamentdotuk.tasks import (
     update_constituencies,
 )
+from crawlers.parliamentdotuk.tasks.membersdataplatform.active_members import update_active_member_details
 from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import update_all_members_basic_info
 from dashboard.views.dashboard import BaseDashboardView
 
@@ -26,7 +27,9 @@ class UpdateConstituenciesView(BaseDashboardView):
 
 class UpdateMpsView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
+        log.info('Updating member data (debug_max_updates=10)')
         update_all_members_basic_info()
+        update_active_member_details(debug_max_updates=10)
         return HttpResponse('OK')
 
 

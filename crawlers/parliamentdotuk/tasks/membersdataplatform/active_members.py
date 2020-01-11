@@ -1,5 +1,8 @@
 """
+Tasks for updating details on active members.
 
+Active members are of higher interest than historical ones so we maintain
+more details data about them.
 """
 
 import logging
@@ -61,7 +64,6 @@ from repository.models.election import (
 )
 from repository.models.geography import Town
 from repository.models.houses import (
-    HOUSE_OF_COMMONS,
     House,
     HouseMembership,
 )
@@ -80,21 +82,23 @@ from repository.models.posts import (
 log = logging.getLogger(__name__)
 
 
-def update_active_mps_details():
-    active_mp_parliamentdotuk_ids = [
-        person.parliamentdotuk for person
-        in Person.objects.filter(
-            active=True,
-            house__name=HOUSE_OF_COMMONS,
-        )
+def update_active_member_details(debug_max_updates: Optional[int] = None):
+    """
+    In development you may provide a value for debug_max_updates to avoid
+    updating hundreds of profiles unnecessarily.
+    """
+    active_member_ids = [
+        person.parliamentdotuk for person in Person.objects.filter(active=True)
     ]
 
-    for parliamentdotuk_id in active_mp_parliamentdotuk_ids:
+    if debug_max_updates:
+        active_member_ids = active_member_ids[:debug_max_updates]
+
+    for parliamentdotuk_id in active_member_ids:
         update_members(
             endpoints.member_biography(parliamentdotuk_id),
             update_member_func=_update_member_biography,
             report_func=None,
-            response_class=MemberBiographyResponseData,
         )
         time.sleep(1)
 

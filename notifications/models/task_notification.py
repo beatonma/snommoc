@@ -6,6 +6,8 @@ import logging
 
 import uuid as uuid
 from django.db import models
+from django.utils import timezone
+
 from notifications import permissions
 
 log = logging.getLogger(__name__)
@@ -24,7 +26,34 @@ class TaskNotification(models.Model):
     content = models.TextField(null=True, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4)
     read = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True, null=True)
+    started_at = models.DateTimeField(auto_now_add=True, null=True)
+    finished_at = models.DateTimeField(null=True)
+    parent = models.ForeignKey(
+        'TaskNotification',
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+    complete = models.BooleanField(default=False)
+    failed = models.BooleanField(default=False)
+
+    @property
+    def finished(self):
+        return self.complete or self.failed
+
+    def mark_as_read(self):
+        self.read = True
+        self.save()
+
+    def mark_as_complete(self):
+        self.complete = True
+        self.finished_at = timezone.now()
+        self.save()
+
+    def mark_as_failed(self):
+        self.failed = True
+        self.finished_at = timezone.now()
+        self.save()
 
     @classmethod
     def create(cls, content: str, title: str = 'Task notification'):
@@ -33,4 +62,4 @@ class TaskNotification(models.Model):
         return n
 
     def __str__(self):
-        return f'{self.title}: {self.content}'
+        return f'{self.title}'

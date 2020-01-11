@@ -7,11 +7,13 @@ more details data about them.
 
 import logging
 import time
+from functools import wraps
 from typing import (
     List,
     Optional,
     Type,
     Tuple,
+    Callable,
 )
 
 from phonenumber_field.phonenumber import PhoneNumber
@@ -87,6 +89,9 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
     In development you may provide a value for debug_max_updates to avoid
     updating hundreds of profiles unnecessarily.
     """
+    def _report_func(items: List[str]) -> Tuple[str, str]:
+        return 'update_active_member_details', '\n'.join(items)
+
     active_member_ids = [
         person.parliamentdotuk for person in Person.objects.filter(active=True)
     ]
@@ -98,7 +103,8 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
         update_members(
             endpoints.member_biography(parliamentdotuk_id),
             update_member_func=_update_member_biography,
-            report_func=None,
+            report_func=_report_func,
+            response_class=MemberBiographyResponseData
         )
         time.sleep(1)
 
@@ -139,6 +145,14 @@ def _update_or_create_election(data: Optional[ElectionResponseData]) -> Tuple[El
     return election, created
 
 
+def _catch_item_errors(items: List, func: Callable) -> None:
+    for item in items:
+        try:
+            func(item)
+        except Exception as e:
+            log.warning(f'Item update error [{func}]: {e}')
+
+
 def _update_basic_details(person: Person, data: BasicInfoResponseData):
     person.given_name = data.get_first_name()
     person.additional_name = data.get_middle_names()
@@ -162,7 +176,7 @@ def _update_house_membership(
         person: Person,
         memberships: List[HouseMembershipResponseData]
 ) -> None:
-    for hm in memberships:
+    def _item_func(hm: HouseMembershipResponseData):
         house, _ = House.objects.get_or_create(name=hm.get_house())
         HouseMembership.objects.update_or_create(
             person=person,
@@ -173,12 +187,14 @@ def _update_house_membership(
             }
         )
 
+    _catch_item_errors(memberships, _item_func)
+
 
 def _update_historical_constituencies(
         person: Person,
         historical_constituencies: List[ConstituencyResponseData]
 ) -> None:
-    for c in historical_constituencies:
+    def _item_func(c: ConstituencyResponseData):
         constituency, _ = Constituency.objects.get_or_create(
             parliamentdotuk=c.get_constituency_id(),
             defaults={
@@ -198,12 +214,14 @@ def _update_historical_constituencies(
             }
         )
 
+    _catch_item_errors(historical_constituencies, _item_func)
+
 
 def _update_party_associations(
         person: Person,
         historical_parties: List[PartyResponseData]
 ) -> None:
-    for p in historical_parties:
+    def _item_func(p):
         party, _ = Party.objects.get_or_create(name=p.get_party_name())
         PartyAssociation.objects.update_or_create(
             person=person,
@@ -214,12 +232,14 @@ def _update_party_associations(
             }
         )
 
+    _catch_item_errors(historical_parties, _item_func)
+
 
 def _update_committees(
         person: Person,
         committees: List[CommitteeResponseData]
 ) -> None:
-    for c in committees:
+    def _item_func(c):
         committee, _ = Committee.objects.update_or_create(
             parliamentdotuk=c.get_committee_id(),
             defaults={
@@ -245,6 +265,8 @@ def _update_committees(
                 }
             )
 
+    _catch_item_errors(committees, _item_func)
+
 
 def _update_posts(
         person: Person,
@@ -252,7 +274,7 @@ def _update_posts(
         post_class: Type[BasePost],
         membership_class: Type[BasePostMember]
 ) -> None:
-    for p in posts:
+    def _item_func(p):
         post, _ = post_class.objects.update_or_create(
             parliamentdotuk=p.get_post_id(),
             defaults={
@@ -269,6 +291,8 @@ def _update_posts(
                 'end': p.get_end_date(),
             }
         )
+
+    _catch_item_errors(posts, _item_func)
 
 
 def _update_government_posts(
@@ -317,7 +341,7 @@ def _update_addresses(
         except NumberParseException:
             return None
 
-    for a in addresses:
+    def _item_func(a):
         if a.get_is_physical():
 
             PhysicalAddress.objects.update_or_create(
@@ -340,12 +364,14 @@ def _update_addresses(
                 }
             )
 
+    _catch_item_errors(addresses, _item_func)
+
 
 def _update_maiden_speeches(
         person: Person,
         maiden_speeches: List[SpeechResponseData]
 ) -> None:
-    for speech in maiden_speeches:
+    def _item_func(speech):
         house, _ = House.objects.get_or_create(name=speech.get_house())
         MaidenSpeech.objects.update_or_create(
             person=person,
@@ -357,12 +383,14 @@ def _update_maiden_speeches(
             }
         )
 
+    _catch_item_errors(maiden_speeches, _item_func)
+
 
 def _update_declared_interests(
         person: Person,
         interest_categories: List[DeclaredInterestCategoryResponseData]
 ) -> None:
-    for c in interest_categories:
+    def _item_func(c):
         category, _ = DeclaredInterestCategory.objects.update_or_create(
             parliamentdotuk=c.get_category_id(),
             defaults={
@@ -384,12 +412,14 @@ def _update_declared_interests(
                 }
             )
 
+    _catch_item_errors(interest_categories, _item_func)
+
 
 def _update_subjects_of_interest(
         person: Person,
         subjects_of_interest: List[SubjectsOfInterestResponseData]
 ) -> None:
-    for interest in subjects_of_interest:
+    def _item_func(interest):
         category, _ = SubjectOfInterestCategory.objects.update_or_create(
             title=interest.get_category())
         SubjectOfInterest.objects.update_or_create(
@@ -400,12 +430,14 @@ def _update_subjects_of_interest(
             }
         )
 
+    _catch_item_errors(subjects_of_interest, _item_func)
+
 
 def _update_experiences(
         person: Person,
         experiences: List[ExperiencesResponseData]
 ) -> None:
-    for exp in experiences:
+    def _item_func(exp):
         category, _ = ExperienceCategory.objects.update_or_create(name=exp.get_type())
         Experience.objects.update_or_create(
             person=person,
@@ -419,20 +451,24 @@ def _update_experiences(
             }
         )
 
+    _catch_item_errors(experiences, _item_func)
+
 
 def _update_elections_contested(
         person: Person,
         contested: List[ContestedElectionResponseData]
 ) -> None:
-    for c in contested:
+    def _item_func(c):
         election, _ = _update_or_create_election(c.get_election())
         constituency, _ = Constituency.objects.get_or_create(name=c.get_constituency_name())
 
-        contested, _ = ContestedElection.objects.update_or_create(
+        ContestedElection.objects.update_or_create(
             person=person,
             election=election,
             defaults={
                 'constituency': constituency,
             }
         )
+
+    _catch_item_errors(contested, _item_func)
 

@@ -7,7 +7,10 @@ import logging
 from typing import (
     Tuple,
     Optional,
+    Type,
 )
+
+from django.db import models
 
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import MemberResponseData
 from repository.models import (
@@ -45,9 +48,10 @@ def update_all_mps_basic_info():
         return title, content
 
     mdp_client.update_members(
-        endpoints.COMMONS_MEMBERS_ALL,
-        _update_member_basic_info,
-        _build_report
+        endpoint_url=endpoints.COMMONS_MEMBERS_ALL,
+        update_member_func=_update_member_basic_info,
+        report_func=_build_report,
+        response_class=MemberResponseData
     )
 
 
@@ -66,18 +70,26 @@ def update_all_lords_basic_info():
         return title, content
 
     mdp_client.update_members(
-        endpoints.LORDS_MEMBERS_ALL,
-        _update_member_basic_info,
-        _build_report
+        endpoint_url=endpoints.LORDS_MEMBERS_ALL,
+        update_member_func=_update_member_basic_info,
+        report_func=_build_report,
+        response_class=MemberResponseData
     )
+
+
+def _get_or_create_or_none(model_class: Type[models.Model], **kwargs) -> Tuple[Optional[models.Model], bool]:
+    try:
+        return model_class.objects.get_or_create(**kwargs)
+    except Exception:
+        return None, False
 
 
 def _update_member_basic_info(data: MemberResponseData) -> Optional[str]:
     parliamentdotuk = data.get_parliament_id()
 
-    party, _ = Party.objects.get_or_create(name=data.get_party())
-    constituency, _ = Constituency.objects.get_or_create(name=data.get_constituency())
-    house, _ = House.objects.get_or_create(name=data.get_house())
+    party, _ = _get_or_create_or_none(Party, name=data.get_party())
+    constituency, _ = _get_or_create_or_none(Constituency, name=data.get_constituency())
+    house, _ = _get_or_create_or_none(House, name=data.get_house())
     is_active = data.get_is_active()
 
     person, created = Person.objects.update_or_create(
@@ -96,7 +108,7 @@ def _update_member_basic_info(data: MemberResponseData) -> Optional[str]:
             'active': is_active,
         })
 
-    if is_active and house.name == HOUSE_OF_COMMONS:
+    if is_active and constituency and house.name == HOUSE_OF_COMMONS:
         constituency.mp = person
         constituency.save()
 

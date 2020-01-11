@@ -7,7 +7,9 @@ To enable a module for testing:
 
 Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
+import datetime
 import importlib
+import json
 import re
 import sys
 from typing import (
@@ -28,6 +30,9 @@ from basetest.test_settings_default import *
 TEST_METHOD_REGEX = re.compile(r'(test_[^\s]+)')
 ERROR_REGEX = re.compile(r'.*\n([^\n]+)', re.DOTALL)
 ASSERTION_REGEX = re.compile(r'.*(line [\d]+).*AssertionError: (.*?)\n', re.DOTALL)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEST_HISTORY_FILE = os.path.join(BASE_DIR, '.runtests.json')
 
 
 def _highlight_foreground(text, color):
@@ -199,6 +204,29 @@ def _reset_settings(state: Dict):
         setattr(settings, key, value)
 
 
+def _compare_tests_with_previous(tests_run: int):
+    def _save_current():
+        with open(TEST_HISTORY_FILE, 'w', encoding='utf-8') as f:
+            json.dump({
+                'tests_run': tests_run,
+                'timestamp': datetime.datetime.now().strftime('%y-%m-%d'),
+            }, f)
+
+    def _load_previous() -> int:
+        previous_run = {}
+        if os.path.exists(TEST_HISTORY_FILE):
+            with open(TEST_HISTORY_FILE, 'r', encoding='utf-8') as f:
+                previous_run = json.load(f)
+
+        return previous_run.get('tests_run', 0)
+
+    previous_tests_run = _load_previous()
+    if previous_tests_run > tests_run:
+        print(_highlight_warning(f'Previous run had {previous_tests_run} tests (vs {tests_run} now). Is everything okay?'))
+    else:
+        _save_current()
+
+
 def _print_results(test_results: Dict[str, VerboseResult], tests_passed: int, tests_run: int):
     print()
     print(f'Django version: {django.get_version()}')
@@ -213,6 +241,8 @@ def _print_results(test_results: Dict[str, VerboseResult], tests_passed: int, te
         print(_highlight_good(f'All {tests_run} tests passed'))
     else:
         print(_highlight_warning(f'{tests_passed}/{tests_run} tests passed'))
+
+    _compare_tests_with_previous(tests_run)
 
 
 def _main():

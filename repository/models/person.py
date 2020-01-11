@@ -12,7 +12,10 @@ from repository.models.mixins import (
     ParliamentDotUkMixin,
     TheyWorkForYouMixin,
 )
-from repository.models.util.time import years_since
+from repository.models.util.time import (
+    years_since,
+    is_anniversary,
+)
 
 NAME_MAX_LENGTH = 72
 
@@ -123,6 +126,10 @@ class Person(
     @property
     def age(self) -> Optional[int]:
         return years_since(self.date_of_birth)
+
+    @property
+    def is_birthday(self):
+        return is_anniversary(self.date_of_birth)
 
     @property
     def is_mp(self) -> bool:

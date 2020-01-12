@@ -43,6 +43,9 @@ class ConstituencyAdmin(DefaultAdmin):
         'start',
         'end',
     ]
+    search_fields = [
+        'name',
+    ]
 
 
 @admin.register(Person)

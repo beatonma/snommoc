@@ -19,13 +19,14 @@ def inject_context_manager(cls):
 
 def create_test_user(
         username='testuser',
-        password=uuid.uuid4(),
+        password=uuid.uuid4().hex,
         email='testuser@snommoc.org'
 ) -> User:
     user = User.objects.create(
         username=username,
         password=password,
         email=email)
+    user.set_password(password)
     user.save()
     return user
 

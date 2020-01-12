@@ -6,7 +6,11 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest, HttpResponse
 
 from api import contract
-from api.models import ApiKey
+from api.models import (
+    ApiKey,
+    READ_SNOMMOC_API,
+)
+from api.models.permissions import has_read_snommoc_api_permission
 
 log = logging.getLogger(__name__)
 
@@ -19,10 +23,15 @@ def api_key_required(f):
     """
     Decorator for View.dispatch methods that require a valid API key.
     Key must be passed as a GET param: ?key=KEY
+    Alternatively, the user may be granted access with the READ_SNOMMOC_API permission.
     """
     @wraps(f)
     def verify_api_key(view, request: HttpRequest, *args, **kwargs):
         if settings.DEBUG:
+            return f(view, request, *args, user=request.user, **kwargs)
+
+        if has_read_snommoc_api_permission(request.user):
+            log.debug(f'User \'{request.user}\' has permission \'{READ_SNOMMOC_API}\'')
             return f(view, request, *args, user=request.user, **kwargs)
 
         try:

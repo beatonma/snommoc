@@ -1,11 +1,19 @@
-from django.test import TestCase
 from django.urls import reverse
 
-from api.models import ApiKey, uuid
+from api.models import (
+    ApiKey,
+    uuid,
+    grant_read_snommoc_api,
+)
 from basetest.test_util import create_test_user
+from basetest.testcase import LocalTestCase
+
+import logging
+
+log = logging.getLogger(__name__)
 
 
-class ApiKeyRequiredDecoratorTest(TestCase):
+class ApiKeyRequiredDecoratorTest(LocalTestCase):
     """Tests for @api_key_required View decorator."""
     def setUp(self):
         testuser = create_test_user()
@@ -15,9 +23,15 @@ class ApiKeyRequiredDecoratorTest(TestCase):
         self.disabled_api_key = ApiKey.objects.create(user=testuser, enabled=False)
         self.disabled_api_key.save()
 
+        user_with_permission = create_test_user(
+            username='user_with_permission',
+            password='123456@abcdef',
+            email='testuser2@snommoc.org')
+        grant_read_snommoc_api(user_with_permission)
+
     def assert_status_with_args(self, params, expected_status: int):
         response = self.client.get(reverse('decorator_test_view'), data=params)
-        self.assertEqual(expected_status, response.status_code)
+        self.assertEqual(response.status_code, expected_status)
 
     def test_with_no_key__returns_http400(self):
         self.assert_status_with_args(
@@ -49,3 +63,8 @@ class ApiKeyRequiredDecoratorTest(TestCase):
             params={'guessed_param': self.enabled_api_key},
             expected_status=400
         )
+
+    def test_user_has_permission(self):
+        self.client.login(username='user_with_permission', password='123456@abcdef')
+        response = self.client.get(reverse('decorator_test_view'), data={})
+        self.assertEqual(response.status_code, 200)

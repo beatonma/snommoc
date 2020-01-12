@@ -22,10 +22,9 @@ def update_constituencies(follow_pagination=True) -> None:
         puk = get_parliamentdotuk_id(get_value(json_data, constituencies_contract.ABOUT))
         name = get_value(json_data, constituencies_contract.NAME)
         constituency, created = Constituency.objects.update_or_create(
-            name=name,
+            parliamentdotuk=puk,
             defaults={
                 'name': name,
-                'parliamentdotuk': puk,
                 'gss_code': get_value(json_data, constituencies_contract.GSS_CODE),
                 'ordinance_survey_name': get_value(json_data, constituencies_contract.ORDINANCE_SURVEY_NAME),
                 'constituency_type': get_value(json_data, constituencies_contract.TYPE),

@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 
 class BasePost(ParliamentDotUkMixin, BaseModel):
-    name = models.CharField(max_length=96, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     hansard_name = models.CharField(
         max_length=64,
         unique=True,

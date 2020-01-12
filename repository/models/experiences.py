@@ -29,7 +29,7 @@ class Experience(PersonMixin, PeriodMixin, BaseModel):
     )
 
     organisation = models.CharField(max_length=64, null=True, blank=True)
-    title = models.CharField(max_length=32)
+    title = models.CharField(max_length=128)
 
     def __str__(self):
         return f'{self.category} {self.title}@{self.organisation}'

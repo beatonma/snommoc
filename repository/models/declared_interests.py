@@ -21,7 +21,7 @@ class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
         'DeclaredInterestCategory',
         on_delete=models.CASCADE
     )
-    description = models.CharField(max_length=160)
+    description = models.CharField(max_length=255)
 
     created = models.DateField(blank=True, null=True)
     amended = models.DateField(blank=True, null=True)

@@ -21,12 +21,12 @@ class MaidenSpeech(PersonMixin, BaseModel):
         on_delete=models.CASCADE,
     )
     subject = models.CharField(
-        max_length=32,
+        max_length=128,
         blank=True,
         null=True,
     )
     hansard = models.CharField(
-        max_length=16,
+        max_length=32,
         blank=True,
         null=True,
         help_text='Hansard ID',

@@ -150,7 +150,7 @@ def _catch_item_errors(person: Person, items: List, func: Callable) -> None:
         try:
             func(item)
         except Exception as e:
-            log.warning(f'Item update error [{person}: {func.__name__}]: {e}')
+            log.warning(f'Item update error ({item.__str__()[:24]}) [{person}: {func}]: {e}')
 
 
 def _update_basic_details(person: Person, data: BasicInfoResponseData):

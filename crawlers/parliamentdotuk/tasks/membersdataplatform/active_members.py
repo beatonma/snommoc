@@ -145,12 +145,12 @@ def _update_or_create_election(data: Optional[ElectionResponseData]) -> Tuple[El
     return election, created
 
 
-def _catch_item_errors(items: List, func: Callable) -> None:
+def _catch_item_errors(person: Person, items: List, func: Callable) -> None:
     for item in items:
         try:
             func(item)
         except Exception as e:
-            log.warning(f'Item update error [{func}]: {e}')
+            log.warning(f'Item update error [{person}: {func.__name__}]: {e}')
 
 
 def _update_basic_details(person: Person, data: BasicInfoResponseData):
@@ -187,7 +187,7 @@ def _update_house_membership(
             }
         )
 
-    _catch_item_errors(memberships, _item_func)
+    _catch_item_errors(person, memberships, _item_func)
 
 
 def _update_historical_constituencies(
@@ -214,7 +214,7 @@ def _update_historical_constituencies(
             }
         )
 
-    _catch_item_errors(historical_constituencies, _item_func)
+    _catch_item_errors(person, historical_constituencies, _item_func)
 
 
 def _update_party_associations(
@@ -232,7 +232,7 @@ def _update_party_associations(
             }
         )
 
-    _catch_item_errors(historical_parties, _item_func)
+    _catch_item_errors(person, historical_parties, _item_func)
 
 
 def _update_committees(
@@ -265,7 +265,7 @@ def _update_committees(
                 }
             )
 
-    _catch_item_errors(committees, _item_func)
+    _catch_item_errors(person, committees, _item_func)
 
 
 def _update_posts(
@@ -292,7 +292,7 @@ def _update_posts(
             }
         )
 
-    _catch_item_errors(posts, _item_func)
+    _catch_item_errors(person, posts, _item_func)
 
 
 def _update_government_posts(
@@ -364,7 +364,7 @@ def _update_addresses(
                 }
             )
 
-    _catch_item_errors(addresses, _item_func)
+    _catch_item_errors(person, addresses, _item_func)
 
 
 def _update_maiden_speeches(
@@ -383,7 +383,7 @@ def _update_maiden_speeches(
             }
         )
 
-    _catch_item_errors(maiden_speeches, _item_func)
+    _catch_item_errors(person, maiden_speeches, _item_func)
 
 
 def _update_declared_interests(
@@ -412,7 +412,7 @@ def _update_declared_interests(
                 }
             )
 
-    _catch_item_errors(interest_categories, _item_func)
+    _catch_item_errors(person, interest_categories, _item_func)
 
 
 def _update_subjects_of_interest(
@@ -430,7 +430,7 @@ def _update_subjects_of_interest(
             }
         )
 
-    _catch_item_errors(subjects_of_interest, _item_func)
+    _catch_item_errors(person, subjects_of_interest, _item_func)
 
 
 def _update_experiences(
@@ -451,7 +451,7 @@ def _update_experiences(
             }
         )
 
-    _catch_item_errors(experiences, _item_func)
+    _catch_item_errors(person, experiences, _item_func)
 
 
 def _update_elections_contested(
@@ -470,5 +470,5 @@ def _update_elections_contested(
             }
         )
 
-    _catch_item_errors(contested, _item_func)
+    _catch_item_errors(person, contested, _item_func)
 

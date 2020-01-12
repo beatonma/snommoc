@@ -31,7 +31,7 @@ def api_key_required(f):
             return f(view, request, *args, user=request.user, **kwargs)
 
         if has_read_snommoc_api_permission(request.user):
-            log.debug(f'User \'{request.user}\' has permission \'{READ_SNOMMOC_API}\'')
+            log.info(f'User \'{request.user}\' has permission \'{READ_SNOMMOC_API}\'')
             return f(view, request, *args, user=request.user, **kwargs)
 
         try:
@@ -39,7 +39,7 @@ def api_key_required(f):
                 return HttpResponse('API key required', status=400)
             key = ApiKey.objects.get(key=request.GET.get(contract.API_KEY))
             if key.enabled:
-                log.debug(f'API Key verified for User=\'{key.user}\'')
+                log.info(f'API Key verified for User=\'{key.user}\'')
                 return f(view, request, *args, user=key.user, **kwargs)
             else:
                 raise ApiKeyDisabled(f'Key disabled for User=\'{key.user}\'')

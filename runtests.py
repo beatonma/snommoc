@@ -179,6 +179,8 @@ def run_app_tests(app_name):
                 settings.INSTALLED_APPS += [*app_settings.INSTALLED_APPS]
             if hasattr(app_settings, 'ROOT_URLCONF'):
                 settings.ROOT_URLCONF = app_settings.ROOT_URLCONF
+            if hasattr(app_settings, 'MIDDLEWARE'):
+                settings.MIDDLEWARE = app_settings.MIDDLEWARE
 
     except ModuleNotFoundError:
         pass

@@ -544,14 +544,13 @@ def update_members(
             if new_name:
                 new_members.append(new_name)
         except Exception as e:
-            log.warning(f'Failed to update member=[{member}]: {e}')
+            log.warning(f'Failed to update member=[{member.__str__()[:255]}...]: {e}')
 
     if report_func:
         title, content = report_func(new_members)
         complete_task_notification = TaskNotification.objects.create(
-            title=f"[finished] ...{short_url} {title}",
+            title=f"[finished] ...{short_url}",
             content=content,
         )
         complete_task_notification.mark_as_complete()
         task_started_notification.mark_as_complete()
-

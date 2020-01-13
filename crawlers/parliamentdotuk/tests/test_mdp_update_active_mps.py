@@ -354,6 +354,10 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         )
 
     def test__update_elections_contested(self):
+        Constituency.objects.create(
+            parliamentdotuk=1, name='Clwyd South',
+        )
+
         contested = [
             ContestedElectionResponseData(e) for e in SAMPLE_ELECTIONS_CONTESTED
         ]
@@ -465,6 +469,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             Committee,
             CommitteeChair,
             CommitteeMember,
+            Constituency,
             Election,
             ContestedElection,
         )

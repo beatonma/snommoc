@@ -20,10 +20,10 @@ PHONE_NUMBER_REGION = 'GB'
 
 class PhysicalAddress(PersonMixin, BaseModel):
     description = models.CharField(
-        max_length=32,
+        max_length=128,
         help_text='What kind of address is this? e.g Parliamentary, Constituency...'
     )
-    address = models.CharField(max_length=256)
+    address = models.CharField(max_length=512)
     postcode = models.CharField(max_length=10, null=True, blank=True)
     phone = PhoneNumberField(null=True, blank=True)
     fax = PhoneNumberField(null=True, blank=True)
@@ -35,7 +35,7 @@ class PhysicalAddress(PersonMixin, BaseModel):
 
 class WebAddress(PersonMixin, BaseModel):
     description = models.CharField(
-        max_length=32,
+        max_length=128,
         help_text='What kind of address is this? e.g Twitter, personal site...'
     )
 

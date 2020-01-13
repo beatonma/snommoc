@@ -21,7 +21,7 @@ class MaidenSpeech(PersonMixin, BaseModel):
         on_delete=models.CASCADE,
     )
     subject = models.CharField(
-        max_length=128,
+        max_length=512,
         blank=True,
         null=True,
     )

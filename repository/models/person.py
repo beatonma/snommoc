@@ -17,7 +17,7 @@ from repository.models.util.time import (
     is_anniversary,
 )
 
-NAME_MAX_LENGTH = 72
+NAME_MAX_LENGTH = 128
 
 log = logging.getLogger(__name__)
 

@@ -8,7 +8,7 @@ from repository.models.mixins import (
 
 
 class DeclaredInterestCategory(ParliamentDotUkMixin, BaseModel):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=512)
 
     def __str__(self):
         return self.name
@@ -21,7 +21,7 @@ class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
         'DeclaredInterestCategory',
         on_delete=models.CASCADE
     )
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=1024)
 
     created = models.DateField(blank=True, null=True)
     amended = models.DateField(blank=True, null=True)

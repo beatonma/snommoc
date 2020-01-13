@@ -24,7 +24,7 @@ class ElectionType(BaseModel):
 
 class Election(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(
-        max_length=64,
+        max_length=128,
         unique=True,
     )
     date = models.DateField()

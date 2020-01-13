@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 class SubjectOfInterestCategory(BaseModel):
-    title = models.CharField(max_length=64)
+    title = models.CharField(max_length=128)
 
 
 class SubjectOfInterest(PersonMixin, BaseModel):
@@ -26,4 +26,4 @@ class SubjectOfInterest(PersonMixin, BaseModel):
         on_delete=models.CASCADE
     )
 
-    subject = models.CharField(max_length=256)
+    subject = models.CharField(max_length=512)

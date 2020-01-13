@@ -9,7 +9,7 @@ from repository.models.mixins import (
 
 
 class Party(WikipediaMixin, BaseModel):
-    name = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=64, unique=True)
     short_name = models.CharField(
         max_length=16,
         unique=True,
@@ -18,7 +18,7 @@ class Party(WikipediaMixin, BaseModel):
         default=None,
     )
     long_name = models.CharField(
-        max_length=64,
+        max_length=128,
         unique=True,
         null=True,
         blank=True,

@@ -11,9 +11,9 @@ from crawlers.parliamentdotuk.tasks.lda.update_constituencies import (
 )
 from repository.models import Constituency
 
-log = logging.getLogger(__name__)
+from .data_lda_update_constituencies import EXAMPLE_RESPONSE
 
-EXAMPLE_RESPONSE = { 'format': 'linked-data-api', 'version': '0.2', 'result': { '_about': 'http://eldaddp.azurewebsites.net/constituencies.json', 'definition': 'http://eldaddp.azurewebsites.net/meta/constituencies.json', 'extendedMetadataVersion': 'http://eldaddp.azurewebsites.net/constituencies.json?_metadata=all', 'first': 'http://eldaddp.azurewebsites.net/constituencies.json?_page=0', 'hasPart': 'http://eldaddp.azurewebsites.net/constituencies.json', 'isPartOf': 'http://eldaddp.azurewebsites.net/constituencies.json', 'items': [ { '_about': 'http://data.parliament.uk/resources/143461', 'constituencyType': '', 'endedDate': {'_value': '1950-02-23', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberavon'}, 'osName': '', 'startedDate': {'_value': '1918-12-14', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143462', 'constituencyType': '', 'endedDate': {'_value': '1974-02-28', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberavon'}, 'osName': '', 'startedDate': {'_value': '1950-02-23', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143463', 'constituencyType': 'County', 'endedDate': {'_value': '1983-06-09', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberavon'}, 'osName': '', 'startedDate': {'_value': '1974-02-28', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143464', 'constituencyType': 'County', 'endedDate': {'_value': '1997-05-01', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberavon'}, 'osName': '', 'startedDate': {'_value': '1983-06-09', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143465', 'constituencyType': 'County', 'endedDate': {'_value': '2010-05-06', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberavon'}, 'osName': 'Aberavon Co Const', 'startedDate': {'_value': '1997-05-01', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/146747', 'constituencyType': 'County', 'gssCode': 'W07000049', 'label': {'_value': 'Aberavon'}, 'osName': '', 'startedDate': {'_value': '2010-05-06', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/146748', 'constituencyType': 'County', 'gssCode': 'W07000058', 'label': {'_value': 'Aberconwy'}, 'osName': 'Aberconwy Co Const', 'startedDate': {'_value': '2010-05-06', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143466', 'constituencyType': '', 'endedDate': {'_value': '1974-02-28', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberdare'}, 'osName': '', 'startedDate': {'_value': '1950-02-23', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143467', 'constituencyType': 'Borough', 'endedDate': {'_value': '1983-06-09', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberdare'}, 'osName': '', 'startedDate': {'_value': '1974-02-28', '_datatype': 'dateTime'}, }, { '_about': 'http://data.parliament.uk/resources/143468', 'constituencyType': 'Borough', 'endedDate': {'_value': '2005-05-05', '_datatype': 'dateTime'}, 'gssCode': '', 'label': {'_value': 'Aberdeen Central'}, 'osName': 'Aberdeen Central Burgh Const', 'startedDate': {'_value': '1997-05-01', '_datatype': 'dateTime'}, }, ], 'itemsPerPage': 10, 'next': 'http://eldaddp.azurewebsites.net/constituencies.json?_page=1', 'page': 0, 'startIndex': 1, 'totalResults': 3877, 'type': [ 'http://purl.org/linked-data/api/vocab#ListEndpoint', 'http://purl.org/linked-data/api/vocab#Page', ], }, }
+log = logging.getLogger(__name__)
 
 
 def get_mock_json_response(*args, **kwargs):
@@ -44,9 +44,10 @@ class UpdateConstituenciesTest(LocalTestCase):
         self.assertEqual(len(Constituency.objects.all()), 0)
         update_constituencies()
         new_constituencies = Constituency.objects.all()
-        self.assertEqual(len(new_constituencies), 4)
+        self.assertEqual(len(new_constituencies), 10)
 
-        aberavon: Constituency = new_constituencies.get(name='Aberavon')
+        aberavon: Constituency = new_constituencies.get(parliamentdotuk=146747)
+        self.assertEqual(aberavon.name, 'Aberavon')
         self.assertEqual(aberavon.constituency_type, 'County')
         self.assertEqual(aberavon.gss_code, 'W07000049')
         self.assertEqual(aberavon.ordinance_survey_name, '')
@@ -54,7 +55,8 @@ class UpdateConstituenciesTest(LocalTestCase):
         self.assertEqual(aberavon.end, None)
         self.assertEqual(aberavon.parliamentdotuk, 146747)
 
-        aberconwy: Constituency = new_constituencies.get(name='Aberconwy')
+        aberconwy: Constituency = new_constituencies.get(parliamentdotuk=146748)
+        self.assertEqual(aberconwy.name, 'Aberconwy')
         self.assertEqual(aberconwy.constituency_type, 'County')
         self.assertEqual(aberconwy.gss_code, 'W07000058')
         self.assertEqual(aberconwy.ordinance_survey_name, 'Aberconwy Co Const')
@@ -62,13 +64,14 @@ class UpdateConstituenciesTest(LocalTestCase):
         self.assertEqual(aberconwy.end, None)
         self.assertEqual(aberconwy.parliamentdotuk, 146748)
 
-        aberdar: Constituency = new_constituencies.get(name='Aberdare')
-        self.assertEqual(aberdar.constituency_type, 'Borough')
-        self.assertEqual(aberdar.gss_code, '')
-        self.assertEqual(aberdar.ordinance_survey_name, '')
-        self.assertEqual(aberdar.start, datetime.date(year=1974, month=2, day=28))
-        self.assertEqual(aberdar.end, datetime.date(year=1983, month=6, day=9))
-        self.assertEqual(aberdar.parliamentdotuk, 143467)
+        aberdare: Constituency = new_constituencies.get(parliamentdotuk=143467)
+        self.assertEqual(aberdare.name, 'Aberdare')
+        self.assertEqual(aberdare.constituency_type, 'Borough')
+        self.assertEqual(aberdare.gss_code, '')
+        self.assertEqual(aberdare.ordinance_survey_name, '')
+        self.assertEqual(aberdare.start, datetime.date(year=1974, month=2, day=28))
+        self.assertEqual(aberdare.end, datetime.date(year=1983, month=6, day=9))
+        self.assertEqual(aberdare.parliamentdotuk, 143467)
 
     def tearDown(self) -> None:
         Constituency.objects.all().delete()

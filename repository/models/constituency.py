@@ -1,4 +1,8 @@
+import datetime
+from typing import Optional
+
 from django.db import models
+from django.db.models import Q
 
 from repository.models.mixins import (
     PeriodMixin,
@@ -81,3 +85,42 @@ class ConstituencyBoundary(BaseModel):
 
     class Meta:
         verbose_name_plural = 'Constituency Boundaries'
+
+
+def get_constituency_for_date(name: str, date: datetime.date) -> Optional[Constituency]:
+    c = Constituency.objects.filter(name=name)
+    count = c.count()
+
+    # Simple cases
+    if count == 0:
+        return None
+
+    elif count == 1:
+        return c.first()
+
+    # More complicated
+    with_start = c.exclude(start=None).order_by('start')
+
+    filtered_by_date = with_start.filter(
+        Q(start__lte=date) & (Q(end__gt=date) | Q(end__isnull=True))
+    )
+
+    if filtered_by_date:
+        # Result was found that matches the date requirement
+        return filtered_by_date.first()
+
+    if with_start.count() == 0:
+        # No useful date, just return the first result.
+        return c.first()
+
+    earliest = with_start.first()
+    if earliest.start > date:
+        # Date is before earliest result -> return earliest available result
+        return earliest
+
+    # All else fails, return the latest available result.
+    return with_start.last()
+
+
+def get_current_constituency(name: str) -> Optional[Constituency]:
+    return get_constituency_for_date(name, datetime.date.today())

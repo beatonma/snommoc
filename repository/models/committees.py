@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 
 class Committee(ParliamentDotUkMixin, BaseModel):
-    name = models.CharField(max_length=512, unique=True)
+    name = models.CharField(max_length=512)
 
     def __str__(self):
         return f'{self.name}'

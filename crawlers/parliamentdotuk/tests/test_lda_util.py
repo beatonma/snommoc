@@ -19,6 +19,7 @@ EXAMPLE_ITEM = {"_about": "http://data.parliament.uk/resources/146747","constitu
 
 
 class LdaClientTests(LocalTestCase):
+    """"""
     def test_get_next_page_url(self):
         next_page_url = lda_client.get_next_page_url(EXAMPLE_RESPONSE)
         self.assertEqual(

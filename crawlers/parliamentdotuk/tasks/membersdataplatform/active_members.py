@@ -16,6 +16,7 @@ from typing import (
     Callable,
 )
 
+from django.db.models import Q
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
@@ -60,6 +61,10 @@ from repository.models.address import (
     WebAddress,
 )
 from repository.models.committees import CommitteeChair
+from repository.models.constituency import (
+    get_constituency_for_date,
+    get_current_constituency,
+)
 from repository.models.election import (
     ElectionType,
     ContestedElection,
@@ -460,7 +465,12 @@ def _update_elections_contested(
 ) -> None:
     def _item_func(c):
         election, _ = _update_or_create_election(c.get_election())
-        constituency, _ = Constituency.objects.get_or_create(name=c.get_constituency_name())
+
+        # Find the constituency that was active at the date of the election
+        # If we can't find one, use the most recent definition by that name.
+        constituency = get_constituency_for_date(
+            c.get_constituency_name(), election.date
+        ) or get_current_constituency(c.get_constituency_name)
 
         ContestedElection.objects.update_or_create(
             person=person,

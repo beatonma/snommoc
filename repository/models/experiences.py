@@ -28,7 +28,7 @@ class Experience(PersonMixin, PeriodMixin, BaseModel):
         on_delete=models.CASCADE,
     )
 
-    organisation = models.CharField(max_length=128, null=True, blank=True)
+    organisation = models.CharField(max_length=512, null=True, blank=True)
     title = models.CharField(max_length=512)
 
     def __str__(self):

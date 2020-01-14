@@ -426,8 +426,6 @@ def _update_elections_contested(
             constituency_name, election.date,
         ) or get_current_constituency(constituency_name)
 
-        print(constituency)
-
         if constituency is None:
             UnlinkedConstituency.objects.create(
                 name=constituency_name, election=election, mp=person

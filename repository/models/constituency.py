@@ -99,6 +99,9 @@ class UnlinkedConstituency(BaseModel):
         help_text='Constituency which this is supposed to refer to.'
     )
 
+    def __str__(self):
+        return self.name
+
 
 class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(

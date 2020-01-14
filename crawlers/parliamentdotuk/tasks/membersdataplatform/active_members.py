@@ -120,7 +120,7 @@ def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]
     parliamentdotuk: int = data.get_parliament_id()
 
     person = Person.objects.get(parliamentdotuk=parliamentdotuk)
-    log.info(f"Updating detail for mp: {person}")
+    log.info(f"Updating detail for member: {person}")
 
     _update_basic_details(person, data.get_basic_info())
     _update_house_membership(person, data.get_house_memberships())

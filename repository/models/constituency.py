@@ -73,6 +73,33 @@ class ConstituencyResult(PeriodMixin, BaseModel):
         ]
 
 
+class UnlinkedConstituency(BaseModel):
+    """A placeholder for a constituency which is known by name only.
+
+    Contested Elections data sometimes list a constituency for which we have
+    no data. In those cases, create an UnlinkedConstituency which can be checked
+    manually."""
+
+    name = models.CharField(max_length=64)
+    election = models.ForeignKey(
+        'Election',
+        on_delete=models.CASCADE,
+    )
+
+    mp = models.ForeignKey(
+        'Person',
+        on_delete=models.CASCADE,
+    )
+
+    constituency = models.ForeignKey(
+        'Constituency',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        help_text='Constituency which this is supposed to refer to.'
+    )
+
+
 class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(
         Constituency,

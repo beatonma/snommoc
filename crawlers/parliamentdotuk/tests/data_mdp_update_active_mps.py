@@ -1648,6 +1648,15 @@ SAMPLE_ELECTIONS_CONTESTED = [
             "Type": "General Election",
         },
         "Constituency": "Clwyd South",
+    },
+    {
+        "Election": {
+            "@Id": "16",
+            "Name": "1998 General Election",
+            "Date": "1998-05-01T00:00:00",
+            "Type": "General Election",
+        },
+        "Constituency": "Some Unknown Constituency",
     }
 ]
 SAMPLE_PARTY_ASSOCIATIONS = [

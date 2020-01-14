@@ -52,9 +52,8 @@ from repository.models.committees import (
     CommitteeChair,
     CommitteeMember,
 )
-from repository.models.election import (
-    ContestedElection,
-)
+from repository.models.constituency import UnlinkedConstituency
+from repository.models.election import ContestedElection
 from repository.models.geography import Town
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
@@ -82,6 +81,7 @@ def get_mock_biography_response(*args, **kwargs):
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
     """"""
+
     def setUp(self) -> None:
         commons, _ = House.objects.update_or_create(name=HOUSE_OF_COMMONS)
         House.objects.update_or_create(name=HOUSE_OF_LORDS)
@@ -355,7 +355,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_elections_contested(self):
         Constituency.objects.create(
-            parliamentdotuk=1, name='Clwyd South',
+            parliamentdotuk=1, name="Clwyd South",
         )
 
         contested = [
@@ -364,16 +364,22 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         active_members._update_elections_contested(self.person, contested)
 
         election = Election.objects.get(parliamentdotuk=15)
-        constituency = Constituency.objects.get(name='Clwyd South')
+        constituency = Constituency.objects.get(name="Clwyd South")
 
-        ge = ContestedElection.objects.get(election__name='1997 General Election')
+        ge = ContestedElection.objects.get(election__name="1997 General Election")
         self.assertEqual(ge.election, election)
         self.assertEqual(ge.election.date, datetime.date(year=1997, month=5, day=1))
         self.assertEqual(ge.constituency, constituency)
 
-        self.assertEqual(ge.election.election_type.name, 'General Election')
+        self.assertEqual(ge.election.election_type.name, "General Election")
 
         self.assertEqual(self.person.contestedelection_set.first(), ge)
+
+        unlinked_constituency = UnlinkedConstituency.objects.first()
+        self.assertEqual(unlinked_constituency.name, "Some Unknown Constituency")
+        self.assertEqual(unlinked_constituency.mp, self.person)
+        self.assertEqual(unlinked_constituency.election.name, "1998 General Election")
+        self.assertIsNone(unlinked_constituency.constituency)
 
     def test__update_subjects_of_interest(self):
         experiences = [

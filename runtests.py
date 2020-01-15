@@ -270,7 +270,7 @@ def _main():
               'WARNING:\n  NetworkTestCase implementations were not executed!\n'
               '  Add `-network` flag to command line arguments when you want '
               'to run network tests.')
-    sys.exit(all_passed)
+    sys.exit(not all_passed)  # Return 0 if everything okay, 1 if failures
 
 
 if __name__ == '__main__':

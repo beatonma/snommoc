@@ -49,13 +49,11 @@ def get_value(data: Dict, key: str) -> Optional[str]:
 
 def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
     as_string = get_value(data, key)
-    log.debug(f'date string: {key}: {as_string}')
 
     if as_string:
         try:
             from django.utils.dateparse import parse_date
             parsed = parse_date(as_string)
-            log.debug(f'{as_string} -> {parsed}')
             return parsed
         except ValueError:
             log.warning(f'Unable to parse date from string "{as_string}"')

@@ -20,7 +20,11 @@ SECRET_KEY = 'some-test-key'
 
 INSTALLED_APPS += []
 
-MIDDLEWARE = []
+MIDDLEWARE = [
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+]
 
 DATABASES = {
     'default': {
@@ -36,3 +40,9 @@ LANGUAGE_CODE = 'en-gb'
 
 TEST_API_KEY = uuid.uuid4()
 HTTP_REQUEST_HEADERS = {}
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    },
+]

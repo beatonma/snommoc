@@ -1,15 +1,15 @@
 dist: xenial
 language: python
 python:
-  - "3.6"
-  - "3.7"
-  - "3.8"
-
+- '3.6'
+- '3.7'
+- '3.8'
 install:
-  - pip install -r requirements.txt
-
+- pip install -r requirements.txt
 before_script:
-  - python manage.py makemigrations --settings=basetest.makemigrations_settings
-
+- python manage.py makemigrations --settings=basetest.makemigrations_settings
 script:
-  - python runtests.py
+- python runtests.py
+notifications:
+  slack:
+    secure: SNi25THyrW8j3GgfxmsGWTIQ8bCe55IDZgbOsIZCKHjau0y4uFW3AngQrXGGKbNSyWo2FjEyfRVJ0y6F2pSOGzBMkUMf6M7wkrLE8SvRgIWU7lGL6OIWImWkK2sD72LqlVjXs+WbUZpSmZdTU3kfVDsLN4IhGUgWAL+WOIb8rLiDPRtxoI0XA4TeE2xJfLJyWoe1Ytd3dm25DC7C3Nry0+BU1PmeIbFy5TZVp7N6txM99f2W1JZGU1MZklkASkLe3OvvE1ztiXFyCP/lclmBCZQxUJH6BOZwKCLH2S6hY5sou2zyDQtK/DAyspVnOUuvrbO0ZVh13XIa8rgyIXrzqIeIW7qEIdKhrFBpAqDPGAHW6jQ+xF/Mhij/UWHx2DG5cROuvbWS9n3y/GRCU4LO7R6ikLsbGZDdnYBn0EyV3XJA92e7MZSa8HM4FXlPUMwDWxXMWVyswkfO4WQeHfu7dezEH8mshasIozbWnk8xS/6VV59Y1SyR7LIFC0yMR6zdqW7vDN2SnqJUGcbOKv09KFq1xDYbAA47M9vP6JDnD33KIpqfhlr36T8xYzuYm18iH3kx6LgLtFNY/am5Nrc23OR723I5naYnjsMq7OA/PBs9truHUuyd/1shDs3wUTVnWq5IZg3Gk4KHKfr2ZEqWuo9yyx6iQaF1986KzAFCVCw=

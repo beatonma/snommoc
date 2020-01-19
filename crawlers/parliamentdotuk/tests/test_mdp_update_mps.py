@@ -16,6 +16,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import (
     _update_member_basic_info,
     update_all_mps_basic_info,
 )
+from repository.models import Constituency
 from repository.models.person import Person
 
 log = logging.getLogger(__name__)
@@ -68,13 +69,20 @@ class ResponseDataTest(LocalTestCase):
 
 
 class MdpUpdateMpsTest(LocalTestCase):
-    """Ensure that basic info is retrieved from API response correctly."""
 
+    def setUp(self) -> None:
+        Constituency.objects.create(
+            parliamentdotuk=12345,
+            name='Hackney North and Stoke Newington',
+        ).save()
+
+    """Ensure that basic info is retrieved from API response correctly."""
     def _assert_values_for_diane_abbott(self, ms_abbott: Person):
         """Diane Abbott is currently the first result in most API calls so
         her results are the most easily accessible and useful for testing
         against.
         """
+        self.assertEqual(ms_abbott.parliamentdotuk, 172)
         self.assertEqualIgnoreCase(ms_abbott.name, 'Ms Diane Abbott')
         self.assertEqualIgnoreCase(ms_abbott.full_title, 'Rt Hon Diane Abbott MP')
         self.assertEqualIgnoreCase(ms_abbott.party.name, 'Labour')

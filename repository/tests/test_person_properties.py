@@ -30,7 +30,7 @@ class PersonPropertyTests(LocalTestCase):
             date_of_birth=datetime.date(year=1973, month=6, day=10),
             date_of_death=datetime.date(year=2011, month=5, day=1)
         )
-        self.assertEqual(dead_person.age, 38)
+        self.assertEqual(dead_person.age, 37)
 
     def test_person_is_mp(self):
         commons = House.objects.create(name=HOUSE_OF_COMMONS)

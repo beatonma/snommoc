@@ -42,8 +42,8 @@ class PeriodMixin(models.Model):
 class ParliamentDotUkMixin(models.Model):
     """For models that have a corresponding api on parliament.uk"""
     parliamentdotuk = models.PositiveIntegerField(
+        primary_key=True,
         unique=True,
-        null=True,
         help_text='ID used on parliament.uk website')
 
     class Meta:

@@ -124,7 +124,6 @@ def _get_nested_value(obj: dict, key: str):
     while len(parts) > 1:
         parent = parent.get(parts.pop(0))
         if parent is None or not isinstance(parent, dict):
-            log.debug(f"Nested key '{key}' not accessible in this object")
             return None
 
     result = parent.get(parts.pop())

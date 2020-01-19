@@ -6,6 +6,7 @@ import logging
 
 from rest_framework import serializers
 
+from api.serializers import InlineSerializer
 from repository.models import (
     Constituency,
     Person,
@@ -15,12 +16,6 @@ from api import endpoints
 from repository.models.geography import Town
 
 log = logging.getLogger(__name__)
-
-
-class InlineSerializer(serializers.HyperlinkedModelSerializer):
-    """Return basic data about the object with a link for further
-    details if required."""
-    pass
 
 
 class InlineConstituencySerializer(InlineSerializer):

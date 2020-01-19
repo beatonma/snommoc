@@ -69,12 +69,16 @@ class VerboseResult:
         self.not_implemented = [_get_test_method_name(x[0]) for x in not_implemented_errors]
         self.errors = [VerboseError(x) for x in result.errors if x not in not_implemented_errors]
         self.failures = [VerboseFailure(x) for x in result.failures]
-        self.successful = self.tests_run - len(result.errors) - len(result.failures)
+        self.successful = result.testsRun - len(result.errors) - len(result.failures)
 
     def passed(self) -> bool:
-        return len(self.not_implemented) + len(self.errors) == 0
+        return self.successful == self.tests_run
 
     def report(self, app_name) -> str:
+
+        def report_all_passed(indent=2):
+            return f'{" " * indent}{_highlight_good("OK")}  [{_highlight_good(self.successful) if self.successful else _highlight_warning(self.successful)}] {app_name}'
+
         def report_success(indent=2):
             if not self.successful:
                 return ''
@@ -101,11 +105,13 @@ class VerboseResult:
                    '\n'.join([f'{" " * indent * 3}{x.report()}' for x in self.failures])
 
         if self.passed():
-            return f'  {_highlight_good("OK")}  [{_highlight_good(self.successful)}] {app_name}'
+            return report_all_passed(indent=2)
+            # return f'  {_highlight_good("OK")}  [{_highlight_good(self.successful)}] {app_name}'
         else:
             return (
                 '\n'
                 f'! {_highlight_bad(app_name)}:\n'
+                f'  {self.tests_run} test ran\n'
                 f'{report_success(indent=2)}'
                 f'{report_not_implemented(indent=2)}'
                 f'{report_errors(indent=2)}'

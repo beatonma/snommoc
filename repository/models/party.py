@@ -33,12 +33,6 @@ class Party(WikipediaMixin, BaseModel):
         """Returns number of MPs associated with this party"""
         return self.objects.count()
 
-    # @classmethod
-    # def create(cls, name, short_name, long_name) -> 'Party':
-    #     party = cls(name=name, short_name=short_name, long_name=long_name)
-    #     party.save()
-    #     return party
-
     class Meta:
         verbose_name_plural = 'Parties'
 

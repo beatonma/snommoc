@@ -4,6 +4,7 @@ from dashboard.views.actions import (
     UpdateConstituenciesView,
     UpdateMpsView,
     UpdatePartiesView,
+    RebuildAllView,
 )
 from dashboard.views.dashboard import (
     ConstituencyDashboardView,
@@ -13,7 +14,7 @@ from dashboard.views.dashboard import (
     MemberDashboardView,
     LordDashboardView,
 )
-
+from dashboard.views.profile import MemberProfileView
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='dashboard'),
@@ -36,4 +37,8 @@ urlpatterns = [
 
     path('actions/update-parties/', UpdatePartiesView.as_view(), name='action-update-parties'),
     path('actions/update-parties/<str:requirement>/', UpdatePartiesView.as_view(), name='action-update-parties'),
+
+    path('actions/rebuild/', RebuildAllView.as_view(), name='action-rebuild-all'),
+
+    path('profile/<int:parliamentdotuk>/', MemberProfileView.as_view(), name='member-profile'),
 ]

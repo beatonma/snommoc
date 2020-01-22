@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile for member #{{ member.parliamentdotuk }}</title>
+    {% include 'style-fragment.html' %}
+    <style>
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .endpoint {
+            line-height: 2em;
+        }
+        pre {
+            background: var(--text-tertiary);
+            padding: 16px;
+            overflow-x: scroll;
+        }
+    </style>
+</head>
+<body>
+<header>{% include 'dashboard-header-fragment.html' %}</header>
+<h3>Browse data for member #{{ member.parliamentdotuk }}: {{ member.name }}</h3>
+<div class="api-endpoints">
+    <span class="button endpoint">profile</span>
+    <span class="button endpoint">address</span>
+    <span class="button endpoint">committees</span>
+    <span class="button endpoint">constituencies</span>
+    <span class="button endpoint">contested</span>
+    <span class="button endpoint">interests</span>
+    <span class="button endpoint">experiences</span>
+    <span class="button endpoint">speeches</span>
+    <span class="button endpoint">parties</span>
+    <span class="button endpoint">posts</span>
+    <span class="button endpoint">subjects</span>
+</div>
+
+<div>
+    <pre id="api_data">
+
+    </pre>
+</div>
+
+<template id="api_url_template">{% url 'profile-detail' pk=member.parliamentdotuk %}</template>
+
+<script type="text/javascript">
+    (() => {
+        const apiDataElement = document.getElementById('api_data');
+
+        function loadElementEndpoint(endpointButton) {
+            loadApiEndpoint(endpointButton.innerText);
+        }
+
+        async function loadApiEndpoint(endpointName) {
+            const apiEndpoint = document.getElementById('api_url_template').innerHTML.replace('profile/', endpointName + '/');
+
+            const apiResponseData = await (await fetch(apiEndpoint, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })).json();
+            apiDataElement.innerText = JSON.stringify(apiResponseData, null, 2);
+        }
+
+        Array.from(document.getElementsByClassName('endpoint')).forEach((element) => {
+            element.addEventListener('click', () => loadElementEndpoint(element) );
+        });
+        loadApiEndpoint('profile');
+    })();
+</script>
+</body>
+</html>

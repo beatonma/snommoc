@@ -10,12 +10,10 @@
 <h1>{{ items|length }} {% block items_title %}items{% endblock %}</h1>
 <table>
     <tr>
-        <th>#</th>
         {% block table_headers %}{% endblock %}
     </tr>
     {% for item in items %}
     <tr>
-        <td>{{ forloop.counter }}</td>
         {% block data_row %}{% endblock %}
     </tr>
     {% endfor %}

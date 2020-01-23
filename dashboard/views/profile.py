@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class MemberProfileView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
-        member = Person.objects.get(parliamentdotuk=kwargs.get('parliamentdotuk'))
+        member = Person.objects.get(parliamentdotuk=kwargs.get('pk'))
         print(member)
         return render(
             request,

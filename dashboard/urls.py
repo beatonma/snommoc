@@ -40,5 +40,5 @@ urlpatterns = [
 
     path('actions/rebuild/', RebuildAllView.as_view(), name='action-rebuild-all'),
 
-    path('profile/<int:parliamentdotuk>/', MemberProfileView.as_view(), name='member-profile'),
+    path('profile/<int:pk>/', MemberProfileView.as_view(), name='dashboard-member-profile'),
 ]

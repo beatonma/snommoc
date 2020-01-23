@@ -24,9 +24,10 @@
 
 <section>
     <h1>Actions</h1>
-    <span id="update_parties" class="action" >Update parties</span>
-    <span id="update_constituencies" class="action" >Update constituencies</span>
-    <span id="update_mps" class="action">Update MPs</span>
+{#    <span id="update_parties" class="action" >Update parties</span>#}
+{#    <span id="update_constituencies" class="action" >Update constituencies</span>#}
+{#    <span id="update_mps" class="action">Update MPs</span>#}
+    <span id="rebuild_all" class="action">Clear and rebuild everything!</span>
 </section>
 </body>
 <script type="text/javascript">
@@ -88,9 +89,29 @@
             });
         }
 
-        document.getElementById('update_constituencies').addEventListener('click', updateConstituencies);
-        document.getElementById('update_mps').addEventListener('click', updateMps);
-        document.getElementById('update_parties').addEventListener('click', updateParties);
+        function rebuildAll() {
+            const button = document.getElementById('rebuild_all');
+            const buttonText = button.innerText;
+            button.innerText = 'Busy...';
+            button.classList.add('busy');
+            button.removeEventListener('click', rebuildAll);
+            console.log('Rebuilding all data...');
+            fetch('{% url "action-rebuild-all" %}', {
+                method: 'GET',
+                credentials: 'same-origin'
+            }).then((response) => {
+                button.classList.remove('busy');
+                button.innerText = buttonText;
+                console.log('All data rebuilt');
+                console.log(`${response.status}: ${response.text()}`);
+                button.addEventListener('click', rebuildAll);
+            });
+        }
+
+        {#document.getElementById('update_constituencies').addEventListener('click', updateConstituencies);#}
+        {#document.getElementById('update_mps').addEventListener('click', updateMps);#}
+        {#document.getElementById('update_parties').addEventListener('click', updateParties);#}
+        document.getElementById('rebuild_all').addEventListener('click', rebuildAll);
     })();
 </script>
 </html>

@@ -31,3 +31,15 @@ def is_anniversary(date: Optional[datetime.date], now=datetime.datetime.now()) -
         return False
 
     return now.month == date.month and now.day == date.day
+
+
+def year_only_date(year: int) -> datetime.date:
+    """Some dates are only available as a year but we still want to treat them
+    as datetime.date objects. Validation for datetime.date does not allow dates
+    that don't fit on the calendar (we can't use the 0th or 32nd day, the 13th
+    month, etc, etc) so we have to choose some date to represent a non-specific
+    day of the year. We have chosen xmas day as an 'invalid' date as it seems
+    perhaps the most reliably unlikely day for anything to happen in business,
+    parliamentary or otherwise.
+    """
+    return datetime.date(year=year, month=12, day=25)

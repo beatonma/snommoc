@@ -3,7 +3,6 @@
 """
 import datetime
 import logging
-import uuid
 from typing import (
     Callable,
     List,
@@ -12,9 +11,7 @@ from typing import (
     Type,
 )
 
-import dateutil
 import requests
-from dateutil.parser import ParserError
 from django.conf import settings
 
 from notifications.models import TaskNotification
@@ -35,6 +32,13 @@ from .contract import (
     posts as posts_contract,
     status as status_contract,
 )
+from crawlers.parliamentdotuk.tasks.util.coercion import (
+    coerce_to_list,
+    coerce_to_str,
+    coerce_to_int,
+    coerce_to_boolean,
+    coerce_to_date,
+)
 
 log = logging.getLogger(__name__)
 
@@ -49,65 +53,6 @@ def get(url: str):
     response = requests.get(url, headers=settings.HTTP_REQUEST_HEADERS)
     response.encoding = "utf-8-sig"
     return response
-
-
-def _coerce_to_list(obj) -> list:
-    """Wrap the given object in a list if it is not already a list.
-
-    Some API responses return a list or a single object. To avoid handling each
-    case separately we use this function to make sure we always have a list.
-    """
-    if obj is None:
-        return []
-    elif isinstance(obj, list):
-        return obj
-    else:
-        return [obj]
-
-
-def _coerce_to_int(value, default=None) -> Optional[int]:
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
-
-
-def _coerce_to_str(value, default=None) -> Optional[str]:
-    return str(value) if value else default
-
-
-def _coerce_to_boolean(value) -> Optional[bool]:
-    if value is None:
-        return None
-
-    if isinstance(value, str):
-        if value.lower() == "true":
-            return True
-        elif value.lower() == "false":
-            return False
-
-    return bool(value)
-
-
-def _coerce_to_date(value) -> Optional[datetime.date]:
-    try:
-        return dateutil.parser.parse(value).date()
-    except (AttributeError, TypeError, ParserError):
-        pass
-
-    if isinstance(value, dict):
-        try:
-            # Default to xmas day - we will use this to assume the day/month
-            # values are missing.
-            return datetime.date(
-                year=_coerce_to_int(value.get("Year")),
-                month=_coerce_to_int(value.get("Month"), default=12),
-                day=_coerce_to_int(value.get("Day"), default=25),
-            )
-        except (TypeError, ValueError):
-            pass
-
-    return None
 
 
 def _is_xml_null(obj: dict) -> bool:
@@ -151,19 +96,19 @@ class ResponseData:
         return result
 
     def _get_list(self, key: str) -> List:
-        return _coerce_to_list(self._get_value(key))
+        return coerce_to_list(self._get_value(key))
 
     def _get_str(self, key: str) -> Optional[str]:
-        return _coerce_to_str(self._get_value(key))
+        return coerce_to_str(self._get_value(key))
 
     def _get_int(self, key: str) -> Optional[int]:
-        return _coerce_to_int(self._get_value(key))
+        return coerce_to_int(self._get_value(key))
 
     def _get_boolean(self, key: str) -> Optional[bool]:
-        return _coerce_to_boolean(self._get_value(key))
+        return coerce_to_boolean(self._get_value(key))
 
     def _get_date(self, key: str) -> Optional[datetime.date]:
-        return _coerce_to_date(self._get_value(key))
+        return coerce_to_date(self._get_value(key))
 
     def _get_response_list(self, key, response_class: Type):
         objects = self._get_list(key)
@@ -399,7 +344,7 @@ class DeclaredInterestCategoryResponseData(ResponseData):
     def get_interests(self) -> List[InterestResponseData]:
         return [
             InterestResponseData(interest)
-            for interest in _coerce_to_list(
+            for interest in coerce_to_list(
                 self._get_value(interests_contract.INTEREST_GROUP_KEY)
             )
         ]

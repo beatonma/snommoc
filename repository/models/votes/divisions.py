@@ -20,7 +20,7 @@ class Division(BaseModel):
     date = models.DateField()
 
     session = models.ForeignKey(
-        'Session',
+        'ParliamentarySession',
         on_delete=models.CASCADE,
     )
 
@@ -73,12 +73,12 @@ class CommonsDivision(Division):
 class LordsDivision(Division):
     @property
     def contents(self) -> int:
-        """House of Lords useds different language than the Commons."""
+        """Alias for ayes, as used in the House of Lords."""
         return self.ayes
 
     @property
     def not_contents(self) -> int:
-        """House of Lords useds different language than the Commons."""
+        """Alias for noes, as used in the House of Lords."""
         return self.noes
 
 

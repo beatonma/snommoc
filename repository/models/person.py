@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from django.db import models
 
@@ -11,6 +10,8 @@ from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
     TheyWorkForYouMixin,
+    PersonMixin,
+    WikipediaMixin,
 )
 from repository.models.util import time as timeutil
 
@@ -22,6 +23,7 @@ log = logging.getLogger(__name__)
 class Person(
     ParliamentDotUkMixin,
     TheyWorkForYouMixin,
+    WikipediaMixin,
     BaseModel,
 ):
     name = models.CharField(

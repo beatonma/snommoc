@@ -102,6 +102,9 @@ class UnlinkedConstituency(BaseModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Unlinked constituencies'
+
 
 class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(

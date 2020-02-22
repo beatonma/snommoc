@@ -32,6 +32,9 @@ class PhysicalAddress(PersonMixin, BaseModel):
     def __str__(self):
         return f'{self.person} {self.description}'
 
+    class Meta:
+        verbose_name_plural = 'Physical addresses'
+
 
 class WebAddress(PersonMixin, BaseModel):
     description = models.CharField(
@@ -43,3 +46,6 @@ class WebAddress(PersonMixin, BaseModel):
 
     def __str__(self):
         return f'{self.person} {self.description}'
+
+    class Meta:
+        verbose_name_plural = 'Web addresses'

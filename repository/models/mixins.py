@@ -32,7 +32,7 @@ class PersonMixin(models.Model):
 
 class PeriodMixin(models.Model):
     """For models that represent something with a start/end date"""
-    start = models.DateField(null=True)
+    start = models.DateField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
 
     class Meta:

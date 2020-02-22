@@ -13,6 +13,9 @@ class DeclaredInterestCategory(ParliamentDotUkMixin, BaseModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Declared interest categories'
+
 
 class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
     """Declared investments/involvements/relationships that a person has with

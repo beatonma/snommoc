@@ -17,6 +17,9 @@ log = logging.getLogger(__name__)
 class SubjectOfInterestCategory(BaseModel):
     title = models.CharField(max_length=128)
 
+    class Meta:
+        verbose_name_plural = 'Subject of interest categories'
+
 
 class SubjectOfInterest(PersonMixin, BaseModel):
     """A subject that a person is particularly interested in.
@@ -27,3 +30,6 @@ class SubjectOfInterest(PersonMixin, BaseModel):
     )
 
     subject = models.CharField(max_length=512)
+
+    class Meta:
+        verbose_name_plural = 'Subjects of interest'

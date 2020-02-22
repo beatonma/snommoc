@@ -21,6 +21,9 @@ class ExperienceCategory(BaseModel):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = 'Experience categories'
+
 
 class Experience(PersonMixin, PeriodMixin, BaseModel):
     category = models.ForeignKey(

@@ -47,3 +47,19 @@ from .subjects_of_interest import (
     SubjectOfInterest,
     SubjectOfInterestCategory,
 )
+from .session import ParliamentarySession
+from .bill import (
+    Bill,
+    BillSponsor,
+    BillStageType,
+    BillStage,
+    BillStageSitting,
+    BillPublication,
+    BillType,
+)
+from .divisions import (
+    CommonsDivision,
+    CommonsDivisionVote,
+    LordsDivision,
+    LordsDivisionVote,
+)

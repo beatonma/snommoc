@@ -48,7 +48,7 @@ class LdaRemoteClientTests(NetworkTestCase):
     def test_get_page(self):
         page_number = 1
         items_per_page = 15
-        response = lda_client.get_page(
+        response = lda_client.get_list_page(
             'http://lda.data.parliament.uk/constituencies.json',
             page_number=page_number,
             page_size=items_per_page)

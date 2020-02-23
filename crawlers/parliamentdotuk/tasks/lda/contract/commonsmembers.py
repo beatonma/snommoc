@@ -1,4 +1,4 @@
-"""JSON keys as used in http://lda.data.parliament.uk/commonsmembers.json"""
+"""JSON keys as used in https://lda.data.parliament.uk/commonsmembers.json"""
 
 NAME_FULL = 'fullName'
 NAME_GIVEN = 'givenName'

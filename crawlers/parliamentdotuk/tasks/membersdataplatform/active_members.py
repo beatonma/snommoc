@@ -96,8 +96,8 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
     updating hundreds of profiles unnecessarily.
     """
 
-    def _report_func(items: List[str]) -> Tuple[str, str]:
-        return "update_active_member_details", "\n".join(items)
+    # def _report_func(items: List[str]) -> Tuple[str, str]:
+    #     return "update_active_member_details", "\n".join(items)
 
     active_member_ids = [
         person.parliamentdotuk for person in Person.objects.filter(active=True)
@@ -110,7 +110,7 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
         update_members(
             endpoints.member_biography(parliamentdotuk_id),
             update_member_func=_update_member_biography,
-            report_func=_report_func,
+            report_func=None,
             response_class=MemberBiographyResponseData,
         )
         time.sleep(1)

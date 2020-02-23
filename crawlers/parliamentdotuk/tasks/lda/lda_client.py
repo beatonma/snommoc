@@ -18,6 +18,7 @@ from crawlers.parliamentdotuk.tasks.lda.endpoints import (
     PARAM_PAGE_SIZE,
     PARAM_PAGE,
 )
+from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_date
 from notifications.models import TaskNotification
 
 log = logging.getLogger(__name__)
@@ -48,16 +49,7 @@ def get_value(data: Dict, key: str) -> Optional[str]:
 
 
 def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
-    as_string = get_value(data, key)
-
-    if as_string:
-        try:
-            from django.utils.dateparse import parse_date
-            parsed = parse_date(as_string)
-            return parsed
-        except ValueError:
-            log.warning(f'Unable to parse date from string "{as_string}"')
-    return None
+    return coerce_to_date(get_value(data, key))
 
 
 def get_parliamentdotuk_id(about_url: str) -> Optional[int]:
@@ -66,13 +58,14 @@ def get_parliamentdotuk_id(about_url: str) -> Optional[int]:
         return int(matches[0])
 
 
-def get_page(
+def get_list_page(
         endpoint: str,
         page_number: int = 0,
         page_size: int = MAX_PAGE_SIZE,
 ) -> requests.Response:
+    """Fetch a page where the result is a list."""
     log.debug(endpoint)
-    response = requests.get(
+    return requests.get(
         endpoint,
         headers=settings.HTTP_REQUEST_HEADERS,
         params={
@@ -80,7 +73,19 @@ def get_page(
             PARAM_PAGE: page_number,
         })
 
-    return response
+
+def get_item_page(endpoint: str) -> requests.Response:
+    log.debug(endpoint)
+    return requests.get(endpoint, headers=settings.HTTP_REQUEST_HEADERS)
+
+
+def get_item_data(endpoint: str) -> Optional[Dict]:
+    response = get_item_page(endpoint)
+    try:
+        return response.json().get('result').get('primaryTopic')
+    except AttributeError as e:
+        log.warning(f'Could not get item data for url={endpoint}: {e}')
+        return None
 
 
 def update_model(
@@ -101,7 +106,7 @@ def update_model(
     ).save()
 
     while next_page is not None:
-        response = get_page(endpoint_url, page_number=page_number, page_size=page_size)
+        response = get_list_page(endpoint_url, page_number=page_number, page_size=page_size)
 
         if response.status_code != 200:
             log.warning(f'Failed to update: {response.url} [status={response.status_code}]')

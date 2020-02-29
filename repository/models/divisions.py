@@ -93,6 +93,8 @@ class DivisionVote(PersonMixin, BaseModel):
     aye = models.BooleanField(default=False)
     no = models.BooleanField(default=False)
     abstention = models.BooleanField(default=False)
+    did_not_vote = models.BooleanField(default=False)
+    suspended_or_expelled = models.BooleanField(default=False)
 
     @property
     def vote_type(self):
@@ -102,6 +104,10 @@ class DivisionVote(PersonMixin, BaseModel):
             return 'No'
         elif self.abstention:
             return 'Abstain'
+        elif self.did_not_vote:
+            return 'Did not vote'
+        elif self.suspended_or_expelled:
+            return 'Suspended or Expelled'
 
     class Meta:
         abstract = True

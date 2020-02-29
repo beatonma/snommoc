@@ -18,7 +18,11 @@ from crawlers.parliamentdotuk.tasks.lda.endpoints import (
     PARAM_PAGE_SIZE,
     PARAM_PAGE,
 )
-from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_date
+from crawlers.parliamentdotuk.tasks.util.coercion import (
+    coerce_to_date,
+    coerce_to_int,
+    coerce_to_str,
+)
 from notifications.models import TaskNotification
 
 log = logging.getLogger(__name__)
@@ -50,6 +54,35 @@ def get_value(data: Dict, key: str) -> Optional[str]:
 
 def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
     return coerce_to_date(get_value(data, key))
+
+
+def unwrap_value(data, key):
+    """Many values are provided in an object wrapped with an array of length=1"""
+    obj = data.get(key)
+    if isinstance(obj, list):
+        return obj[0].get('_value')
+    else:
+        return obj.get('_value')
+
+
+def unwrap(data, key):
+    return data.get(key)[0]
+
+
+def unwrap_str(data, key) -> str:
+    return coerce_to_str(unwrap(data, key))
+
+
+def unwrap_value_str(data, key) -> str:
+    return coerce_to_str(unwrap_value(data, key))
+
+
+def unwrap_value_int(data, key) -> int:
+    return coerce_to_int(unwrap_value(data, key))
+
+
+def unwrap_value_date(data, key) -> datetime.date:
+    return coerce_to_date(unwrap_value(data, key))
 
 
 def get_parliamentdotuk_id(about_url: str) -> Optional[int]:
@@ -119,9 +152,12 @@ def update_model(
             return
 
         for item in items:
-            new_name = update_item_func(item)
-            if new_name:
-                new_items.append(new_name)
+            try:
+                new_name = update_item_func(item)
+                if new_name:
+                    new_items.append(new_name)
+            except Exception as e:
+                log.warning(f'Failed to update item: {e} {item}')
 
         page_number += 1
         next_page = get_next_page_url(data) if follow_pagination else None

@@ -20,7 +20,9 @@ class BillType(BaseModel):
 
 
 class BillSponsor(BaseModel):
-    name = models.CharField(max_length=128, null=True, blank=True)
+    name = models.CharField(
+        max_length=128, null=True, blank=True,
+        help_text='Raw name of the person if a Person instance cannot be found.')
     person = models.ForeignKey(
         'Person',
         models.CASCADE,
@@ -30,6 +32,11 @@ class BillSponsor(BaseModel):
         'Bill',
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        unique_together = [
+            ['person', 'bill'],
+        ]
 
 
 class BillStageType(ParliamentDotUkMixin, BaseModel):
@@ -79,16 +86,22 @@ class Bill(ParliamentDotUkMixin, BaseModel):
     title = models.CharField(max_length=512)
     description = models.CharField(max_length=1024)
     act_name = models.CharField(max_length=512)
+    label = models.CharField(max_length=512)
     homepage = models.URLField()
+    date = models.DateField()
 
     ballot_number = models.PositiveIntegerField(default=0)
     bill_chapter = models.PositiveIntegerField(default=0)
 
-    is_private = models.BooleanField()
+    is_private = models.BooleanField(default=False)
+    is_money_bill = models.BooleanField(default=False)
+
+    public_involvement_allowed = models.BooleanField(default=False)
 
     bill_type = models.ForeignKey(
         'BillType',
         on_delete=models.CASCADE,
+        null=True,
     )
     session = models.ForeignKey(
         'ParliamentarySession',

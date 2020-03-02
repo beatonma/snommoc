@@ -16,6 +16,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import (
     _update_member_basic_info,
     update_all_mps_basic_info,
 )
+from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
 from repository.models import Constituency
 from repository.models.person import Person
 
@@ -27,28 +28,10 @@ EXAMPLE_RESPONSE_MANY_MPS ={"Members": {"Member": [{"@Member_Id": "172", "@Dods_
 
 
 def get_mock_json_response_single_mp(*args, **kwargs):
-    class MockJsonResponse:
-        def __init__(self, url, json_data, status_code):
-            self.json_data = json_data
-            self.status_code = status_code
-            print(f'MOCK RESPONSE: {url}')
-
-        def json(self):
-            return self.json_data
-
     return MockJsonResponse(args[0], EXAMPLE_RESPONSE_SINGLE_MP, 200)
 
 
 def get_mock_json_response_many_mps(*args, **kwargs):
-    class MockJsonResponse:
-        def __init__(self, url, json_data, status_code):
-            self.json_data = json_data
-            self.status_code = status_code
-            print(f'MOCK RESPONSE: {url}')
-
-        def json(self):
-            return self.json_data
-
     return MockJsonResponse(args[0], EXAMPLE_RESPONSE_MANY_MPS, 200)
 
 
@@ -120,7 +103,6 @@ class MdpUpdateMpsTest(LocalTestCase):
         update_all_mps_basic_info()
 
         people = Person.objects.all()
-        print(people)
 
         self.assertEquals(len(people), 3)
         diane_abbot: Person = people.get(parliamentdotuk=172)

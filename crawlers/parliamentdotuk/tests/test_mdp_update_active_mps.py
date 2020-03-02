@@ -62,20 +62,12 @@ from repository.models.houses import (
 from repository.tests import values
 
 from .data_mdp_update_active_mps import *
+from .mock import MockJsonResponse
 
 log = logging.getLogger(__name__)
 
 
 def get_mock_biography_response(*args, **kwargs):
-    class MockJsonResponse:
-        def __init__(self, url, json_data, status_code):
-            self.json_data = json_data
-            self.status_code = status_code
-            print(f"MOCK RESPONSE: {url}")
-
-        def json(self):
-            return self.json_data
-
     return MockJsonResponse(args[0], SAMPLE_BIOGRAPHY_RESPONSE, 200)
 
 

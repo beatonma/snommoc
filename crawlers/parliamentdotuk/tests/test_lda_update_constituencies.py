@@ -12,20 +12,12 @@ from crawlers.parliamentdotuk.tasks.lda.update_constituencies import (
 from repository.models import Constituency
 
 from .data_lda_update_constituencies import EXAMPLE_RESPONSE
+from .mock import MockJsonResponse
 
 log = logging.getLogger(__name__)
 
 
 def get_mock_json_response(*args, **kwargs):
-    class MockJsonResponse:
-        def __init__(self, url, json_data, status_code):
-            self.json_data = json_data
-            self.status_code = status_code
-            print(f'MOCK RESPONSE: {url}')
-
-        def json(self):
-            return self.json_data
-
     return MockJsonResponse(args[0], EXAMPLE_RESPONSE, 200)
 
 

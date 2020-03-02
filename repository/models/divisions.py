@@ -99,15 +99,15 @@ class DivisionVote(PersonMixin, BaseModel):
     @property
     def vote_type(self):
         if self.aye:
-            return 'Aye'
+            return 'AyeVote'
         elif self.no:
-            return 'No'
+            return 'NoVote'
         elif self.abstention:
-            return 'Abstain'
+            return 'Abstains'
         elif self.did_not_vote:
-            return 'Did not vote'
+            return 'DidNotVote'
         elif self.suspended_or_expelled:
-            return 'Suspended or Expelled'
+            return 'SuspendedOrExpelledVote'
 
     class Meta:
         abstract = True
@@ -123,11 +123,6 @@ class CommonsDivisionVote(DivisionVote):
     def __str__(self):
         return f'{self.person} [{self.vote_type}]: {self.division}'
 
-    class Meta:
-        unique_together = [
-            ['person', 'division'],
-        ]
-
 
 class LordsDivisionVote(DivisionVote):
     division = models.ForeignKey(
@@ -138,8 +133,3 @@ class LordsDivisionVote(DivisionVote):
 
     def __str__(self):
         return f'{self.person} [{self.vote_type}]: {self.division}'
-
-    class Meta:
-        unique_together = [
-            ['person', 'division'],
-        ]

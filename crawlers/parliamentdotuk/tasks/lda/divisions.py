@@ -67,6 +67,31 @@ def _get_vote_lords_member_id(vote_data):
     return get_parliamentdotuk_id(vote_data.get(contract.VOTE_MEMBER)[0])
 
 
+def _create_commons_vote(division_id, vote):
+    vote_type = coerce_to_str(vote.get(contract.VOTE_TYPE)).split('#')[1]
+
+    CommonsDivisionVote.objects.update_or_create(
+        division_id=division_id,
+        person_id=_get_vote_commons_member_id(vote),
+        aye=vote_type == votes_contract.VOTE_AYE,
+        no=vote_type == votes_contract.VOTE_NO,
+        abstention=vote_type == votes_contract.VOTE_ABSTAINS,
+        did_not_vote=vote_type == votes_contract.VOTE_DID_NOT,
+        suspended_or_expelled=vote_type == votes_contract.VOTE_SUSPENDED_EXPELLED,
+    )
+
+
+def _create_lords_vote(division_id, vote):
+    vote_type = coerce_to_str(vote.get(contract.VOTE_TYPE)).split('#')[1]
+
+    LordsDivisionVote.objects.update_or_create(
+        division_id=division_id,
+        person_id=_get_vote_lords_member_id(vote),
+        aye=vote_type == votes_contract.VOTE_CONTENT,
+        no=vote_type == votes_contract.VOTE_NOT_CONTENT,
+    )
+
+
 def _create_commons_division(parliamentdotuk: int, data: dict) -> Optional[str]:
     division = CommonsDivision.objects.create(
         parliamentdotuk=parliamentdotuk,
@@ -89,26 +114,7 @@ def _create_commons_division(parliamentdotuk: int, data: dict) -> Optional[str]:
 
     votes = data.get(contract.VOTES)
     for vote in votes:
-        vote_type = (coerce_to_str(vote.get(contract.VOTE_TYPE))
-                     .replace('http://', '').replace('https://', ''))
-        if vote_type not in {
-            votes_contract.VOTE_AYE,
-            votes_contract.VOTE_NO,
-            votes_contract.VOTE_DID_NOT,
-            votes_contract.VOTE_ABSTAINS,
-            votes_contract.VOTE_SUSPENDED_EXPELLED,
-        }:
-            log.warning(f'Unhandled vote type: "{vote_type}"')
-
-        CommonsDivisionVote.objects.update_or_create(
-            division=division,
-            person_id=_get_vote_commons_member_id(vote),
-            aye=vote_type == votes_contract.VOTE_AYE,
-            no=vote_type == votes_contract.VOTE_NO,
-            abstention=vote_type == votes_contract.VOTE_ABSTAINS,
-            did_not_vote=vote_type == votes_contract.VOTE_DID_NOT,
-            suspended_or_expelled=vote_type == votes_contract.VOTE_SUSPENDED_EXPELLED,
-        )
+        _create_commons_vote(division.parliamentdotuk, vote)
 
     return division.title
 
@@ -131,17 +137,7 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> Optional[str]:
 
     votes = data.get(contract.VOTES)
     for vote in votes:
-        vote_type = (coerce_to_str(vote.get(contract.VOTE_TYPE))
-                     .replace('http://', '').replace('https://', ''))
-        if vote_type not in {votes_contract.VOTE_CONTENT, votes_contract.VOTE_NOT_CONTENT}:
-            log.warning(f'Unhandled vote type: "{vote_type}"')
-
-        LordsDivisionVote.objects.update_or_create(
-            division=division,
-            person_id=_get_vote_lords_member_id(vote),
-            aye=vote_type == votes_contract.VOTE_CONTENT,
-            no=vote_type == votes_contract.VOTE_NOT_CONTENT,
-        )
+        _create_lords_vote(division.parliamentdotuk, vote)
 
     return division.title
 

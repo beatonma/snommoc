@@ -3,7 +3,10 @@
 """
 
 import logging
-from typing import Optional
+from typing import (
+    Optional,
+    Tuple,
+)
 
 from celery import shared_task
 
@@ -16,10 +19,10 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     unwrap_str,
     unwrap_value_date,
     unwrap_value_str,
+    update_model,
 )
 from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_str,
-    coerce_to_int,
     coerce_to_list,
     coerce_to_boolean,
 )
@@ -35,6 +38,7 @@ from repository.models import (
     BillStageType,
     BillStageSitting,
 )
+from repository.models.person import PersonAlsoKnownAs
 
 log = logging.getLogger(__name__)
 
@@ -60,11 +64,11 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
         description=coerce_to_str(data.get(contract.BILL_TYPE_DESCRIPTION)),
     )
 
-    bill, _ = Bill.objects.update_or_create(
+    bill, bill_created = Bill.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
             'act_name': coerce_to_str(data.get(contract.ACT_NAME)),
-            'bill_chapter': coerce_to_int(data.get(contract.BILL_CHAPTER)),
+            'bill_chapter': coerce_to_str(data.get(contract.BILL_CHAPTER)),
             'bill_type': bill_type,
             'ballot_number': unwrap_value_int(data, contract.BALLOT_NUMBER),
             'date': unwrap_value_date(data, contract.DATE),
@@ -90,6 +94,9 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
     sponsors = coerce_to_list(data.get(contract.SPONSORS))
     for sponsor in sponsors:
         _update_sponsor(bill, sponsor)
+
+    if bill_created:
+        return bill.title
 
 
 def _update_bill_publication(bill, publication):
@@ -145,12 +152,26 @@ def _update_sponsor(bill, data):
             person=person,
             bill=bill,
         )
+        return
 
     except Person.DoesNotExist:
+        pass
+
+    try:
+        # Check if we have registered any aliases that match the name.
+        alias = PersonAlsoKnownAs.objects.get(alias=sponsor_name)
         BillSponsor.objects.get_or_create(
-            name=sponsor_name,
+            person=alias.person,
             bill=bill,
         )
+        return
+    except PersonAlsoKnownAs.DoesNotExist:
+        pass
+
+    BillSponsor.objects.get_or_create(
+        name=sponsor_name,
+        bill=bill,
+    )
 
 
 @shared_task
@@ -163,3 +184,14 @@ def update_bills(follow_pagination=True) -> None:
             return None
 
         return _update_bill(parliamentdotuk, data)
+
+    def build_report(new_bills: list) -> Tuple[str, str]:
+        return 'Bills updated', '\n'.join(new_bills)
+
+    update_model(
+        endpoints.BILLS,
+        update_item_func=fetch_and_update_bill,
+        report_func=build_report,
+        follow_pagination=follow_pagination,
+        item_uses_network=True,
+    )

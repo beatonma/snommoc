@@ -138,7 +138,7 @@ class UpdateBillTests(LocalTestCase):
 
         bill = Bill.objects.first()
         self.assertEqual(bill.parliamentdotuk, 754405)
-        self.assertEqual(bill.bill_chapter, 32)
+        self.assertEqual(bill.bill_chapter, '32')
         self.assertEqual(bill.ballot_number, 13)
         self.assertEqual(bill.act_name, 'Prisons (Interference with Wireless Telegraphy) Act 2018')
         self.assertEqual(bill.title, 'Prisons (Interference with Wireless Telegraphy) Bill')

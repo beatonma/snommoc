@@ -147,3 +147,14 @@ class Person(
     class Meta:
         ordering = ['name']
         verbose_name_plural = 'People'
+
+
+class PersonAlsoKnownAs(PersonMixin, BaseModel):
+    alias = models.CharField(max_length=NAME_MAX_LENGTH)
+
+    class Meta:
+        verbose_name_plural = 'People also known as'
+        verbose_name = 'PersonAlsoKnownAs'
+
+    def __str__(self):
+        return f'{self.alias} -> {self.person}'

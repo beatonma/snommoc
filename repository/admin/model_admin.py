@@ -6,6 +6,8 @@ from django.db import models
 
 from repository.models import (
     Constituency,
+    CommonsDivision,
+    LordsDivision,
 )
 from repository.models.person import Person
 
@@ -14,6 +16,8 @@ from repository.models.person import Person
 DEDICATED_ADMIN_MODELS = [
     Constituency,
     Person,
+    CommonsDivision,
+    LordsDivision,
 ]
 repository_config = apps.get_app_config('repository')
 GENERIC_ADMIN_MODELS: List[models.Model] = [
@@ -59,4 +63,11 @@ class PersonAdmin(DefaultAdmin):
 
     search_fields = [
         'name',
+    ]
+
+
+@admin.register(CommonsDivision, LordsDivision)
+class DivisionAdmin(DefaultAdmin):
+    search_fields = [
+        'parliamentdotuk',
     ]

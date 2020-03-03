@@ -37,3 +37,10 @@ class UpdatePartiesView(BaseDashboardView):
         from repository.tasks import init_parties
         init_parties()
         return HttpResponse('OK')
+
+
+class RebuildAllView(BaseDashboardView):
+    def get(self, request, *args, **kwargs):
+        from crawlers.parliamentdotuk.tasks import rebuild_all_data
+
+        rebuild_all_data()

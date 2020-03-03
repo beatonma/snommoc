@@ -11,6 +11,7 @@ from repository.models import (
     Party,
     Person,
 )
+from repository.models.constituency import UnlinkedConstituency
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
     HOUSE_OF_LORDS,
@@ -19,6 +20,7 @@ from repository.models.houses import (
 
 def with_unread_notifications(context: dict):
     context['notifications'] = TaskNotification.objects.filter(read=False)
+    context['unlinked_constituencies'] = UnlinkedConstituency.objects.all().count()
     return context
 
 

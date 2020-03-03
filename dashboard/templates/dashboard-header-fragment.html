@@ -10,3 +10,8 @@
     <a href="{% url 'dashboard-parties' requirement='active' %}">Active parties</a>
 </div>
 {% include 'new-notifications-fragment.html' %}
+{% if unlinked_constituencies %}
+    <div id="unlinked_constituencies">
+        <span class="notifications-count">{{ unlinked_constituencies }}</span> unlinked constituencies!
+    </div>
+{% endif %}

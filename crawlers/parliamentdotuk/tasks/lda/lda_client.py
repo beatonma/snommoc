@@ -128,6 +128,7 @@ def update_model(
         page_size=MAX_PAGE_SIZE,
         page_load_delay: int = 5,  # Basic rate limiting
         follow_pagination: bool = True,
+        item_uses_network: bool = False,  # If True we will add a delay in the item loop for rate limiting
 ) -> None:
     new_items = []
     page_number = 0
@@ -158,6 +159,8 @@ def update_model(
                     new_items.append(new_name)
             except Exception as e:
                 log.warning(f'Failed to update item: {e} {item}')
+            if item_uses_network:
+                time.sleep(page_load_delay)
 
         page_number += 1
         next_page = get_next_page_url(data) if follow_pagination else None

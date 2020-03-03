@@ -199,6 +199,7 @@ def update_lords_divisions(follow_pagination=True) -> None:
         update_item_func=update_division,
         report_func=build_report,
         follow_pagination=follow_pagination,
+        item_uses_network=True,
     )
 
 

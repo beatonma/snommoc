@@ -28,6 +28,11 @@ class Command(BaseCommand):
             action='store_true',
             help='Delete all divisions and related votes',
         )
+        parser.add_argument(
+            '-async',
+            action='store_true',
+            help='Pass update_bills to Celery.',
+        )
 
     def handle(self, *args, **options):
         if options['clear']:
@@ -41,6 +46,9 @@ class Command(BaseCommand):
                 Bill,
             ]:
                 M.objects.all().delete()
+
+        elif options['async']:
+            update_bills.delay()
 
         else:
             update_bills()

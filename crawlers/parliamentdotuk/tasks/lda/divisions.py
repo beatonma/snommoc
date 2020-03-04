@@ -143,6 +143,12 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> Optional[str]:
 
 
 @shared_task
+def update_all_divisions(follow_pagination=True) -> None:
+    update_commons_divisions(follow_pagination)
+    update_lords_divisions(follow_pagination)
+
+
+@shared_task
 def update_commons_divisions(follow_pagination=True) -> None:
     def update_division(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))

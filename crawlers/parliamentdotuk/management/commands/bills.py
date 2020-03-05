@@ -48,6 +48,7 @@ class Command(BaseCommand):
                 M.objects.all().delete()
 
         elif options['async']:
+            log.info('Passing task "update_bills" to celery')
             update_bills.delay()
 
         else:

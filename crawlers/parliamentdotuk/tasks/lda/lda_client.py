@@ -9,8 +9,8 @@ from typing import (
     Tuple,
 )
 
-import logging
 import requests
+from celery.utils.log import get_task_logger
 from django.conf import settings
 
 from crawlers.parliamentdotuk.tasks.lda.endpoints import (
@@ -25,7 +25,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
 )
 from notifications.models import TaskNotification
 
-log = logging.getLogger(__name__)
+log = get_task_logger(__name__)
 
 
 def get_next_page_url(json_response) -> Optional[str]:
@@ -97,7 +97,7 @@ def get_list_page(
         page_size: int = MAX_PAGE_SIZE,
 ) -> requests.Response:
     """Fetch a page where the result is a list."""
-    log.debug(endpoint)
+    log.info(endpoint)
     return requests.get(
         endpoint,
         headers=settings.HTTP_REQUEST_HEADERS,
@@ -108,7 +108,7 @@ def get_list_page(
 
 
 def get_item_page(endpoint: str) -> requests.Response:
-    log.debug(endpoint)
+    log.info(endpoint)
     return requests.get(endpoint, headers=settings.HTTP_REQUEST_HEADERS)
 
 

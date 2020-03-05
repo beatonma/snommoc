@@ -4,6 +4,7 @@ env/
 */local_settings.py
 */local_urls.py
 /static/
+*/migrations/
 uwsgi.ini
 .coverage
 .*.json

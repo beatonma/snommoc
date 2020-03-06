@@ -104,7 +104,7 @@ class Bill(ParliamentDotUkMixin, BaseModel):
     """A proposal for a new law, or a proposal to change an existing law that
     is presented for debate before Parliament."""
     title = models.CharField(max_length=512)
-    description = models.CharField(max_length=1024, null=True, blank=True)
+    description = models.CharField(max_length=2048, null=True, blank=True)
     act_name = models.CharField(max_length=512, null=True, blank=True)
     label = models.CharField(max_length=512)
     homepage = models.URLField()

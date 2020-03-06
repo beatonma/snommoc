@@ -457,12 +457,14 @@ def update_members(
 ) -> None:
     short_url = endpoint_url[24:]
     new_members: List[str] = []
+    notification_id = None
     if report_func:
-        task_started_notification = TaskNotification.objects.create(
+        notification = TaskNotification.objects.create(
             title=f"[starting] ...{short_url}",
             content=f"An update cycle has started for endpoint {endpoint_url}",
         )
-        task_started_notification.save()
+        notification.save()
+        notification_id = notification.pk
 
     response = get(endpoint_url)
     try:
@@ -475,13 +477,10 @@ def update_members(
     except AttributeError as e:
         log.warning(f"Could not read item list: {e}")
         if report_func:
-            failed_task_notification = TaskNotification.objects.create(
-                title=f"[failed] ...{short_url}",
-                content=f"Update failed for endpoint {endpoint_url}: {e}",
-                parent=task_started_notification,
-            )
-            failed_task_notification.mark_as_failed()
-            task_started_notification.mark_as_failed()
+            notification = TaskNotification.objects.get(pk=notification_id)
+            notification.title = f"[failed] ...{short_url}"
+            notification.content = f"Update failed for endpoint {endpoint_url}: {e}"
+            notification.mark_as_failed()
         return
 
     for member in members:
@@ -494,9 +493,7 @@ def update_members(
 
     if report_func:
         title, content = report_func(new_members)
-        complete_task_notification = TaskNotification.objects.create(
-            title=f"[finished] ...{short_url}",
-            content=content,
-        )
-        complete_task_notification.mark_as_complete()
-        task_started_notification.mark_as_complete()
+        notification = TaskNotification.objects.get(pk=notification_id)
+        notification.title = f"[finished] ...{short_url}"
+        notification.content = content
+        notification.mark_as_complete()

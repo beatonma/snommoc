@@ -10,6 +10,10 @@ from typing import (
 
 from celery import shared_task
 
+from crawlers.parliamentdotuk.models import (
+    CommonsDivisionUpdateError,
+    LordsDivisionUpdateError,
+)
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     update_model,
@@ -161,11 +165,14 @@ def update_commons_divisions(follow_pagination=True) -> None:
             return fetch_and_create_division(puk)
 
     def fetch_and_create_division(parliamentdotuk) -> Optional[str]:
-        data = get_item_data(endpoints.COMMONS_DIVISION.format(parliamentdotuk=parliamentdotuk))
-        if data is None:
-            return None
+        try:
+            data = get_item_data(endpoints.COMMONS_DIVISION.format(parliamentdotuk=parliamentdotuk))
+            if data is None:
+                return None
 
-        return _create_commons_division(parliamentdotuk, data)
+            return _create_commons_division(parliamentdotuk, data)
+        except Exception as e:
+            CommonsDivisionUpdateError.create(parliamentdotuk, e)
 
     def build_report(new_divisions: list) -> Tuple[str, str]:
         return 'Commons divisions updated', '\n'.join(new_divisions)
@@ -191,11 +198,15 @@ def update_lords_divisions(follow_pagination=True) -> None:
             return fetch_and_create_division(puk)
 
     def fetch_and_create_division(parliamentdotuk) -> Optional[str]:
-        data = get_item_data(endpoints.LORDS_DIVISION.format(parliamentdotuk=parliamentdotuk))
-        if data is None:
-            return None
+        try:
+            data = get_item_data(endpoints.LORDS_DIVISION.format(parliamentdotuk=parliamentdotuk))
+            if data is None:
+                return None
 
-        return _create_lords_division(parliamentdotuk, data)
+            return _create_lords_division(parliamentdotuk, data)
+
+        except Exception as e:
+            LordsDivisionUpdateError.create(parliamentdotuk, e)
 
     def build_report(new_divisions: list) -> Tuple[str, str]:
         return 'Lords divisions updated', '\n'.join(new_divisions)

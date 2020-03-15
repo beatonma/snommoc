@@ -8,7 +8,7 @@ from typing import Optional
 import dateutil
 from dateutil.parser import ParserError
 
-from repository.models.util.time import year_only_date
+from util.time import year_only_date
 
 log = logging.getLogger(__name__)
 

@@ -1,10 +1,11 @@
 """
-
+Viewsets for any data about a particular member.
 """
 
 import logging
 
-from rest_framework import viewsets
+from django_filters import rest_framework as filters
+from rest_framework import serializers
 
 from api.serializers import (
     ConstituencySerializer,
@@ -23,24 +24,20 @@ from api.serializers import (
     ExperienceCollectionSerializer,
     HistoricalPartyCollectionSerializer,
     FullProfileSerializer,
+    MaidenSpeechCollectionSerializer,
+    SubjectOfInterestCollectionSerializer,
+    DetailedSerializer,
 )
-from api.serializers.maiden_speeches import MaidenSpeechCollectionSerializer
-from api.serializers.subjects_of_interest import SubjectOfInterestCollectionSerializer
-from api.views.decorators import api_key_required
+from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Constituency,
     Party,
     Person,
+    CommonsDivisionVote,
 )
+# from surface.models.featured import FeaturedPerson
 
 log = logging.getLogger(__name__)
-
-
-class KeyRequiredViewSet(viewsets.ReadOnlyModelViewSet):
-    """Base class for any ViewSet that requires a key/authorised user."""
-    @api_key_required
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
 
 
 class PartyViewSet(KeyRequiredViewSet):
@@ -299,5 +296,37 @@ class SubjectOfInterestViewSet(BaseMemberViewSet):
     Fields:
       - `category`: Short description of category
       - `subject`: Plain text description of interests
-      """
+    """
     serializer_class = SubjectOfInterestCollectionSerializer
+
+
+class VoteFilter(filters.FilterSet):
+    division = filters.CharFilter(field_name='division', lookup_expr='title__icontains')
+    member = filters.NumberFilter(field_name='person', lookup_expr='pk')
+
+
+class TestSerializer(DetailedSerializer):
+    parliamentdotuk = serializers.IntegerField(source='division.parliamentdotuk')
+    title = serializers.CharField(source='division.title')
+
+    class Meta:
+        model = CommonsDivisionVote
+        fields = [
+            'parliamentdotuk',
+            'title',
+            'vote_type',
+        ]
+
+
+class CommonsVotesViewSet(KeyRequiredViewSet):
+    """Return a Person's votes in Commons and Lords Divisions.
+    """
+    queryset = CommonsDivisionVote.objects.all()
+
+    # serializer_class = VotesCollectionSerializer
+    serializer_class = TestSerializer
+    filterset_class = VoteFilter
+
+
+# class FeaturedMembersViewSet(KeyRequiredViewSet):
+#     queryset = FeaturedPerson.objects.all()

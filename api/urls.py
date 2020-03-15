@@ -8,7 +8,7 @@ from api.views.routers import (
     DetailOnlyRouter,
     ListOrDetailRouter,
 )
-from api.views.viewsets import (
+from api.views.viewsets.member import (
     PartyViewSet,
     ConstituencyViewSet,
     MemberViewSet,
@@ -19,11 +19,11 @@ from api.views.viewsets import (
     ProfileViewSet,
     ExperienceViewSet,
     ContestedElectionViewSet,
-    ElectionViewSet,
     HistoricalConstituencyViewSet,
     HistoricalPartyViewSet,
     MaidenSpeechViewSet,
     SubjectOfInterestViewSet,
+    CommonsVotesViewSet,
 )
 
 # Views which can return a list of inline viewsets, or a single detailed viewset.
@@ -31,7 +31,7 @@ list_or_detail = ListOrDetailRouter()
 list_or_detail.register(endpoints.MEMBER, MemberViewSet, basename=endpoints.MEMBER)
 list_or_detail.register(endpoints.PARTY, PartyViewSet)
 list_or_detail.register(endpoints.CONSTITUENCY, ConstituencyViewSet)
-list_or_detail.register(endpoints.ELECTIONS, ElectionViewSet)
+list_or_detail.register(endpoints.DIVISION_COMMONS, CommonsVotesViewSet)
 
 # Views which can only return a single detailed viewset.
 detail_only = DetailOnlyRouter()

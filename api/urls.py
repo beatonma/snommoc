@@ -25,6 +25,7 @@ from api.views.viewsets import (
     MaidenSpeechViewSet,
     SubjectOfInterestViewSet,
 )
+from api.views.views import PingView
 
 # Views which can return a list of inline viewsets, or a single detailed viewset.
 list_or_detail = ListOrDetailRouter()
@@ -52,6 +53,7 @@ for x in list_or_detail.urls + detail_only.urls:
     print(x)
 
 urlpatterns = [
+    path('ping/', PingView.as_view(), name='api_ping_view'),
     path('', include(list_or_detail.urls)),
     path('', include(detail_only.urls)),
 ]

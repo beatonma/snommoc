@@ -7,12 +7,12 @@ import logging
 from typing import Optional
 
 from basetest.testcase import LocalTestCase
-from repository.models.util import time as timeutil
+from util import time as timeutil
 
 log = logging.getLogger(__name__)
 
 
-class UtilTests(LocalTestCase):
+class TimeUtilTests(LocalTestCase):
     """"""
     def test_years_between(self):
         self.assertEqual(
@@ -83,3 +83,27 @@ class UtilTests(LocalTestCase):
         _assert_is_anniversary(year=2042, month=11, day=17)
 
         self.assertFalse(timeutil.is_anniversary(None, now))
+
+    def test_in_range(self):
+        now = d(year=2020, month=3, day=15)
+
+        def _assert_in_range(start: Optional[datetime.date], end: Optional[datetime.date]):
+            self.assertTrue(timeutil.in_range(now, start, end))
+
+        def _assert_not_in_range(start: Optional[datetime.date], end: Optional[datetime.date]):
+            self.assertFalse(timeutil.in_range(now, start, end))
+
+        _assert_in_range(None, None)
+        _assert_in_range(None, d(2021, 3, 15))
+
+        _assert_in_range(d(2001, 4, 16), d(2032, 1, 24))
+
+        _assert_not_in_range(now, now)
+        _assert_in_range(now, None)
+        _assert_not_in_range(None, now)
+
+        _assert_not_in_range(d(2032, 1, 24), None)
+        _assert_not_in_range(None, d(2001, 4, 16))
+
+        _assert_not_in_range(d(2001, 4, 16), d(2003, 5, 17))
+        _assert_not_in_range(d(2032, 1, 24), d(2078, 1, 12))

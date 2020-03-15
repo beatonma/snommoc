@@ -43,3 +43,16 @@ def year_only_date(year: int) -> datetime.date:
     parliamentary or otherwise.
     """
     return datetime.date(year=year, month=12, day=25)
+
+
+def in_range(date: datetime.date, start: Optional[datetime.date], end: Optional[datetime.date]) -> bool:
+    if start is None:
+        return end is None or end > date
+    if end is None:
+        return start is None or start <= date
+
+    return start <= date < end
+
+
+def is_current(start: Optional[datetime.date], end: Optional[datetime.date]) -> bool:
+    return in_range(datetime.date.today(), start, end)

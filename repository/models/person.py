@@ -13,7 +13,7 @@ from repository.models.mixins import (
     PersonMixin,
     WikipediaMixin,
 )
-from repository.models.util import time as timeutil
+from util import time as timeutil
 
 NAME_MAX_LENGTH = 128
 

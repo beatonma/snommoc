@@ -3,7 +3,9 @@ Viewsets for any data about a particular member.
 """
 
 import logging
+import datetime
 
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework import serializers
 
@@ -35,7 +37,7 @@ from repository.models import (
     Person,
     CommonsDivisionVote,
 )
-# from surface.models.featured import FeaturedPerson
+from surface.models import FeaturedPerson
 
 log = logging.getLogger(__name__)
 
@@ -323,10 +325,19 @@ class CommonsVotesViewSet(KeyRequiredViewSet):
     """
     queryset = CommonsDivisionVote.objects.all()
 
-    # serializer_class = VotesCollectionSerializer
     serializer_class = TestSerializer
     filterset_class = VoteFilter
 
 
-# class FeaturedMembersViewSet(KeyRequiredViewSet):
-#     queryset = FeaturedPerson.objects.all()
+class FeaturedMembersViewSet(KeyRequiredViewSet):
+    """Return a list of 'featured' people."""
+    serializer_class = InlineMemberSerializer
+
+    def get_queryset(self):
+        today = datetime.date.today()
+        qs = FeaturedPerson.objects.filter(
+            Q(start__isnull=True) | Q(start__lte=today)
+        ).filter(
+            Q(end__isnull=True) | Q(end__gte=today)
+        ).select_related('person')
+        return [item.person for item in qs]

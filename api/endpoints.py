@@ -37,6 +37,9 @@ DIVISION_LORDS = f'{DIVISIONS}/{_HOUSE_LORDS}'
 # Bills
 BILL = 'bill'
 
+# Featured
+FEATURED = 'featured'
+
 
 def endpoint_list(endpoint_name):
     return f'{endpoint_name}-list'

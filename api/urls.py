@@ -24,6 +24,7 @@ from api.views.viewsets.member import (
     MaidenSpeechViewSet,
     SubjectOfInterestViewSet,
     CommonsVotesViewSet,
+    FeaturedMembersViewSet,
 )
 from api.views.views import PingView
 
@@ -33,6 +34,7 @@ list_or_detail.register(endpoints.MEMBER, MemberViewSet, basename=endpoints.MEMB
 list_or_detail.register(endpoints.PARTY, PartyViewSet)
 list_or_detail.register(endpoints.CONSTITUENCY, ConstituencyViewSet)
 list_or_detail.register(endpoints.DIVISION_COMMONS, CommonsVotesViewSet)
+list_or_detail.register(endpoints.FEATURED, FeaturedMembersViewSet, basename=endpoints.FEATURED)
 
 # Views which can only return a single detailed viewset.
 detail_only = DetailOnlyRouter()

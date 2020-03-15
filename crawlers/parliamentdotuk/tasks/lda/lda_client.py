@@ -133,11 +133,14 @@ def update_model(
     new_items = []
     page_number = 0
     next_page = 'next-page-placeholder'
+    short_url = endpoint_url[24:]
 
-    TaskNotification.objects.create(
-        title='Task started',
-        content=f'An update cycle has started for endpoint {endpoint_url}'
-    ).save()
+    notification = TaskNotification.objects.create(
+        title=f"[starting] ...{short_url}",
+        content=f"An update cycle has started for endpoint {endpoint_url}",
+    )
+    notification.save()
+    notification_id = notification.pk
 
     while next_page is not None:
         response = get_list_page(endpoint_url, page_number=page_number, page_size=page_size)
@@ -159,6 +162,7 @@ def update_model(
                     new_items.append(new_name)
             except Exception as e:
                 log.warning(f'Failed to update item: {e} {item}')
+
             if item_uses_network:
                 time.sleep(page_load_delay)
 
@@ -168,9 +172,13 @@ def update_model(
             log.debug(f'Fetching page {next_page} in {page_load_delay} seconds...')
             time.sleep(page_load_delay)
 
+    notification = TaskNotification.objects.get(pk=notification_id)
+
     if report_func:
         title, content = report_func(new_items)
-        TaskNotification.objects.create(
-            title=title,
-            content=content
-        ).save()
+        notification.title = f"[finished] ...{short_url}: {title}"
+        notification.content = content
+    else:
+        notification.title = f"[finished] ...{short_url}"
+
+    notification.mark_as_complete()

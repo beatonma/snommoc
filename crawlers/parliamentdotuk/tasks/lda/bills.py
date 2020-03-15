@@ -10,6 +10,7 @@ from typing import (
 
 from celery import shared_task
 
+from crawlers.parliamentdotuk.models import BillUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import bills as contract
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
@@ -156,6 +157,12 @@ def _update_sponsor(bill, data):
 
     except Person.DoesNotExist:
         pass
+    except Person.MultipleObjectsReturned:
+        BillSponsor.objects.get_or_create(
+            name=sponsor_name,
+            bill=bill,
+        )
+        return
 
     try:
         # Check if we have registered any aliases that match the name.
@@ -178,12 +185,17 @@ def _update_sponsor(bill, data):
 def update_bills(follow_pagination=True) -> None:
     def fetch_and_update_bill(json_data) -> Optional[str]:
         parliamentdotuk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
+        try:
+            parliamentdotuk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
 
-        data = get_item_data(endpoints.BILL.format(parliamentdotuk=parliamentdotuk))
-        if data is None:
-            return None
+            data = get_item_data(endpoints.BILL.format(parliamentdotuk=parliamentdotuk))
+            if data is None:
+                return None
 
-        return _update_bill(parliamentdotuk, data)
+            return _update_bill(parliamentdotuk, data)
+        except Exception as e:
+            BillUpdateError.create(parliamentdotuk, e)
+            raise e
 
     def build_report(new_bills: list) -> Tuple[str, str]:
         return 'Bills updated', '\n'.join(new_bills)

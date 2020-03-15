@@ -8,6 +8,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'django_filters',
     'phonenumber_field',
     'rest_framework',
 ]
@@ -19,5 +20,7 @@ SNOMMOC_APPS = [
     'crawlers.theyworkforyou',
     'notifications',
     'dashboard',
+    'social',
+    'surface',
 ]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + SNOMMOC_APPS

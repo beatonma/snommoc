@@ -35,6 +35,17 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEST_HISTORY_FILE = os.path.join(BASE_DIR, '.runtests.json')
 
 
+TEST_APPS = [
+    'api',
+    'crawlers.parliamentdotuk',
+    'crawlers.theyworkforyou',
+    'dashboard',
+    'notifications',
+    'repository',
+    'util',
+]
+
+
 def _highlight_foreground(text, color):
     return f'{color}{text}{colorama.Fore.RESET}'
 
@@ -152,16 +163,6 @@ class VerboseTestRunner(BasicNoseRunner):
 
     def verbose_suite_result(self, suite, result: TextTestResult, **kwargs):
         return VerboseResult(result)
-
-
-TEST_APPS = [
-    'api',
-    'crawlers.parliamentdotuk',
-    'crawlers.theyworkforyou',
-    'dashboard',
-    'notifications',
-    'repository',
-]
 
 
 def run_app_tests(app_name):

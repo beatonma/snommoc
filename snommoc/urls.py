@@ -20,6 +20,6 @@ from .local_urls import urlpatterns as local_urlpatterns
 urlpatterns = local_urlpatterns + [
     path('notifications/', include('notifications.urls')),
     path('puk/', include('crawlers.parliamentdotuk.urls')),
-    path('', include('api.urls')),
+    path('api/', include('api.urls')),
     path('', RedirectView.as_view(url='/about')),
 ]

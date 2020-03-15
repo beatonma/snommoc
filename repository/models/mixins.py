@@ -40,6 +40,7 @@ class PeriodMixin(models.Model):
     start = models.DateField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
 
+    @property
     def is_current(self) -> bool:
         return is_current(self.start, self.end)
 

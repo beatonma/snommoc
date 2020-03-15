@@ -11,3 +11,5 @@ from .maiden_speeches import MaidenSpeechSerializer, MaidenSpeechCollectionSeria
 from .parties import PartySerializer, HistoricalPartyCollectionSerializer
 from .posts import AllPostSerializer
 from .profile import SimpleProfileSerializer, FullProfileSerializer
+from .subjects_of_interest import SubjectOfInterestSerializer, SubjectOfInterestCollectionSerializer
+from .divisions import CommonsDivisionSerializer, CommonsVotesSerializer, LordsDivisionSerializer, LordsVotesSerializer

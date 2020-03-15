@@ -1,10 +1,15 @@
 """
 
 """
-
+import datetime
 import logging
 
 from django.db import models
+
+from util.time import (
+    is_current,
+    in_range,
+)
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +39,12 @@ class PeriodMixin(models.Model):
     """For models that represent something with a start/end date"""
     start = models.DateField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
+
+    def is_current(self) -> bool:
+        return is_current(self.start, self.end)
+
+    def contains(self, other_date: datetime.date) -> bool:
+        return in_range(other_date, self.start, self.end)
 
     class Meta:
         abstract = True

@@ -29,12 +29,15 @@ from api.views.viewsets.member import (
 from api.views.views import PingView
 
 # Views which can return a list of inline viewsets, or a single detailed viewset.
+from api.views.viewsets.procedure import FeaturedBillsViewSet
+
 list_or_detail = ListOrDetailRouter()
 list_or_detail.register(endpoints.MEMBER, MemberViewSet, basename=endpoints.MEMBER)
 list_or_detail.register(endpoints.PARTY, PartyViewSet)
 list_or_detail.register(endpoints.CONSTITUENCY, ConstituencyViewSet)
 list_or_detail.register(endpoints.DIVISION_COMMONS, CommonsVotesViewSet)
-list_or_detail.register(endpoints.FEATURED, FeaturedMembersViewSet, basename=endpoints.FEATURED)
+list_or_detail.register(endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet, basename=endpoints.FEATURED_MEMBERS)
+list_or_detail.register(endpoints.FEATURED_BILLS, FeaturedBillsViewSet, basename=endpoints.FEATURED_BILLS)
 
 # Views which can only return a single detailed viewset.
 detail_only = DetailOnlyRouter()

@@ -11,6 +11,7 @@ from repository.models import (
     Constituency,
     Person,
     Party,
+    Bill,
 )
 from api import endpoints
 from repository.models.geography import Town
@@ -21,7 +22,7 @@ log = logging.getLogger(__name__)
 class InlineConstituencySerializer(InlineSerializer):
     detail_url = serializers.HyperlinkedIdentityField(
         view_name=f'{endpoints.CONSTITUENCY}-detail',
-        read_only=True
+        read_only=True,
     )
 
     class Meta:
@@ -47,7 +48,7 @@ class InlineTownSerializer(InlineSerializer):
 class InlinePartySerializer(InlineSerializer):
     detail_url = serializers.HyperlinkedIdentityField(
         view_name=f'{endpoints.PARTY}-detail',
-        read_only=True
+        read_only=True,
     )
 
     class Meta:
@@ -61,7 +62,7 @@ class InlinePartySerializer(InlineSerializer):
 class InlineMemberSerializer(InlineSerializer):
     detail_url = serializers.HyperlinkedIdentityField(
         view_name=f'{endpoints.MEMBER}-detail',
-        read_only=True
+        read_only=True,
     )
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
@@ -73,4 +74,15 @@ class InlineMemberSerializer(InlineSerializer):
             'detail_url',
             'party',
             'constituency',
+        ]
+
+
+class InlineBillSerializer(InlineSerializer):
+    class Meta:
+        model = Bill
+        fields = [
+            'parliamentdotuk',
+            'title',
+            'description',
+            'date',
         ]

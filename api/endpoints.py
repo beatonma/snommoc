@@ -39,6 +39,9 @@ BILL = 'bill'
 
 # Featured
 FEATURED = 'featured'
+FEATURED_MEMBERS = f'{FEATURED}/members'
+FEATURED_BILLS = f'{FEATURED}/bills'
+FEATURED_DIVISIONS = f'{FEATURED}/divisions'
 
 
 def endpoint_list(endpoint_name):

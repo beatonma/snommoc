@@ -20,16 +20,11 @@ log = logging.getLogger(__name__)
 
 
 class InlineConstituencySerializer(InlineSerializer):
-    detail_url = serializers.HyperlinkedIdentityField(
-        view_name=f'{endpoints.CONSTITUENCY}-detail',
-        read_only=True,
-    )
-
     class Meta:
         model = Constituency
         fields = [
+            'parliamentdotuk',
             'name',
-            'detail_url',
         ]
 
 
@@ -54,6 +49,7 @@ class InlinePartySerializer(InlineSerializer):
     class Meta:
         model = Party
         fields = [
+            'parliamentdotuk',
             'name',
             'detail_url',
         ]

@@ -17,7 +17,11 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import (
     update_all_mps_basic_info,
 )
 from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
-from repository.models import Constituency
+from repository.models import (
+    Constituency,
+    Party,
+    House,
+)
 from repository.models.person import Person
 
 log = logging.getLogger(__name__)
@@ -52,6 +56,7 @@ class ResponseDataTest(LocalTestCase):
 
 
 class MdpUpdateMpsTest(LocalTestCase):
+    """"""
 
     def setUp(self) -> None:
         Constituency.objects.create(
@@ -129,3 +134,11 @@ class MdpUpdateMpsTest(LocalTestCase):
         person = get_person_func(**get_person_kwargs)
 
         self._assert_values_for_diane_abbott(person)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            Person,
+            Constituency,
+            Party,
+            House,
+        )

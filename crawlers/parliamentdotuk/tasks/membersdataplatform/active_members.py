@@ -15,6 +15,7 @@ from typing import (
     Callable,
 )
 
+from celery import shared_task
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
@@ -88,6 +89,7 @@ from repository.models.posts import (
 log = logging.getLogger(__name__)
 
 
+@shared_task
 def update_active_member_details(debug_max_updates: Optional[int] = None):
     """
     In development you may provide a value for debug_max_updates to avoid

@@ -10,6 +10,7 @@ from typing import (
     Type,
 )
 
+from celery import shared_task
 from django.db import models
 
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import MemberResponseData
@@ -28,11 +29,13 @@ from . import (
 log = logging.getLogger(__name__)
 
 
+@shared_task
 def update_all_members_basic_info():
     update_all_mps_basic_info()
     update_all_lords_basic_info()
 
 
+@shared_task
 def update_all_mps_basic_info():
     """
     Refresh basic data for all MPs, both active and historic.
@@ -55,6 +58,7 @@ def update_all_mps_basic_info():
     )
 
 
+@shared_task
 def update_all_lords_basic_info():
     """
     Refresh basic data for all MPs, both active and historic.

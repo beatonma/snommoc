@@ -9,6 +9,7 @@ Sample response:
 
 GROUP_KEY = 'Parties.Party'
 
+PARLIAMENTDOTUK = '@Id'
 PARTY_NAME = 'Name'
 START_DATE = 'StartDate'
 END_DATE = 'EndDate'

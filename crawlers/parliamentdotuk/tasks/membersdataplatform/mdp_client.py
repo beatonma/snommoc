@@ -207,6 +207,9 @@ class ElectionResponseData(ResponseData):
 
 
 class PartyResponseData(ResponseData):
+    def get_party_id(self) -> Optional[int]:
+        return self._get_int(party_contract.PARLIAMENTDOTUK)
+
     def get_party_name(self) -> Optional[str]:
         return self._get_str(party_contract.PARTY_NAME)
 

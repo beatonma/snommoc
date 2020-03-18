@@ -7,7 +7,6 @@ more details data about them.
 
 import logging
 import time
-from functools import wraps
 from typing import (
     List,
     Optional,
@@ -16,7 +15,6 @@ from typing import (
     Callable,
 )
 
-from django.db.models import Q
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
@@ -228,7 +226,12 @@ def _update_party_associations(
     person: Person, historical_parties: List[PartyResponseData]
 ) -> None:
     def _item_func(p):
-        party, _ = Party.objects.get_or_create(name=p.get_party_name())
+        party, _ = Party.objects.get_or_create(
+            name=p.get_party_name(),
+            defaults={
+                'parliamentdotuk': p.get_party_id(),
+            }
+        )
         PartyAssociation.objects.update_or_create(
             person=person,
             party=party,

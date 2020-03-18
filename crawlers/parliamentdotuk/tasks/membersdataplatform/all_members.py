@@ -91,7 +91,7 @@ def _get_or_create_or_none(model_class: Type[models.Model], **kwargs) -> Tuple[O
 def _update_member_basic_info(data: MemberResponseData) -> Optional[str]:
     parliamentdotuk = data.get_parliament_id()
 
-    party, _ = _get_or_create_or_none(Party, name=data.get_party())
+    party, _ = _get_or_create_or_none(Party, parliamentdotuk=data.get_party_id(), name=data.get_party())
     constituency, _ = _get_or_create_or_none(Constituency, name=data.get_constituency())
     house, _ = _get_or_create_or_none(House, name=data.get_house())
     is_active = data.get_is_active()

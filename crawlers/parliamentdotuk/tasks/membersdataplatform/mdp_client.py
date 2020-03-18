@@ -152,6 +152,9 @@ class MemberResponseData(ResponseData):
     def get_party(self) -> Optional[str]:
         return self._get_str(f"{member_contract.PARTY}.{member_contract.PARTY_NAME}")
 
+    def get_party_id(self) -> Optional[int]:
+        return self._get_int(f"{member_contract.PARTY}.{member_contract.PARTY_ID}")
+
     def get_is_active(self) -> bool:
         return self._get_boolean(
             f"{status_contract.CURRENT_STATUS}.{status_contract.IS_ACTIVE}"

@@ -16,5 +16,6 @@ GENDER = 'Gender'
 # Career
 HOUSE = 'House'
 MEMBER_FROM = 'MemberFrom'
+PARTY_ID = '@Id'
 PARTY_NAME = '#text'
 PARTY = 'Party'

@@ -290,11 +290,13 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         self.assertEqual(labour.person, self.person)
         self.assertEqual(labour.start, datetime.date(year=1974, month=2, day=28))
         self.assertEqual(labour.end, datetime.date(year=1981, month=3, day=2))
+        self.assertEqual(labour.party.parliamentdotuk, 15)
 
         libdem = PartyAssociation.objects.get(party__name="Liberal Democrat")
         self.assertEqual(libdem.person, self.person)
         self.assertEqual(libdem.start, datetime.date(year=1988, month=3, day=3))
         self.assertIsNone(libdem.end)
+        self.assertEqual(libdem.party.parliamentdotuk, 17)
 
     def test__update_government_posts(self):
         government_posts = [PostResponseData(p) for p in SAMPLE_GOVERNMENT_POSTS]

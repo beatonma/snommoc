@@ -6,15 +6,11 @@ from repository.models.mixins import (
     WikipediaMixin,
     BaseModel,
     PeriodMixin,
+    ParliamentDotUkMixin,
 )
 
 
-class Party(WikipediaMixin, BaseModel):
-    parliamentdotuk = models.PositiveIntegerField(
-        unique=True,
-        null=True,
-        blank=True,
-        help_text='ID used on parliament.uk website')
+class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
     name = models.CharField(max_length=64, unique=True)
     short_name = models.CharField(
         max_length=16,

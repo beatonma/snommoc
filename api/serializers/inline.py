@@ -60,18 +60,14 @@ class InlinePartySerializer(InlineSerializer):
 
 
 class InlineMemberSerializer(InlineSerializer):
-    detail_url = serializers.HyperlinkedIdentityField(
-        view_name=f'{endpoints.MEMBER}-detail',
-        read_only=True,
-    )
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
 
     class Meta:
         model = Person
         fields = [
+            'parliamentdotuk',
             'name',
-            'detail_url',
             'party',
             'constituency',
         ]

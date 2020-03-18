@@ -1,3 +1,4 @@
+from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 from django.db.models import DO_NOTHING
 
@@ -9,6 +10,11 @@ from repository.models.mixins import (
 
 
 class Party(WikipediaMixin, BaseModel):
+    parliamentdotuk = models.PositiveIntegerField(
+        unique=True,
+        null=True,
+        blank=True,
+        help_text='ID used on parliament.uk website')
     name = models.CharField(max_length=64, unique=True)
     short_name = models.CharField(
         max_length=16,
@@ -33,11 +39,40 @@ class Party(WikipediaMixin, BaseModel):
         """Returns number of MPs associated with this party"""
         return self.objects.count()
 
+    def canonical(self) -> 'Party':
+        try:
+            aka = PartyAlsoKnownAs.objects.get(alias=self)
+            return aka.canonical
+        except (PartyAlsoKnownAs.DoesNotExist, MultipleObjectsReturned):
+            return self
+
     class Meta:
         verbose_name_plural = 'Parties'
 
     def __str__(self):
         return self.name
+
+
+class PartyAlsoKnownAs(BaseModel):
+    canonical = models.ForeignKey(
+        'Party',
+        on_delete=models.CASCADE,
+        help_text='Preferred party instance',
+        related_name='canonical'
+    )
+    alias = models.OneToOneField(
+        'Party',
+        on_delete=models.CASCADE,
+        help_text='An alternative instance, probably with a differently formatted name',
+        related_name='alias'
+    )
+
+    class Meta:
+        verbose_name_plural = 'Parties also known as'
+        verbose_name = 'PartyAlsoKnownAs'
+
+    def __str__(self):
+        return f'{self.alias} -> {self.canonical}'
 
 
 class PartyAssociation(PeriodMixin, BaseModel):

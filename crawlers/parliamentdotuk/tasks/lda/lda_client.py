@@ -100,7 +100,7 @@ def get_list_page(
     log.info(endpoint)
     return requests.get(
         endpoint,
-        headers=settings.HTTP_REQUEST_HEADERS,
+        headers=settings.HTTP_REQUEST_HEADERS_JSON,
         params={
             PARAM_PAGE_SIZE: page_size,
             PARAM_PAGE: page_number,
@@ -109,7 +109,7 @@ def get_list_page(
 
 def get_item_page(endpoint: str) -> requests.Response:
     log.info(endpoint)
-    return requests.get(endpoint, headers=settings.HTTP_REQUEST_HEADERS)
+    return requests.get(endpoint, headers=settings.HTTP_REQUEST_HEADERS_JSON)
 
 
 def get_item_data(endpoint: str) -> Optional[Dict]:

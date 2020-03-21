@@ -50,7 +50,7 @@ Get MP status: http://data.parliament.uk/membersdataplatform/services/mnis/membe
 
 def get(url: str):
     """Get the url using our standard headers and fix response encoding."""
-    response = requests.get(url, headers=settings.HTTP_REQUEST_HEADERS)
+    response = requests.get(url, headers=settings.HTTP_REQUEST_HEADERS_JSON)
     response.encoding = "utf-8-sig"
     return response
 

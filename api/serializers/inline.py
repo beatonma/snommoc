@@ -58,12 +58,14 @@ class InlinePartySerializer(InlineSerializer):
 class InlineMemberSerializer(InlineSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
+    portrait = serializers.URLField(source='memberportrait.square_url')
 
     class Meta:
         model = Person
         fields = [
             'parliamentdotuk',
             'name',
+            'portrait',
             'party',
             'constituency',
         ]

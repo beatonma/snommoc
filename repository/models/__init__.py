@@ -32,6 +32,7 @@ from .houses import (
 from .maiden_speech import MaidenSpeech
 from .party import (
     Party,
+    PartyAlsoKnownAs,
     PartyAssociation,
 )
 from .person import Person
@@ -63,3 +64,4 @@ from .divisions import (
     LordsDivision,
     LordsDivisionVote,
 )
+from .portrait import MemberPortrait

@@ -19,6 +19,8 @@ def _get_endpoint(query: str, outputs: str = None) -> str:
 COMMONS_MEMBERS_ALL = _get_endpoint(query='House=Commons|membership=all')
 LORDS_MEMBERS_ALL = _get_endpoint(query='House=Lords|membership=all')
 
+MEMBER_PORTRAITS = 'https://members.parliament.uk/shared/MemberPortraits.csv'
+
 
 def member_biography(parliamentdotuk: int):
     return _get_endpoint(f'id={parliamentdotuk}', outputs='FullBiog')

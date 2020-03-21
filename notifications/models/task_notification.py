@@ -28,11 +28,6 @@ class TaskNotification(models.Model):
     read = models.BooleanField(default=False)
     started_at = models.DateTimeField(auto_now_add=True, null=True)
     finished_at = models.DateTimeField(null=True)
-    parent = models.ForeignKey(
-        'TaskNotification',
-        on_delete=models.CASCADE,
-        null=True,
-    )
 
     complete = models.BooleanField(default=False)
     failed = models.BooleanField(default=False)

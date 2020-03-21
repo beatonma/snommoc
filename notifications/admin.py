@@ -17,7 +17,6 @@ class TaskNotificationAdmin(admin.ModelAdmin):
         'title',
         'started_at',
         'finished_at',
-        'parent',
         'finished',
     ]
 

@@ -15,7 +15,15 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def update_all_member_data():
-    update_constituencies()
-    update_all_members_basic_info()
-    update_active_member_details()
+def update_all_member_data(constituencies=True, member_basic=True, member_detail=True):
+    if constituencies:
+        log.info('Updating constituencies...')
+        update_constituencies()
+    if member_basic:
+        log.info('Updating all member basic info...')
+        update_all_members_basic_info()
+    if member_detail:
+        log.info('Updating active member details...')
+        update_active_member_details()
+
+    log.info('update_all_member_data completed.')

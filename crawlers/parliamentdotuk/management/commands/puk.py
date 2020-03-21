@@ -19,8 +19,35 @@ class Command(BaseCommand):
             help='Pass update task to Celery.',
         )
 
+        parser.add_argument(
+            '-noconstituencies',
+            action='store_false',
+            dest='constituencies',
+            default=True
+        )
+
+        parser.add_argument(
+            '-nomemberbasic',
+            action='store_false',
+            dest='member_basic',
+            default=True
+        )
+
+        parser.add_argument(
+            '-nomemberdetail',
+            action='store_false',
+            dest='member_detail',
+            default=True
+        )
+
     def handle(self, *args, **options):
+        kwargs = {
+            'constituencies': options['constituencies'],
+            'member_detail': options['member_detail'],
+            'member_basic': options['member_basic'],
+        }
+
         if options['async']:
-            update_all_member_data.delay()
+            update_all_member_data.delay(**kwargs)
         else:
-            update_all_member_data()
+            update_all_member_data(**kwargs)

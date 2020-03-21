@@ -39,7 +39,7 @@ def _update_official_portraits(csv_data: str):
         parliamentdotuk, _name, _, _, year_taken, full, wide, tall, square = line.split(",")
 
         try:
-            Person.objects.get(parliamentdotuk)
+            Person.objects.get(parliamentdotuk=parliamentdotuk)
             MemberPortrait.objects.update_or_create(
                 person_id=int(parliamentdotuk),
                 defaults={
@@ -50,8 +50,8 @@ def _update_official_portraits(csv_data: str):
                     'square_url': square,
                 }
             )
-        except:
-            log.warning(f'Unknown person {_name} id={parliamentdotuk}')
+        except Exception as e:
+            log.warning(f'Unknown person {_name} id={parliamentdotuk}: {e}')
 
 
 def _get_wikipedia_portraits(members: List[Person]):

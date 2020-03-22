@@ -120,7 +120,7 @@ class ConstituencyBoundary(BaseModel):
         verbose_name_plural = 'Constituency Boundaries'
 
 
-def get_constituency_for_date(name: str, date: datetime.date) -> Optional[Constituency]:
+def get_constituency_for_date(name: str, date: Optional[datetime.date]) -> Optional[Constituency]:
     c = Constituency.objects.filter(name=name)
     count = c.count()
 
@@ -130,6 +130,9 @@ def get_constituency_for_date(name: str, date: datetime.date) -> Optional[Consti
 
     elif count == 1:
         return c.first()
+
+    if date is None:
+        date = datetime.date.today()
 
     # More complicated
     with_start = c.exclude(start=None).order_by('start')

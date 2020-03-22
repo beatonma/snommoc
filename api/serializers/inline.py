@@ -41,17 +41,11 @@ class InlineTownSerializer(InlineSerializer):
 
 
 class InlinePartySerializer(InlineSerializer):
-    detail_url = serializers.HyperlinkedIdentityField(
-        view_name=f'{endpoints.PARTY}-detail',
-        read_only=True,
-    )
-
     class Meta:
         model = Party
         fields = [
             'parliamentdotuk',
             'name',
-            'detail_url',
         ]
 
 

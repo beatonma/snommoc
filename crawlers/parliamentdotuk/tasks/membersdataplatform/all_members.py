@@ -15,9 +15,12 @@ from django.db import models
 
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import MemberResponseData
 from repository.models import (
-    Constituency,
     Party,
     House,
+)
+from repository.models.constituency import (
+    get_current_constituency,
+    get_constituency_for_date,
 )
 from repository.models.houses import HOUSE_OF_COMMONS
 from repository.models.person import Person
@@ -92,9 +95,12 @@ def _update_member_basic_info(data: MemberResponseData) -> Optional[str]:
     parliamentdotuk = data.get_parliament_id()
 
     party, _ = _get_or_create_or_none(Party, parliamentdotuk=data.get_party_id(), name=data.get_party())
-    constituency, _ = _get_or_create_or_none(Constituency, name=data.get_constituency())
     house, _ = _get_or_create_or_none(House, name=data.get_house())
     is_active = data.get_is_active()
+    if is_active:
+        constituency = get_current_constituency(data.get_constituency())
+    else:
+        constituency = get_constituency_for_date(data.get_constituency(), data.get_house_start_date())
 
     person, created = Person.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,

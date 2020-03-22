@@ -13,7 +13,6 @@ from repository.models import (
     Party,
     Bill,
 )
-from api import endpoints
 from repository.models.geography import Town
 
 log = logging.getLogger(__name__)

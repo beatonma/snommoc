@@ -8,6 +8,7 @@ from repository.models import (
     Constituency,
     CommonsDivision,
     LordsDivision,
+    Party,
 )
 from repository.models.person import Person
 
@@ -16,6 +17,7 @@ from repository.models.person import Person
 DEDICATED_ADMIN_MODELS = [
     Constituency,
     Person,
+    Party,
     CommonsDivision,
     LordsDivision,
 ]
@@ -70,4 +72,16 @@ class PersonAdmin(DefaultAdmin):
 class DivisionAdmin(DefaultAdmin):
     search_fields = [
         'parliamentdotuk',
+    ]
+
+
+@admin.register(Party)
+class PartyAdmin(DefaultAdmin):
+    list_display = [
+        'name',
+        'parliamentdotuk',
+    ]
+
+    search_fields = [
+        'name',
     ]

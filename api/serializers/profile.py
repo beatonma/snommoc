@@ -22,6 +22,8 @@ from api.serializers.parties import HistoricalPartySerializer
 from api.serializers.subjects_of_interest import SubjectOfInterestSerializer
 from repository.models import Person
 
+from rest_framework import serializers
+
 log = logging.getLogger(__name__)
 
 
@@ -30,6 +32,7 @@ class SimpleProfileSerializer(DetailedSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
     place_of_birth = InlineTownSerializer(source='town_of_birth')
+    portrait = serializers.URLField(source='memberportrait.wide_url')
 
     class Meta:
         model = Person
@@ -50,6 +53,7 @@ class SimpleProfileSerializer(DetailedSerializer):
             'age',
             'gender',
             'place_of_birth',
+            'portrait',
         ]
 
 

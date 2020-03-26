@@ -28,6 +28,8 @@ class PostMetaClass:
         'parliamentdotuk',
         'name',
         'hansard',
+        'start',
+        'end',
     ]
 
 

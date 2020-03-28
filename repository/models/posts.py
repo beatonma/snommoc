@@ -79,20 +79,13 @@ class OppositionPostMember(BasePostMember):
 
 
 def get_current_post_for_person(person):
-    return GovernmentPostMember.objects.filter(
-        person=person,
-        start__isnull=False,
-        end__isnull=True,
-    ).union(
-        ParliamentaryPostMember.objects.filter(
-            person=person,
-            start__isnull=False,
-            end__isnull=True,
-        )
-    ).union(
-        OppositionPostMember.objects.filter(
-            person=person,
-            start__isnull=False,
-            end__isnull=True,
-        )
-    ).first()
+    kw = {
+        'person': person,
+        'start__isnull': False,
+        'end__isnull': True,
+    }
+
+    for model in [GovernmentPostMember, ParliamentaryPostMember, OppositionPostMember]:
+        result = model.objects.filter(**kw).first()
+        if result is not None:
+            return result

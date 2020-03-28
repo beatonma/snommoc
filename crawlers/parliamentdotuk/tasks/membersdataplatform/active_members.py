@@ -454,7 +454,7 @@ def _update_elections_contested(
 
 
 def _postprocess_update_current_post(person: Person) -> None:
-    current_post = get_current_post_for_person(person)
-    if current_post is not None:
-        person.current_post = current_post.name
+    current_post_membership = get_current_post_for_person(person)
+    if current_post_membership is not None:
+        person.current_post = current_post_membership.post.name
         person.save()

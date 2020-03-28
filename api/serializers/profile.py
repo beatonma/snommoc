@@ -54,6 +54,7 @@ class SimpleProfileSerializer(DetailedSerializer):
             'gender',
             'place_of_birth',
             'portrait',
+            'current_post',
         ]
 
 

@@ -122,6 +122,13 @@ class Person(
         help_text='Whether this person currently has a seat in parliament.',
     )
 
+    current_post = models.CharField(
+        max_length=512,
+        null=True,
+        blank=True,
+        default=None,
+    )
+
     @property
     def age(self) -> int:
         if self.date_of_death:

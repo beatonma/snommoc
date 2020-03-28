@@ -4,7 +4,7 @@ Tasks for updating details on active members.
 Active members are of higher interest than historical ones so we maintain
 more details data about them.
 """
-
+import datetime
 import logging
 import time
 from typing import (
@@ -84,6 +84,7 @@ from repository.models.posts import (
     OppositionPostMember,
     ParliamentaryPost,
     ParliamentaryPostMember,
+    get_current_post_for_person,
 )
 
 log = logging.getLogger(__name__)
@@ -136,6 +137,13 @@ def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]
     _update_parliamentary_posts(person, data.get_parliament_posts())
     _update_opposition_posts(person, data.get_opposition_posts())
     _update_elections_contested(person, data.get_contested_elections())
+
+    _postprocess_update(person)
+
+
+def _postprocess_update(person: Person) -> None:
+    """Update any values that need to be calculated after API data is stored."""
+    _postprocess_update_current_post(person)
 
 
 def _update_or_create_election(
@@ -443,3 +451,10 @@ def _update_elections_contested(
             )
 
     _catch_item_errors(person, contested, _item_func)
+
+
+def _postprocess_update_current_post(person: Person) -> None:
+    current_post = get_current_post_for_person(person)
+    if current_post is not None:
+        person.current_post = current_post.name
+        person.save()

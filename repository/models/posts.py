@@ -76,3 +76,23 @@ class OppositionPostMember(BasePostMember):
 
     def __str__(self):
         return f'{self.person}: {self.post}'
+
+
+def get_current_post_for_person(person):
+    return GovernmentPostMember.objects.filter(
+        person=person,
+        start__isnull=False,
+        end__isnull=True,
+    ).union(
+        ParliamentaryPostMember.objects.filter(
+            person=person,
+            start__isnull=False,
+            end__isnull=True,
+        )
+    ).union(
+        OppositionPostMember.objects.filter(
+            person=person,
+            start__isnull=False,
+            end__isnull=True,
+        )
+    ).first()

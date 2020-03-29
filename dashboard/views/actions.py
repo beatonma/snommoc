@@ -4,43 +4,35 @@
 
 import logging
 
-from django.http import (
-    HttpResponse,
-)
+from django.shortcuts import redirect
+from django.utils.datetime_safe import datetime
 
-from crawlers.parliamentdotuk.tasks import (
-    update_constituencies,
-)
-from crawlers.parliamentdotuk.tasks.membersdataplatform.active_members import update_active_member_details
-from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import update_all_members_basic_info
 from dashboard.views.dashboard import BaseDashboardView
+from surface.models import (
+    FeaturedPerson,
+    FeaturedBill,
+)
 
 log = logging.getLogger(__name__)
 
 
-class UpdateConstituenciesView(BaseDashboardView):
+class AddFeaturedMemberView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
-        follow_pagination = kwargs.get('requirement') != 'debug'
-        update_constituencies(follow_pagination=follow_pagination)
-        return HttpResponse('OK')
+        parliamentdotuk = request.GET.get('id')
+        FeaturedPerson.objects.create(
+            person_id=parliamentdotuk,
+            start=datetime.today()
+        ).save()
+
+        return redirect('dashboard')
 
 
-class UpdateMpsView(BaseDashboardView):
+class AddFeaturedBillView(BaseDashboardView):
     def get(self, request, *args, **kwargs):
-        update_all_members_basic_info()
-        update_active_member_details()
-        return HttpResponse('OK')
+        parliamentdotuk = request.GET.get('id')
+        FeaturedBill.objects.create(
+            bill_id=parliamentdotuk,
+            start=datetime.today()
+        ).save()
 
-
-class UpdatePartiesView(BaseDashboardView):
-    def get(self, request, *args, **kwargs):
-        from repository.tasks import init_parties
-        init_parties()
-        return HttpResponse('OK')
-
-
-class RebuildAllView(BaseDashboardView):
-    def get(self, request, *args, **kwargs):
-        from crawlers.parliamentdotuk.tasks import rebuild_all_data
-
-        rebuild_all_data()
+        return redirect('dashboard')

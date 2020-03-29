@@ -61,6 +61,7 @@ class InlineMemberSerializer(InlineSerializer):
             'portrait',
             'party',
             'constituency',
+            'current_post',
         ]
 
 

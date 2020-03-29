@@ -1,13 +1,6 @@
 <div>
     {% if user.is_superuser %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %} |
     <a href="{% url 'dashboard' %}">Dashboard</a> |
-    <a href="{% url 'dashboard-members' %}">Members</a> |
-    <a href="{% url 'dashboard-mps' requirement='active' %}">Active MPs</a> |
-    <a href="{% url 'dashboard-lords' requirement='active' %}">Active Lords</a> |
-    <a href="{% url 'dashboard-constituencies' %}">Constituencies</a> |
-    <a href="{% url 'dashboard-constituencies' requirement='active' %}">Active constituencies</a> |
-    <a href="{% url 'dashboard-parties' %}">Parties</a> |
-    <a href="{% url 'dashboard-parties' requirement='active' %}">Active parties</a>
 </div>
 {% include 'new-notifications-fragment.html' %}
 {% if unlinked_constituencies %}

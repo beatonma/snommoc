@@ -6,11 +6,18 @@ import logging
 
 from django.db.models import Q
 
+from api.serializers.bills import BillSerializer
 from api.serializers.inline import InlineBillSerializer
 from api.views.viewsets import KeyRequiredViewSet
+from repository.models import Bill
 from surface.models import FeaturedBill
 
 log = logging.getLogger(__name__)
+
+
+class BillViewSet(KeyRequiredViewSet):
+    queryset = Bill.objects.all()
+    serializer_class = BillSerializer
 
 
 class FeaturedBillsViewSet(KeyRequiredViewSet):

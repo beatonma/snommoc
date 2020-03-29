@@ -7,111 +7,63 @@
 </head>
 <body>
 <header>{% include 'dashboard-header-fragment.html' %}</header>
-<section>
-    <h1>Dashboard</h1>
-    <a class="button" href="{% url 'dashboard-mps' %}">{{ mp_count }} MPs</a>
-    <a class="button" href="{% url 'dashboard-lords' %}">{{ lord_count }} Lords</a>
-    <a class="button" href="{% url 'dashboard-constituencies' %}">{{ constituency_count }} constituencies</a>
-    <a class="button" href="{% url 'dashboard-parties' %}">{{ party_count }} parties</a>
-</section>
 
 <section>
     <h1>API</h1>
-    <a class="button" href="{% url 'member-list' %}">Members</a>
-    <a class="button" href="{% url 'constituency-list' %}">Constituencies</a>
-    <a class="button" href="{% url 'party-list' %}">Parties</a>
+    <div><a href="{% url 'member-list' %}">{% url 'member-list' %}</a></div>
+    <div><a href="{% url 'member-detail' pk=1423 %}">{% url 'member-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'party-list' %}">{% url 'party-list' %}</a></div>
+    <div><a href="{% url 'party-detail' pk=1423 %}">{% url 'party-detail' pk=4 %}</a></div>
+    <div><a href="{% url 'constituency-list' %}">{% url 'constituency-list' %}</a></div>
+    <div><a href="{% url 'constituency-detail' pk=143545 %}">{% url 'constituency-detail' pk=143545 %}</a></div>
+    <div><a href="{% url 'commonsdivisionvote-list' %}">{% url 'commonsdivisionvote-list' %}</a></div>
+    <div><a href="{% url 'commonsdivisionvote-detail' pk=1180289 %}">{% url 'commonsdivisionvote-detail' pk=1180289 %}</a></div>
+    <div><a href="{% url 'member/address-detail' pk=1423 %}">{% url 'member/address-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/committees-detail' pk=1423 %}">{% url 'member/committees-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/constituencies-detail' pk=1423 %}">{% url 'member/constituencies-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/contested-detail' pk=1423 %}">{% url 'member/contested-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/interests-detail' pk=1423 %}">{% url 'member/interests-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/experiences-detail' pk=1423 %}">{% url 'member/experiences-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/speeches-detail' pk=1423 %}">{% url 'member/speeches-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/posts-detail' pk=1423 %}">{% url 'member/posts-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/parties-detail' pk=1423 %}">{% url 'member/parties-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/profile-detail' pk=1423 %}">{% url 'member/profile-detail' pk=1423 %}</a></div>
+    <div><a href="{% url 'member/subjects-detail' pk=1423 %}">{% url 'member/subjects-detail' pk=1423 %}</a></div>
+</section>
+<section>
+    <h1>Featured people</h1>
+    <div id="featured_people">
+        <h2>People [<a href="{% url 'admin:surface_featuredperson_changelist' %}">edit</a>]</h2>
+        <div>
+        {% for featured in featured_people %}
+            <div class="featured-member"><a href="{% url 'member/profile-detail' pk=featured.person.parliamentdotuk %}"><span>{{ featured.person.name }}</span></a> <span>[{{ featured.person.parliamentdotuk }}] {{ featured.start }} -> {{ featured.end }}</span></div>
+        {% endfor %}
+        </div>
+        <h4>Add new:</h4>
+        <form action="{% url 'action-add-featured-person' %}" method="get">
+            <label for="new_person_id">parliamentdotuk:</label>
+            <input id="new_person_id" name="id" type="number"/>
+            <input type="submit"/>
+        </form>
+    </div>
 </section>
 
 <section>
-    <h1>Actions</h1>
-{#    <span id="update_parties" class="action" >Update parties</span>#}
-{#    <span id="update_constituencies" class="action" >Update constituencies</span>#}
-{#    <span id="update_mps" class="action">Update MPs</span>#}
-    <span id="rebuild_all" class="action">Clear and rebuild everything!</span>
+    <div id="featured_people">
+        <h2>Featured bills [<a href="{% url 'admin:surface_featuredbill_changelist' %}">edit</a>]</h2>
+        <div>
+        {% for featured in featured_bills %}
+            <div class="featured-bill"><span>{{ featured.bill.title }}</span></div>
+        {% endfor %}
+        </div>
+        <h4>Add new:</h4>
+        <form action="{% url 'action-add-featured-bill' %}" method="get">
+            <label for="new_bill_id">parliamentdotuk:</label>
+            <input id="new_bill_id" name="id" type="number"/>
+            <input type="submit"/>
+        </form>
+    </div>
 </section>
+
 </body>
-<script type="text/javascript">
-    (() => {
-        function updateConstituencies() {
-            const button = document.getElementById('update_constituencies');
-            const buttonText = button.innerText;
-            button.innerText = 'Busy...';
-            button.classList.add('busy');
-            button.removeEventListener('click', updateConstituencies);
-            console.log('Updating constituencies...');
-            fetch('{% url "action-update-constituencies" %}', {
-                method: 'GET',
-                credentials: 'same-origin'
-            }).then((response) => {
-                button.classList.remove('busy');
-                button.innerText = buttonText;
-                console.log('Constituencies updated');
-                console.log(`${response.status}: ${response.text()}`);
-                button.addEventListener('click', updateConstituencies);
-            });
-        }
-
-        function updateMps() {
-            const button = document.getElementById('update_mps');
-            const buttonText = button.innerText;
-            button.innerText = 'Busy...';
-            button.classList.add('busy');
-            button.removeEventListener('click', updateMps);
-            console.log('Updating mps...');
-            fetch('{% url "action-update-mps" %}', {
-                method: 'GET',
-                credentials: 'same-origin'
-            }).then((response) => {
-                button.classList.remove('busy');
-                button.innerText = buttonText;
-                console.log('MPs updated');
-                console.log(`${response.status}: ${response.text()}`);
-                button.addEventListener('click', updateMps);
-            });
-        }
-
-        function updateParties() {
-            const button = document.getElementById('update_parties');
-            const buttonText = button.innerText;
-            button.innerText = 'Busy...';
-            button.classList.add('busy');
-            button.removeEventListener('click', updateParties);
-            console.log('Updating parties...');
-            fetch('{% url "action-update-parties" %}', {
-                method: 'GET',
-                credentials: 'same-origin'
-            }).then((response) => {
-                button.classList.remove('busy');
-                button.innerText = buttonText;
-                console.log('Parties updated');
-                console.log(`${response.status}: ${response.text()}`);
-                button.addEventListener('click', updateParties);
-            });
-        }
-
-        function rebuildAll() {
-            const button = document.getElementById('rebuild_all');
-            const buttonText = button.innerText;
-            button.innerText = 'Busy...';
-            button.classList.add('busy');
-            button.removeEventListener('click', rebuildAll);
-            console.log('Rebuilding all data...');
-            fetch('{% url "action-rebuild-all" %}', {
-                method: 'GET',
-                credentials: 'same-origin'
-            }).then((response) => {
-                button.classList.remove('busy');
-                button.innerText = buttonText;
-                console.log('All data rebuilt');
-                console.log(`${response.status}: ${response.text()}`);
-                button.addEventListener('click', rebuildAll);
-            });
-        }
-
-        {#document.getElementById('update_constituencies').addEventListener('click', updateConstituencies);#}
-        {#document.getElementById('update_mps').addEventListener('click', updateMps);#}
-        {#document.getElementById('update_parties').addEventListener('click', updateParties);#}
-        document.getElementById('rebuild_all').addEventListener('click', rebuildAll);
-    })();
-</script>
 </html>

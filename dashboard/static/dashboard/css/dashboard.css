@@ -15,6 +15,9 @@ header, h1 {
 
 section {
   margin-bottom: 3em;
+  border: 2px solid var(--table-border);
+  border-radius: 12px;
+  padding: 12px;
 }
 
 table {
@@ -57,6 +60,7 @@ a:visited {
   font-weight: 600;
   cursor: pointer;
   margin-bottom: 16px;
+  width: min-content;
 }
 
 .busy {

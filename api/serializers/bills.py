@@ -21,8 +21,14 @@ log = logging.getLogger(__name__)
 
 
 class BillSponsorSerializer(DetailedSerializer):
-    parliamentdotuk = serializers.IntegerField(source='person.parliamentdotuk')
-    name = serializers.CharField(source='person.name')
+    parliamentdotuk = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        return obj.name if obj.person is None else obj.person.name
+
+    def get_parliamentdotuk(self, obj):
+        return None if obj.person is None else obj.person.parliamentdotuk
 
     class Meta:
         model = BillSponsor

@@ -5,7 +5,7 @@
 import logging
 
 from api.serializers import (
-    DetailedSerializer,
+    DetailedModelSerializer,
     InlinePartySerializer,
 )
 from repository.models import (
@@ -17,7 +17,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class PartySerializer(DetailedSerializer):
+class PartySerializer(DetailedModelSerializer):
     class Meta:
         model = Party
         fields = [
@@ -30,7 +30,7 @@ class PartySerializer(DetailedSerializer):
         ]
 
 
-class HistoricalPartySerializer(DetailedSerializer):
+class HistoricalPartySerializer(DetailedModelSerializer):
     party = InlinePartySerializer()
 
     class Meta:
@@ -42,7 +42,7 @@ class HistoricalPartySerializer(DetailedSerializer):
         ]
 
 
-class HistoricalPartyCollectionSerializer(DetailedSerializer):
+class HistoricalPartyCollectionSerializer(DetailedModelSerializer):
     parties = HistoricalPartySerializer(many=True)
 
     class Meta:

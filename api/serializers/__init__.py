@@ -1,4 +1,4 @@
-from .base import DetailedSerializer, InlineSerializer
+from .base import DetailedModelSerializer, InlineModelSerializer
 from .inline import InlineMemberSerializer, InlineConstituencySerializer, InlinePartySerializer
 from .address import AddressSerializer
 from .committees import CommitteeMemberSerializer, CommitteeSerializer
@@ -12,4 +12,4 @@ from .parties import PartySerializer, HistoricalPartyCollectionSerializer
 from .posts import AllPostSerializer
 from .profile import SimpleProfileSerializer, FullProfileSerializer
 from .subjects_of_interest import SubjectOfInterestSerializer, SubjectOfInterestCollectionSerializer
-from .divisions import CommonsDivisionSerializer, CommonsVotesSerializer, LordsDivisionSerializer, LordsVotesSerializer
+from .divisions import CommonsDivisionSerializer, LordsDivisionSerializer

@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import (
     GovernmentPostMember,
     ParliamentaryPostMember,
@@ -17,7 +17,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class PostMemberSerializer(DetailedSerializer):
+class PostMemberSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.IntegerField(source='post.parliamentdotuk')
     name = serializers.CharField(source='post.name')
     hansard = serializers.CharField(source='post.hansard_name')
@@ -48,7 +48,7 @@ class OppositionPostMemberSerializer(PostMemberSerializer):
         model = OppositionPostMember
 
 
-class AllPostSerializer(DetailedSerializer):
+class AllPostSerializer(DetailedModelSerializer):
     governmental = GovernmentPostMemberSerializer(
         many=True,
         source='governmentpostmember_set',

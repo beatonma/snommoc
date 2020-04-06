@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import InlineSerializer
+from api.serializers import InlineModelSerializer
 from repository.models import (
     Constituency,
     Person,
@@ -18,7 +18,7 @@ from repository.models.geography import Town
 log = logging.getLogger(__name__)
 
 
-class InlineConstituencySerializer(InlineSerializer):
+class InlineConstituencySerializer(InlineModelSerializer):
     class Meta:
         model = Constituency
         fields = [
@@ -27,7 +27,7 @@ class InlineConstituencySerializer(InlineSerializer):
         ]
 
 
-class InlineTownSerializer(InlineSerializer):
+class InlineTownSerializer(InlineModelSerializer):
     town = serializers.CharField(source='name')
     country = serializers.StringRelatedField(many=False, read_only=True)
 
@@ -39,7 +39,7 @@ class InlineTownSerializer(InlineSerializer):
         ]
 
 
-class InlinePartySerializer(InlineSerializer):
+class InlinePartySerializer(InlineModelSerializer):
     class Meta:
         model = Party
         fields = [
@@ -48,7 +48,7 @@ class InlinePartySerializer(InlineSerializer):
         ]
 
 
-class InlineMemberSerializer(InlineSerializer):
+class InlineMemberSerializer(InlineModelSerializer):
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
     portrait = serializers.URLField(source='memberportrait.square_url')
@@ -65,7 +65,7 @@ class InlineMemberSerializer(InlineSerializer):
         ]
 
 
-class InlineBillSerializer(InlineSerializer):
+class InlineBillSerializer(InlineModelSerializer):
     class Meta:
         model = Bill
         fields = [

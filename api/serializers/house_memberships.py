@@ -6,13 +6,13 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import HouseMembership
 
 log = logging.getLogger(__name__)
 
 
-class HouseMembershipSerializer(DetailedSerializer):
+class HouseMembershipSerializer(DetailedModelSerializer):
     house = serializers.CharField(source='house.name')
 
     class Meta:

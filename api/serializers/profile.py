@@ -7,7 +7,7 @@ import logging
 from api.serializers import (
     AddressSerializer,
     AllPostSerializer,
-    DetailedSerializer,
+    DetailedModelSerializer,
     ExperienceSerializer,
     CommitteeMemberSerializer,
     DeclaredInterestSerializer,
@@ -27,7 +27,7 @@ from rest_framework import serializers
 log = logging.getLogger(__name__)
 
 
-class SimpleProfileSerializer(DetailedSerializer):
+class SimpleProfileSerializer(DetailedModelSerializer):
     """Return basic information about a Member."""
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
@@ -58,7 +58,7 @@ class SimpleProfileSerializer(DetailedSerializer):
         ]
 
 
-class FullProfileSerializer(DetailedSerializer):
+class FullProfileSerializer(DetailedModelSerializer):
     """Return a full profile with all data for a Person."""
     profile = SimpleProfileSerializer(source='*')
     address = AddressSerializer(source='*')

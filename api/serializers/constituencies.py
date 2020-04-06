@@ -5,9 +5,9 @@
 import logging
 
 from api.serializers import (
-    DetailedSerializer,
+    DetailedModelSerializer,
     InlineMemberSerializer,
-    InlineSerializer,
+    InlineModelSerializer,
 )
 from api.serializers.election import ElectionSerializer
 from repository.models import (
@@ -19,7 +19,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class MinimalConstituencySerializer(InlineSerializer):
+class MinimalConstituencySerializer(InlineModelSerializer):
     class Meta:
         model = Constituency
         fields = [
@@ -28,7 +28,7 @@ class MinimalConstituencySerializer(InlineSerializer):
         ]
 
 
-class ConstituencySerializer(DetailedSerializer):
+class ConstituencySerializer(DetailedModelSerializer):
     mp = InlineMemberSerializer()
 
     class Meta:
@@ -42,7 +42,7 @@ class ConstituencySerializer(DetailedSerializer):
         ]
 
 
-class HistoricalConstituencySerializer(DetailedSerializer):
+class HistoricalConstituencySerializer(DetailedModelSerializer):
     constituency = MinimalConstituencySerializer()
     election = ElectionSerializer()
 
@@ -56,7 +56,7 @@ class HistoricalConstituencySerializer(DetailedSerializer):
         ]
 
 
-class HistoricalConstituencyCollectionSerializer(DetailedSerializer):
+class HistoricalConstituencyCollectionSerializer(DetailedModelSerializer):
     constituencies = HistoricalConstituencySerializer(many=True, source='constituencyresult_set')
 
     class Meta:

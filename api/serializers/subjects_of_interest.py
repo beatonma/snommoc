@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import (
     SubjectOfInterest,
     Person,
@@ -15,7 +15,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class SubjectOfInterestSerializer(DetailedSerializer):
+class SubjectOfInterestSerializer(DetailedModelSerializer):
     category = serializers.CharField(source='category.title')
 
     class Meta:
@@ -26,7 +26,7 @@ class SubjectOfInterestSerializer(DetailedSerializer):
         ]
 
 
-class SubjectOfInterestCollectionSerializer(DetailedSerializer):
+class SubjectOfInterestCollectionSerializer(DetailedModelSerializer):
     subjects = SubjectOfInterestSerializer(many=True, source='subjectofinterest_set')
 
     class Meta:

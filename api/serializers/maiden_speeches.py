@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import (
     MaidenSpeech,
     Person,
@@ -15,7 +15,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class MaidenSpeechSerializer(DetailedSerializer):
+class MaidenSpeechSerializer(DetailedModelSerializer):
     house = serializers.CharField(source='house.name')
 
     class Meta:
@@ -28,7 +28,7 @@ class MaidenSpeechSerializer(DetailedSerializer):
         ]
 
 
-class MaidenSpeechCollectionSerializer(DetailedSerializer):
+class MaidenSpeechCollectionSerializer(DetailedModelSerializer):
     maiden_speeches = MaidenSpeechSerializer(many=True, source='maidenspeech_set')
 
     class Meta:

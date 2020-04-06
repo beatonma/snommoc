@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import (
     Experience,
     Person,
@@ -15,7 +15,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class ExperienceSerializer(DetailedSerializer):
+class ExperienceSerializer(DetailedModelSerializer):
     category = serializers.CharField(source='category.name')
 
     class Meta:
@@ -29,7 +29,7 @@ class ExperienceSerializer(DetailedSerializer):
         ]
 
 
-class ExperienceCollectionSerializer(DetailedSerializer):
+class ExperienceCollectionSerializer(DetailedModelSerializer):
     experiences = ExperienceSerializer(many=True, source='experience_set')
 
     class Meta:

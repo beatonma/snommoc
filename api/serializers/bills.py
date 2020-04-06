@@ -6,7 +6,7 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import (
     Bill,
     BillSponsor,
@@ -20,7 +20,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class BillSponsorSerializer(DetailedSerializer):
+class BillSponsorSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.IntegerField(source='person.parliamentdotuk')
     name = serializers.CharField(source='person.name')
 
@@ -32,7 +32,7 @@ class BillSponsorSerializer(DetailedSerializer):
         ]
 
 
-class BillPublicationSerializer(DetailedSerializer):
+class BillPublicationSerializer(DetailedModelSerializer):
     class Meta:
         model = BillPublication
         fields = [
@@ -41,7 +41,7 @@ class BillPublicationSerializer(DetailedSerializer):
         ]
 
 
-class BillTypeSerializer(DetailedSerializer):
+class BillTypeSerializer(DetailedModelSerializer):
     class Meta:
         model = BillType
         fields = [
@@ -50,7 +50,7 @@ class BillTypeSerializer(DetailedSerializer):
         ]
 
 
-class BillStageSittingSerializer(DetailedSerializer):
+class BillStageSittingSerializer(DetailedModelSerializer):
     class Meta:
         model = BillStageSitting
         fields = [
@@ -61,7 +61,7 @@ class BillStageSittingSerializer(DetailedSerializer):
         ]
 
 
-class BillStageSerializer(DetailedSerializer):
+class BillStageSerializer(DetailedModelSerializer):
     type = serializers.CharField(source='bill_stage_type.name')
     sittings = BillStageSittingSerializer(many=True)
 
@@ -73,7 +73,7 @@ class BillStageSerializer(DetailedSerializer):
         ]
 
 
-class SessionSerializer(DetailedSerializer):
+class SessionSerializer(DetailedModelSerializer):
     class Meta:
         model = ParliamentarySession
         fields = [
@@ -82,7 +82,7 @@ class SessionSerializer(DetailedSerializer):
         ]
 
 
-class BillSerializer(DetailedSerializer):
+class BillSerializer(DetailedModelSerializer):
     sponsors = BillSponsorSerializer(many=True, source='billsponsor_set')
     publications = BillPublicationSerializer(many=True, source='billpublication_set')
     type = BillTypeSerializer(source='bill_type')

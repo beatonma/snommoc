@@ -6,13 +6,13 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedSerializer
+from api.serializers import DetailedModelSerializer
 from repository.models import Election
 
 log = logging.getLogger(__name__)
 
 
-class ElectionSerializer(DetailedSerializer):
+class ElectionSerializer(DetailedModelSerializer):
     election_type = serializers.CharField(source='election_type.name')
 
     class Meta:

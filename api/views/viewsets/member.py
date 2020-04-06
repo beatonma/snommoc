@@ -238,6 +238,16 @@ class BaseMemberViewSet(KeyRequiredViewSet):
 #     serializer_class = AllPostSerializer
 #
 #
+# class SubjectOfInterestViewSet(BaseMemberViewSet):
+#     """Return a Person's subjects of interest.
+#
+#     Fields:
+#       - `category`: Short description of category
+#       - `subject`: Plain text description of interests
+#     """
+#     serializer_class = SubjectOfInterestCollectionSerializer
+#
+#
 class ProfileViewSet(BaseMemberViewSet):
     """Return all data about a person.
 
@@ -276,48 +286,6 @@ class ProfileViewSet(BaseMemberViewSet):
       - `subjects`
     """
     serializer_class = FullProfileSerializer
-#
-#
-# class SubjectOfInterestViewSet(BaseMemberViewSet):
-#     """Return a Person's subjects of interest.
-#
-#     Fields:
-#       - `category`: Short description of category
-#       - `subject`: Plain text description of interests
-#     """
-#     serializer_class = SubjectOfInterestCollectionSerializer
-
-
-# class VoteFilter(filters.FilterSet):
-#     division = filters.CharFilter(field_name='division', lookup_expr='title__icontains')
-#     member = filters.NumberFilter(field_name='person', lookup_expr='pk')
-#
-#
-# class TestSerializer(DetailedSerializer):
-#     parliamentdotuk = serializers.IntegerField(source='division.parliamentdotuk')
-#     title = serializers.CharField(source='division.title')
-#
-#     class Meta:
-#         model = CommonsDivisionVote
-#         fields = [
-#             'parliamentdotuk',
-#             'title',
-#             'vote_type',
-#         ]
-
-
-# class CommonsDivisionViewSet(KeyRequiredViewSet):
-#     """Return information about a Commons division, including vote results.."""
-#     queryset = CommonsDivision.objects.all()
-#
-#     serializer_class = CommonsDivisionSerializer
-#
-#
-# class LordsDivisionViewSet(KeyRequiredViewSet):
-#     """Return information about a Lords division, including vote results.."""
-#     queryset = LordsDivision.objects.all()
-#
-#     serializer_class = LordsDivisionSerializer
 
 
 class FeaturedMembersViewSet(KeyRequiredViewSet):

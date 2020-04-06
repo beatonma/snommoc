@@ -12,19 +12,9 @@ from api.views.viewsets.member import (
     PartyViewSet,
     ConstituencyViewSet,
     MemberViewSet,
-    AddressViewSet,
-    PostViewSet,
-    DeclaredInterestViewSet,
-    CommitteeViewSet,
-    ProfileViewSet,
-    ExperienceViewSet,
-    ContestedElectionViewSet,
-    HistoricalConstituencyViewSet,
-    HistoricalPartyViewSet,
-    MaidenSpeechViewSet,
-    SubjectOfInterestViewSet,
-    CommonsVotesViewSet,
     FeaturedMembersViewSet,
+    MemberCommonsVotesViewSet,
+    ProfileViewSet,
 )
 from api.views.views import PingView
 
@@ -32,6 +22,8 @@ from api.views.views import PingView
 from api.views.viewsets.procedure import (
     FeaturedBillsViewSet,
     BillViewSet,
+    CommonsDivisionViewSet,
+    LordsDivisionViewSet,
 )
 
 
@@ -44,42 +36,34 @@ list_or_detail_views = (
     (endpoints.MEMBER, MemberViewSet),
     (endpoints.PARTY, PartyViewSet),
     (endpoints.CONSTITUENCY, ConstituencyViewSet),
-    (endpoints.DIVISION_COMMONS, CommonsVotesViewSet),
+    (endpoints.DIVISION_COMMONS, CommonsDivisionViewSet),
+    (endpoints.DIVISION_LORDS, LordsDivisionViewSet),
     (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
     (endpoints.FEATURED_BILLS, FeaturedBillsViewSet),
 )
 
 # Views which can only return a single detailed viewset.
 detail_only_views = (
-    (endpoints.ADDRESS, AddressViewSet),
-    (endpoints.COMMITTEES, CommitteeViewSet),
-    (endpoints.CONSTITUENCIES, HistoricalConstituencyViewSet),
-    (endpoints.CONTESTED_ELECTIONS, ContestedElectionViewSet),
-    (endpoints.DECLARED_INTERESTS, DeclaredInterestViewSet),
-    (endpoints.EXPERIENCES, ExperienceViewSet),
-    (endpoints.MAIDEN_SPEECHES, MaidenSpeechViewSet),
-    (endpoints.POSTS, PostViewSet),
-    (endpoints.PARTIES, HistoricalPartyViewSet),
-    (endpoints.PROFILE, ProfileViewSet),
-    (endpoints.SUBJECTS_OF_INTEREST, SubjectOfInterestViewSet),
     (endpoints.BILL, BillViewSet),
+    (endpoints.MEMBER_FULL_PROFILE, ProfileViewSet),
+    (endpoints.MEMBER_VOTES, MemberCommonsVotesViewSet),
 )
 
 
-list_or_detail = ListOrDetailRouter()
+list_or_detail_router = ListOrDetailRouter()
 for e, v in list_or_detail_views:
-    _register(list_or_detail, e, v)
+    _register(list_or_detail_router, e, v)
 
-detail_only = DetailOnlyRouter()
+detail_only_router = DetailOnlyRouter()
 for e, v in detail_only_views:
-    _register(detail_only, e, v)
+    _register(detail_only_router, e, v)
 
 
-for x in list_or_detail.urls + detail_only.urls:
+for x in list_or_detail_router.urls + detail_only_router.urls:
     print(x)
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api_ping_view'),
-    path('', include(list_or_detail.urls)),
-    path('', include(detail_only.urls)),
+    path('', include(list_or_detail_router.urls)),
+    path('', include(detail_only_router.urls)),
 ]

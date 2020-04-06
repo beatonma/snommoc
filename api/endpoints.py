@@ -16,19 +16,8 @@ MEMBER = 'member'
 DIVISIONS = 'division'
 
 # Member details
-PROFILE = f'{MEMBER}/profile'
-ADDRESS = f'{MEMBER}/address'
-COMMITTEES = f'{MEMBER}/committees'
-CONSTITUENCIES = f'{MEMBER}/constituencies'
-CONTESTED_ELECTIONS = f'{MEMBER}/contested'
-DECLARED_INTERESTS = f'{MEMBER}/interests'
-ELECTIONS = f'{MEMBER}/elections'
-EXPERIENCES = f'{MEMBER}/experiences'
-MAIDEN_SPEECHES = f'{MEMBER}/speeches'
-PARTIES = f'{MEMBER}/parties'
-POSTS = f'{MEMBER}/posts'
-SUBJECTS_OF_INTEREST = f'{MEMBER}/subjects'
-VOTES = f'{MEMBER}/votes'
+MEMBER_FULL_PROFILE = f'{MEMBER}/profile'
+MEMBER_VOTES = f'{MEMBER}/votes'
 
 # Divisions
 DIVISION_COMMONS = f'{DIVISIONS}/{_HOUSE_COMMONS}'

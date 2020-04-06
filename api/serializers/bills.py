@@ -74,6 +74,7 @@ class BillStageSerializer(DetailedModelSerializer):
     class Meta:
         model = BillStage
         fields = [
+            'parliamentdotuk',
             'sittings',
             'type',
         ]

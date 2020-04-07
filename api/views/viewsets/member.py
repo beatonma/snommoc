@@ -16,12 +16,18 @@ from api.serializers import (
     PartySerializer,
     FullProfileSerializer,
 )
-from api.serializers.votes import MemberVotesSerializer
+from api.serializers.votes import (
+    MemberVotesSerializer,
+    CommonsVotesSerializer,
+    LordsVotesSerializer,
+)
 from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Constituency,
     Party,
     Person,
+    CommonsDivisionVote,
+    LordsDivisionVote,
 )
 from surface.models import FeaturedPerson
 
@@ -302,5 +308,28 @@ class FeaturedMembersViewSet(KeyRequiredViewSet):
         return [item.person for item in qs]
 
 
-class MemberCommonsVotesViewSet(BaseMemberViewSet):
+class MemberVotesViewSet(BaseMemberViewSet):
     serializer_class = MemberVotesSerializer
+
+
+class MemberHouseVotesViewSet(KeyRequiredViewSet):
+    """Abstract class for showing votes by a member in a specific house."""
+    model = None
+
+    def retrieve(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.model.objects.filter(
+            person=self.kwargs.get('pk'),
+        ).prefetch_related('division').order_by('-division__date')
+
+
+class MemberCommonsVotesViewSet(MemberHouseVotesViewSet):
+    serializer_class = CommonsVotesSerializer
+    model = CommonsDivisionVote
+
+
+class MemberLordsVotesViewSet(MemberHouseVotesViewSet):
+    serializer_class = LordsVotesSerializer
+    model = LordsDivisionVote

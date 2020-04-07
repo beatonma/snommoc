@@ -18,6 +18,8 @@ DIVISIONS = 'division'
 # Member details
 MEMBER_FULL_PROFILE = f'{MEMBER}/profile'
 MEMBER_VOTES = f'{MEMBER}/votes'
+MEMBER_VOTES_COMMONS = f'{MEMBER}/votes/commons'
+MEMBER_VOTES_LORDS = f'{MEMBER}/votes/lords'
 
 # Divisions
 DIVISION_COMMONS = f'{DIVISIONS}/{_HOUSE_COMMONS}'

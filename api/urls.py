@@ -7,14 +7,17 @@ from api import endpoints
 from api.views.routers import (
     DetailOnlyRouter,
     ListOrDetailRouter,
+    ListOnlyRouter,
 )
 from api.views.viewsets.member import (
     PartyViewSet,
     ConstituencyViewSet,
     MemberViewSet,
     FeaturedMembersViewSet,
-    MemberCommonsVotesViewSet,
+    MemberVotesViewSet,
     ProfileViewSet,
+    MemberCommonsVotesViewSet,
+    MemberLordsVotesViewSet,
 )
 from api.views.views import PingView
 
@@ -31,6 +34,11 @@ def _register(router, endpoint, viewset):
     router.register(endpoint, viewset, basename=endpoint)
 
 
+list_only_views = (
+    (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
+    (endpoints.FEATURED_BILLS, FeaturedBillsViewSet),
+)
+
 # Views which may return an overview of a list or detail for a single item
 list_or_detail_views = (
     (endpoints.MEMBER, MemberViewSet),
@@ -38,17 +46,20 @@ list_or_detail_views = (
     (endpoints.CONSTITUENCY, ConstituencyViewSet),
     (endpoints.DIVISION_COMMONS, CommonsDivisionViewSet),
     (endpoints.DIVISION_LORDS, LordsDivisionViewSet),
-    (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
-    (endpoints.FEATURED_BILLS, FeaturedBillsViewSet),
 )
 
 # Views which can only return a single detailed viewset.
 detail_only_views = (
     (endpoints.BILL, BillViewSet),
     (endpoints.MEMBER_FULL_PROFILE, ProfileViewSet),
-    (endpoints.MEMBER_VOTES, MemberCommonsVotesViewSet),
+    (endpoints.MEMBER_VOTES, MemberVotesViewSet),
+    (endpoints.MEMBER_VOTES_COMMONS, MemberCommonsVotesViewSet),
+    (endpoints.MEMBER_VOTES_LORDS, MemberLordsVotesViewSet),
 )
 
+list_only_router = ListOnlyRouter()
+for e, v in list_only_views:
+    _register(list_only_router, e, v)
 
 list_or_detail_router = ListOrDetailRouter()
 for e, v in list_or_detail_views:
@@ -59,11 +70,12 @@ for e, v in detail_only_views:
     _register(detail_only_router, e, v)
 
 
-for x in list_or_detail_router.urls + detail_only_router.urls:
+for x in list_only_router.urls + list_or_detail_router.urls + detail_only_router.urls:
     print(x)
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api_ping_view'),
+    path('', include(list_only_router.urls)),
     path('', include(list_or_detail_router.urls)),
     path('', include(detail_only_router.urls)),
 ]

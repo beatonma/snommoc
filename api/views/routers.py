@@ -12,6 +12,20 @@ from rest_framework.routers import (
 log = logging.getLogger(__name__)
 
 
+class ListOnlyRouter(SimpleRouter):
+    # Read-only list views
+    routes = [
+        # All objects, simple overview
+        Route(
+            url=r'^{prefix}{trailing_slash}$',
+            mapping={'get': 'list'},
+            name='{basename}-list',
+            detail=False,
+            initkwargs={}
+        ),
+    ]
+
+
 class ListOrDetailRouter(SimpleRouter):
     # Read-only list/detail views
     routes = [

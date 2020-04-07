@@ -27,6 +27,7 @@ from api.views.viewsets.procedure import (
     BillViewSet,
     CommonsDivisionViewSet,
     LordsDivisionViewSet,
+    FeaturedDivisionsViewSet,
 )
 
 
@@ -37,6 +38,7 @@ def _register(router, endpoint, viewset):
 list_only_views = (
     (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
     (endpoints.FEATURED_BILLS, FeaturedBillsViewSet),
+    (endpoints.FEATURED_DIVISIONS, FeaturedDivisionsViewSet),
 )
 
 # Views which may return an overview of a list or detail for a single item

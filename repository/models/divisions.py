@@ -6,6 +6,10 @@ import logging
 
 from django.db import models
 
+from repository.models.houses import (
+    HOUSE_OF_COMMONS,
+    HOUSE_OF_LORDS,
+)
 from repository.models.mixins import (
     BaseModel,
     PersonMixin,
@@ -73,6 +77,10 @@ class CommonsDivision(Division):
         help_text='How many members were unable to vote due to suspension or expulsion'
     )
 
+    @property
+    def house(self):
+        return HOUSE_OF_COMMONS
+
 
 class LordsDivision(Division):
     description = models.CharField(max_length=1024)
@@ -87,6 +95,10 @@ class LordsDivision(Division):
     def not_contents(self) -> int:
         """Alias for noes, as used in the House of Lords."""
         return self.noes
+
+    @property
+    def house(self):
+        return HOUSE_OF_LORDS
 
 
 class DivisionVote(PersonMixin, BaseModel):

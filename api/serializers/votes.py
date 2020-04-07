@@ -21,6 +21,20 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
+class GenericDivisionSerializer(serializers.Serializer):
+    parliamentdotuk = serializers.IntegerField()
+    title = serializers.CharField()
+    date = serializers.DateField()
+    passed = serializers.BooleanField()
+    house = serializers.CharField()
+
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+
 class InlineCommonsDivisionSerializer(InlineModelSerializer):
     class Meta:
         model = CommonsDivision

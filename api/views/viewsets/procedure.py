@@ -12,13 +12,21 @@ from api.serializers import (
 )
 from api.serializers.bills import BillSerializer
 from api.serializers.inline import InlineBillSerializer
+from api.serializers.votes import (
+    InlineCommonsDivisionSerializer,
+    GenericDivisionSerializer,
+)
 from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Bill,
     CommonsDivision,
     LordsDivision,
 )
-from surface.models import FeaturedBill
+from surface.models import (
+    FeaturedBill,
+    FeaturedCommonsDivision,
+    FeaturedLordsDivision,
+)
 
 log = logging.getLogger(__name__)
 
@@ -40,6 +48,19 @@ class FeaturedBillsViewSet(KeyRequiredViewSet):
             Q(end__isnull=True) | Q(end__gte=today)
         ).select_related('bill')
         return [item.bill for item in qs]
+
+
+class FeaturedDivisionsViewSet(KeyRequiredViewSet):
+    """Return a list of 'featured' divisions - lords and commons combined.."""
+    serializer_class = GenericDivisionSerializer
+
+    def get_queryset(self):
+        today = datetime.date.today()
+        filters = (Q(start__isnull=True) | Q(start__lte=today)) & (Q(end__isnull=True) | Q(end__gte=today))
+        commons = FeaturedCommonsDivision.objects.filter(filters).select_related('division')
+        lords = FeaturedLordsDivision.objects.filter(filters).select_related('division')
+
+        return [x.division for x in commons] + [y.division for y in lords]
 
 
 class CommonsDivisionViewSet(KeyRequiredViewSet):

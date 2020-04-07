@@ -42,3 +42,25 @@ class FeaturedBill(BaseFeatured):
 
     def __str__(self):
         return f'{self.bill}: {self.start} -> {self.end}'
+
+
+class FeaturedCommonsDivision(BaseFeatured):
+    division = models.ForeignKey(
+        'repository.CommonsDivision',
+        on_delete=models.CASCADE,
+        related_name='+',
+    )
+
+    def __str__(self):
+        return f'{self.division}: {self.start} -> {self.end}'
+
+
+class FeaturedLordsDivision(BaseFeatured):
+    division = models.ForeignKey(
+        'repository.LordsDivision',
+        on_delete=models.CASCADE,
+        related_name='+',
+    )
+
+    def __str__(self):
+        return f'{self.division}: {self.start} -> {self.end}'

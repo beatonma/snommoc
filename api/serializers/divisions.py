@@ -32,6 +32,7 @@ class CommonsDivisionVoteSerializer(DetailedModelSerializer):
 
 
 class CommonsDivisionSerializer(DetailedModelSerializer):
+    house = serializers.CharField()
     votes = CommonsDivisionVoteSerializer(many=True)
 
     class Meta:
@@ -43,6 +44,7 @@ class CommonsDivisionSerializer(DetailedModelSerializer):
             'passed',
             'ayes',
             'noes',
+            'house',
             'votes',
         ]
 
@@ -62,6 +64,7 @@ class LordsDivisionVoteSerializer(DetailedModelSerializer):
 
 
 class LordsDivisionSerializer(DetailedModelSerializer):
+    house = serializers.CharField()
     votes = LordsDivisionVoteSerializer(many=True)
 
     class Meta:
@@ -74,5 +77,6 @@ class LordsDivisionSerializer(DetailedModelSerializer):
             'passed',
             'ayes',
             'noes',
+            'house',
             'votes',
         ]

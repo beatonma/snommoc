@@ -49,11 +49,12 @@ class VerifyGoogleTokenView(View):
         userid = id_info['sub']
 
         provider, _ = SignInServiceProvider.objects.get_or_create(name='google')
-        g_user_token, _ = UserToken.objects.get_or_create(
+        user_token, _ = UserToken.objects.get_or_create(
             provider=provider,
             provider_account_id=userid,
         )
         return JsonResponse({
             'gtoken': token[:32],
-            'token': g_user_token.token,
+            'token': user_token.token,
+            'username': user_token.username,
         })

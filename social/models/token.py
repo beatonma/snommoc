@@ -15,6 +15,9 @@ log = logging.getLogger(__name__)
 class SignInServiceProvider(BaseModel):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 
 class UserToken(BaseModel):
     provider = models.ForeignKey(
@@ -26,7 +29,6 @@ class UserToken(BaseModel):
     provider_account_id = models.CharField(
         max_length=100,
         unique=True,
-        editable=False,
     )
     token = models.UUIDField(default=uuid.uuid4)
     enabled = models.BooleanField(default=True)

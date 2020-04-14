@@ -24,8 +24,8 @@ log = logging.getLogger(__name__)
 
 
 class VerifyGoogleTokenView(View):
-    @csrf_exempt
     @api_key_required
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -33,7 +33,7 @@ class VerifyGoogleTokenView(View):
         token = request.POST.get('token', None)
         if token is None:
             log.warning('No token provided in POST data')
-            return HttpResponseBadRequest()
+            return HttpResponseBadRequest('Required data is missing')
 
         id_info = id_token.verify_oauth2_token(token, requests.Request())
         audience = id_info['aud']
@@ -41,18 +41,19 @@ class VerifyGoogleTokenView(View):
 
         if audience not in settings.G_CLIENT_IDS:
             log.warning(f'Token has wrong audience "{audience}". Expected one of {settings.G_CLIENT_IDS}')
-            return HttpResponseBadRequest()
+            return HttpResponseBadRequest('Bad token')
         if issuer not in ['accounts.google.com', 'https://accounts.google.com']:
             log.warning(f'Wrong issuer: {issuer}')
-            return HttpResponseBadRequest()
+            return HttpResponseBadRequest('Bad token')
 
         userid = id_info['sub']
 
         provider, _ = SignInServiceProvider.objects.get_or_create(name='google')
         g_user_token, _ = UserToken.objects.get_or_create(
             provider=provider,
-            account_id=userid,
+            provider_account_id=userid,
         )
         return JsonResponse({
+            'gtoken': token[:32],
             'token': g_user_token.token,
         })

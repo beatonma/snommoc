@@ -32,11 +32,18 @@ class VerifyGoogleTokenView(View):
     def post(self, request, *args, **kwargs):
         token = request.POST.get('token', None)
         if token is None:
+            log.warning('No token provided in POST data')
             return HttpResponseBadRequest()
 
-        id_info = id_token.verify_oauth2_token(token, requests.Request(), settings.G_CLIENT_ID)
-        if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            log.warning(f'Wrong issuer: {id_info["iss"]}')
+        id_info = id_token.verify_oauth2_token(token, requests.Request())
+        audience = id_info['aud']
+        issuer = id_info['iss']
+
+        if audience not in settings.G_CLIENT_IDS:
+            log.warning(f'Token has wrong audience "{audience}". Expected one of {settings.G_CLIENT_IDS}')
+            return HttpResponseBadRequest()
+        if issuer not in ['accounts.google.com', 'https://accounts.google.com']:
+            log.warning(f'Wrong issuer: {issuer}')
             return HttpResponseBadRequest()
 
         userid = id_info['sub']

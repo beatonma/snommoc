@@ -35,7 +35,12 @@ class VerifyGoogleTokenView(View):
             log.warning('No token provided in POST data')
             return HttpResponseBadRequest('Required data is missing')
 
-        id_info = id_token.verify_oauth2_token(token, requests.Request())
+        try:
+            id_info = id_token.verify_oauth2_token(token, requests.Request())
+        except Exception as e:
+            log.warning(f'Token verification failed: {e}')
+            return HttpResponseBadRequest('Bad token')
+
         audience = id_info['aud']
         issuer = id_info['iss']
 

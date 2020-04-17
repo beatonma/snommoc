@@ -78,16 +78,12 @@ class LordsDivisionSerializer(DetailedModelSerializer):
         fields = [
             'parliamentdotuk',
             'title',
+            'description',
             'date',
             'house',
             'passed',
             'ayes',
             'noes',
-            'did_not_vote',
-            'abstentions',
-            'deferred_vote',
-            'errors',
-            'non_eligible',
-            'suspended_or_expelled',
+            'whipped_vote',
             'votes',
         ]

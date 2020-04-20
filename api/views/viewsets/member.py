@@ -6,6 +6,7 @@ import logging
 import datetime
 
 from django.db.models import Q
+from rest_framework import filters
 
 from api.serializers import (
     ConstituencySerializer,
@@ -66,6 +67,13 @@ class MemberViewSet(KeyRequiredViewSet):
             return SimpleProfileSerializer
         else:
             return InlineMemberSerializer
+
+    filter_backends = [filters.SearchFilter, ]
+    search_fields = [
+        'name',
+        'current_post',
+        'constituency__name',
+    ]
 
 
 class BaseMemberViewSet(KeyRequiredViewSet):

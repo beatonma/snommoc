@@ -7,7 +7,10 @@ import logging
 
 from celery import shared_task
 
-from .active_members import update_active_member_details
+from .active_members import (
+    update_active_member_details,
+    update_all_member_details,
+)
 from .all_members import update_all_members_basic_info
 from .. import update_constituencies
 
@@ -27,3 +30,15 @@ def update_all_member_data(constituencies=True, member_basic=True, member_detail
         update_active_member_details()
 
     log.info('update_all_member_data completed.')
+
+
+@shared_task
+def complete_update():
+    log.info('Updating constituencies...')
+    update_constituencies()
+    log.info('Updating all member basic info...')
+    update_all_members_basic_info()
+    log.info('Updating details for all members...')
+    update_all_member_details()
+
+    log.info('complete_update completed.')

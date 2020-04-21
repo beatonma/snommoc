@@ -104,22 +104,6 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
 
     update_member_details(members)
 
-    # active_member_ids = [
-    #     person.parliamentdotuk for person in Person.objects.filter(active=True)
-    # ]
-    #
-    # if debug_max_updates:
-    #     active_member_ids = active_member_ids[:debug_max_updates]
-    #
-    # for parliamentdotuk_id in active_member_ids:
-    #     update_members(
-    #         endpoints.member_biography(parliamentdotuk_id),
-    #         update_member_func=_update_member_biography,
-    #         report_func=None,
-    #         response_class=MemberBiographyResponseData,
-    #     )
-    #     time.sleep(1)
-
 
 @shared_task
 def update_all_member_details():

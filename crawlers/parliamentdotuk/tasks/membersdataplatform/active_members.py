@@ -97,19 +97,40 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
     updating hundreds of profiles unnecessarily.
     """
 
-    # def _report_func(items: List[str]) -> Tuple[str, str]:
-    #     return "update_active_member_details", "\n".join(items)
-
-    active_member_ids = [
-        person.parliamentdotuk for person in Person.objects.filter(active=True)
-    ]
+    members = Person.objects.filter(active=True)
 
     if debug_max_updates:
-        active_member_ids = active_member_ids[:debug_max_updates]
+        members = members[:debug_max_updates]
 
-    for parliamentdotuk_id in active_member_ids:
+    update_member_details(members)
+
+    # active_member_ids = [
+    #     person.parliamentdotuk for person in Person.objects.filter(active=True)
+    # ]
+    #
+    # if debug_max_updates:
+    #     active_member_ids = active_member_ids[:debug_max_updates]
+    #
+    # for parliamentdotuk_id in active_member_ids:
+    #     update_members(
+    #         endpoints.member_biography(parliamentdotuk_id),
+    #         update_member_func=_update_member_biography,
+    #         report_func=None,
+    #         response_class=MemberBiographyResponseData,
+    #     )
+    #     time.sleep(1)
+
+
+@shared_task
+def update_all_member_details():
+    update_member_details(Person.objects.all())
+
+
+@shared_task
+def update_member_details(members):
+    for member in members:
         update_members(
-            endpoints.member_biography(parliamentdotuk_id),
+            endpoints.member_biography(member.parliamentdotuk),
             update_member_func=_update_member_biography,
             report_func=None,
             response_class=MemberBiographyResponseData,

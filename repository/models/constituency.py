@@ -118,7 +118,7 @@ class ConstituencyBoundary(BaseModel):
     boundary_length = models.CharField(max_length=24)
 
     def __str__(self):
-        return self.constituency
+        return self.constituency.name
 
     class Meta:
         verbose_name_plural = 'Constituency Boundaries'

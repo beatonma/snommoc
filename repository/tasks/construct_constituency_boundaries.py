@@ -47,15 +47,20 @@ def _create_boundary(constituency_gss_code, kml, boundary_area, boundary_length,
 
 
 def import_boundaries_from_file(filepath):
+    imported_count = 0
     chunk = []
+
     for line in open(filepath, 'r'):
         if '<Placemark>' in line:
             chunk = [line]
         elif '</Placemark>' in line:
             chunk.append(line)
             build_constituency_boundaries_from_text(''.join(chunk))
+            imported_count = imported_count + 1
         else:
             chunk.append(line)
+
+    return imported_count
 
 
 def build_constituency_boundaries_from_text(text: str):

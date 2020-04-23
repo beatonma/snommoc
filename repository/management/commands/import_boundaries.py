@@ -23,4 +23,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         filepath = options['file']
         log.info(f'Importing constituency boundaries from {filepath}')
-        import_boundaries_from_file(options['file'])
+        imported_count = import_boundaries_from_file(options['file'])
+
+        log.info(f'Import complete: found {imported_count} boundaries.')

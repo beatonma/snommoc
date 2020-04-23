@@ -109,9 +109,13 @@ class UnlinkedConstituency(BaseModel):
 class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(
         Constituency,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
-    boundary = models.TextField(help_text='KML file content')
+    boundary_kml = models.TextField(help_text='KML file content')
+    center_latitude = models.CharField(max_length=24)
+    center_longitude = models.CharField(max_length=24)
+    area = models.CharField(max_length=24)
+    boundary_length = models.CharField(max_length=24)
 
     def __str__(self):
         return self.constituency

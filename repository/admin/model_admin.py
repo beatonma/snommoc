@@ -46,11 +46,13 @@ class ConstituencyAdmin(DefaultAdmin):
     list_display = [
         'name',
         'mp',
+        'gss_code',
         'start',
         'end',
     ]
     search_fields = [
         'name',
+        'gss_code',
     ]
 
 

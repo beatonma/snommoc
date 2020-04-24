@@ -7,6 +7,7 @@ To enable a module for testing:
 
 Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
+import argparse
 import datetime
 import importlib
 import json
@@ -254,7 +255,27 @@ def _print_results(test_results: Dict[str, VerboseResult], tests_passed: int, te
     _compare_tests_with_previous(tests_run)
 
 
+# def _parse_args():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument(
+#         '--app',
+#         type=str,
+#         help='Only run tests for a specific app',
+#         default=None,
+#     )
+#
+#     args, remaining_args = parser.parse_known_args()
+#     sys.argv = remaining_args
+#     return args
+
+
 def _main():
+    global TEST_APPS
+
+    if RUNTESTS_CLARGS.app is not None and RUNTESTS_CLARGS.app in TEST_APPS:
+        print(_highlight_warning(f'Only running tests for app={RUNTESTS_CLARGS.app}'))
+        TEST_APPS = [RUNTESTS_CLARGS.app]
+
     os.environ['DJANGO_SETTINGS_MODULE'] = 'basetest.test_settings_default'
 
     django.setup()
@@ -273,10 +294,14 @@ def _main():
     _print_results(app_results, tests_passed=tests_passed, tests_run=tests_run)
 
     if not RUNTESTS_CLARGS.network:
-        print(f'\n{colorama.Fore.CYAN}'
-              'WARNING:\n  NetworkTestCase implementations were not executed!\n'
-              '  Add `-network` flag to command line arguments when you want '
-              'to run network tests.')
+        print(_highlight_warning(
+            '\n'
+            'WARNING:\n  NetworkTestCase implementations were not executed!\n'
+            '  Add `-network` flag to command line arguments when you want '
+            'to run network tests.'))
+    if RUNTESTS_CLARGS.app is not None:
+        print(_highlight_warning(f'Only ran tests for app={RUNTESTS_CLARGS.app}'))
+
     sys.exit(not all_passed)  # Return 0 if everything okay, 1 if failures
 
 

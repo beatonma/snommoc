@@ -4,6 +4,8 @@
 
 import logging
 
+from rest_framework import serializers
+
 from api.serializers import (
     DetailedModelSerializer,
     InlineMemberSerializer,
@@ -12,6 +14,7 @@ from api.serializers import (
 from api.serializers.election import ElectionSerializer
 from repository.models import (
     Constituency,
+    ConstituencyBoundary,
     ConstituencyResult,
     Person,
 )
@@ -28,8 +31,23 @@ class MinimalConstituencySerializer(InlineModelSerializer):
         ]
 
 
+class ConstituencyBoundarySerializer(DetailedModelSerializer):
+    kml = serializers.CharField(source='boundary_kml')
+
+    class Meta:
+        model = ConstituencyBoundary
+        fields = [
+            'kml',
+            'center_latitude',
+            'center_longitude',
+            'area',
+            'boundary_length',
+        ]
+
+
 class ConstituencySerializer(DetailedModelSerializer):
     mp = InlineMemberSerializer()
+    boundary = ConstituencyBoundarySerializer(source='constituencyboundary')
 
     class Meta:
         model = Constituency
@@ -39,6 +57,7 @@ class ConstituencySerializer(DetailedModelSerializer):
             'mp',
             'start',
             'end',
+            'boundary',
         ]
 
 

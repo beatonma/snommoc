@@ -8,3 +8,4 @@ env/
 uwsgi.ini
 .coverage
 .*.json
+raw_data/

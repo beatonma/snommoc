@@ -5,6 +5,7 @@ import datetime
 import logging
 
 from django.db.models import Q
+from django.http import Http404
 
 from api.serializers import (
     CommonsDivisionSerializer,
@@ -13,8 +14,7 @@ from api.serializers import (
 from api.serializers.bills import BillSerializer
 from api.serializers.inline import InlineBillSerializer
 from api.serializers.votes import (
-    InlineCommonsDivisionSerializer,
-    GenericDivisionSerializer,
+    GenericInlineDivisionSerializer,
 )
 from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
@@ -52,7 +52,7 @@ class FeaturedBillsViewSet(KeyRequiredViewSet):
 
 class FeaturedDivisionsViewSet(KeyRequiredViewSet):
     """Return a list of 'featured' divisions - lords and commons combined.."""
-    serializer_class = GenericDivisionSerializer
+    serializer_class = GenericInlineDivisionSerializer
 
     def get_queryset(self):
         today = datetime.date.today()
@@ -75,3 +75,5 @@ class LordsDivisionViewSet(KeyRequiredViewSet):
     queryset = LordsDivision.objects.all()
 
     serializer_class = LordsDivisionSerializer
+
+

@@ -21,7 +21,7 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class GenericDivisionSerializer(serializers.Serializer):
+class GenericInlineDivisionSerializer(serializers.Serializer):
     parliamentdotuk = serializers.IntegerField()
     title = serializers.CharField()
     date = serializers.DateField()

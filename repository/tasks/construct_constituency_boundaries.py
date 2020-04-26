@@ -183,7 +183,7 @@ def _create_boundary(placemark: Placemark):
         log.warning(f'Constituency lookup failed for placemark={placemark}')
         return
 
-    c, _ = ConstituencyBoundary.objects.get_or_create(
+    c, _ = ConstituencyBoundary.objects.update_or_create(
         constituency=constituency,
         defaults={
             'boundary_kml': _geometry_to_kml(placemark.geometry),

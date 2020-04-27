@@ -341,3 +341,15 @@ class MemberCommonsVotesViewSet(MemberHouseVotesViewSet):
 class MemberLordsVotesViewSet(MemberHouseVotesViewSet):
     serializer_class = LordsVotesSerializer
     model = LordsDivisionVote
+
+
+class MemberForConstituencyViewSet(BaseMemberViewSet):
+    serializer_class = InlineMemberSerializer
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        try:
+            return Constituency.objects.get(parliamentdotuk=pk).mp
+
+        except Exception as e:
+            log.warning(f'Unable to retrieve MP for constituency={pk}: {e}')

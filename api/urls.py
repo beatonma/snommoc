@@ -10,6 +10,7 @@ from api.views.routers import (
     ListOnlyRouter,
 )
 from api.views.viewsets.member import (
+    MemberForConstituencyViewSet,
     PartyViewSet,
     ConstituencyViewSet,
     MemberViewSet,
@@ -57,6 +58,7 @@ detail_only_views = (
     (endpoints.MEMBER_VOTES, MemberVotesViewSet),
     (endpoints.MEMBER_VOTES_COMMONS, MemberCommonsVotesViewSet),
     (endpoints.MEMBER_VOTES_LORDS, MemberLordsVotesViewSet),
+    (endpoints.MEMBER_FOR_CONSTITUENCY, MemberForConstituencyViewSet),
 )
 
 list_only_router = ListOnlyRouter()

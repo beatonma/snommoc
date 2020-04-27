@@ -15,6 +15,9 @@ PARTY = 'party'
 MEMBER = 'member'
 DIVISIONS = 'division'
 
+# Constituency
+MEMBER_FOR_CONSTITUENCY = f'{CONSTITUENCY}/member'
+
 # Member details
 MEMBER_FULL_PROFILE = f'{MEMBER}/profile'
 MEMBER_VOTES = f'{MEMBER}/votes'

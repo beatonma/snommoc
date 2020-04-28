@@ -139,10 +139,9 @@ class ConstituencyAlsoKnownAs(BaseModel):
         blank=True,
         related_name='+',
     )
-    alias = models.ForeignKey(
+    alias = models.OneToOneField(
         'Constituency',
         on_delete=models.CASCADE,
-        unique=True,
         related_name='+',
     )
 

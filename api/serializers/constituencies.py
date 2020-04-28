@@ -83,3 +83,15 @@ class HistoricalConstituencyCollectionSerializer(DetailedModelSerializer):
         fields = [
             'constituencies',
         ]
+
+
+class ElectionResultSerializer(DetailedModelSerializer):
+    election = ElectionSerializer()
+    mp = InlineMemberSerializer()
+
+    class Meta:
+        model = ConstituencyResult
+        fields = [
+            'election',
+            'mp',
+        ]

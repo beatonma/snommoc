@@ -9,8 +9,6 @@ from django.db.models import Q
 from rest_framework import filters
 
 from api.serializers import (
-    ConstituencySerializer,
-    InlineConstituencySerializer,
     InlineMemberSerializer,
     InlinePartySerializer,
     SimpleProfileSerializer,
@@ -22,7 +20,10 @@ from api.serializers.votes import (
     CommonsVotesSerializer,
     LordsVotesSerializer,
 )
-from api.views.viewsets import KeyRequiredViewSet
+from api.views.viewsets import (
+    KeyRequiredViewSet,
+    Searchable,
+)
 from repository.models import (
     Constituency,
     Party,
@@ -35,9 +36,11 @@ from surface.models import FeaturedPerson
 log = logging.getLogger(__name__)
 
 
-class PartyViewSet(KeyRequiredViewSet):
+class PartyViewSet(Searchable, KeyRequiredViewSet):
     """Political party."""
     queryset = Party.objects.all()
+
+    search_fields = ['name']
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -46,34 +49,22 @@ class PartyViewSet(KeyRequiredViewSet):
             return InlinePartySerializer
 
 
-class ConstituencyViewSet(KeyRequiredViewSet):
-    """Parliamentary constituency."""
-    queryset = Constituency.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return ConstituencySerializer
-        else:
-            return InlineConstituencySerializer
-
-
-class MemberViewSet(KeyRequiredViewSet):
+class MemberViewSet(Searchable, KeyRequiredViewSet):
     """Member of Parliament."""
     queryset = Person.objects.all() \
         .prefetch_related('party', 'constituency')
+
+    search_fields = [
+        'name',
+        'current_post',
+        'constituency__name',
+    ]
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return SimpleProfileSerializer
         else:
             return InlineMemberSerializer
-
-    filter_backends = [filters.SearchFilter, ]
-    search_fields = [
-        'name',
-        'current_post',
-        'constituency__name',
-    ]
 
 
 class BaseMemberViewSet(KeyRequiredViewSet):

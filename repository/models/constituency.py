@@ -41,7 +41,7 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         return self.end is None
 
     def __str__(self):
-        return f'{self.name}: {self.mp if self.mp else "No MP"}'
+        return f'{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}'
 
     class Meta:
         verbose_name_plural = 'Constituencies'

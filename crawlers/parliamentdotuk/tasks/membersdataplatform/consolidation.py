@@ -97,7 +97,8 @@ def consolidate_constituencies():
 
         else:
             print(f'{election_date} {population} candidates found for '
-                  f'{constituency_name} - further pruning required:')
+                  f'{constituency_name} {canonical.parliamentdotuk} - '
+                  f'further pruning required:')
             for x in candidates:
                 print(f'  {x}')
             input('continue')

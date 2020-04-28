@@ -76,7 +76,9 @@ def consolidate_constituencies():
             start__lte=election_date
         ).filter(
             Q(end__isnull=True) | Q(end__gt=election_date)
-        ).filter(name__icontains=constituency_name)
+        ).filter(name__icontains=constituency_name).exclude(
+            parliamentdotuk=canonical.parliamentdotuk
+        )
 
         population = candidates.count()
 

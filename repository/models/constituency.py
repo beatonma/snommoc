@@ -40,6 +40,13 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         an MP in parliament."""
         return self.end is None
 
+    @property
+    def canonical(self) -> 'Constituency':
+        try:
+            return ConstituencyAlsoKnownAs.objects.get(alias=self).canonical
+        except:
+            return self
+
     def __str__(self):
         return f'{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}'
 
@@ -122,6 +129,25 @@ class ConstituencyBoundary(BaseModel):
 
     class Meta:
         verbose_name_plural = 'Constituency Boundaries'
+
+
+class ConstituencyAlsoKnownAs(BaseModel):
+    canonical = models.ForeignKey(
+        'Constituency',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='+',
+    )
+    alias = models.ForeignKey(
+        'Constituency',
+        on_delete=models.CASCADE,
+        unique=True,
+        related_name='+',
+    )
+
+    def __str__(self):
+        return f'{self.alias.name} [{self.alias_id}] -> {self.canonical.name} [{self.canonical_id}]'
 
 
 def get_constituency_for_date(name: str, date: Optional[datetime.date]) -> Optional[Constituency]:

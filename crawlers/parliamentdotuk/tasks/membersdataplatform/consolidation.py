@@ -10,6 +10,7 @@ from repository.models import (
     Constituency,
     ConstituencyResult,
 )
+from repository.models.constituency import ConstituencyAlsoKnownAs
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +31,23 @@ def _first_true(iterable, default=None, pred=lambda x: x is not None):
     return next(filter(pred, iterable), default)
 
 
+def _consolidate(real, pretender) -> bool:
+    real.mp = _first_true([real.mp, pretender.mp])
+    real.gss_code = _first_true([real.gss_code, pretender.gss_code])
+    real.ordinance_survey_name = _first_true([real.ordinance_survey_name, pretender.ordinance_survey_name])
+    real.start = _first_true([real.start, pretender.start])
+    real.end = _first_true([real.end, pretender.end])
+    real.constituency_type = _first_true([real.constituency_type, pretender.constituency_type])
+    real.save()
+    c, created = ConstituencyAlsoKnownAs.objects.update_or_create(
+        alias=pretender,
+        defaults={
+            'canonical': real,
+        }
+    )
+    return created
+
+
 def consolidate_constituencies():
     """Constituency data returned from the LDA API do not have IDs to match
     those from the MDP API. Here we try to recognise matching results from
@@ -41,18 +59,7 @@ def consolidate_constituencies():
 
     MDP constituencies only have a name.
     """
-
-    def consolidate(real, pretender):
-        print(f'real: {real}')
-        print(f'pret: {pretender}')
-        real.mp = _first_true([real.mp, pretender.mp])
-        real.gss_code = _first_true([real.gss_code, pretender.gss_code])
-        real.ordinance_survey_name = _first_true([real.ordinance_survey_name, pretender.ordinance_survey_name])
-        real.start = _first_true([real.start, pretender.start])
-        real.end = _first_true([real.end, pretender.end])
-        real.constituency_type = _first_true([real.constituency_type, pretender.constituency_type])
-        print(f'comb: {real}')
-
+    relations_created = 0
     constituency_results = ConstituencyResult.objects.all()
 
     for result in constituency_results:
@@ -74,16 +81,19 @@ def consolidate_constituencies():
             population = candidates.count()
 
         if population == 1:
-            consolidate(canonical, candidates.first())
+            created = _consolidate(canonical, candidates.first())
+            if created:
+                relations_created = relations_created + 1
 
         elif population == 0:
-            print(f'{election_date} No candidates found for {constituency_name} {canonical.parliamentdotuk}')
+            print(f'{election_date} No candidates found for {constituency_name} '
+                  f'{canonical.parliamentdotuk}')
 
         else:
-            print(f'{election_date} {population} candidates found for {constituency_name} - further pruning required:')
+            print(f'{election_date} {population} candidates found for '
+                  f'{constituency_name} - further pruning required:')
             for x in candidates:
-              print(f'  {x}')
+                print(f'  {x}')
             input('continue')
-        print('')
 
-    print('dry run complete')
+    log.info(f'Complete: created {relations_created} new relations.')

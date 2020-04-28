@@ -33,11 +33,15 @@ def _first_true(iterable, default=None, pred=lambda x: x is not None):
 
 def _consolidate(real, pretender) -> bool:
     real.mp = _first_true([real.mp, pretender.mp])
+    pretender.mp = None  # MP can only be associated with one Constituency
+
     real.gss_code = _first_true([real.gss_code, pretender.gss_code])
     real.ordinance_survey_name = _first_true([real.ordinance_survey_name, pretender.ordinance_survey_name])
     real.start = _first_true([real.start, pretender.start])
     real.end = _first_true([real.end, pretender.end])
     real.constituency_type = _first_true([real.constituency_type, pretender.constituency_type])
+
+    pretender.save()
     real.save()
     c, created = ConstituencyAlsoKnownAs.objects.update_or_create(
         alias=pretender,

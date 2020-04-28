@@ -33,23 +33,3 @@ class ConstituencyViewSet(Searchable, KeyRequiredViewSet):
             return ConstituencySerializer
         else:
             return InlineConstituencySerializer
-
-
-class ConstituencyElectionsViewSet(Searchable, KeyRequiredViewSet):
-    search_fields = [
-        'mp__name',
-        'election__name',
-    ]
-    serializer_class = ElectionResultSerializer
-
-    def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        return ConstituencyResult.objects.filter(
-            constituency__parliamentdotuk=pk
-        ).prefetch_related(
-            'election',
-            'mp',
-        )
-
-    def retrieve(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)

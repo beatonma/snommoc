@@ -31,6 +31,18 @@ class MinimalConstituencySerializer(InlineModelSerializer):
         ]
 
 
+class ElectionResultSerializer(DetailedModelSerializer):
+    election = ElectionSerializer()
+    mp = InlineMemberSerializer()
+
+    class Meta:
+        model = ConstituencyResult
+        fields = [
+            'election',
+            'mp',
+        ]
+
+
 class ConstituencyBoundarySerializer(DetailedModelSerializer):
     kml = serializers.CharField(source='boundary_kml')
 
@@ -48,6 +60,7 @@ class ConstituencyBoundarySerializer(DetailedModelSerializer):
 class ConstituencySerializer(DetailedModelSerializer):
     mp = InlineMemberSerializer()
     boundary = ConstituencyBoundarySerializer(source='constituencyboundary')
+    results = ElectionResultSerializer(source='constituencyresult_set', many=True)
 
     class Meta:
         model = Constituency
@@ -58,6 +71,7 @@ class ConstituencySerializer(DetailedModelSerializer):
             'start',
             'end',
             'boundary',
+            'results',
         ]
 
 
@@ -82,16 +96,4 @@ class HistoricalConstituencyCollectionSerializer(DetailedModelSerializer):
         model = Person
         fields = [
             'constituencies',
-        ]
-
-
-class ElectionResultSerializer(DetailedModelSerializer):
-    election = ElectionSerializer()
-    mp = InlineMemberSerializer()
-
-    class Meta:
-        model = ConstituencyResult
-        fields = [
-            'election',
-            'mp',
         ]

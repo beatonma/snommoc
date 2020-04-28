@@ -10,7 +10,6 @@ from api.views.routers import (
     ListOnlyRouter,
 )
 from api.views.viewsets.constituency import (
-    ConstituencyElectionsViewSet,
     ConstituencyViewSet,
 )
 from api.views.viewsets.member import (

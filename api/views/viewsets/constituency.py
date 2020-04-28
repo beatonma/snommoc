@@ -44,9 +44,12 @@ class ConstituencyElectionsViewSet(Searchable, KeyRequiredViewSet):
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        ConstituencyResult.objects.filter(
+        return ConstituencyResult.objects.filter(
             constituency__parliamentdotuk=pk
         ).prefetch_related(
             'election',
             'mp',
         )
+
+    def retrieve(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

@@ -217,12 +217,18 @@ def _update_historical_constituencies(
     person: Person, historical_constituencies: List[ConstituencyResponseData]
 ) -> None:
     def _item_func(c: ConstituencyResponseData):
-        constituency, _ = Constituency.objects.get_or_create(
-            parliamentdotuk=c.get_constituency_id(),
-            defaults={"name": c.get_constituency_name()},
-        )
-
+        constituency_name = c.get_constituency_name()
         election, _ = _update_or_create_election(c.get_election())
+
+        constituency = get_constituency_for_date(
+            constituency_name, election.date,
+        ) or get_current_constituency(constituency_name)
+
+        if constituency is None:
+            constituency = Constituency.objects.create(
+                parliamentdotuk=c.get_constituency_id(),
+                name=constituency_name,
+            )
 
         result, _ = ConstituencyResult.objects.update_or_create(
             constituency=constituency,
@@ -452,7 +458,9 @@ def _update_elections_contested(
             ContestedElection.objects.update_or_create(
                 person=person,
                 election=election,
-                defaults={"constituency": constituency,},
+                defaults={
+                    "constituency": constituency,
+                },
             )
 
     _catch_item_errors(person, contested, _item_func)

@@ -470,6 +470,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             CommitteeChair,
             CommitteeMember,
             Constituency,
+            ConstituencyResult,
             Election,
             ContestedElection,
         )

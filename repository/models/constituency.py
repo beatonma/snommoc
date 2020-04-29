@@ -148,6 +148,9 @@ class ConstituencyAlsoKnownAs(BaseModel):
     def __str__(self):
         return f'{self.alias.name} [{self.alias_id}] -> {self.canonical.name} [{self.canonical_id}]'
 
+    class Meta:
+        verbose_name_plural = 'Constituency AKAs'
+
 
 def get_constituency_for_date(name: str, date: Optional[datetime.date]) -> Optional[Constituency]:
     c = Constituency.objects.filter(name=name)

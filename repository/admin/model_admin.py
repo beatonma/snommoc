@@ -45,6 +45,7 @@ class ConstituencyAdmin(DefaultAdmin):
     ordering = ['name']
     list_display = [
         'name',
+        'parliamentdotuk',
         'mp',
         'gss_code',
         'start',

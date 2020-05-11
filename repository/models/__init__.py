@@ -20,6 +20,10 @@ from .election import (
     ElectionNationalResult,
     ElectionType,
 )
+from .election_result import (
+    ConstituencyCandidate,
+    ElectionResult,
+)
 from .experiences import (
     Experience,
     ExperienceCategory,

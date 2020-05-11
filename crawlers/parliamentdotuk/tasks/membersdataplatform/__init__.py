@@ -14,6 +14,7 @@ from .active_members import (
 from .all_members import update_all_members_basic_info
 from .member_portrait import update_member_portraits
 from .. import update_constituencies
+from ..lda.update_election_results import update_election_results
 
 log = logging.getLogger(__name__)
 
@@ -41,6 +42,9 @@ def complete_update():
     update_all_members_basic_info()
     log.info('Updating details for all members...')
     update_all_member_details()
+
+    log.info('Updating election results')
+    update_election_results()
 
     log.info('Updating member portraits...')
     update_member_portraits()

@@ -21,6 +21,7 @@ from crawlers.parliamentdotuk.tasks.lda.endpoints import (
 from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_date,
     coerce_to_int,
+    coerce_to_list,
     coerce_to_str,
 )
 from notifications.models import TaskNotification
@@ -85,10 +86,44 @@ def unwrap_value_date(data, key) -> datetime.date:
     return coerce_to_date(unwrap_value(data, key))
 
 
+def get_str(data, key, default=None) -> Optional[str]:
+    return coerce_to_str(data.get(key), default=default)
+
+
+def get_int(data, key, default=None) -> Optional[int]:
+    return coerce_to_int(data.get(key), default=default)
+
+
+def get_list(data, key, default=None) -> list:
+    return coerce_to_list(data.get(key))
+
+
+def is_xml_null(obj: dict) -> bool:
+    """Some values return an xml-schema-wrapped version of null.
+
+    Return True iff the given object is an instance of xml-wrapped null.
+    """
+    return isinstance(obj, dict) and obj.get("@xsi:nil", "").lower() == "true"
+
+
 def get_parliamentdotuk_id(about_url: str) -> Optional[int]:
     matches = re.findall(r'.*?/([\d]+)$', about_url)
     if matches:
         return int(matches[0])
+
+
+def get_nested_value(obj: dict, key: str):
+    parts = key.split(".")
+    parent = obj
+    while len(parts) > 1:
+        parent = parent.get(parts.pop(0))
+        if parent is None or not isinstance(parent, dict):
+            return None
+
+    result = parent.get(parts.pop())
+    if is_xml_null(result):
+        return None
+    return result
 
 
 def get_list_page(

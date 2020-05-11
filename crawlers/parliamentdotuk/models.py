@@ -54,3 +54,12 @@ class LordsDivisionUpdateError(UpdateError):
 
     def __str__(self):
         return f'Lords Division {self.parliamentdotuk}'
+
+
+class ElectionResultUpdateError(UpdateError):
+    class Meta:
+        verbose_name_plural = "ElectionResult Update Errors"
+        verbose_name = "ElectionResult Update Error"
+
+    def __str__(self):
+        return f'{self.parliamentdotuk}'

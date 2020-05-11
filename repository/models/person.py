@@ -106,7 +106,9 @@ class Person(
 
     house = models.ForeignKey(
         'House',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     date_entered_house = models.DateField(
         default=None,

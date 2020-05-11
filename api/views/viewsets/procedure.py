@@ -5,7 +5,6 @@ import datetime
 import logging
 
 from django.db.models import Q
-from django.http import Http404
 
 from api.serializers import (
     CommonsDivisionSerializer,
@@ -75,5 +74,3 @@ class LordsDivisionViewSet(KeyRequiredViewSet):
     queryset = LordsDivision.objects.all()
 
     serializer_class = LordsDivisionSerializer
-
-

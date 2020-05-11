@@ -8,14 +8,14 @@ from api.serializers import (
     ConstituencySerializer,
     InlineConstituencySerializer,
 )
-from api.serializers.constituencies import ElectionResultSerializer
+from api.serializers.election_results import ConstituencyResultDetailsSerializer
 from api.views.viewsets import (
     KeyRequiredViewSet,
     Searchable,
 )
 from repository.models import (
     Constituency,
-    ConstituencyResult,
+    ConstituencyResultDetail,
 )
 
 log = logging.getLogger(__name__)
@@ -33,3 +33,17 @@ class ConstituencyViewSet(Searchable, KeyRequiredViewSet):
             return ConstituencySerializer
         else:
             return InlineConstituencySerializer
+
+
+class ConstituencyResultDetailViewSet(KeyRequiredViewSet):
+    serializer_class = ConstituencyResultDetailsSerializer
+
+    def get_object(self):
+        constituency_id = self.kwargs.get('pk')
+        election_id = self.kwargs.get('election_id')
+        print(f'constituency: {constituency_id}; election: {election_id}')
+
+        return ConstituencyResultDetail.objects.filter(
+            constituency_result__constituency__parliamentdotuk=constituency_id,
+            constituency_result__election__parliamentdotuk=election_id
+        ).first()

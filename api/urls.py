@@ -10,6 +10,7 @@ from api.views.routers import (
     ListOnlyRouter,
 )
 from api.views.viewsets.constituency import (
+    ConstituencyResultDetailViewSet,
     ConstituencyViewSet,
 )
 from api.views.viewsets.member import (
@@ -84,4 +85,9 @@ urlpatterns = [
     path('', include(list_only_router.urls)),
     path('', include(list_or_detail_router.urls)),
     path('', include(detail_only_router.urls)),
+
+    # This one requires 2 keys
+    path(f'{endpoints.CONSTITUENCY}/<int:pk>/election/<int:election_id>/',
+         ConstituencyResultDetailViewSet.as_view({'get': 'retrieve'}),
+         name=endpoints.CONSTITUENCY_RESULTS),
 ]

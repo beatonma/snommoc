@@ -9,11 +9,13 @@ from crawlers.parliamentdotuk.tasks.lda.update_election_results import _create_e
 from crawlers.parliamentdotuk.tests.data_lda_update_election_results import ELECTION_RESULT_DETAIL
 from repository.models import (
     Constituency,
+    ConstituencyResult,
     Election,
+    Person,
 )
 from repository.models.election_result import (
     ConstituencyCandidate,
-    ElectionResult,
+    ConstituencyResultDetail,
 )
 
 log = logging.getLogger(__name__)
@@ -33,20 +35,34 @@ class UpdateElectionResultsTests(LocalTestCase):
             date=datetime.date.today(),
         ).save()
 
+        Person.objects.create(
+            parliamentdotuk=1423,
+            name='Boris Johnson',
+            active=True,
+        ).save()
+
+        ConstituencyResult.objects.create(
+            election_id=382037,
+            constituency_id=143474,
+            mp_id=1423
+        ).save()
+
     def tearDown(self) -> None:
         self.delete_instances_of(
             Constituency,
             Election,
-            ElectionResult,
-            ConstituencyCandidate
+            ConstituencyResultDetail,
+            ConstituencyCandidate,
+            ConstituencyResult,
+            Person,
         )
 
     def test_create_election_result(self):
         data = ELECTION_RESULT_DETAIL
         _create_election_result(382387, data)
 
-        self.assertEqual(1, ElectionResult.objects.count())
-        aberdeen_north: ElectionResult = ElectionResult.objects.first()
+        self.assertEqual(1, ConstituencyResultDetail.objects.count())
+        aberdeen_north: ConstituencyResultDetail = ConstituencyResultDetail.objects.first()
         self.assertEqual(aberdeen_north.turnout, 37701)
         self.assertEqual(aberdeen_north.majority, 8361)
         self.assertEqual(aberdeen_north.electorate, 64808)
@@ -57,5 +73,5 @@ class UpdateElectionResultsTests(LocalTestCase):
             places=3
         )
 
-        self.assertEqual(aberdeen_north.constituency.name, 'Aberdeen North')
-        self.assertEqual(aberdeen_north.election.name, '2010 General Election')
+        self.assertEqual(aberdeen_north.constituency_result.constituency.name, 'Aberdeen North')
+        self.assertEqual(aberdeen_north.constituency_result.election.name, '2010 General Election')

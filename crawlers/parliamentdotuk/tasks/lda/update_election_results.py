@@ -21,11 +21,12 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
 from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_str
 from repository.models import (
     Constituency,
+    ConstituencyResult,
     Election,
 )
 from repository.models.election_result import (
     ConstituencyCandidate,
-    ElectionResult,
+    ConstituencyResultDetail,
 )
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from repository.models.util.queryset import get_or_none
@@ -45,15 +46,24 @@ def _create_election_result(parliamentdotuk, data):
             get_nested_value(data, contract.ELECTION_ABOUT))
     })
 
+    try:
+        constituency_result = ConstituencyResult.objects.get(
+            election=election,
+            constituency=constituency,
+        )
+    except Exception as e:
+        log.warning(f'Could not retrieve ConstituencyResult: '
+                    f'constituency={constituency}, election={election}')
+        raise e
+
     electorate = get_int(data, contract.ELECTORATE)
     turnout = get_int(data, contract.TURNOUT)
     turnout_fraction = turnout / electorate
 
-    result, _ = ElectionResult.objects.update_or_create(
+    result, _ = ConstituencyResultDetail.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'constituency': constituency,
-            'election': election,
+            'constituency_result': constituency_result,
             'electorate': electorate,
             'majority': get_int(data, contract.MAJORITY),
             'result': get_str(data, contract.RESULT_OF_ELECTION),
@@ -87,8 +97,8 @@ def update_election_results(follow_pagination=True) -> None:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
 
         try:
-            ElectionResult.objects.get(parliamentdotuk=puk)
-        except ElectionResult.DoesNotExist:
+            ConstituencyResultDetail.objects.get(parliamentdotuk=puk)
+        except ConstituencyResultDetail.DoesNotExist:
             return fetch_and_create_election_result(puk)
 
     def fetch_and_create_election_result(parliamentdotuk) -> Optional[str]:

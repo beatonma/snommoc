@@ -22,7 +22,7 @@ from .election import (
 )
 from .election_result import (
     ConstituencyCandidate,
-    ElectionResult,
+    ConstituencyResultDetail,
 )
 from .experiences import (
     Experience,

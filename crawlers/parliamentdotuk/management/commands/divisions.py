@@ -5,8 +5,7 @@ Update Divisions with:
 
 import logging
 
-from django.core.management import BaseCommand
-
+from crawlers.parliamentdotuk.management.commands.async_command import AsyncCommand
 from crawlers.parliamentdotuk.tasks.lda.divisions import (
     update_commons_divisions,
     update_lords_divisions,
@@ -22,17 +21,14 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
-class Command(BaseCommand):
+class Command(AsyncCommand):
     def add_arguments(self, parser):
+        super().add_arguments(parser)
+
         parser.add_argument(
             '-clear',
             action='store_true',
             help='Delete all divisions and related votes',
-        )
-        parser.add_argument(
-            '-async',
-            action='store_true',
-            help='Pass update divisions functions to Celery.',
         )
         parser.add_argument(
             '-commons',
@@ -64,7 +60,4 @@ class Command(BaseCommand):
         else:
             func = update_all_divisions
 
-        if options['async']:
-            func.delay()
-        else:
-            func()
+        self.handle_async(func, *args, **options)

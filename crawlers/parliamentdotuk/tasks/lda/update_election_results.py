@@ -18,6 +18,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     unwrap_value_str,
     update_model,
 )
+from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_str
 from repository.models import (
     Constituency,
     Election,
@@ -36,11 +37,13 @@ log = logging.getLogger(__name__)
 def _create_election_result(parliamentdotuk, data):
     constituency_id = get_parliamentdotuk_id(
         get_nested_value(data, contract.CONSTITUENCY_ABOUT))
-    election_id = get_parliamentdotuk_id(
-        get_nested_value(data, contract.ELECTION_ABOUT))
+    election_name = coerce_to_str(get_nested_value(data, contract.ELECTION_NAME))
 
     constituency = get_or_none(Constituency, parliamentdotuk=constituency_id)
-    election = get_or_none(Election, parliamentdotuk=election_id)
+    election, _ = Election.objects.get_or_create(name=election_name, defaults={
+        'parliamentdotuk': get_parliamentdotuk_id(
+            get_nested_value(data, contract.ELECTION_ABOUT))
+    })
 
     electorate = get_int(data, contract.ELECTORATE)
     turnout = get_int(data, contract.TURNOUT)
@@ -58,7 +61,6 @@ def _create_election_result(parliamentdotuk, data):
             'turnout_fraction': turnout_fraction,
         }
     )
-    log.info(f'create result {result}')
 
     candidates = get_list(data, contract.CANDIDATES)
     for candidate in candidates:
@@ -67,7 +69,6 @@ def _create_election_result(parliamentdotuk, data):
 
 def _create_candidate(election_result, candidate):
     name = unwrap_value_str(candidate, contract.CANDIDATE_NAME)
-    log.info(f'Create candidate {name}')
 
     ConstituencyCandidate.objects.update_or_create(
         election_result=election_result,
@@ -84,7 +85,6 @@ def _create_candidate(election_result, candidate):
 def update_election_results(follow_pagination=True) -> None:
     def update_result_details(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
-        log.info(f'Updating election results {puk}')
 
         try:
             ElectionResult.objects.get(parliamentdotuk=puk)
@@ -95,7 +95,6 @@ def update_election_results(follow_pagination=True) -> None:
         try:
             data = get_item_data(endpoints.ELECTION_RESULT_DETAIL.format(parliamentdotuk=parliamentdotuk))
             if data is None:
-                log.warning(f'No data! {parliamentdotuk}')
                 return None
 
             return _create_election_result(parliamentdotuk, data)

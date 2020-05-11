@@ -55,6 +55,9 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
 
 
 class ConstituencyResult(PeriodMixin, BaseModel):
+    """
+    Track which MP won in this constituency at this election.
+    """
     election = models.ForeignKey(
         'Election',
         on_delete=models.CASCADE,

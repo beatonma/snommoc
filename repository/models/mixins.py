@@ -18,8 +18,8 @@ class BaseModel(models.Model):
     """
     Not a mixin as such. All concrete model implementations should extend from this.
     """
-    created_on = models.DateTimeField(auto_now_add=True, editable=False)
-    modified_on = models.DateTimeField(auto_now=True, editable=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True

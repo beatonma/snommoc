@@ -41,7 +41,7 @@ class ConstituencyCandidate(BaseModel):
         related_name='candidates',
     )
     name = models.CharField(max_length=NAME_MAX_LENGTH)
-    votes = models.PositiveSmallIntegerField(default=0)
+    votes = models.PositiveIntegerField(default=0)
     order = models.PositiveSmallIntegerField(default=100)
     party = models.CharField(max_length=16)  # LDA API represents this with TLA
 

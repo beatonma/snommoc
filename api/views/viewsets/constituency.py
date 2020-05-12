@@ -41,7 +41,6 @@ class ConstituencyResultDetailViewSet(KeyRequiredViewSet):
     def get_object(self):
         constituency_id = self.kwargs.get('pk')
         election_id = self.kwargs.get('election_id')
-        print(f'constituency: {constituency_id}; election: {election_id}')
 
         return ConstituencyResultDetail.objects.filter(
             constituency_result__constituency__parliamentdotuk=constituency_id,

@@ -8,6 +8,8 @@ from rest_framework import serializers
 
 from api.serializers import (
     DetailedModelSerializer,
+    ElectionSerializer,
+    InlineConstituencySerializer,
     InlineModelSerializer,
 )
 from repository.models import (
@@ -33,6 +35,8 @@ class ConstituencyCandidateSerializer(InlineModelSerializer):
 
 class ConstituencyResultDetailsSerializer(DetailedModelSerializer):
     candidates = ConstituencyCandidateSerializer(many=True)
+    constituency = InlineConstituencySerializer()
+    election = ElectionSerializer()
 
     class Meta:
         model = ConstituencyResultDetail
@@ -43,5 +47,7 @@ class ConstituencyResultDetailsSerializer(DetailedModelSerializer):
             'turnout_fraction',
             'result',
             'majority',
+            'constituency',
+            'election',
             'candidates',
         ]

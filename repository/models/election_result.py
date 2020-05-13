@@ -27,7 +27,7 @@ class ConstituencyResultDetail(ParliamentDotUkMixin, BaseModel):
     electorate = models.PositiveIntegerField(default=0)
     majority = models.PositiveIntegerField(default=0)
     turnout = models.PositiveIntegerField(default=0)
-    turnout_fraction = models.DecimalField(max_digits=3, decimal_places=3) # 0 < n < 1
+    turnout_fraction = models.DecimalField(max_digits=3, decimal_places=3)  # 0 < n < 1
     result = models.CharField(max_length=32)
 
     def __str__(self):
@@ -43,7 +43,7 @@ class ConstituencyCandidate(BaseModel):
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     votes = models.PositiveIntegerField(default=0)
     order = models.PositiveSmallIntegerField(default=100)
-    party = models.CharField(max_length=16)  # LDA API represents this with TLA
+    party = models.CharField(max_length=128)  # LDA API represents this with TLA
 
     class Meta:
         unique_together = [

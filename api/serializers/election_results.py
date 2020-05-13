@@ -35,8 +35,8 @@ class ConstituencyCandidateSerializer(InlineModelSerializer):
 
 class ConstituencyResultDetailsSerializer(DetailedModelSerializer):
     candidates = ConstituencyCandidateSerializer(many=True)
-    constituency = InlineConstituencySerializer()
-    election = ElectionSerializer()
+    constituency = InlineConstituencySerializer(source='constituency_result.constituency')
+    election = ElectionSerializer(source='constituency_result.election')
 
     class Meta:
         model = ConstituencyResultDetail

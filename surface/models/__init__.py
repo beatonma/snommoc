@@ -4,3 +4,4 @@ from .featured import (
     FeaturedCommonsDivision,
     FeaturedLordsDivision,
 )
+from .motd import MessageOfTheDay

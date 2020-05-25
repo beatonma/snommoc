@@ -26,6 +26,7 @@ from api.views.viewsets.member import (
 from api.views.views import PingView
 
 # Views which can return a list of inline viewsets, or a single detailed viewset.
+from api.views.viewsets.motd import MessageOfTheDayViewSet
 from api.views.viewsets.procedure import (
     FeaturedBillsViewSet,
     BillViewSet,
@@ -43,6 +44,7 @@ list_only_views = (
     (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
     (endpoints.FEATURED_BILLS, FeaturedBillsViewSet),
     (endpoints.FEATURED_DIVISIONS, FeaturedDivisionsViewSet),
+    (endpoints.MOTD, MessageOfTheDayViewSet),
 )
 
 # Views which may return an overview of a list or detail for a single item
@@ -82,6 +84,7 @@ for x in list_only_router.urls + list_or_detail_router.urls + detail_only_router
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api_ping_view'),
+    # path('api/motd/', MotdViewSet.as_view({'get': 'retrieve'}), name='api_motd'),
     path('', include(list_only_router.urls)),
     path('', include(list_or_detail_router.urls)),
     path('', include(detail_only_router.urls)),

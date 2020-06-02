@@ -79,9 +79,6 @@ for e, v in detail_only_views:
     _register(detail_only_router, e, v)
 
 
-for x in list_only_router.urls + list_or_detail_router.urls + detail_only_router.urls:
-    print(x)
-
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api_ping_view'),
     # path('api/motd/', MotdViewSet.as_view({'get': 'retrieve'}), name='api_motd'),

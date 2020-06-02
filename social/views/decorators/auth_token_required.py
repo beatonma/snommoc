@@ -34,10 +34,10 @@ def user_token_required(f):
         try:
             if 'token' not in request.POST:
                 return HttpResponse('User token required', status=400)
-            token = UserToken.objects.get(key=request.POST.get('token'))
+            token = UserToken.objects.get(token=request.POST.get('token'))
             if token.enabled:
                 log.info(f'User token verified: {token}')
-                return f(view, request, *args, **kwargs)
+                return f(view, request, token=token, *args, **kwargs)
             else:
                 raise UserTokenDisabled(f'Token disabled: {token}')
 

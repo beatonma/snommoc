@@ -21,6 +21,6 @@ urlpatterns = local_urlpatterns + [
     path('notifications/', include('notifications.urls')),
     path('puk/', include('crawlers.parliamentdotuk.urls')),
     path('api/', include('api.urls')),
-    path('auth/', include('social.urls')),
+    path('social/', include('social.urls')),
     path('', RedirectView.as_view(url='/about')),
 ]

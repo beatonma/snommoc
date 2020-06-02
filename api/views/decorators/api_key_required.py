@@ -27,7 +27,7 @@ def api_key_required(f):
     """
     @wraps(f)
     def verify_api_key(view, request: HttpRequest, *args, **kwargs):
-        if settings.DEBUG:
+        if request.method == 'POST' or settings.DEBUG:
             return f(view, request, *args, user=request.user, **kwargs)
 
         if has_read_snommoc_api_permission(request.user):

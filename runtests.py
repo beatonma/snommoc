@@ -7,7 +7,6 @@ To enable a module for testing:
 
 Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
-import argparse
 import datetime
 import importlib
 import json
@@ -43,6 +42,7 @@ TEST_APPS = [
     'dashboard',
     'notifications',
     'repository',
+    'social',
     'util',
 ]
 

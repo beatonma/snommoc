@@ -16,6 +16,7 @@ from basetest.testcase import LocalTestCase
 from repository.models import Person
 from social.models import Comment
 from social.models.token import UserToken
+from social.views import contract
 
 log = logging.getLogger(__name__)
 
@@ -24,17 +25,18 @@ _COMMENT = 'This is a simple comment'
 
 
 class CommentTests(LocalTestCase):
+    VIEW_NAME = 'social-member-comments'
 
     @with_api_key
     def setUp(self, *args, **kwargs) -> None:
         self.valid_token = uuid.uuid4()
-        self.params = kwargs.get('params')
 
         Person.objects.create(
             parliamentdotuk=4837,
             name='Aaron Bell',
             active=True
         ).save()
+
         UserToken.objects.create(
             token=self.valid_token,
             username='testuser',
@@ -42,10 +44,10 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_valid_user(self):
         response = self.client.post(
-            reverse('social-member-comments', kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
             {
-                'token': self.valid_token,
-                'text': _COMMENT,
+                contract.USER_TOKEN: self.valid_token,
+                contract.COMMENT_TEXT: _COMMENT,
             },
         )
 
@@ -59,50 +61,50 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_invalid_user(self):
         response = self.client.post(
-            reverse('social-member-comments', kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
             {
-                'token': uuid.uuid4(),
-                'text': _COMMENT,
+                contract.USER_TOKEN: uuid.uuid4(),
+                contract.COMMENT_TEXT: _COMMENT,
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertLengthEquals(Comment.objects.all(), 0)
+        self.assertNoneCreated(Comment)
 
     def test_post_comment_with_no_user(self):
         response = self.client.post(
-            reverse('social-member-comments', kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
             {
-                'text': _COMMENT,
+                contract.COMMENT_TEXT: _COMMENT,
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertLengthEquals(Comment.objects.all(), 0)
+        self.assertNoneCreated(Comment)
 
     def test_post_comment_with_invalid_target(self):
         response = self.client.post(
-            reverse('social-member-comments', kwargs={'pk': 101012}),
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 101012}),
             {
-                'token': self.valid_token,
-                'text': _COMMENT,
+                contract.USER_TOKEN: self.valid_token,
+                contract.COMMENT_TEXT: _COMMENT,
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertLengthEquals(Comment.objects.all(), 0)
+        self.assertNoneCreated(Comment)
 
     def test_post_comment_with_invalid_comment(self):
         response = self.client.post(
-            reverse('social-member-comments', kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
             {
-                'token': self.valid_token,
-                'text': 'a'*300,  # Too long
+                contract.USER_TOKEN: self.valid_token,
+                contract.COMMENT_TEXT: 'a'*300,  # Too long
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertLengthEquals(Comment.objects.all(), 0)
+        self.assertNoneCreated(Comment)
 
     def test_get_comments(self):
         user = UserToken.objects.get(username='testuser')
@@ -113,9 +115,16 @@ class CommentTests(LocalTestCase):
             target_id=4837,
         ).save()
 
-        settings.DEBUG = True  # Disable @api_key_required
+        # @api_key_required
         response = self.client.get(
-            reverse('social-member-comments', kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Disable @api_key_required
+        settings.DEBUG = True
+        response = self.client.get(
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
         )
         settings.DEBUG = False
 
@@ -124,8 +133,8 @@ class CommentTests(LocalTestCase):
         self.assertLengthEquals(data, 1)
 
         comment = data[0]
-        self.assertEqual(comment.get('comment'), _COMMENT)
-        self.assertEqual(comment.get('username'), 'testuser')
+        self.assertEqual(comment.get(contract.COMMENT_TEXT), _COMMENT)
+        self.assertEqual(comment.get(contract.USER_NAME), 'testuser')
 
     def tearDown(self) -> None:
         self.delete_instances_of(

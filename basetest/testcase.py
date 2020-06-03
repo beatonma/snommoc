@@ -27,7 +27,13 @@ class BaseTestCase(TestCase):
         self.assertEqual(first.lower(), second.lower(), msg=msg)
 
     def assertLengthEquals(self, collection, expected_length: int, msg=None):
-        self.assertEqual(len(collection), expected_length, msg)
+        self.assertEqual(len(collection), expected_length, msg=msg)
+
+    def assertEmpty(self, collection, msg=None):
+        self.assertLengthEquals(collection, 0, msg=msg)
+
+    def assertNoneCreated(self, model_class, msg=None):
+        self.assertEqual(model_class.objects.all().count(), 0, msg=msg)
 
     def assertQuerysetSize(self, queryset, expected_length: int, msg=None):
         self.assertLengthEquals(queryset.all(), expected_length, msg=msg)

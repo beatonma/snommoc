@@ -9,22 +9,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from repository.models.mixins import BaseModel
+from social.models.mixins import (
+    GenericTargetMixin,
+    UserMixin,
+)
 
 log = logging.getLogger(__name__)
 
 
-class Comment(BaseModel):
-    user = models.ForeignKey(
-        'UserToken',
-        on_delete=models.DO_NOTHING,
-    )
-
-    target_type = models.ForeignKey(
-        ContentType,
-        on_delete=models.CASCADE,
-    )
-    target_id = models.PositiveIntegerField()
-    target = GenericForeignKey('target_type', 'target_id')
+class Comment(UserMixin, GenericTargetMixin, BaseModel):
 
     text = models.CharField(max_length=240)
     flagged = models.BooleanField(

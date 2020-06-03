@@ -11,12 +11,20 @@ from django.urls import (
 
 from social.views.oauth_google import VerifyGoogleTokenView
 from social.views.routers import SocialRouter
-from social.views.viewsets.social import MemberSocialViewSet
+from social.views.viewsets.social import (
+    BillSocialViewSet,
+    CommonsDivisionSocialViewSet,
+    LordsDivisionSocialViewSet,
+    MemberSocialViewSet,
+)
 
 log = logging.getLogger(__name__)
 
 social_router = SocialRouter()
 social_router.register('member', MemberSocialViewSet, 'social-member')
+social_router.register('bill', BillSocialViewSet, 'social-bill')
+social_router.register('divison-commons', CommonsDivisionSocialViewSet, 'social-division-commons')
+social_router.register('divison-lords', LordsDivisionSocialViewSet, 'social-division-lords')
 
 
 urlpatterns = [

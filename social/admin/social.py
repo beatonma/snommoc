@@ -6,14 +6,19 @@ import logging
 
 from django.contrib import admin
 
-from social.models import Comment
+from social.models import (
+    Comment,
+    Vote,
+    VoteType,
+)
 from social.models.token import UserToken
 
 log = logging.getLogger(__name__)
 
 
 @admin.register(
-    UserToken
+    UserToken,
+    VoteType,
 )
 class DefaultSocialAdmin(admin.ModelAdmin):
     save_on_top = True
@@ -36,3 +41,13 @@ class CommentAdmin(DefaultSocialAdmin):
         'user',
     ]
 
+
+@admin.register(
+    Vote,
+)
+class VoteAdmin(DefaultSocialAdmin):
+    list_display = [
+        'user',
+        'target',
+        'vote_type',
+    ]

@@ -30,10 +30,13 @@ class Vote(UserMixin, GenericTargetMixin, BaseModel):
                 name='unique_user_vote_per_target'
             )
         ]
-        unique_together = [
-            ('target_type', 'target_id', 'user')
-        ]
+
+    def __str__(self):
+        return f'{self.user}: {self.vote_type}'
 
 
 class VoteType(BaseModel):
     name = models.CharField(unique=True, max_length=16)
+
+    def __str__(self):
+        return f'{self.name}'

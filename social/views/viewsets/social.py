@@ -2,6 +2,7 @@
 
 """
 import logging
+from typing import Dict
 
 from django.contrib.contenttypes.models import ContentType
 from django.http import (
@@ -30,6 +31,7 @@ from social.serializers.comments import (
     CommentSerializer,
     PostCommentSerializer,
 )
+from social.serializers.social import SocialSerializer
 from social.serializers.votes import PostVoteSerializer
 from social.views.decorators.auth_token_required import user_token_required
 
@@ -56,6 +58,9 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
 
     class Meta:
         abstract = True
+
+    def get_queryset(self):
+        pass
 
     def get_serializer_class(self):
         raise NotImplemented(
@@ -90,16 +95,26 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         elif request.method == 'POST':
             return self.create_vote(request)
 
+    @action(methods=['get'], detail=False)
+    def all(self, request, *args, **kwargs):
+        data = SocialSerializer(
+            self._get_comments_data(),
+            self._get_votes_data()
+        ).data
+        return Response(data)
+
+    def _get_comments_data(self):
+        return self.get_comment_queryset()
+
     def get_comments(self):
-        data = _get_comment_serializer('GET')(self.get_comment_queryset(), many=True)
+        data = _get_comment_serializer('GET')(self._get_comments_data(), many=True)
         return Response(data=data.data)
 
     @user_token_required
     def create_comment(self, request, token):
         return self._create(request, _get_comment_serializer('POST'))
 
-    def get_votes(self):
-        """Return count of each vote type"""
+    def _get_votes_data(self) -> Dict[str, int]:
         qs = self.get_vote_queryset()
         vote_types = VoteType.objects.all()
         vote_counts = {}
@@ -109,8 +124,13 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
                 vote_type=vt,
                 user__enabled=True
             ).count()
+        return vote_counts
 
-        return JsonResponse(vote_counts)
+    def get_votes(self):
+        """Return count of each vote type"""
+        data = self._get_votes_data()
+
+        return JsonResponse(data)
 
     @user_token_required
     def create_vote(self, request, token):
@@ -119,6 +139,7 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
     def _create(self, request, serializer):
         target = self.get_target_or_404()
         data = serializer(target=target, data=request.data)
+
         if data.is_valid():
             data.save()
             return HttpResponse('OK', status=status.HTTP_201_CREATED)

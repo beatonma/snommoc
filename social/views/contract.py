@@ -12,3 +12,6 @@ USER_NAME = 'username'
 COMMENT_TEXT = 'text'
 
 VOTE_TYPE = 'vote'
+
+COMMENTS = 'comments'
+VOTES = 'votes'

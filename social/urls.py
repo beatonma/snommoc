@@ -11,7 +11,7 @@ from django.urls import (
 
 from social.views.oauth_google import VerifyGoogleTokenView
 from social.views.routers import SocialRouter
-from social.views.viewsets.comments import MemberSocialViewSet
+from social.views.viewsets.social import MemberSocialViewSet
 
 log = logging.getLogger(__name__)
 

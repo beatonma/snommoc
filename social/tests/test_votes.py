@@ -34,6 +34,7 @@ def _create_person_vote(user, vote_type):
 
 
 class VoteTests(LocalTestCase):
+    """Social votes tests."""
     VIEW_NAME = 'social-member-votes'
 
     def setUp(self) -> None:
@@ -178,4 +179,5 @@ class VoteTests(LocalTestCase):
             Vote,
             VoteType,
             ContentType,
+            UserToken,
         )

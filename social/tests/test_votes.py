@@ -18,25 +18,10 @@ from social.models.votes import (
     Vote,
     VoteType,
 )
+from social.tests.util import create_usertoken
 from social.views import contract
 
 log = logging.getLogger(__name__)
-
-
-def _create_usertoken(username=None, token=uuid.uuid4):
-    if username is None:
-        username = uuid.uuid4().hex[:6]
-
-    if callable(token):
-        token = token()
-
-    usertoken = UserToken.objects.create(
-        username=username,
-        token=token,
-        provider_account_id=uuid.uuid4(),
-    )
-    usertoken.save()
-    return usertoken
 
 
 def _create_person_vote(user, vote_type):
@@ -61,7 +46,7 @@ class VoteTests(LocalTestCase):
         )
         self.target_person.save()
 
-        self.valid_user = _create_usertoken('testuser', self.valid_token)
+        self.valid_user = create_usertoken('testuser', self.valid_token)
 
     def test_post_vote_with_valid_user(self):
         response = self.client.post(
@@ -141,7 +126,7 @@ class VoteTests(LocalTestCase):
 
         # Different user
         Vote.objects.create(
-            user=_create_usertoken(),
+            user=create_usertoken(),
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
             vote_type=vote_type_aye,
@@ -162,10 +147,10 @@ class VoteTests(LocalTestCase):
         vote_type_no.save()
 
         _create_person_vote(self.valid_user, vote_type_aye)
-        _create_person_vote(_create_usertoken(), vote_type_aye)
-        _create_person_vote(_create_usertoken(), vote_type_aye)
-        _create_person_vote(_create_usertoken(), vote_type_no)
-        _create_person_vote(_create_usertoken(), vote_type_no)
+        _create_person_vote(create_usertoken(), vote_type_aye)
+        _create_person_vote(create_usertoken(), vote_type_aye)
+        _create_person_vote(create_usertoken(), vote_type_no)
+        _create_person_vote(create_usertoken(), vote_type_no)
 
         # @api_key_required
         response = self.client.get(

@@ -4,8 +4,6 @@
 
 import logging
 
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from repository.models.mixins import BaseModel
@@ -32,6 +30,13 @@ class Comment(UserMixin, GenericTargetMixin, BaseModel):
     class Meta:
         verbose_name_plural = 'Comments'
         verbose_name = 'Comment'
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['target_type', 'target_id', 'text', 'user'],
+                name='unique_comment_per_user_per_object'
+            )
+        ]
 
     def __str__(self):
         return f'{self.target_id} {self.text}'

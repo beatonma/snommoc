@@ -7,6 +7,7 @@ import uuid
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.db import IntegrityError
 from django.urls import reverse
 from rest_framework import status
 
@@ -16,6 +17,7 @@ from basetest.testcase import LocalTestCase
 from repository.models import Person
 from social.models import Comment
 from social.models.token import UserToken
+from social.tests.util import create_usertoken
 from social.views import contract
 
 log = logging.getLogger(__name__)
@@ -135,6 +137,38 @@ class CommentTests(LocalTestCase):
         comment = data[0]
         self.assertEqual(comment.get(contract.COMMENT_TEXT), _COMMENT)
         self.assertEqual(comment.get(contract.USER_NAME), 'testuser')
+
+    def test_comment_unique_per_user_per_object(self):
+        user = UserToken.objects.get(username='testuser')
+        Comment.objects.create(
+            user=user,
+            text=_COMMENT,
+            target_type=ContentType.objects.get_for_model(Person),
+            target_id=4837,
+        ).save()
+
+        Comment.objects.create(
+            user=user,
+            text='different comment',
+            target_type=ContentType.objects.get_for_model(Person),
+            target_id=4837,
+        ).save()
+
+        # Different user, same target and comment
+        Comment.objects.create(
+            user=create_usertoken(),
+            text=_COMMENT,
+            target_type=ContentType.objects.get_for_model(Person),
+            target_id=4837,
+        ).save()
+
+        # Duplicate of first comment
+        self.assertRaises(IntegrityError, lambda: Comment.objects.create(
+            user=user,
+            text=_COMMENT,
+            target_type=ContentType.objects.get_for_model(Person),
+            target_id=4837,
+        ).save())
 
     def tearDown(self) -> None:
         self.delete_instances_of(

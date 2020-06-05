@@ -29,8 +29,11 @@ class PostVoteSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         vote_type, _ = VoteType.objects.get_or_create(name=validated_data.get(contract.VOTE_TYPE))
-        return Vote.objects.create(
+        vote, _ = Vote.objects.update_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
             target=self.target,
-            vote_type=vote_type,
+            defaults={
+                'vote_type': vote_type,
+            }
         )
+        return vote

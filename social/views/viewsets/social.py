@@ -46,7 +46,6 @@ def _get_comment_serializer(method):
 
 
 def _get_vote_serializer(method):
-    log.info(method)
     if method == 'POST':
         return PostVoteSerializer
     else:
@@ -60,12 +59,11 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         abstract = True
 
     def get_queryset(self):
-        pass
+        return None
 
     def get_serializer_class(self):
-        raise NotImplemented(
-            'Use one of the content-specific methods instead '
-            'e.g. _get_comment_serializer')
+        # TODO This should not be called but GET /comments/ does call it.
+        return CommentSerializer
 
     def get_queryset_for_target(self, Model):
         return Model.objects.filter(

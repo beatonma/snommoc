@@ -12,7 +12,6 @@ from django.urls import reverse
 from rest_framework import status
 
 from api.models import ApiKey
-from api.tests.views import with_api_key
 from basetest.testcase import LocalTestCase
 from repository.models import Person
 from social.models import Comment
@@ -27,9 +26,9 @@ _COMMENT = 'This is a simple comment'
 
 
 class CommentTests(LocalTestCase):
+    """Social comments tests."""
     VIEW_NAME = 'social-member-comments'
 
-    @with_api_key
     def setUp(self, *args, **kwargs) -> None:
         self.valid_token = uuid.uuid4()
 

@@ -44,9 +44,9 @@ class PostCommentSerializer(serializers.ModelSerializer):
         pass
 
     def create(self, validated_data):
-        log.info(f'validated: {validated_data}')
-        return Comment.objects.create(
+        comment, _ = Comment.objects.get_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
             target=self.target,
             text=validated_data.get(contract.COMMENT_TEXT),
         )
+        return comment

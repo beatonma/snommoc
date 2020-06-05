@@ -4,6 +4,7 @@
 
 import logging
 
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
 from social.models.comments import Comment
@@ -44,9 +45,10 @@ class PostCommentSerializer(serializers.ModelSerializer):
         pass
 
     def create(self, validated_data):
-        log.info(f'validated: {validated_data}')
-        return Comment.objects.create(
+        comment, _ = Comment.objects.get_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
-            target=self.target,
+            target_id=self.target.pk,
+            target_type=ContentType.objects.get_for_model(Comment),
             text=validated_data.get(contract.COMMENT_TEXT),
         )
+        return comment

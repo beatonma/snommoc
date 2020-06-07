@@ -13,5 +13,6 @@ COMMENT_TEXT = 'text'
 
 VOTE_TYPE = 'vote'
 
+TITLE = 'title'
 COMMENTS = 'comments'
 VOTES = 'votes'

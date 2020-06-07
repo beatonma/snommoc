@@ -2,6 +2,7 @@
 
 """
 import logging
+from abc import abstractmethod
 from typing import Dict
 
 from django.contrib.contenttypes.models import ContentType
@@ -58,6 +59,10 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
     class Meta:
         abstract = True
 
+    @abstractmethod
+    def get_target_title(self, target) -> str:
+        pass
+
     def get_queryset(self):
         return None
 
@@ -95,7 +100,9 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def all(self, request, *args, **kwargs):
+        target = self.get_target_or_404()
         data = SocialSerializer(
+            self.get_target_title(target),
             self._get_comments_data(),
             self._get_votes_data()
         ).data
@@ -150,16 +157,28 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
 
 
 class MemberSocialViewSet(AbstractSocialViewSet):
+    def get_target_title(self, target: Person) -> str:
+        return target.name
+
     model_class = Person
 
 
 class CommonsDivisionSocialViewSet(AbstractSocialViewSet):
+    def get_target_title(self, target: CommonsDivision) -> str:
+        return target.title
+
     model_class = CommonsDivision
 
 
 class LordsDivisionSocialViewSet(AbstractSocialViewSet):
+    def get_target_title(self, target: LordsDivision) -> str:
+        return target.title
+
     model_class = LordsDivision
 
 
 class BillSocialViewSet(AbstractSocialViewSet):
+    def get_target_title(self, target: Bill) -> str:
+        return target.title
+
     model_class = Bill

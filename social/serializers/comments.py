@@ -11,6 +11,8 @@ from social.models.comments import Comment
 from social.models.token import UserToken
 from social.views import contract
 
+import bleach
+
 log = logging.getLogger(__name__)
 
 
@@ -33,6 +35,9 @@ class PostCommentSerializer(serializers.ModelSerializer):
         self.target = target
 
     token = serializers.CharField()
+
+    def validate_text(self, value):
+        return bleach.clean(value, tags=[], attributes={}, styles=[], strip=True)
 
     class Meta:
         model = Comment

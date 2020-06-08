@@ -175,6 +175,20 @@ class CommentTests(LocalTestCase):
             target_id=4837,
         ).save())
 
+    def test_post_comment_with_html_is_stripped(self):
+        response = self.client.post(
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            {
+                contract.USER_TOKEN: self.valid_token,
+                contract.COMMENT_TEXT: 'blah <a href="https://snommoc.org/">just the text</a><script>',
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        comment: Comment = Comment.objects.first()
+        self.assertEqual(comment.text, 'blah just the text')
+
     def tearDown(self) -> None:
         self.delete_instances_of(
             ApiKey,

@@ -48,7 +48,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
         comment, _ = Comment.objects.get_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
             target_id=self.target.pk,
-            target_type=ContentType.objects.get_for_model(Comment),
+            target_type=ContentType.objects.get_for_model(self.target),
             text=validated_data.get(contract.COMMENT_TEXT),
         )
         return comment

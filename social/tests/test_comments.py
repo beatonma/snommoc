@@ -56,9 +56,15 @@ class CommentTests(LocalTestCase):
         comments = Comment.objects.all()
         self.assertLengthEquals(comments, 1)
 
-        comment = comments.first()
+        comment: Comment = comments.first()
         self.assertEqual(comment.user.username, 'testuser')
         self.assertEqual(comment.text, _COMMENT)
+
+        # Ensure comment points to the correct target
+        self.assertEqual(comment.target_id, 4837)
+        self.assertEqual(comment.target_type, ContentType.objects.get_for_model(Person))
+
+        self.assertEqual(comment.target, Person.objects.get(pk=4837))
 
     def test_post_comment_with_invalid_user(self):
         response = self.client.post(

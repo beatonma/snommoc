@@ -33,7 +33,7 @@ class PostVoteSerializer(serializers.Serializer):
         vote, _ = Vote.objects.update_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
             target_id=self.target.pk,
-            target_type=ContentType.objects.get_for_model(Vote),
+            target_type=ContentType.objects.get_for_model(self.target),
             defaults={
                 'vote_type': vote_type,
             }

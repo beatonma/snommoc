@@ -63,6 +63,12 @@ class VoteTests(LocalTestCase):
         VoteType.objects.get(name='aye')  # Ensure VoteType was created
         self.assertLengthEquals(Vote.objects.all(), 1)
 
+        # Ensure vote points to the correct target
+        vote = Vote.objects.first()
+        self.assertEqual(vote.target_id, 4837)
+        self.assertEqual(vote.target_type, ContentType.objects.get_for_model(Person))
+        self.assertEqual(vote.target, self.target_person)
+
     def test_post_vote_with_invalid_user(self):
         response = self.client.post(
             reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),

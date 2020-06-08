@@ -189,6 +189,35 @@ class CommentTests(LocalTestCase):
         comment: Comment = Comment.objects.first()
         self.assertEqual(comment.text, 'blah just the text')
 
+    def test_post_comment_with_html_is_flagged(self):
+        response = self.client.post(
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            {
+                contract.USER_TOKEN: self.valid_token,
+                contract.COMMENT_TEXT: '<a href="https://snommoc.org/">This should be flagged for review</a><script>',
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        comment: Comment = Comment.objects.first()
+        print(comment)
+        self.assertEqual(comment.flagged, True)
+
+    def test_post_comment_with_no_html_is_not_flagged(self):
+        response = self.client.post(
+            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            {
+                contract.USER_TOKEN: self.valid_token,
+                contract.COMMENT_TEXT: _COMMENT,
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        comment: Comment = Comment.objects.first()
+        self.assertEqual(comment.flagged, False)
+
     def tearDown(self) -> None:
         self.delete_instances_of(
             ApiKey,

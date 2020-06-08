@@ -36,8 +36,17 @@ class PostCommentSerializer(serializers.ModelSerializer):
 
     token = serializers.CharField()
 
-    def validate_text(self, value):
-        return bleach.clean(value, tags=[], attributes={}, styles=[], strip=True)
+    def validate(self, data):
+        original_text = data[contract.COMMENT_TEXT]
+        stripped_text = bleach.clean(
+            original_text,
+            tags=[], attributes={}, styles=[], strip=True
+        )
+        if original_text != stripped_text:
+            data[contract.FLAGGED] = True
+            data[contract.COMMENT_TEXT] = stripped_text
+
+        return data
 
     class Meta:
         model = Comment
@@ -55,5 +64,6 @@ class PostCommentSerializer(serializers.ModelSerializer):
             target_id=self.target.pk,
             target_type=ContentType.objects.get_for_model(self.target),
             text=validated_data.get(contract.COMMENT_TEXT),
+            flagged=validated_data.get(contract.FLAGGED, False),
         )
         return comment

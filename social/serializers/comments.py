@@ -4,10 +4,10 @@
 
 import logging
 
-from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
 from social.models.comments import Comment
+from social.models.mixins import get_target_kwargs
 from social.models.token import UserToken
 from social.views import contract
 
@@ -61,8 +61,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         comment, _ = Comment.objects.get_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
-            target_id=self.target.pk,
-            target_type=ContentType.objects.get_for_model(self.target),
+            **get_target_kwargs(self.target),
             text=validated_data.get(contract.COMMENT_TEXT),
             flagged=validated_data.get(contract.FLAGGED, False),
         )

@@ -31,3 +31,10 @@ class GenericTargetMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+def get_target_kwargs(target: GenericTargetMixin) -> dict:
+    return {
+        'target_type': ContentType.objects.get_for_model(target),
+        'target_id': target.pk,
+    }

@@ -24,11 +24,11 @@ from social.views import contract
 log = logging.getLogger(__name__)
 
 
-def _create_person_vote(user, vote_type):
+def _create_person_vote(user, vote_type, target_id=4837):
     Vote.objects.create(
         user=user,
         target_type=ContentType.objects.get_for_model(Person),
-        target_id=4837,
+        target_id=target_id,
         vote_type=vote_type
     ).save()
 
@@ -46,6 +46,12 @@ class VoteTests(LocalTestCase):
             active=True
         )
         self.target_person.save()
+
+        Person.objects.create(
+            parliamentdotuk=1423,
+            name='Boris Johnson',
+            active=True
+        ).save()
 
         self.valid_user = create_usertoken('testuser', self.valid_token)
 
@@ -179,7 +185,39 @@ class VoteTests(LocalTestCase):
         self.assertEqual(data['aye'], 3)
         self.assertEqual(data['no'], 2)
 
+    def test_delete_vote(self):
+        vote_type_aye = VoteType.objects.create(name='aye')
+        vote_type_no = VoteType.objects.create(name='no')
+        vote_type_aye.save()
+        vote_type_no.save()
+
+        _create_person_vote(self.valid_user, vote_type_aye)
+        _create_person_vote(self.valid_user, vote_type_aye, target_id=1423)
+        _create_person_vote(create_usertoken(), vote_type_aye)
+        _create_person_vote(create_usertoken(), vote_type_aye)
+        _create_person_vote(create_usertoken(), vote_type_no)
+        _create_person_vote(create_usertoken(), vote_type_no)
+
+        self.assertLengthEquals(Vote.objects.all(), 6)
+        self.assertLengthEquals(Vote.objects.filter(user=self.valid_user), 2)
+
+        response = self.client.delete(
+            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 1423}),
+            content_type='application/json',
+            data={
+                contract.USER_TOKEN: self.valid_token.hex,
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertLengthEquals(Vote.objects.all(), 5)
+        self.assertLengthEquals(Vote.objects.filter(user=self.valid_user), 1)
+
+        vote: Vote = Vote.objects.filter(user=self.valid_user).first()
+        self.assertEqual(vote.target, self.target_person)
+
     def tearDown(self) -> None:
+        settings.DEBUG = False
         self.delete_instances_of(
             Person,
             Vote,

@@ -1,6 +1,7 @@
 """
 
 """
+import json
 import logging
 from abc import abstractmethod
 from typing import Dict
@@ -93,13 +94,16 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         elif request.method == 'POST':
             return self.create_comment(request)
 
-    @action(methods=['get', 'post'], detail=False)
+    @action(methods=['get', 'post', 'delete'], detail=False)
     def votes(self, request, *args, **kwargs):
         if request.method == 'GET':
             return self.get_votes()
 
         elif request.method == 'POST':
             return self.create_vote(request)
+
+        elif request.method == 'DELETE':
+            return self.delete_vote(request)
 
     @action(methods=['get'], detail=False)
     def all(self, request, *args, **kwargs):
@@ -144,7 +148,8 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         return JsonResponse(data)
 
     def get_user_token(self, request):
-        token = request.GET.get(contract.USER_TOKEN)
+        # token = request.GET.get(contract.USER_TOKEN)
+        token = request.query_params.get(contract.USER_TOKEN)
         if token is None:
             return None
 
@@ -177,10 +182,26 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
 
         if data.is_valid():
             data.save()
-            return HttpResponse('OK', status=status.HTTP_201_CREATED)
+            return HttpResponse(status=status.HTTP_201_CREATED)
         else:
             log.warning(f'Invalid data [{request.path}]: {data}')
             return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete_vote(self, request):
+        target = self.get_target_or_404()
+
+        try:
+            token = json.loads(request.body).get(contract.USER_TOKEN)
+            user_token = UserToken.objects.get(token=token)
+
+            Vote.objects.get(
+                user=user_token,
+                **get_target_kwargs(target),
+            ).delete()
+        except Exception as e:
+            log.warning(f'Failed to delete vote: {e} {target}')
+
+        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get_target_or_404(self):
         return get_object_or_404(self.model_class, pk=self.kwargs.get('pk'))

@@ -24,6 +24,8 @@ from repository.models import (
     Person,
 )
 from social.models import Comment
+from social.models.mixins import get_target_kwargs
+from social.models.token import UserToken
 from social.models.votes import (
     Vote,
     VoteType,
@@ -34,6 +36,7 @@ from social.serializers.comments import (
 )
 from social.serializers.social import SocialSerializer
 from social.serializers.votes import PostVoteSerializer
+from social.views import contract
 from social.views.decorators.auth_token_required import user_token_required
 
 log = logging.getLogger(__name__)
@@ -101,10 +104,13 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
     @action(methods=['get'], detail=False)
     def all(self, request, *args, **kwargs):
         target = self.get_target_or_404()
+        user_vote = self.get_user_vote_type(request, target)
+
         data = SocialSerializer(
             self.get_target_title(target),
             self._get_comments_data(),
-            self._get_votes_data()
+            self._get_votes_data(),
+            user_vote,
         ).data
         return Response(data)
 
@@ -136,6 +142,30 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         data = self._get_votes_data()
 
         return JsonResponse(data)
+
+    def get_user_token(self, request):
+        token = request.GET.get(contract.USER_TOKEN)
+        if token is None:
+            return None
+
+        try:
+            return UserToken.objects.get(token=token)
+        except Exception as e:
+            log.warning(f'Unable to retrieve UserToken for received token: {e}')
+            return None
+
+    def get_user_vote_type(self, request, target):
+        user_token = self.get_user_token(request)
+        if user_token is None:
+            return
+
+        try:
+            return Vote.objects.get(
+                user=user_token,
+                **get_target_kwargs(target),
+            ).vote_type.name
+        except Exception as e:
+            return None
 
     @user_token_required
     def create_vote(self, request, token):

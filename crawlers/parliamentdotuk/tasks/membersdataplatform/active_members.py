@@ -4,7 +4,6 @@ Tasks for updating details on active members.
 Active members are of higher interest than historical ones so we maintain
 more details data about them.
 """
-import datetime
 import logging
 import time
 from typing import (
@@ -47,7 +46,6 @@ from repository.models import (
     DeclaredInterestCategory,
     Election,
     MaidenSpeech,
-    Party,
     PartyAssociation,
     SubjectOfInterest,
     SubjectOfInterestCategory,
@@ -74,6 +72,7 @@ from repository.models.houses import (
     House,
     HouseMembership,
 )
+from repository.models.party import get_or_create_party
 from repository.models.person import Person
 from repository.models.posts import (
     BasePost,
@@ -247,12 +246,8 @@ def _update_party_associations(
     person: Person, historical_parties: List[PartyResponseData]
 ) -> None:
     def _item_func(p):
-        party, _ = Party.objects.get_or_create(
-            name=p.get_party_name(),
-            defaults={
-                'parliamentdotuk': p.get_party_id(),
-            }
-        )
+        party = get_or_create_party(p.get_party_id(), p.get_party_name())
+
         PartyAssociation.objects.update_or_create(
             person=person,
             party=party,

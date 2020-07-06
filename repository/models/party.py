@@ -2,12 +2,20 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 from django.db.models import DO_NOTHING
 
+import logging
+
 from repository.models.mixins import (
     WikipediaMixin,
     BaseModel,
     PeriodMixin,
     ParliamentDotUkMixin,
 )
+
+log = logging.getLogger(__name__)
+
+# Added to party parliamentdotuk ID in case of multiple parties using same ID
+# e.g. Labour shares ID with Labour Co-op
+SHARED_ID_OFFSET = 1000
 
 
 class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
@@ -122,3 +130,30 @@ class PartyTheme(BaseModel):
 
     def __str__(self):
         return f'Theme: {self.party}'
+
+
+def get_or_create_party(parliamentdotuk: int, name: str) -> 'Party':
+    max_lookups = 5
+    party_id = parliamentdotuk
+
+    for n in range(0, max_lookups):
+        party, created = Party.objects.get_or_create(
+            parliamentdotuk=party_id,
+            defaults={
+                'name': name,
+            }
+        )
+
+        if created:
+            # First come, first served
+            return party
+
+        elif party.name == name:
+            # ID matches the name we have already recorded
+            return party
+
+        else:
+            party_id = party_id + SHARED_ID_OFFSET
+
+    log.warning(f'Many parties appear to share the same ID: {parliamentdotuk} {name}')
+    return None

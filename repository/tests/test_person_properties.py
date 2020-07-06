@@ -13,17 +13,19 @@ from repository.models.houses import (
 from repository.models.person import Person
 from repository.tests import values
 
+
 log = logging.getLogger(__name__)
 
 
 class PersonPropertyTests(LocalTestCase):
     """Ensure that @property values on Person model are correct."""
+
     def test_person_age(self):
         living_person = Person(
             name=values.EXAMPLE_NAME,
             date_of_birth=datetime.date(year=1973, month=6, day=10)
         )
-        self.assertEqual(living_person.age, 46)
+        self.assertEqual(living_person.age, 47)
 
         dead_person = Person(
             name=values.EXAMPLE_NAME,

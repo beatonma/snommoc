@@ -8,6 +8,10 @@ from typing import Optional
 log = logging.getLogger(__name__)
 
 
+def get_now() -> datetime.datetime:
+    return datetime.datetime.now()
+
+
 def years_between(date_from: Optional[datetime.date], date_to: Optional[datetime.date]) -> int:
     """Order is important! We will return zero if date_from is after date_to."""
     if not date_from or not date_to:
@@ -22,11 +26,11 @@ def years_between(date_from: Optional[datetime.date], date_to: Optional[datetime
     return max(difference, 0)
 
 
-def years_since(date: Optional[datetime.date], now=datetime.datetime.now()) -> int:
+def years_since(date: Optional[datetime.date], now=get_now()) -> int:
     return years_between(date, now)
 
 
-def is_anniversary(date: Optional[datetime.date], now=datetime.datetime.now()) -> bool:
+def is_anniversary(date: Optional[datetime.date], now=get_now()) -> bool:
     if not date:
         return False
 

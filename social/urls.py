@@ -23,8 +23,8 @@ log = logging.getLogger(__name__)
 social_router = SocialRouter()
 social_router.register('member', MemberSocialViewSet, 'social-member')
 social_router.register('bill', BillSocialViewSet, 'social-bill')
-social_router.register('divison_commons', CommonsDivisionSocialViewSet, 'social-division-commons')
-social_router.register('divison_lords', LordsDivisionSocialViewSet, 'social-division-lords')
+social_router.register('division_commons', CommonsDivisionSocialViewSet, 'social-division-commons')
+social_router.register('division_lords', LordsDivisionSocialViewSet, 'social-division-lords')
 
 
 urlpatterns = [

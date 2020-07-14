@@ -99,6 +99,7 @@ class BillSerializer(DetailedModelSerializer):
     class Meta:
         model = Bill
         fields = [
+            'parliamentdotuk',
             'title',
             'description',
             'act_name',

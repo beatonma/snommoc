@@ -6,7 +6,10 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedModelSerializer
+from api.serializers import (
+    DetailedModelSerializer,
+    InlinePartySerializer,
+)
 from repository.models import (
     Bill,
     BillSponsor,
@@ -23,6 +26,7 @@ log = logging.getLogger(__name__)
 class BillSponsorSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
+    party = serializers.SerializerMethodField()
 
     def get_name(self, obj):
         return obj.name if obj.person is None else obj.person.name
@@ -30,11 +34,15 @@ class BillSponsorSerializer(DetailedModelSerializer):
     def get_parliamentdotuk(self, obj):
         return None if obj.person is None else obj.person.parliamentdotuk
 
+    def get_party(self, obj):
+        return None if obj.person is None else InlinePartySerializer(obj.person.party).data
+
     class Meta:
         model = BillSponsor
         fields = [
             'parliamentdotuk',
             'name',
+            'party',
         ]
 
 

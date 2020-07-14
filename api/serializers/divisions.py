@@ -6,7 +6,10 @@ import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedModelSerializer
+from api.serializers import (
+    DetailedModelSerializer,
+    InlinePartySerializer,
+)
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
@@ -21,6 +24,7 @@ class CommonsDivisionVoteSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.IntegerField(source='person.parliamentdotuk')
     name = serializers.CharField(source='person.name')
     vote = serializers.CharField(source='vote_type')
+    party = InlinePartySerializer(source='person.party')
 
     class Meta:
         model = CommonsDivisionVote
@@ -28,6 +32,7 @@ class CommonsDivisionVoteSerializer(DetailedModelSerializer):
             'parliamentdotuk',
             'name',
             'vote',
+            'party',
         ]
 
 
@@ -59,6 +64,7 @@ class LordsDivisionVoteSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.IntegerField(source='person.parliamentdotuk')
     name = serializers.CharField(source='person.name')
     vote = serializers.CharField(source='vote_type')
+    party = InlinePartySerializer(source='person.party')
 
     class Meta:
         model = LordsDivisionVote
@@ -66,6 +72,7 @@ class LordsDivisionVoteSerializer(DetailedModelSerializer):
             'parliamentdotuk',
             'name',
             'vote',
+            'party',
         ]
 
 

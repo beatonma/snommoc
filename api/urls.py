@@ -28,11 +28,11 @@ from api.views.views import PingView
 # Views which can return a list of inline viewsets, or a single detailed viewset.
 from api.views.viewsets.motd import MessageOfTheDayViewSet
 from api.views.viewsets.procedure import (
-    FeaturedBillsViewSet,
     BillViewSet,
     CommonsDivisionViewSet,
     LordsDivisionViewSet,
-    FeaturedDivisionsViewSet,
+    RecentlyUpdatedBillsViewSet,
+    RecentlyUpdatedDivisionsViewSet,
 )
 
 
@@ -42,8 +42,8 @@ def _register(router, endpoint, viewset):
 
 list_only_views = (
     (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
-    (endpoints.FEATURED_BILLS, FeaturedBillsViewSet),
-    (endpoints.FEATURED_DIVISIONS, FeaturedDivisionsViewSet),
+    (endpoints.FEATURED_BILLS, RecentlyUpdatedBillsViewSet),
+    (endpoints.FEATURED_DIVISIONS, RecentlyUpdatedDivisionsViewSet),
     (endpoints.MOTD, MessageOfTheDayViewSet),
 )
 

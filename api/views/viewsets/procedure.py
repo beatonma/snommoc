@@ -49,6 +49,13 @@ class FeaturedBillsViewSet(KeyRequiredViewSet):
         return [item.bill for item in qs]
 
 
+class RecentlyUpdatedBillsViewSet(KeyRequiredViewSet):
+    serializer_class = InlineBillSerializer
+
+    def get_queryset(self):
+        return Bill.objects.order_by('date')[:10]
+
+
 class FeaturedDivisionsViewSet(KeyRequiredViewSet):
     """Return a list of 'featured' divisions - lords and commons combined.."""
     serializer_class = GenericInlineDivisionSerializer
@@ -60,6 +67,21 @@ class FeaturedDivisionsViewSet(KeyRequiredViewSet):
         lords = FeaturedLordsDivision.objects.filter(filters).select_related('division')
 
         return [x.division for x in commons] + [y.division for y in lords]
+
+
+class RecentlyUpdatedDivisionsViewSet(KeyRequiredViewSet):
+    serializer_class = GenericInlineDivisionSerializer
+
+    def get_queryset(self):
+        commons = CommonsDivision.objects.order_by('-date')[:10]
+        lords = LordsDivision.objects.order_by('-date')[:10]
+
+        latest = sorted(
+            [x for x in commons] + [x for x in lords],
+            key=lambda d: d.date,
+            reverse=True
+        )
+        return latest
 
 
 class CommonsDivisionViewSet(KeyRequiredViewSet):

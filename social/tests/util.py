@@ -35,7 +35,10 @@ def create_usertoken(username=None, token=uuid.uuid4, **kwargs):
     return usertoken
 
 
-def create_comment(target: models.Model, user: UserToken, text: str, **kwargs) -> Comment:
+def create_comment(target: models.Model, user: UserToken, text: str = uuid.uuid4, **kwargs) -> Comment:
+    if callable(text):
+        text = str(text())
+
     comment = Comment.objects.create(
         target=target,
         user=user,

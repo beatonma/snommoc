@@ -8,6 +8,7 @@ from django.db import models
 
 from repository.models.mixins import BaseModel
 from social.models.mixins import (
+    DeletionPendingMixin,
     GenericTargetMixin,
     UserMixin,
 )
@@ -15,7 +16,7 @@ from social.models.mixins import (
 log = logging.getLogger(__name__)
 
 
-class Comment(UserMixin, GenericTargetMixin, BaseModel):
+class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
 
     text = models.CharField(max_length=240)
     flagged = models.BooleanField(
@@ -26,6 +27,21 @@ class Comment(UserMixin, GenericTargetMixin, BaseModel):
         default=True,
         help_text='This comment may be displayed publicly',
     )
+
+    def mark_pending_deletion(self):
+        super().mark_pending_deletion()
+        self.visible = False
+
+    def create_placeholder(self):
+        placeholder = Comment.objects.create(
+            user=None,
+            text='',
+            visible=True,
+            target_type=self.target_type,
+            target_id=self.target_id,
+            created_on=self.created_on,
+        )
+        placeholder.save()
 
     class Meta:
         verbose_name_plural = 'Comments'

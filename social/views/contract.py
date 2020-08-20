@@ -18,3 +18,7 @@ TITLE = 'title'
 COMMENTS = 'comments'
 VOTES = 'votes'
 FLAGGED = 'flagged'
+
+ACCOUNT_ACTION = 'action'
+ACCOUNT_CHANGE_USERNAME = 'rename'
+ACCOUNT_NEW_USERNAME = 'new_username'

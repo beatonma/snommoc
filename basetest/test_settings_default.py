@@ -37,3 +37,12 @@ LANGUAGE_CODE = 'en-gb'
 TEST_API_KEY = uuid.uuid4()
 HTTP_REQUEST_HEADERS = {}
 HTTP_REQUEST_HEADERS_JSON = {}
+
+
+SNOMMOC = {
+    'SOCIAL': {
+        'USERNAME_BLOCKLIST': [
+            'fallofmath',
+        ]
+    }
+}

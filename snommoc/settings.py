@@ -14,6 +14,13 @@ Required attributes from local settings:
     USER_AGENT,
     HTTP_REQUEST_HEADERS,
     REST_FRAMEWORK,
+
+Optional attributes from local settings:
+    SNOMMOC: {
+        SOCIAL: {
+            USERNAME_BLOCKLIST: List[str]  # List of disallowed usernames - e.g. reserved for use or abusive.
+        }
+    }
 """
 
 import os

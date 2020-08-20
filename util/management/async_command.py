@@ -12,9 +12,10 @@ log = logging.getLogger(__name__)
 class AsyncCommand(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
-            '-async',
+            '-instant',
             action='store_true',
-            help='Pass update task to Celery.',
+            default=False,
+            help='Run the task synchronously.',
         )
 
     def handle_async(self, func, *args, **options):
@@ -25,7 +26,7 @@ class AsyncCommand(BaseCommand):
         def handle(self, *args, **options):
             self.handle_async(myfunc, *args, **options)
         """
-        if options['async']:
-            func.delay()
-        else:
+        if options['instant']:
             func()
+        else:
+            func.delay()

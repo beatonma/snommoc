@@ -19,6 +19,7 @@ from social.models.token import (
     SignInServiceProvider,
     UserToken,
 )
+from social.views import contract
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ class VerifyGoogleTokenView(View):
             provider_account_id=userid,
         )
         return JsonResponse({
-            'gtoken': token[:32],
-            'token': user_token.token,
-            'username': user_token.username,
+            contract.GOOGLE_TOKEN: token[:32],
+            contract.USER_TOKEN: user_token.token,
+            contract.USER_NAME: user_token.username,
         })

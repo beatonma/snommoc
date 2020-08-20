@@ -11,6 +11,7 @@ from django.urls import (
 
 from social.views.oauth_google import VerifyGoogleTokenView
 from social.views.routers import SocialRouter
+from social.views.user_account import UserAccountView
 from social.views.viewsets.social import (
     BillSocialViewSet,
     CommonsDivisionSocialViewSet,
@@ -28,6 +29,7 @@ social_router.register('division_lords', LordsDivisionSocialViewSet, 'social-div
 
 
 urlpatterns = [
+    path('account/', UserAccountView.as_view(), name='social-account-view'),
     path('auth/g/', VerifyGoogleTokenView.as_view(), name='gauth-verify-token'),
     path('', include(social_router.urls)),
 ]

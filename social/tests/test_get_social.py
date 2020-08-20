@@ -15,33 +15,15 @@ from social.models import (
     Vote,
     VoteType,
 )
-from social.models.mixins import get_target_kwargs
 from social.models.token import UserToken
-from social.tests.util import create_usertoken
+from social.tests.util import (
+    create_comment,
+    create_usertoken,
+    create_vote,
+)
 from social.views import contract
 
 log = logging.getLogger(__name__)
-
-
-def _comment(user, target, text):
-    comment = Comment.objects.create(
-        user=user,
-        **get_target_kwargs(target),
-        text=text,
-    )
-    comment.save()
-    return comment
-
-
-def _vote(user, target, vote_type_name):
-    vote_type, _ = VoteType.objects.get_or_create(name=vote_type_name)
-    vote = Vote.objects.create(
-        user=user,
-        **get_target_kwargs(target),
-        vote_type=vote_type,
-    )
-    vote.save()
-    return vote
 
 
 class GetSocialAllTests(LocalTestCase):
@@ -88,20 +70,20 @@ class GetSocialAllTests(LocalTestCase):
         })
 
     def test_get_all_with_content_no_user_token(self):
-        _comment(self.valid_user, self.target_person_one, 'first comment')
-        _comment(self.valid_user, self.target_person_one, 'second comment')
-        _comment(create_usertoken(username='another_user'), self.target_person_one, 'third comment')
-        _comment(self.valid_user, self.target_person_two, 'comment on different target!')
+        create_comment(self.target_person_one, self.valid_user, 'first comment')
+        create_comment(self.target_person_one, self.valid_user, 'second comment')
+        create_comment(self.target_person_one, create_usertoken(username='another_user'), 'third comment')
+        create_comment(self.target_person_two, self.valid_user, 'comment on different target!')
 
         # Votes for actual target
-        _vote(self.valid_user, self.target_person_one, 'aye')
-        _vote(create_usertoken(), self.target_person_one, 'aye')
-        _vote(create_usertoken(), self.target_person_one, 'no')
+        create_vote(self.target_person_one, self.valid_user, 'aye')
+        create_vote(self.target_person_one, create_usertoken(), 'aye')
+        create_vote(self.target_person_one, create_usertoken(), 'no')
 
         # Votes on different target
-        _vote(self.valid_user, self.target_person_two, 'aye')
-        _vote(create_usertoken(), self.target_person_two, 'no')
-        _vote(create_usertoken(), self.target_person_two, 'no')
+        create_vote(self.target_person_two, self.valid_user, 'aye')
+        create_vote(self.target_person_two, create_usertoken(), 'no')
+        create_vote(self.target_person_two, create_usertoken(), 'no')
 
         # Disable @api_key_required
         settings.DEBUG = True
@@ -130,20 +112,20 @@ class GetSocialAllTests(LocalTestCase):
 
     def test_get_all_with_content_with_user_token(self):
         """If user has voted on the target then their vote_type should be included in response"""
-        _comment(self.valid_user, self.target_person_one, 'first comment')
-        _comment(self.valid_user, self.target_person_one, 'second comment')
-        _comment(create_usertoken(username='another_user'), self.target_person_one, 'third comment')
-        _comment(self.valid_user, self.target_person_two, 'comment on different target!')
+        create_comment(self.target_person_one, self.valid_user, 'first comment')
+        create_comment(self.target_person_one, self.valid_user, 'second comment')
+        create_comment(self.target_person_one, create_usertoken(username='another_user'), 'third comment')
+        create_comment(self.target_person_two, self.valid_user, 'comment on different target!')
 
         # Votes for actual target
-        _vote(self.valid_user, self.target_person_one, 'aye')
-        _vote(create_usertoken(), self.target_person_one, 'aye')
-        _vote(create_usertoken(), self.target_person_one, 'no')
+        create_vote(self.target_person_one, self.valid_user, 'aye')
+        create_vote(self.target_person_one, create_usertoken(), 'aye')
+        create_vote(self.target_person_one, create_usertoken(), 'no')
 
         # Votes on different target
-        _vote(self.valid_user, self.target_person_two, 'aye')
-        _vote(create_usertoken(), self.target_person_two, 'no')
-        _vote(create_usertoken(), self.target_person_two, 'no')
+        create_vote(self.target_person_two, self.valid_user, 'aye')
+        create_vote(self.target_person_two, create_usertoken(), 'no')
+        create_vote(self.target_person_two, create_usertoken(), 'no')
 
         # Disable @api_key_required
         settings.DEBUG = True

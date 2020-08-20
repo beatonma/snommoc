@@ -16,7 +16,7 @@ class UserMixin(models.Model):
     user = models.ForeignKey(
         'UserToken',
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
     )
 
     class Meta:

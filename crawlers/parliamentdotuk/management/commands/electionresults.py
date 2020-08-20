@@ -4,7 +4,7 @@
 
 import logging
 
-from crawlers.parliamentdotuk.management.commands.async_command import AsyncCommand
+from util.management.async_command import AsyncCommand
 from crawlers.parliamentdotuk.tasks.lda.update_election_results import update_election_results
 
 log = logging.getLogger(__name__)

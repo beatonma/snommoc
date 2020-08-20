@@ -5,7 +5,7 @@ Update Divisions with:
 
 import logging
 
-from crawlers.parliamentdotuk.management.commands.async_command import AsyncCommand
+from util.management.async_command import AsyncCommand
 from crawlers.parliamentdotuk.tasks.lda.divisions import (
     update_commons_divisions,
     update_lords_divisions,

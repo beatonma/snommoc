@@ -4,7 +4,7 @@ Update member portrait urls
 
 import logging
 
-from crawlers.parliamentdotuk.management.commands.async_command import AsyncCommand
+from util.management.async_command import AsyncCommand
 from crawlers.parliamentdotuk.tasks.membersdataplatform.member_portrait import update_member_portraits
 
 log = logging.getLogger(__name__)

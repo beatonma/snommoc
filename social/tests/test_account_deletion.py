@@ -27,7 +27,7 @@ SAMPLE_COMMENT_TEXT = [
 class AccountDeletionTest(LocalTestCase):
     """Tests for affected data when a UserToken is deleted."""
 
-    def test_account_deletion_does_not_delete_comments(self):
+    def test_account_deletion_replaces_comments_with_empty_placeholders(self):
         target = create_usertoken()
 
         token = create_usertoken()
@@ -36,19 +36,17 @@ class AccountDeletionTest(LocalTestCase):
         for text in SAMPLE_COMMENT_TEXT:
             create_comment(target, token, text)
 
-        create_vote(target, token, 'aye')
+        # Different user
         create_comment(target, another_token, SAMPLE_COMMENT_TEXT[0])
-        create_vote(target, another_token, 'aye')
 
         self.assertLengthEquals(Comment.objects.all(), 3)
-        self.assertLengthEquals(Vote.objects.all(), 2)
 
         token.delete()
 
+        # Comments should be replaced by empty placeholders via signals.on_comment_deleted
         self.assertLengthEquals(Comment.objects.all(), 3)
         self.assertLengthEquals(Comment.objects.filter(user=None), 2)
-
-        self.assertLengthEquals(Vote.objects.all(), 1)
+        self.assertLengthEquals(Comment.objects.filter(text=''), 2)
 
     def test_account_deletion_also_deletes_votes_by_account(self):
         target = create_usertoken()

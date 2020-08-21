@@ -41,8 +41,16 @@ HTTP_REQUEST_HEADERS_JSON = {}
 
 SNOMMOC = {
     'SOCIAL': {
-        'USERNAME_BLOCKLIST': [
+        # Account name will be denied if it contains any of these substrings.
+        'USERNAME_BLOCKED_SUBSTRINGS': [
             'fallofmath',
+            'admin',
+        ],
+
+        # Account name will be denied if it equals one of these strings.
+        'USERNAME_BLOCKED_EXACT': [
+            'help',
+            'info',
         ]
     }
 }

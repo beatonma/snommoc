@@ -4,6 +4,7 @@ Tests for user account management.
 import json
 import logging
 import uuid
+from typing import List
 
 from django.urls import reverse
 from rest_framework import status
@@ -67,6 +68,12 @@ class UserAccountViewPostTests(UserAccountViewTests):
         )
         self.assertEqual(response.status_code, expected_status_code)
 
+    def _check_all_response_code(self, names: List[str], expected_status_code: int):
+        for name in names:
+            self._check_response_code(name, expected_status_code)
+            self.tearDown()
+            self.setUp()
+
     def test_rename_account_with_valid_tokens_is_httpnocontent(self):
         self._check_response_code('rubik', status.HTTP_204_NO_CONTENT)
 
@@ -85,39 +92,88 @@ class UserAccountViewPostTests(UserAccountViewTests):
         self.assertEqual(changed.new_name, 'kibur')
         self.assertEqual(changed.previous_name, self.original_username)
 
-    def test_rename_account_blocklist_is_correct(self):
-        self._check_response_code('fallofmath', status.HTTP_403_FORBIDDEN)
-        self._check_response_code('fffallofmath', status.HTTP_403_FORBIDDEN)
-        self._check_response_code('fallofmathh', status.HTTP_403_FORBIDDEN)
+    def test_rename_account_blocked_substrings_are_forbidden(self):
+        # Blocked strings defined in settings.
+        # Values used for testing can be found in basetest.test_settings_default
+
+        self._check_all_response_code(
+            [
+                'fallofmath',
+                'fffallofmath',
+                'fallofmathh',
+                'admin',
+                'Admin',
+                'admin-user',
+                'administrator',
+                'real-admin',
+                'a-d-m-i-n',
+                'Adm.i__n1',
+            ],
+            status.HTTP_403_FORBIDDEN
+        )
+
+    def test_rename_account_blocked_exact_strings_are_forbidden(self):
+        # Blocked strings defined in settings.
+        # Values used for testing can be found in basetest.test_settings_default
+        self._check_all_response_code(
+            [
+                'help',
+                'Help',
+                'HELP',
+                'info',
+
+                # Names should also be blocked if they reduce to a blocked string
+                # when removing numbers/other characters
+                'h-e.lp',
+                'I-nfo',
+                'info1',
+            ],
+            status.HTTP_403_FORBIDDEN
+        )
+
+    def test_rename_account_blocked_exact_strings_as_substrings_are_accepted(self):
+        # Blocked strings defined in settings.
+        # Values used for testing can be found in basetest.test_settings_default
+        self._check_all_response_code(
+            [
+                'helpful',
+                'shhelp',
+                'shelper',
+                'info-rmer',
+                'informatics',
+                'abcinfo',
+            ],
+            status.HTTP_204_NO_CONTENT
+        )
 
     def test_rename_account_username_validation_is_correct(self):
-        for invalid_username in [
-            '-myname',              # Starts with non-alphanumeric character
-            '.m.n',                 # Starts with non-alphanumeric character
-            'myname-',              # Ends with non-alphanumeric character
-            'my.name.',             # Ends with non-alphanumeric character
-            '_myname_',             # Starts and ends with non-alphanumeric character
-            'myn',                  # Fewer than 4 characters
-            'm.n',                  # Fewer than 4 characters
-            '12345678901234567',    # More that 16 characters
-            'abcdefghijklmnopq',    # More that 16 characters
-        ]:
-            self._check_response_code(invalid_username, status.HTTP_403_FORBIDDEN)
-            self.tearDown()
-            self.setUp()
+        self._check_all_response_code(
+            [
+                '-myname',              # Starts with non-alphanumeric character
+                '.m.n',                 # Starts with non-alphanumeric character
+                'myname-',              # Ends with non-alphanumeric character
+                'my.name.',             # Ends with non-alphanumeric character
+                '_myname_',             # Starts and ends with non-alphanumeric character
+                'myn',                  # Fewer than 4 characters
+                'm.n',                  # Fewer than 4 characters
+                '12345678901234567',    # More that 16 characters
+                'abcdefghijklmnopq',    # More that 16 characters
+            ],
+            status.HTTP_403_FORBIDDEN
+        )
 
-        for valid_username in [
-            'MyName',               # Simple case
-            'name',                 # Minimum length (4 characters)
-            'my.name',              # Dots, dashes, underscores allowed in middle
-            'my_na-me',             # Dots, dashes, underscores allowed in middle
-            'my-_.name',            # Dots, dashes, underscores allowed in middle
-            '123my-Name456',        # Dots, dashes, underscores allowed in middle
-            '1234567890123456'      # Maximum length (16 characters)
-        ]:
-            self._check_response_code(valid_username, status.HTTP_204_NO_CONTENT)
-            self.tearDown()
-            self.setUp()
+        self._check_all_response_code(
+            [
+                'MyName',               # Simple case
+                'name',                 # Minimum length (4 characters)
+                'my.name',              # Dots, dashes, underscores allowed in middle
+                'my_na-me',             # Dots, dashes, underscores allowed in middle
+                'my-_.name',            # Dots, dashes, underscores allowed in middle
+                '123my-Name456',        # Dots, dashes, underscores allowed in middle
+                '1234567890123456'      # Maximum length (16 characters)
+            ],
+            status.HTTP_204_NO_CONTENT
+        )
 
 
 class UserAccountViewDeleteTests(UserAccountViewTests):

@@ -1,10 +1,9 @@
 env/
 .idea/
 */**/__pycache__/
-*/local_settings.py
-*/local_urls.py
+snommoc/local_*
 /static/
-*/migrations/
+*/**/migrations/
 uwsgi.ini
 .coverage
 .*.json

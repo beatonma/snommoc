@@ -16,7 +16,7 @@ from basetest.testcase import LocalTestCase
 from repository.models import Person
 from social.models import Comment
 from social.models.token import UserToken
-from social.tests.util import create_usertoken
+from social.tests.util import create_sample_usertoken
 from social.views import contract
 
 log = logging.getLogger(__name__)
@@ -161,7 +161,7 @@ class CommentTests(LocalTestCase):
 
         # Different user, same target and comment
         Comment.objects.create(
-            user=create_usertoken(),
+            user=create_sample_usertoken(),
             text=_COMMENT,
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,

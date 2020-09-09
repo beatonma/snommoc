@@ -18,7 +18,7 @@ from social.models.votes import (
     Vote,
     VoteType,
 )
-from social.tests.util import create_usertoken
+from social.tests.util import create_sample_usertoken
 from social.views import contract
 
 log = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class VoteTests(LocalTestCase):
             active=True
         ).save()
 
-        self.valid_user = create_usertoken('testuser', self.valid_token)
+        self.valid_user = create_sample_usertoken('testuser', self.valid_token)
 
     def test_post_vote_with_valid_user(self):
         response = self.client.post(
@@ -139,7 +139,7 @@ class VoteTests(LocalTestCase):
 
         # Different user
         Vote.objects.create(
-            user=create_usertoken(),
+            user=create_sample_usertoken(),
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
             vote_type=vote_type_aye,
@@ -160,10 +160,10 @@ class VoteTests(LocalTestCase):
         vote_type_no.save()
 
         _create_person_vote(self.valid_user, vote_type_aye)
-        _create_person_vote(create_usertoken(), vote_type_aye)
-        _create_person_vote(create_usertoken(), vote_type_aye)
-        _create_person_vote(create_usertoken(), vote_type_no)
-        _create_person_vote(create_usertoken(), vote_type_no)
+        _create_person_vote(create_sample_usertoken(), vote_type_aye)
+        _create_person_vote(create_sample_usertoken(), vote_type_aye)
+        _create_person_vote(create_sample_usertoken(), vote_type_no)
+        _create_person_vote(create_sample_usertoken(), vote_type_no)
 
         # @api_key_required
         response = self.client.get(
@@ -193,10 +193,10 @@ class VoteTests(LocalTestCase):
 
         _create_person_vote(self.valid_user, vote_type_aye)
         _create_person_vote(self.valid_user, vote_type_aye, target_id=1423)
-        _create_person_vote(create_usertoken(), vote_type_aye)
-        _create_person_vote(create_usertoken(), vote_type_aye)
-        _create_person_vote(create_usertoken(), vote_type_no)
-        _create_person_vote(create_usertoken(), vote_type_no)
+        _create_person_vote(create_sample_usertoken(), vote_type_aye)
+        _create_person_vote(create_sample_usertoken(), vote_type_aye)
+        _create_person_vote(create_sample_usertoken(), vote_type_no)
+        _create_person_vote(create_sample_usertoken(), vote_type_no)
 
         self.assertLengthEquals(Vote.objects.all(), 6)
         self.assertLengthEquals(Vote.objects.filter(user=self.valid_user), 2)

@@ -18,7 +18,7 @@ from social.models.token import UserToken
 log = logging.getLogger(__name__)
 
 
-def create_usertoken(username=None, token=uuid.uuid4, **kwargs):
+def create_sample_usertoken(username=None, token=uuid.uuid4, **kwargs):
     if username is None:
         username = uuid.uuid4().hex[:6]
 
@@ -35,7 +35,7 @@ def create_usertoken(username=None, token=uuid.uuid4, **kwargs):
     return usertoken
 
 
-def create_comment(target: models.Model, user: UserToken, text: str = uuid.uuid4, **kwargs) -> Comment:
+def create_sample_comment(target: models.Model, user: UserToken, text: str = uuid.uuid4, **kwargs) -> Comment:
     if callable(text):
         text = str(text())
 
@@ -49,7 +49,7 @@ def create_comment(target: models.Model, user: UserToken, text: str = uuid.uuid4
     return comment
 
 
-def create_vote(target: models.Model, user: UserToken, vote_type_name: str, **kwargs):
+def create_sample_vote(target: models.Model, user: UserToken, vote_type_name: str, **kwargs):
     vote_type, _ = VoteType.objects.get_or_create(name=vote_type_name)
     vote = Vote.objects.create(
         user=user,

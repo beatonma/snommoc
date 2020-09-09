@@ -15,8 +15,8 @@ from social.models.token import (
     UserToken,
 )
 from social.tests.util import (
-    create_comment,
-    create_usertoken,
+    create_sample_comment,
+    create_sample_usertoken,
 )
 
 log = logging.getLogger(__name__)
@@ -33,8 +33,8 @@ class SocialSignalTest(LocalTestCase):
         self.assertEqual(token.username, 'testuser')
 
     def test_create_placeholder_on_comment_deleted_is_correct(self):
-        token = create_usertoken(username='fred')
-        target = create_usertoken()
+        token = create_sample_usertoken(username='fred')
+        target = create_sample_usertoken()
 
         created_on = timezone.now().replace(
             year=2019, month=2, day=25, hour=15, minute=32, second=1,
@@ -42,7 +42,7 @@ class SocialSignalTest(LocalTestCase):
         )
         now = timezone.now()
 
-        comment = create_comment(
+        comment = create_sample_comment(
             target=target,
             user=token,
             text='Hello my name is fred',

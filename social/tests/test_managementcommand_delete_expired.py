@@ -15,8 +15,8 @@ from social.models.mixins import (
     get_target_kwargs,
 )
 from social.tests.util import (
-    create_comment,
-    create_usertoken,
+    create_sample_comment,
+    create_sample_usertoken,
 )
 
 log = logging.getLogger(__name__)
@@ -28,14 +28,14 @@ class TestDeleteExpiredManagementCommand(LocalTestCase):
         DeletionPendingMixin.DELETION_PENDING_PERIOD_HOURS = 1
         now = timezone.now()
 
-        target = create_usertoken()
-        token = create_usertoken()
+        target = create_sample_usertoken()
+        token = create_sample_usertoken()
 
-        pending_comment = create_comment(target, token, 'hello pending')
+        pending_comment = create_sample_comment(target, token, 'hello pending')
         pending_comment.mark_pending_deletion()
         pending_comment.save()
 
-        expired_comment = create_comment(target, token, 'hello expired')
+        expired_comment = create_sample_comment(target, token, 'hello expired')
         expired_comment.mark_pending_deletion()
         expired_comment.deletion_requested_at = now - timedelta(hours=3)
         expired_comment.save()

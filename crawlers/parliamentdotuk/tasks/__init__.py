@@ -1,21 +1,30 @@
-from repository.models import (
-    Constituency,
-    Person,
-    Party,
+from celery import shared_task
+
+from .lda import (
+    update_constituencies,
+    update_bills,
+    update_all_divisions,
+    update_commons_divisions,
+    update_lords_divisions,
+    update_election_results,
 )
-from repository.tasks import init_parties
-from .lda.update_constituencies import update_constituencies
-from .membersdataplatform import update_all_member_data
+from .membersdataplatform import (
+    update_member_portraits,
+    update_all_members_basic_info,
+    update_active_member_details,
+    update_all_member_details,
+)
 
 
-def clear_parliament_data():
-    Party.objects.all().delete()
-    Person.objects.all().delete()
-    Constituency.objects.all().delete()
-
-
-def rebuild_all_data():
-    clear_parliament_data()
-    init_parties()
+@shared_task
+def update_profiles_for_active_members():
     update_constituencies()
-    update_all_member_data()
+    update_all_members_basic_info()
+    update_active_member_details()
+
+
+@shared_task
+def update_profiles_for_all_members():
+    update_constituencies()
+    update_all_members_basic_info()
+    update_all_member_details()

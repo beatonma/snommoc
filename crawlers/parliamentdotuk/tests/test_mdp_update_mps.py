@@ -118,7 +118,7 @@ class MdpUpdateMpsTest(LocalTestCase):
         self.assertEqualIgnoreCase(debbie_abrahams.name, 'Debbie Abrahams')
         self.assertTrue(debbie_abrahams.active)
         self.assertEqualIgnoreCase(debbie_abrahams.party.name, 'Labour Coop')
-        self.assertEqual(debbie_abrahams.party.parliamentdotuk, 1015)
+        self.assertEqual(debbie_abrahams.party.parliamentdotuk, 10015)
 
         leo_abse: Person = people.get(parliamentdotuk=662)
         self.assertEqualIgnoreCase(leo_abse.name, 'Leo Abse')

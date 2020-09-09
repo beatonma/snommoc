@@ -34,6 +34,7 @@ from api.views.viewsets.procedure import (
     RecentlyUpdatedBillsViewSet,
     RecentlyUpdatedDivisionsViewSet,
 )
+from api.views.viewsets.recent import RecentEngagementViewSet
 
 
 def _register(router, endpoint, viewset):
@@ -45,6 +46,7 @@ list_only_views = (
     (endpoints.FEATURED_BILLS, RecentlyUpdatedBillsViewSet),
     (endpoints.FEATURED_DIVISIONS, RecentlyUpdatedDivisionsViewSet),
     (endpoints.MOTD, MessageOfTheDayViewSet),
+    (endpoints.ENGAGEMENT, RecentEngagementViewSet)
 )
 
 # Views which may return an overview of a list or detail for a single item

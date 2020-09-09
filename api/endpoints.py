@@ -38,6 +38,8 @@ FEATURED_MEMBERS = f'{FEATURED}/members'
 FEATURED_BILLS = f'{FEATURED}/bills'
 FEATURED_DIVISIONS = f'{FEATURED}/divisions'
 
+ENGAGEMENT = 'engagement'
+
 # Server internals/admin stuff
 MOTD = f'motd'
 

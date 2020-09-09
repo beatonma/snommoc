@@ -1,5 +1,6 @@
 # manage.py commands
 
+## parliamentdotuk
 
 ### `profiles [-all]`
 Update constituencies and profile data for active members.
@@ -38,7 +39,16 @@ The source file can be retrieved from https://geoportal.statistics.gov.uk/search
 and should be updated at least after every election.
 
 
+
+## Social
+
 ### `delete_pending`
 
 Permenantly delete any DeletionPendingMixin instances that have been marked for
 deletion and have reached their expiry date.
+
+
+### `engagement`
+
+Update cache of items that have users have been commenting/voting
+on recently. Should run frequently.

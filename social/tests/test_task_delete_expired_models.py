@@ -8,12 +8,12 @@ from datetime import timedelta
 from django.utils import timezone
 
 from basetest.testcase import LocalTestCase
-from social.management.commands.delete_pending import delete_expired
 from social.models import Comment
 from social.models.mixins import (
     DeletionPendingMixin,
     get_target_kwargs,
 )
+from social.tasks import delete_expired_models
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -22,7 +22,7 @@ from social.tests.util import (
 log = logging.getLogger(__name__)
 
 
-class TestDeleteExpiredManagementCommand(LocalTestCase):
+class TestDeleteExpiredTask(LocalTestCase):
 
     def test_delete_pending(self):
         DeletionPendingMixin.DELETION_PENDING_PERIOD_HOURS = 1
@@ -42,7 +42,7 @@ class TestDeleteExpiredManagementCommand(LocalTestCase):
 
         self.assertLengthEquals(Comment.objects.all(), 2)
 
-        delete_expired()
+        delete_expired_models()
 
         Comment.objects.get(text='hello pending')
 

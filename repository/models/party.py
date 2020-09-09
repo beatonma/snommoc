@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 # Added to party parliamentdotuk ID in case of multiple parties using same ID
 # e.g. Labour shares ID with Labour Co-op
-SHARED_ID_OFFSET = 1000
+SHARED_ID_OFFSET = 10000
 
 
 class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
@@ -156,4 +156,3 @@ def get_or_create_party(parliamentdotuk: int, name: str) -> 'Party':
             party_id = party_id + SHARED_ID_OFFSET
 
     log.warning(f'Many parties appear to share the same ID: {parliamentdotuk} {name}')
-    return None

@@ -1,5 +1,9 @@
+import datetime
 import logging
+import math
+import random
 import uuid
+from typing import List
 
 from django.contrib.auth.models import User
 from django.db.models import Model
@@ -47,3 +51,23 @@ def log_dump(obj, logger: logging.Logger):
         logger.debug('Unpacking model collection...')
         for model_instance in obj:
             log_dump(model_instance, logger)
+
+
+def create_sample_dates(
+    count: int = 10,
+    start: datetime.date = datetime.date(2011, 5, 16),
+    end: datetime.date = datetime.date(2020, 5, 16)
+) -> List[datetime.date]:
+    period = end - start
+    max_step_size = max(1, math.ceil(period.days / count))
+
+    dates = []
+    previous = start
+    for n in range(0, count):
+        random.randrange(1, max_step_size)
+        previous = previous + datetime.timedelta(
+            days=random.randrange(1, max_step_size)
+        )
+        dates.append(previous)
+
+    return dates

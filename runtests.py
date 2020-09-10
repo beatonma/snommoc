@@ -43,6 +43,7 @@ TEST_APPS = [
     'notifications',
     'repository',
     'social',
+    'surface',
     'util',
 ]
 

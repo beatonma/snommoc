@@ -8,6 +8,7 @@ from api.views.routers import (
     DetailOnlyRouter,
     ListOrDetailRouter,
     ListOnlyRouter,
+    SingletonRouter,
 )
 from api.views.viewsets.constituency import (
     ConstituencyResultDetailViewSet,
@@ -34,7 +35,7 @@ from api.views.viewsets.procedure import (
     RecentlyUpdatedBillsViewSet,
     RecentlyUpdatedDivisionsViewSet,
 )
-from api.views.viewsets.recent import RecentEngagementViewSet
+from api.views.viewsets.zeitgeist import ZeitgeistViewSet
 
 
 def _register(router, endpoint, viewset):
@@ -46,7 +47,6 @@ list_only_views = (
     (endpoints.FEATURED_BILLS, RecentlyUpdatedBillsViewSet),
     (endpoints.FEATURED_DIVISIONS, RecentlyUpdatedDivisionsViewSet),
     (endpoints.MOTD, MessageOfTheDayViewSet),
-    (endpoints.ENGAGEMENT, RecentEngagementViewSet)
 )
 
 # Views which may return an overview of a list or detail for a single item
@@ -66,7 +66,15 @@ detail_only_views = (
     (endpoints.MEMBER_VOTES_COMMONS, MemberCommonsVotesViewSet),
     (endpoints.MEMBER_VOTES_LORDS, MemberLordsVotesViewSet),
     (endpoints.MEMBER_FOR_CONSTITUENCY, MemberForConstituencyViewSet),
+    # (endpoints.ZEITGEIST, ZeitgeistViewSet),
 )
+
+
+# Detailed, but only one target object so no IDs necessary.
+singleton_views = (
+    (endpoints.ZEITGEIST, ZeitgeistViewSet),
+)
+
 
 list_only_router = ListOnlyRouter()
 for e, v in list_only_views:
@@ -80,13 +88,17 @@ detail_only_router = DetailOnlyRouter()
 for e, v in detail_only_views:
     _register(detail_only_router, e, v)
 
+singleton_router = SingletonRouter()
+for e, v in singleton_views:
+    _register(singleton_router, e, v)
+
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api_ping_view'),
-    # path('api/motd/', MotdViewSet.as_view({'get': 'retrieve'}), name='api_motd'),
     path('', include(list_only_router.urls)),
     path('', include(list_or_detail_router.urls)),
     path('', include(detail_only_router.urls)),
+    path('', include(singleton_router.urls)),
 
     # This one requires 2 keys
     path(f'{endpoints.CONSTITUENCY}/<int:pk>/election/<int:election_id>/',

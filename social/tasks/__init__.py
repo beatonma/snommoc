@@ -1,2 +1,1 @@
 from .delete_expired_models import delete_expired_models
-from .update_recent_engagement import update_recent_engagement

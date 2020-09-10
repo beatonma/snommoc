@@ -21,7 +21,7 @@ class ListOnlyRouter(SimpleRouter):
             mapping={'get': 'list'},
             name='{basename}-list',
             detail=False,
-            initkwargs={}
+            initkwargs={},
         ),
     ]
 
@@ -35,7 +35,7 @@ class ListOrDetailRouter(SimpleRouter):
             mapping={'get': 'list'},
             name='{basename}-list',
             detail=False,
-            initkwargs={}
+            initkwargs={},
         ),
         # Single object, more detailed data
         Route(
@@ -43,7 +43,7 @@ class ListOrDetailRouter(SimpleRouter):
             mapping={'get': 'retrieve'},
             name='{basename}-detail',
             detail=True,
-            initkwargs={'suffix': 'Instance'}
+            initkwargs={'suffix': 'Instance'},
         ),
     ]
 
@@ -57,6 +57,19 @@ class DetailOnlyRouter(SimpleRouter):
             mapping={'get': 'retrieve'},
             name='{basename}-detail',
             detail=True,
-            initkwargs={'suffix': 'Instance'}
+            initkwargs={'suffix': 'Instance'},
         ),
+    ]
+
+
+class SingletonRouter(SimpleRouter):
+    # Like DetailOnlyRouter but without any lookup IDs
+    routes = [
+        Route(
+            url=r'^{prefix}{trailing_slash}$',
+            mapping={'get': 'retrieve'},
+            name='{basename}-detail',
+            detail=True,
+            initkwargs={'suffix': 'Singleton'},
+        )
     ]

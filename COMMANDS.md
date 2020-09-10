@@ -48,7 +48,8 @@ Permenantly delete any DeletionPendingMixin instances that have been marked for
 deletion and have reached their expiry date.
 
 
-### `engagement`
+### `zeitgeist`
 
-Update cache of items that have users have been commenting/voting
-on recently. Should run frequently.
+Update cache of items that are important now, combining content that has been
+marked as 'featured' with content that has been commented/voted on recently.
+Should run frequently.

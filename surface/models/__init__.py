@@ -5,3 +5,4 @@ from .featured import (
     FeaturedLordsDivision,
 )
 from .motd import MessageOfTheDay
+from .zeitgeist import ZeitgeistItem

@@ -69,3 +69,6 @@ class UsernameChanged(BaseModel):
     )
     new_name = models.CharField(max_length=16)
     previous_name = models.CharField(max_length=16)
+
+    def __str__(self):
+        return f'{self.created_on}: {self.previous_name} -> {self.new_name}'

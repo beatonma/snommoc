@@ -55,6 +55,7 @@ class UserAccountView(View):
             )
             usertoken.mark_pending_deletion()
             usertoken.save()
+            log.info(f'Account marked for deletion: {token}')
 
         except json.JSONDecodeError as e:
             log.warning(f'Failed to delete usertoken: {e}')
@@ -90,6 +91,7 @@ class UserAccountView(View):
             usertoken.username = new_username
             usertoken.full_clean()
             usertoken.save()
+            log.info(f'Account renamed: {existing_username} -> {new_username}')
 
         except json.JSONDecodeError as e:
             log.warning(f'Failed to change username: {e}')

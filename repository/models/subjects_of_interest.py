@@ -33,3 +33,6 @@ class SubjectOfInterest(PersonMixin, BaseModel):
 
     class Meta:
         verbose_name_plural = 'Subjects of interest'
+
+    def __str__(self):
+        return f'[{self.category.title}] {self.subject}'

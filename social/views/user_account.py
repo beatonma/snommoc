@@ -5,11 +5,12 @@ import json
 import logging
 
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 
+from api.views.decorators import api_key_required
 from social.models.token import UserToken
 from social.validation.username import (
     BlockedUsername,
@@ -21,9 +22,37 @@ log = logging.getLogger(__name__)
 
 
 class UserAccountView(View):
+    @api_key_required
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """Return the username associated with the given token."""
+        try:
+            params = request.GET
+            token = params.get(contract.USER_TOKEN)
+
+            if not token:
+                raise Exception('Missing required token')
+
+            user_token = UserToken.objects.get(token=token)
+
+            return JsonResponse(
+                {
+                    contract.USER_NAME: user_token.username,
+                },
+                status=status.HTTP_200_OK
+            )
+
+        except UserToken.DoesNotExist as e:
+            log.warning(f'No account found for received token: {e}')
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            log.warning(f'Failed to retrieve username: {e}')
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
 
     def post(self, request, *args, **kwargs):
         try:

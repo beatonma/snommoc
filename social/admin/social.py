@@ -11,7 +11,7 @@ from social.models import (
     Vote,
     VoteType,
 )
-from social.models.token import UserToken
+from social.models.token import UserToken, UsernameChanged
 
 log = logging.getLogger(__name__)
 
@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 @admin.register(
     UserToken,
     VoteType,
+    UsernameChanged,
 )
 class DefaultSocialAdmin(admin.ModelAdmin):
     save_on_top = True

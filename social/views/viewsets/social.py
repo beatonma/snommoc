@@ -22,7 +22,7 @@ from repository.models import (
     Bill,
     CommonsDivision,
     LordsDivision,
-    Person,
+    Person, Constituency, ConstituencyResult,
 )
 from social.models import Comment
 from social.models.mixins import get_target_kwargs
@@ -233,3 +233,17 @@ class BillSocialViewSet(AbstractSocialViewSet):
         return target.title
 
     model_class = Bill
+
+
+class ConstituencySocialViewSet(AbstractSocialViewSet):
+    def get_target_title(self, target) -> str:
+        return target.name
+
+    model_class = Constituency
+
+
+class ConstituencyResultSocialViewSet(AbstractSocialViewSet):
+    def get_target_title(self, target) -> str:
+        return target.election.name
+
+    model_class = ConstituencyResult

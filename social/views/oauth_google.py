@@ -13,6 +13,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from google.auth.transport import requests
 from google.oauth2 import id_token
+from rest_framework import status
 
 from api.views.decorators import api_key_required
 from social.models.token import (
@@ -59,8 +60,19 @@ class VerifyGoogleTokenView(View):
             provider=provider,
             provider_account_id=userid,
         )
-        return JsonResponse({
-            contract.GOOGLE_TOKEN: token[:32],
-            contract.USER_TOKEN: user_token.token,
-            contract.USER_NAME: user_token.username,
-        })
+
+        if user_token.pending_deletion:
+            """Account is marked for deletion"""
+            return JsonResponse(
+                {
+                    contract.USER_NAME: user_token.username,
+                },
+                status=status.HTTP_410_GONE
+            )
+
+        else:
+            return JsonResponse({
+                contract.GOOGLE_TOKEN: token[:32],
+                contract.USER_TOKEN: user_token.token,
+                contract.USER_NAME: user_token.username,
+            })

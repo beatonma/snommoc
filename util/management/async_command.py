@@ -27,6 +27,8 @@ class AsyncCommand(BaseCommand):
             self.handle_async(myfunc, *args, **options)
         """
         if options['instant']:
+            log.info(f'Launching function `{func}` synchronously.')
             func()
         else:
+            log.info(f'Dispatching function `{func}` to worker.')
             func.delay()

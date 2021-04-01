@@ -24,21 +24,17 @@ from repository.models import (
     BillStageType,
     BillType,
 )
+from util.management.async_command import AsyncCommand
 
 log = logging.getLogger(__name__)
 
 
-class Command(BaseCommand):
+class Command(AsyncCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             '-clear',
             action='store_true',
             help='Delete all divisions and related votes',
-        )
-        parser.add_argument(
-            '-async',
-            action='store_true',
-            help='Pass update_bills to Celery.',
         )
         parser.add_argument(
             '--id',
@@ -53,34 +49,40 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['clear']:
-            for M in [
-                BillPublication,
-                BillSponsor,
-                BillStageSitting,
-                BillType,
-                BillStageType,
-                BillStage,
-                Bill,
-            ]:
-                M.objects.all().delete()
+            _clear_bill_data()
 
         func_kwargs = {}
         if options['id']:
-            func = update_bill
+            options['instant'] = True
+            func = _update_bill
             func_kwargs = {
                 'parliamentdotuk': options['id'],
             }
+        elif options['fix']:
+            options['instant'] = True
+            func = _fix_errored_bills
         else:
             func = update_bills
 
-        if options['async']:
-            func.delay(**func_kwargs)
+        options.update(func_kwargs)
 
-        else:
-            func(**func_kwargs)
+        self.handle_async(func, *args, **options)
 
 
-def update_bill(parliamentdotuk: int) -> Optional[str]:
+def _clear_bill_data():
+    for M in [
+        BillPublication,
+        BillSponsor,
+        BillStageSitting,
+        BillType,
+        BillStageType,
+        BillStage,
+        Bill,
+    ]:
+        M.objects.all().delete()
+
+
+def _update_bill(parliamentdotuk: int) -> Optional[str]:
     log.info(f'Updating bill #{parliamentdotuk}')
     try:
         data = get_item_data(endpoints.BILL.format(parliamentdotuk=parliamentdotuk))
@@ -94,13 +96,13 @@ def update_bill(parliamentdotuk: int) -> Optional[str]:
         raise e
 
 
-def fix_errored_bills():
+def _fix_errored_bills():
     parliamentdotuk_ids = BillUpdateError.objects.values_list(
         'parliamentdotuk',
         flat=True
     )
 
     for parliamentdotuk in parliamentdotuk_ids:
-        value = update_bill(parliamentdotuk)
+        value = _update_bill(parliamentdotuk)
         if value is not None:
             BillUpdateError.objects.filter(parliamentdotuk=parliamentdotuk).update(handled=True)

@@ -156,6 +156,27 @@ def get_item_data(endpoint: str) -> Optional[Dict]:
         return None
 
 
+def _task_started_notification(name: str, endpoint_url: str) -> int:
+    notification = TaskNotification.objects.create(
+        title=f"[starting] ...{name}",
+        content=f"An update cycle has started for endpoint {endpoint_url}",
+    )
+    notification.save()
+    return notification.pk
+
+
+def _task_completed_notification(notification_id: int, name: str, new_items: list, report_func: Callable[[list], tuple]):
+    notification = TaskNotification.objects.get(pk=notification_id)
+
+    if report_func:
+        title, content = report_func(new_items)
+        notification.title = f"[finished] ...{name}: {title}"
+        notification.content = content
+    else:
+        notification.title = f"[finished] ...{name}"
+
+    notification.mark_as_complete()
+
 def update_model(
         endpoint_url: str,
         update_item_func: Callable[[Dict], Optional[str]],
@@ -170,12 +191,7 @@ def update_model(
     next_page = 'next-page-placeholder'
     short_url = endpoint_url[24:]
 
-    notification = TaskNotification.objects.create(
-        title=f"[starting] ...{short_url}",
-        content=f"An update cycle has started for endpoint {endpoint_url}",
-    )
-    notification.save()
-    notification_id = notification.pk
+    notification_id = _task_started_notification(short_url, endpoint_url)
 
     while next_page is not None:
         response = get_list_page(endpoint_url, page_number=page_number, page_size=page_size)
@@ -207,13 +223,4 @@ def update_model(
             log.debug(f'Fetching page {next_page} in {page_load_delay} seconds...')
             time.sleep(page_load_delay)
 
-    notification = TaskNotification.objects.get(pk=notification_id)
-
-    if report_func:
-        title, content = report_func(new_items)
-        notification.title = f"[finished] ...{short_url}: {title}"
-        notification.content = content
-    else:
-        notification.title = f"[finished] ...{short_url}"
-
-    notification.mark_as_complete()
+    _task_completed_notification(notification_id, short_url, new_items, report_func)

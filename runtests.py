@@ -119,7 +119,6 @@ class VerboseResult:
 
         if self.passed():
             return report_all_passed(indent=2)
-            # return f'  {_highlight_good("OK")}  [{_highlight_good(self.successful)}] {app_name}'
         else:
             return (
                 '\n'
@@ -254,20 +253,6 @@ def _print_results(test_results: Dict[str, VerboseResult], tests_passed: int, te
         print(_highlight_warning(f'{tests_passed}/{tests_run} tests passed'))
 
     _compare_tests_with_previous(tests_run)
-
-
-# def _parse_args():
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument(
-#         '--app',
-#         type=str,
-#         help='Only run tests for a specific app',
-#         default=None,
-#     )
-#
-#     args, remaining_args = parser.parse_known_args()
-#     sys.argv = remaining_args
-#     return args
 
 
 def _main():

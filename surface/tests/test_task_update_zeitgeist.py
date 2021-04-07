@@ -4,8 +4,6 @@
 
 import logging
 
-from django.contrib.contenttypes.models import ContentType
-
 from basetest.test_util import create_sample_dates
 from basetest.testcase import LocalTestCase
 from repository.models import (
@@ -43,6 +41,7 @@ def _create_featured_person(person: Person):
 
 
 class UpdateZeitgeistTaskTest(LocalTestCase):
+    """"""
     def setUp(self):
         dates = create_sample_dates(count=10)
 

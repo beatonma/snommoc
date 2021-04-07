@@ -9,6 +9,7 @@ NOSE_ARGS = [
     '--spec-color',
     '--logging-clear-handlers',
     '--traverse-namespace',  # Required since Python 3.8
+    '--exe',
 ]
 
 ALLOWED_HOSTS = ['localhost']

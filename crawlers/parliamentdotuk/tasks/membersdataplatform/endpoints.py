@@ -19,7 +19,7 @@ def _get_endpoint(query: str, outputs: str = None) -> str:
 COMMONS_MEMBERS_ALL = _get_endpoint(query='House=Commons|membership=all')
 LORDS_MEMBERS_ALL = _get_endpoint(query='House=Lords|membership=all')
 
-MEMBER_PORTRAITS = 'https://members.parliament.uk/shared/MemberPortraits.csv'
+MEMBER_PORTRAIT_URL = 'https://members-api.parliament.uk/api/Members/{id}/PortraitUrl'
 
 
 def member_biography(parliamentdotuk: int):

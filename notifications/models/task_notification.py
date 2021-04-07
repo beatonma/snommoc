@@ -5,6 +5,8 @@
 import logging
 
 import uuid as uuid
+from functools import wraps
+
 from django.db import models
 from django.utils import timezone
 
@@ -58,3 +60,27 @@ class TaskNotification(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+
+def task_notification(label):
+    """Wrapper for a task. Creates a TaskNotification at start and updates it when task completes or fails."""
+
+    def notification_decoration(func):
+        @wraps(func)
+        def create_notification(*args, **kwargs):
+            notification = TaskNotification.objects.create(title=f'[Starting] {label}')
+            notification.save()
+
+            try:
+                func(*args, **kwargs)
+            except Exception as e:
+                log.error(e)
+                notification.title = f'[Failed] {label}'
+                notification.mark_as_failed()
+            finally:
+                notification.title = f'[Finished] {label}'
+                notification.mark_as_complete()
+
+        return create_notification
+
+    return notification_decoration

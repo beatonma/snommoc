@@ -96,7 +96,7 @@ def update_member_portraits():
     active_members = Person.objects.filter(active=True)
 
     for m in active_members:
-        url = _get_portrait_url()
+        url = _get_portrait_url(m.parliamentdotuk)
         if url is not None:
             _update_member_portrait(m, url)
 

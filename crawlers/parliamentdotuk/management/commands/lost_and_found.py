@@ -10,8 +10,8 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        pass
-
+        self._find_homeless_mps()
+        self._find_memberless_constituencies()
 
     def _find_homeless_mps(self):
         """Look for MPs who do not have a related Constituency"""

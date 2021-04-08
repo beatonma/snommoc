@@ -27,6 +27,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_list,
     coerce_to_boolean,
 )
+from notifications.models.task_notification import task_notification
 
 from repository.models import (
     Bill,
@@ -182,7 +183,8 @@ def _update_sponsor(bill, data):
 
 
 @shared_task
-def update_bills(follow_pagination=True) -> None:
+@task_notification(label='Update bills')
+def update_bills(follow_pagination=True, **kwargs) -> None:
     def fetch_and_update_bill(json_data) -> Optional[str]:
         parliamentdotuk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
         try:
@@ -197,13 +199,10 @@ def update_bills(follow_pagination=True) -> None:
             BillUpdateError.create(parliamentdotuk, e)
             raise e
 
-    def build_report(new_bills: list) -> Tuple[str, str]:
-        return 'Bills updated', '\n'.join(new_bills)
-
     update_model(
         endpoints.BILLS,
         update_item_func=fetch_and_update_bill,
-        report_func=build_report,
         follow_pagination=follow_pagination,
         item_uses_network=True,
+        **kwargs,
     )

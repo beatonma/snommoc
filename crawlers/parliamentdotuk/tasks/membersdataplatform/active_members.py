@@ -36,6 +36,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     ContestedElectionResponseData,
     ElectionResponseData,
 )
+from notifications.models.task_notification import task_notification
 from repository.models import (
     Committee,
     CommitteeMember,
@@ -90,7 +91,8 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def update_active_member_details(debug_max_updates: Optional[int] = None):
+@task_notification(label='Update active member details')
+def update_active_member_details(debug_max_updates: Optional[int] = None, **kwargs):
     """
     In development you may provide a value for debug_max_updates to avoid
     updating hundreds of profiles unnecessarily.
@@ -101,24 +103,36 @@ def update_active_member_details(debug_max_updates: Optional[int] = None):
     if debug_max_updates:
         members = members[:debug_max_updates]
 
-    update_member_details(members)
+    update_member_details(members, **kwargs)
 
 
 @shared_task
-def update_all_member_details():
-    update_member_details(Person.objects.all())
+@task_notification(label='Update all member details')
+def update_all_member_details(**kwargs):
+    update_member_details(Person.objects.all(), **kwargs)
 
 
 @shared_task
-def update_member_details(members):
+def update_member_details(members, **kwargs):
     for member in members:
         update_members(
             endpoints.member_biography(member.parliamentdotuk),
             update_member_func=_update_member_biography,
-            report_func=None,
             response_class=MemberBiographyResponseData,
+            **kwargs
         )
         time.sleep(1)
+
+
+@shared_task
+@task_notification(label='Update details for single member')
+def update_details_for_member(member_id: int, **kwargs):
+    update_members(
+        endpoints.member_biography(member_id),
+        update_member_func=_update_member_biography,
+        response_class=MemberBiographyResponseData,
+        **kwargs,
+    )
 
 
 def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]:

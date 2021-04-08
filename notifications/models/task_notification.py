@@ -55,6 +55,10 @@ class TaskNotification(models.Model):
         self.finished_at = timezone.now()
         self.save()
 
+    def append(self, content: str):
+        self.content = self.content + '\n' + content
+        self.save()
+
     @classmethod
     def create(cls, content: str, title: str = 'Task notification'):
         n = TaskNotification.objects.create(content=content, title=title)

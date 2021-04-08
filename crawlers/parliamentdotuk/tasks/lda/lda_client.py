@@ -156,42 +156,20 @@ def get_item_data(endpoint: str) -> Optional[Dict]:
         return None
 
 
-def _task_started_notification(name: str, endpoint_url: str) -> int:
-    notification = TaskNotification.objects.create(
-        title=f"[starting] ...{name}",
-        content=f"An update cycle has started for endpoint {endpoint_url}",
-    )
-    notification.save()
-    return notification.pk
-
-
-def _task_completed_notification(notification_id: int, name: str, new_items: list, report_func: Callable[[list], tuple]):
-    notification = TaskNotification.objects.get(pk=notification_id)
-
-    if report_func:
-        title, content = report_func(new_items)
-        notification.title = f"[finished] ...{name}: {title}"
-        notification.content = content
-    else:
-        notification.title = f"[finished] ...{name}"
-
-    notification.mark_as_complete()
-
 def update_model(
         endpoint_url: str,
         update_item_func: Callable[[Dict], Optional[str]],
-        report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
         page_size=MAX_PAGE_SIZE,
         page_load_delay: int = 5,  # Basic rate limiting
         follow_pagination: bool = True,
         item_uses_network: bool = False,  # If True we will add a delay in the item loop for rate limiting
+        **kwargs,
 ) -> None:
     new_items = []
     page_number = 0
     next_page = 'next-page-placeholder'
-    short_url = endpoint_url[24:]
 
-    notification_id = _task_started_notification(short_url, endpoint_url)
+    notification: TaskNotification = kwargs.get('notification')
 
     while next_page is not None:
         response = get_list_page(endpoint_url, page_number=page_number, page_size=page_size)
@@ -204,6 +182,7 @@ def update_model(
             items = data.get('result').get('items')
         except AttributeError as e:
             log.warning(f'Could not read item list: {e}')
+            notification.append(f'Failed to read item list for url={endpoint_url} page={page_number}')
             return
 
         for item in items:
@@ -213,6 +192,7 @@ def update_model(
                     new_items.append(new_name)
             except Exception as e:
                 log.warning(f'Failed to update item: {e} {item}')
+                notification.append(f'Failed to read item for url={endpoint_url} page={page_number}')
 
             if item_uses_network:
                 time.sleep(page_load_delay)
@@ -223,4 +203,4 @@ def update_model(
             log.debug(f'Fetching page {next_page} in {page_load_delay} seconds...')
             time.sleep(page_load_delay)
 
-    _task_completed_notification(notification_id, short_url, new_items, report_func)
+    notification.append(f'{len(new_items)} new items')

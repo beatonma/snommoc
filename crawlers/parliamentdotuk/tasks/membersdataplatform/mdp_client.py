@@ -458,19 +458,10 @@ class MemberBiographyResponseData(MemberResponseData):
 def update_members(
     endpoint_url: str,
     update_member_func: Callable[[ResponseData], Optional[str]],
-    report_func: Optional[Callable[[List[str]], Tuple[str, str]]],
     response_class: Type[ResponseData],
+    notification: TaskNotification,
 ) -> None:
-    short_url = endpoint_url[24:]
     new_members: List[str] = []
-    notification_id = None
-    if report_func:
-        notification = TaskNotification.objects.create(
-            title=f"[starting] ...{short_url}",
-            content=f"An update cycle has started for endpoint {endpoint_url}",
-        )
-        notification.save()
-        notification_id = notification.pk
 
     response = get(endpoint_url)
     try:
@@ -482,11 +473,7 @@ def update_members(
 
     except AttributeError as e:
         log.warning(f"Could not read item list: {e}")
-        if report_func:
-            notification = TaskNotification.objects.get(pk=notification_id)
-            notification.title = f"[failed] ...{short_url}"
-            notification.content = f"Update failed for endpoint {endpoint_url}: {e}"
-            notification.mark_as_failed()
+        notification.append(f'Failed to read item list for url={endpoint_url}')
         return
 
     for member in members:
@@ -495,11 +482,8 @@ def update_members(
             if new_name:
                 new_members.append(new_name)
         except Exception as e:
-            log.warning(f'Failed to update member=[{member.__str__()[:255]}...]: {e}')
+            message = f'Failed to update member=[{member.__str__()[:255]}...]: {e}'
+            log.warning(message)
+            notification.append(message)
 
-    if report_func:
-        title, content = report_func(new_members)
-        notification = TaskNotification.objects.get(pk=notification_id)
-        notification.title = f"[finished] ...{short_url}"
-        notification.content = content
-        notification.mark_as_complete()
+    notification.append(f'{len(new_members)} new members')

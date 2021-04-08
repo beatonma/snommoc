@@ -14,6 +14,7 @@ from celery import shared_task
 from django.db import models
 
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import MemberResponseData
+from notifications.models.task_notification import task_notification
 from repository.models import (
     House,
 )
@@ -33,36 +34,31 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def update_all_members_basic_info():
-    update_all_mps_basic_info()
-    update_all_lords_basic_info()
+@task_notification(label='Update all members basic info')
+def update_all_members_basic_info(**kwargs):
+    update_all_mps_basic_info(**kwargs)
+    update_all_lords_basic_info(**kwargs)
 
 
 @shared_task
-def update_all_mps_basic_info():
+@task_notification(label='Update all MPs basic info')
+def update_all_mps_basic_info(**kwargs):
     """
     Refresh basic data for all MPs, both active and historic.
     https://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7Cmembership=all/
     """
-    def _build_report(new_mps) -> Tuple[str, str]:
-        title = 'Basic info updated for all MPs'
-        if new_mps:
-            name_list = '\n'.join(new_mps)
-            content = f'{len(new_mps)} new MPs:\n{name_list}'
-        else:
-            content = 'No new MPs'
-        return title, content
 
     mdp_client.update_members(
         endpoint_url=endpoints.COMMONS_MEMBERS_ALL,
         update_member_func=_update_member_basic_info,
-        report_func=_build_report,
-        response_class=MemberResponseData
+        response_class=MemberResponseData,
+        **kwargs
     )
 
 
 @shared_task
-def update_all_lords_basic_info():
+@task_notification(label='Update all Lords basic info')
+def update_all_lords_basic_info(**kwargs):
     """
     Refresh basic data for all MPs, both active and historic.
     https://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7Cmembership=all/

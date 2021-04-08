@@ -19,6 +19,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     update_model,
 )
 from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_str
+from notifications.models.task_notification import task_notification
 from repository.models import (
     Constituency,
     ConstituencyResult,
@@ -92,6 +93,7 @@ def _create_candidate(election_result, candidate):
 
 
 @shared_task
+@task_notification(label='Update constituency results')
 def update_election_results(follow_pagination=True) -> None:
     def update_result_details(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
@@ -111,13 +113,9 @@ def update_election_results(follow_pagination=True) -> None:
         except Exception as e:
             ElectionResultUpdateError.create(parliamentdotuk, e)
 
-    def build_report(new_results: list) -> Tuple[str, str]:
-        return 'Election results updated', '\n'.join(new_results)
-
     update_model(
         endpoints.ELECTION_RESULTS,
         update_item_func=update_result_details,
-        report_func=build_report,
         follow_pagination=follow_pagination,
         item_uses_network=True,
     )

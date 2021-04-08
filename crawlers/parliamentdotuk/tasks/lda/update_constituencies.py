@@ -5,6 +5,7 @@ from celery import shared_task
 
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import constituencies as constituencies_contract
+from notifications.models.task_notification import task_notification
 from repository.models import Constituency
 from .lda_client import (
     get_value,
@@ -17,7 +18,8 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def update_constituencies(follow_pagination=True) -> None:
+@task_notification(label='Update constituencies')
+def update_constituencies(follow_pagination=True, **kwargs) -> None:
     def build_constituency(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(get_value(json_data, constituencies_contract.ABOUT))
         name = get_value(json_data, constituencies_contract.NAME)
@@ -37,17 +39,9 @@ def update_constituencies(follow_pagination=True) -> None:
         if created:
             return name
 
-    def build_report(new_constituencies):
-        title = 'Constituencies updated'
-        if new_constituencies:
-            constituency_list_text = '\n  '.join(new_constituencies)
-            content = f'{len(new_constituencies)} new constituencies:\n{constituency_list_text}'
-        else:
-            content = 'No new constituencies'
-        return title, content
-
     update_model(
         endpoints.CONSTITUENCIES_BASE_URL,
         update_item_func=build_constituency,
-        report_func=build_report,
-        follow_pagination=follow_pagination)
+        follow_pagination=follow_pagination,
+        **kwargs,
+    )

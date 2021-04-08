@@ -3,10 +3,7 @@
 """
 
 import logging
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import Optional
 
 from celery import shared_task
 
@@ -30,6 +27,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_str,
     coerce_to_boolean,
 )
+from notifications.models.task_notification import task_notification
 from repository.models.session import ParliamentarySession
 from repository.models.divisions import (
     CommonsDivision,
@@ -147,13 +145,15 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> Optional[str]:
 
 
 @shared_task
-def update_all_divisions(follow_pagination=True) -> None:
+@task_notification(label='Update all divisions')
+def update_all_divisions(follow_pagination=True, **kwargs) -> None:
     update_commons_divisions(follow_pagination)
     update_lords_divisions(follow_pagination)
 
 
 @shared_task
-def update_commons_divisions(follow_pagination=True) -> None:
+@task_notification(label='Update Commons divisions')
+def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
 
@@ -174,19 +174,17 @@ def update_commons_divisions(follow_pagination=True) -> None:
         except Exception as e:
             CommonsDivisionUpdateError.create(parliamentdotuk, e)
 
-    def build_report(new_divisions: list) -> Tuple[str, str]:
-        return 'Commons divisions updated', '\n'.join(new_divisions)
-
     update_model(
         endpoints.COMMONS_DIVISIONS,
         update_item_func=update_division,
-        report_func=build_report,
         follow_pagination=follow_pagination,
+        **kwargs,
     )
 
 
 @shared_task
-def update_lords_divisions(follow_pagination=True) -> None:
+@task_notification(label='Update Lords divisions')
+def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
 
@@ -208,15 +206,12 @@ def update_lords_divisions(follow_pagination=True) -> None:
         except Exception as e:
             LordsDivisionUpdateError.create(parliamentdotuk, e)
 
-    def build_report(new_divisions: list) -> Tuple[str, str]:
-        return 'Lords divisions updated', '\n'.join(new_divisions)
-
     update_model(
         endpoints.LORDS_DIVISIONS,
         update_item_func=update_division,
-        report_func=build_report,
         follow_pagination=follow_pagination,
         item_uses_network=True,
+        **kwargs
     )
 
 

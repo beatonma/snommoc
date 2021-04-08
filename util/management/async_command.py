@@ -18,7 +18,7 @@ class AsyncCommand(BaseCommand):
             help='Run the task synchronously.',
         )
 
-    def handle_async(self, func, *args, **options):
+    def handle_async(self, func, *args, kwargs=None, **options):
         """
         Call from handle, passing the function along with the received options.
 
@@ -28,7 +28,13 @@ class AsyncCommand(BaseCommand):
         """
         if options['instant']:
             log.info(f'Launching function `{func}` synchronously.')
-            func()
+            if kwargs:
+                func(**kwargs)
+            else:
+                func()
         else:
             log.info(f'Dispatching function `{func}` to worker.')
-            func.delay()
+            if kwargs:
+                func.delay(**kwargs)
+            else:
+                func.delay()

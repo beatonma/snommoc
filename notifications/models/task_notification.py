@@ -47,7 +47,10 @@ class TaskNotification(models.Model):
         self.finished_at = timezone.now()
         self.save()
 
-    def mark_as_failed(self):
+    def mark_as_failed(self, err=None):
+        if err:
+            self.content = str(err)
+
         self.failed = True
         self.finished_at = timezone.now()
         self.save()
@@ -72,14 +75,14 @@ def task_notification(label):
             notification.save()
 
             try:
-                func(*args, **kwargs)
+                func(*args, notification=notification, **kwargs)
+
+                notification.title = f'[Finished] {label}'
+                notification.mark_as_complete()
             except Exception as e:
                 log.error(e)
                 notification.title = f'[Failed] {label}'
-                notification.mark_as_failed()
-            finally:
-                notification.title = f'[Finished] {label}'
-                notification.mark_as_complete()
+                notification.mark_as_failed(err=e)
 
         return create_notification
 

@@ -6,6 +6,7 @@ import logging
 
 from celery import shared_task
 
+from notifications.models.task_notification import task_notification
 from social.models.mixins import DeletionPendingMixin
 from util.models.generics import get_all_subclasses
 
@@ -13,7 +14,8 @@ log = logging.getLogger(__name__)
 
 
 @shared_task
-def delete_expired_models():
+@task_notification(label='Delete expired models')
+def delete_expired_models(**kwargs):
     model_classes = get_all_subclasses(DeletionPendingMixin)
     for MC in model_classes:
         log.info(f'Checking class {MC} for expired instances...')

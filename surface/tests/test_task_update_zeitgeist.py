@@ -1,7 +1,3 @@
-"""
-
-"""
-
 import logging
 
 from basetest.test_util import create_sample_dates
@@ -90,4 +86,6 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
             FeaturedCommonsDivision,
             FeaturedLordsDivision,
             FeaturedBill,
+
+            ZeitgeistItem,
         )

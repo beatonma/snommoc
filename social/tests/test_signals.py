@@ -64,6 +64,7 @@ class SocialSignalTest(LocalTestCase):
 
     def tearDown(self) -> None:
         self.delete_instances_of(
+            Comment,
             SignInServiceProvider,
             User,
             UserToken,

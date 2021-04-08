@@ -9,6 +9,7 @@ from social.models import (
     Comment,
     Vote,
 )
+from social.models.token import UserToken
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -62,3 +63,10 @@ class AccountDeletionTest(LocalTestCase):
         token.delete()
 
         self.assertLengthEquals(Vote.objects.all(), 1)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            Comment,
+            UserToken,
+            Vote,
+        )

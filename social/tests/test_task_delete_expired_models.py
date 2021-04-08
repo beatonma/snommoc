@@ -13,6 +13,7 @@ from social.models.mixins import (
     DeletionPendingMixin,
     get_target_kwargs,
 )
+from social.models.token import UserToken
 from social.tasks import delete_expired_models
 from social.tests.util import (
     create_sample_comment,
@@ -60,4 +61,10 @@ class TestDeleteExpiredTask(LocalTestCase):
         Comment.objects.get(
             user=None, text='',
             **get_target_kwargs(target)
+        )
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            Comment,
+            UserToken,
         )

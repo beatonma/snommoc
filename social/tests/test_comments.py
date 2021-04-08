@@ -38,10 +38,7 @@ class CommentTests(LocalTestCase):
             active=True
         ).save()
 
-        UserToken.objects.create(
-            token=self.valid_token,
-            username='testuser',
-        ).save()
+        create_sample_usertoken('testuser', token=self.valid_token)
 
     def test_post_comment_with_valid_user(self):
         response = self.client.post(
@@ -221,7 +218,7 @@ class CommentTests(LocalTestCase):
     def tearDown(self) -> None:
         self.delete_instances_of(
             ApiKey,
-            UserToken,
             Comment,
             Person,
+            UserToken,
         )

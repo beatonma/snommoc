@@ -49,7 +49,7 @@ class TaskNotification(models.Model):
 
     def mark_as_failed(self, err=None):
         if err:
-            self.content = str(err)
+            self.content = (self.content or "") + '\n' + str(err)
 
         self.failed = True
         self.finished_at = timezone.now()

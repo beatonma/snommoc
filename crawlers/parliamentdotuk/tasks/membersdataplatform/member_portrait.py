@@ -92,7 +92,7 @@ def _update_member_portrait(member: Person, portrait_url: str):
 
 @shared_task
 @task_notification(label='UpdateMemberPortraits')
-def update_member_portraits():
+def update_member_portraits(**kwargs):
     active_members = Person.objects.filter(active=True)
 
     for m in active_members:

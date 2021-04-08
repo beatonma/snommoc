@@ -204,7 +204,11 @@ def run_app_tests(app_name):
     test_runner = VerboseTestRunner()
     test_results = test_runner.run_tests([f'{app_name}.tests'])
 
+    from django.contrib.contenttypes.models import ContentType
+    ContentType.objects.clear_cache()
+
     _reset_settings(state)
+    apps.unset_installed_apps()
 
     return test_results
 

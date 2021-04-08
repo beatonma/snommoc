@@ -79,10 +79,13 @@ def task_notification(label):
 
                 notification.title = f'[Finished] {label}'
                 notification.mark_as_complete()
-            except Exception as e:
+            except (Exception, KeyboardInterrupt) as e:
                 log.error(e)
                 notification.title = f'[Failed] {label}'
                 notification.mark_as_failed(err=e)
+            finally:
+                if not notification.finished:
+                    notification.mark_as_failed()
 
         return create_notification
 

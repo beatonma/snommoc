@@ -1,10 +1,11 @@
-env/
-.idea/
 */**/__pycache__/
-snommoc/local_*
-/static/
 */**/migrations/
-uwsgi.ini
-.coverage
 .*.json
+.coverage
+.idea/
+/static/
+env/
+env_win/
 raw_data/
+snommoc/local_*
+uwsgi.ini

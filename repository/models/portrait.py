@@ -1,13 +1,8 @@
-"""
-
-"""
-
 import logging
 
 from django.db import models
 
 from repository.models.mixins import (
-    PersonMixin,
     BaseModel,
 )
 
@@ -27,9 +22,9 @@ class MemberPortrait(BaseModel):
     wide_url = models.URLField(blank=True, null=True)
     tall_url = models.URLField(blank=True, null=True)
 
-    # class Meta:
-    #     verbose_name_plural = 'Member Portraits'
-    #     verbose_name = 'Member Portrait'
+    class Meta:
+        verbose_name_plural = 'Member Portraits'
+        verbose_name = 'Member Portrait'
 
     def __str__(self):
         return f'{self.person}'

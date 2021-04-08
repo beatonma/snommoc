@@ -1,6 +1,7 @@
 INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.auth',
+    'notifications',
     'repository',
     'social',
 ]

@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.utils import timezone
 
+from notifications.models.task_notification import task_notification
 from repository.models import (
     Bill,
     CommonsDivision,
@@ -45,7 +46,8 @@ ZEITGEIST_TARGET_MODELS = [
 
 
 @shared_task
-def update_zeitgeist():
+@task_notification(label='Update zeitgeist')
+def update_zeitgeist(**kwargs):
     _reset_zeitgeist()
 
     _update_from_featured()
@@ -54,6 +56,7 @@ def update_zeitgeist():
 
 def _update_from_featured():
     today = timezone.datetime.today().date()
+
     _update_featured_people(today)
     _update_featured_commons_divisions(today)
     _update_featured_lords_divisions(today)
@@ -61,17 +64,18 @@ def _update_from_featured():
 
 
 def _update_from_social():
-    for m in ZEITGEIST_TARGET_MODELS:
-        ct = ContentType.objects.get_for_model(m)
+    for model in ZEITGEIST_TARGET_MODELS:
+        ct = ContentType.objects.get_for_model(model)
         comments = _filter_social_content(Comment, ct)
         votes = _filter_social_content(Vote, ct)
-        for created, _id in comments + votes:
+
+        for created_on, _id in comments + votes:
             ZeitgeistItem.objects.update_or_create(
                 target_id=_id,
                 target_type=ct,
                 defaults={
                     'reason': ZeitgeistItem.REASON_SOCIAL,
-                    'created_on': created,
+                    'created_on': created_on,
                 }
             )
 

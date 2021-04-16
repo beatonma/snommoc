@@ -89,6 +89,7 @@ def task_notification(label):
                 notification.mark_as_failed(err=e)
             finally:
                 if not notification.finished:
+                    notification.title = f'[Failed] {label}'
                     notification.mark_as_failed()
 
         return create_notification

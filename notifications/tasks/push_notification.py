@@ -22,6 +22,7 @@ def push_notification(title: str, content: str, tag: str = 'snommoc.org', import
             tag=tag,
             sound=sound,
             icon='snommoc.org',
+            color='#48406e'
         ).send()
     except Exception as e:
         log.warning(f'Failed to push notification: {e}')

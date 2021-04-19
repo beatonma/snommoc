@@ -15,6 +15,7 @@ urlpatterns = [
     path('actions/add-featured-person/',
          AddFeaturedMemberView.as_view(),
          name='action-add-featured-person'),
+
     path('actions/add-featured-bill/',
          AddFeaturedBillView.as_view(),
          name='action-add-featured-bill'),

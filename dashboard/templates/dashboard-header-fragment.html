@@ -2,9 +2,9 @@
     {% if user.is_superuser %}<a href="{% url 'admin:index' %}">Admin</a>{% endif %} |
     <a href="{% url 'dashboard' %}">Dashboard</a> |
 </div>
-{% include 'new-notifications-fragment.html' %}
-{% if unlinked_constituencies %}
-    <div id="unlinked_constituencies">
-        <span class="notifications-count">{{ unlinked_constituencies }}</span> unlinked constituencies!
-    </div>
-{% endif %}
+{#{% include 'new-notifications-fragment.html' %}#}
+{#{% if unlinked_constituencies %}#}
+{#    <div id="unlinked_constituencies">#}
+{#        <span class="notifications-count">{{ unlinked_constituencies }}</span> unlinked constituencies!#}
+{#    </div>#}
+{#{% endif %}#}

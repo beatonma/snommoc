@@ -10,12 +10,13 @@ from functools import wraps
 from django.db import models
 from django.utils import timezone
 
+from repository.models.mixins import BaseModel
 from notifications import permissions
 
 log = logging.getLogger(__name__)
 
 
-class TaskNotification(models.Model):
+class TaskNotification(BaseModel):
     class Meta:
         permissions = [
             (permissions.VIEW_NOTIFICATION,

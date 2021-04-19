@@ -1,6 +1,10 @@
 */**/__pycache__/
 */**/migrations/
+*.gdignore
+*.gitbundle
 .*.json
+*.sqlite
+*.sqlite3
 .coverage
 .idea/
 /static/

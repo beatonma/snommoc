@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.utils.datetime_safe import datetime
 from django.views import View
+from rest_framework.viewsets import ViewSet
 
 from notifications.models import TaskNotification
 
@@ -15,12 +16,12 @@ from surface.models import (
 
 
 def with_unread_notifications(context: dict):
-    context['notifications'] = TaskNotification.objects.filter(read=False)
-    context['unlinked_constituencies'] = UnlinkedConstituency.objects.all().count()
+    context['notifications'] = TaskNotification.objects.order_by('-created_on')[:20]
+    context['unlinked_constituencies'] = UnlinkedConstituency.objects.all()
     return context
 
 
-class BaseDashboardView(UserPassesTestMixin, View):
+class StaffView(UserPassesTestMixin, View):
     """Dashboard is only viewable by staff accounts."""
 
     def test_func(self):
@@ -30,7 +31,17 @@ class BaseDashboardView(UserPassesTestMixin, View):
         abstract = True
 
 
-class DashboardView(BaseDashboardView):
+class StaffViewSet(UserPassesTestMixin, ViewSet):
+    """Dashboard is only viewable by staff accounts."""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    class Meta:
+        abstract = True
+
+
+class DashboardView(StaffView):
     def get(self, request):
         featured_filter = Q(end__isnull=True) | Q(end__gt=datetime.today())
         return render(

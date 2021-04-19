@@ -3,6 +3,8 @@ $secondary: var(--text-secondary);
 $tertiary: var(--text-tertiary);
 $accent: var(--accent);
 $accent-secondary: var(--accent-secondary);
+$surface: var(--card);
+$table: var(--table-background);
 $font: 'Open Sans', sans-serif;
 $table-border: var(--table-border) 1px solid;
 $border: 6px;
@@ -24,7 +26,10 @@ header, h1 {
 }
 
 section {
-  margin-bottom: 3em;
+  margin: 1rem 1rem 3rem 1rem;
+  padding: 0 1rem 1rem 1rem;
+  border: $table-border;
+  border-radius: 0.5rem;
 }
 
 
@@ -81,4 +86,24 @@ a:visited {
 .action {
   @extend .button;
   background: var(--warn);
+}
+
+.list-item {
+  margin-bottom: 12px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.list-scroll {
+  @extend .list;
+  overflow-y: scroll;
+  max-height: 15rem;
+}
+
+.list {
+  background: $table;
+}
+
+.item-content {
+  font-size: small;
 }

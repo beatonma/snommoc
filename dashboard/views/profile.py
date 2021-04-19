@@ -6,13 +6,13 @@ import logging
 
 from django.shortcuts import render
 
-from dashboard.views.dashboard import BaseDashboardView
+from dashboard.views.dashboard import StaffView
 from repository.models import Person
 
 log = logging.getLogger(__name__)
 
 
-class MemberProfileView(BaseDashboardView):
+class MemberProfileView(StaffView):
     def get(self, request, *args, **kwargs):
         member = Person.objects.get(parliamentdotuk=kwargs.get('pk'))
         print(member)

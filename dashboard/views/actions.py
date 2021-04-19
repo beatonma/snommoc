@@ -7,7 +7,7 @@ import logging
 from django.shortcuts import redirect
 from django.utils.datetime_safe import datetime
 
-from dashboard.views.dashboard import BaseDashboardView
+from dashboard.views.dashboard import StaffView
 from surface.models import (
     FeaturedPerson,
     FeaturedBill,
@@ -16,7 +16,7 @@ from surface.models import (
 log = logging.getLogger(__name__)
 
 
-class AddFeaturedMemberView(BaseDashboardView):
+class AddFeaturedMemberView(StaffView):
     def get(self, request, *args, **kwargs):
         parliamentdotuk = request.GET.get('id')
         FeaturedPerson.objects.create(
@@ -27,7 +27,7 @@ class AddFeaturedMemberView(BaseDashboardView):
         return redirect('dashboard')
 
 
-class AddFeaturedBillView(BaseDashboardView):
+class AddFeaturedBillView(StaffView):
     def get(self, request, *args, **kwargs):
         parliamentdotuk = request.GET.get('id')
         FeaturedBill.objects.create(

@@ -103,24 +103,18 @@ def update_active_member_details(debug_max_updates: Optional[int] = None, **kwar
     if debug_max_updates:
         members = members[:debug_max_updates]
 
-    update_member_details(members, **kwargs)
+    _update_details_for_members(members, **kwargs)
 
 
 @shared_task
 @task_notification(label='Update all member details')
 def update_all_member_details(**kwargs):
-    update_member_details(Person.objects.all(), **kwargs)
+    _update_details_for_members(Person.objects.all(), **kwargs)
 
 
-@shared_task
-def update_member_details(members, **kwargs):
+def _update_details_for_members(members, **kwargs):
     for member in members:
-        update_members(
-            endpoints.member_biography(member.parliamentdotuk),
-            update_member_func=_update_member_biography,
-            response_class=MemberBiographyResponseData,
-            **kwargs
-        )
+        update_details_for_member(member.parliamentdotuk, **kwargs)
         time.sleep(1)
 
 

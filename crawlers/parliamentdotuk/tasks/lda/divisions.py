@@ -28,12 +28,12 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
 )
 from notifications.models.task_notification import task_notification
-from repository.models.session import ParliamentarySession
-from repository.models.divisions import (
+from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
     LordsDivision,
     LordsDivisionVote,
+    ParliamentarySession,
 )
 
 log = logging.getLogger(__name__)

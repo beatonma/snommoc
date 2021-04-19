@@ -76,11 +76,15 @@ def task_notification(label):
     def notification_decoration(func):
         @wraps(func)
         def create_notification(*args, **kwargs):
-            notification = TaskNotification.objects.create(title=f'[Starting] {label}')
-            notification.save()
+            if 'notification' in kwargs:
+                notification = kwargs['notification']
+            else:
+                notification = TaskNotification.objects.create(title=f'[Starting] {label}')
+                notification.save()
+                kwargs['notification'] = notification
 
             try:
-                func(*args, notification=notification, **kwargs)
+                func(*args, **kwargs)
 
                 notification.title = f'[Finished] {label}'
                 notification.mark_as_complete()

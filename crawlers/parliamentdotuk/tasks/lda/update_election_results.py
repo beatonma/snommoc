@@ -22,12 +22,10 @@ from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_str
 from notifications.models.task_notification import task_notification
 from repository.models import (
     Constituency,
-    ConstituencyResult,
-    Election,
-)
-from repository.models.election_result import (
     ConstituencyCandidate,
+    ConstituencyResult,
     ConstituencyResultDetail,
+    Election,
 )
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from repository.models.util.queryset import get_or_none

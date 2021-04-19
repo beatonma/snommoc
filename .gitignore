@@ -7,9 +7,9 @@
 *.sqlite3
 .coverage
 .idea/
+.sass-cache/
 /static/
 env/
-env_win/
 raw_data/
 snommoc/local_*
 uwsgi.ini

@@ -24,7 +24,9 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     BasicInfoResponseData,
     CommitteeResponseData,
     ConstituencyResponseData,
+    ContestedElectionResponseData,
     DeclaredInterestCategoryResponseData,
+    ElectionResponseData,
     ExperiencesResponseData,
     HouseMembershipResponseData,
     MemberBiographyResponseData,
@@ -33,57 +35,49 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     SpeechResponseData,
     SubjectsOfInterestResponseData,
     update_members,
-    ContestedElectionResponseData,
-    ElectionResponseData,
 )
 from notifications.models.task_notification import task_notification
 from repository.models import (
     Committee,
+    CommitteeChair,
     CommitteeMember,
     Constituency,
     ConstituencyResult,
+    ContestedElection,
     Country,
     DeclaredInterest,
     DeclaredInterestCategory,
     Election,
-    MaidenSpeech,
-    PartyAssociation,
-    SubjectOfInterest,
-    SubjectOfInterestCategory,
-    ExperienceCategory,
-    Experience,
-)
-from repository.models.address import (
-    PHONE_NUMBER_REGION,
-    PhysicalAddress,
-    WebAddress,
-)
-from repository.models.committees import CommitteeChair
-from repository.models.constituency import (
-    get_constituency_for_date,
-    get_current_constituency,
-    UnlinkedConstituency,
-)
-from repository.models.election import (
     ElectionType,
-    ContestedElection,
-)
-from repository.models.geography import Town
-from repository.models.houses import (
-    House,
-    HouseMembership,
-)
-from repository.models.party import get_or_create_party
-from repository.models.person import Person
-from repository.models.posts import (
-    BasePost,
-    BasePostMember,
+    Experience,
+    ExperienceCategory,
     GovernmentPost,
     GovernmentPostMember,
+    House,
+    HouseMembership,
+    MaidenSpeech,
     OppositionPost,
     OppositionPostMember,
     ParliamentaryPost,
     ParliamentaryPostMember,
+    PartyAssociation,
+    Person,
+    PhysicalAddress,
+    SubjectOfInterest,
+    SubjectOfInterestCategory,
+    Town,
+    UnlinkedConstituency,
+    WebAddress,
+)
+from repository.models.address import PHONE_NUMBER_REGION
+from repository.models.constituency import (
+    get_constituency_for_date,
+    get_current_constituency,
+)
+from repository.models.party import get_or_create_party
+from repository.models.posts import (
+    BasePost,
+    BasePostMember,
     get_current_post_for_person,
 )
 

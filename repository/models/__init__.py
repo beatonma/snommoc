@@ -4,12 +4,14 @@ from .address import (
 )
 from .committees import (
     Committee,
+    CommitteeChair,
     CommitteeMember,
 )
 from .constituency import (
     Constituency,
     ConstituencyBoundary,
     ConstituencyResult,
+    UnlinkedConstituency,
 )
 from .declared_interests import (
     DeclaredInterest,
@@ -19,6 +21,7 @@ from .election import (
     Election,
     ElectionNationalResult,
     ElectionType,
+    ContestedElection,
 )
 from .election_result import (
     ConstituencyCandidate,
@@ -28,7 +31,10 @@ from .experiences import (
     Experience,
     ExperienceCategory,
 )
-from .geography import Country
+from .geography import (
+    Country,
+    Town,
+)
 from .houses import (
     House,
     HouseMembership,

@@ -1,3 +1,4 @@
+#! env/bin/python
 """
 To enable a module for testing:
 - Add the module name to TEST_APPS in this file.
@@ -12,9 +13,8 @@ import importlib
 import json
 import re
 import sys
-from typing import (
-    Dict,
-)
+from typing import Dict
+
 from unittest import TextTestResult
 
 import colorama

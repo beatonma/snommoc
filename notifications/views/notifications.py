@@ -30,7 +30,7 @@ class PendingNotificationsView(UserPassesTestMixin, View):
             request,
             'unread-notifications.html',
             {
-                'notifications': TaskNotification.objects.filter(read=False),
+                'notifications': TaskNotification.objects.order_by('-created_on').filter(read=False),
             }
         )
 

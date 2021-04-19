@@ -27,8 +27,10 @@
         {% for task in notifications %}
             <div class="list-item task-notification">
                 <div class="item-title">{{ task.title }}</div>
-                <viv class="item-content">{{ task.content }}</viv>
+                <viv class="item-content">{{ task.content|truncatechars:240 }}</viv>
             </div>
+            {% empty %}
+            <div>-</div>
         {%  endfor %}
     </div>
 </section>

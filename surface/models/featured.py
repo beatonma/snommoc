@@ -17,50 +17,42 @@ log = logging.getLogger(__name__)
 class BaseFeatured(PeriodMixin, BaseModel):
     """Use start/end to define a period during which the item is featured.
     """
+    target = None
 
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return f'{self.target}: {self.start} -> {self.end}'
+
 
 class FeaturedPerson(BaseFeatured):
-    person = models.ForeignKey(
+    target = models.ForeignKey(
         'repository.Person',
         on_delete=models.CASCADE,
         related_name='+',
     )
 
-    def __str__(self):
-        return f'{self.person}: {self.start} -> {self.end}'
-
 
 class FeaturedBill(BaseFeatured):
-    bill = models.ForeignKey(
+    target = models.ForeignKey(
         'repository.Bill',
         on_delete=models.CASCADE,
         related_name='+',
     )
 
-    def __str__(self):
-        return f'{self.bill}: {self.start} -> {self.end}'
-
 
 class FeaturedCommonsDivision(BaseFeatured):
-    division = models.ForeignKey(
+    target = models.ForeignKey(
         'repository.CommonsDivision',
         on_delete=models.CASCADE,
         related_name='+',
     )
 
-    def __str__(self):
-        return f'{self.division}: {self.start} -> {self.end}'
-
 
 class FeaturedLordsDivision(BaseFeatured):
-    division = models.ForeignKey(
+    target = models.ForeignKey(
         'repository.LordsDivision',
         on_delete=models.CASCADE,
         related_name='+',
     )
-
-    def __str__(self):
-        return f'{self.division}: {self.start} -> {self.end}'

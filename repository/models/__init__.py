@@ -2,6 +2,15 @@ from .address import (
     PhysicalAddress,
     WebAddress,
 )
+from .bill import (
+    Bill,
+    BillSponsor,
+    BillStageType,
+    BillStage,
+    BillStageSitting,
+    BillPublication,
+    BillType,
+)
 from .committees import (
     Committee,
     CommitteeChair,
@@ -16,6 +25,12 @@ from .constituency import (
 from .declared_interests import (
     DeclaredInterest,
     DeclaredInterestCategory,
+)
+from .divisions import (
+    CommonsDivision,
+    CommonsDivisionVote,
+    LordsDivision,
+    LordsDivisionVote,
 )
 from .election import (
     Election,
@@ -46,6 +61,7 @@ from .party import (
     PartyAssociation,
 )
 from .person import Person
+from .portrait import MemberPortrait
 from .posts import (
     GovernmentPost,
     GovernmentPostMember,
@@ -54,24 +70,8 @@ from .posts import (
     ParliamentaryPost,
     ParliamentaryPostMember,
 )
+from .session import ParliamentarySession
 from .subjects_of_interest import (
     SubjectOfInterest,
     SubjectOfInterestCategory,
 )
-from .session import ParliamentarySession
-from .bill import (
-    Bill,
-    BillSponsor,
-    BillStageType,
-    BillStage,
-    BillStageSitting,
-    BillPublication,
-    BillType,
-)
-from .divisions import (
-    CommonsDivision,
-    CommonsDivisionVote,
-    LordsDivision,
-    LordsDivisionVote,
-)
-from .portrait import MemberPortrait

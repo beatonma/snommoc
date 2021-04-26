@@ -45,8 +45,8 @@ class FeaturedBillsViewSet(KeyRequiredViewSet):
             Q(start__isnull=True) | Q(start__lte=today)
         ).filter(
             Q(end__isnull=True) | Q(end__gte=today)
-        ).select_related('bill')
-        return [item.bill for item in qs]
+        ).select_related('target')
+        return [item.target for item in qs]
 
 
 class RecentlyUpdatedBillsViewSet(KeyRequiredViewSet):
@@ -63,8 +63,8 @@ class FeaturedDivisionsViewSet(KeyRequiredViewSet):
     def get_queryset(self):
         today = datetime.date.today()
         filters = (Q(start__isnull=True) | Q(start__lte=today)) & (Q(end__isnull=True) | Q(end__gte=today))
-        commons = FeaturedCommonsDivision.objects.filter(filters).select_related('division')
-        lords = FeaturedLordsDivision.objects.filter(filters).select_related('division')
+        commons = FeaturedCommonsDivision.objects.filter(filters).select_related('target')
+        lords = FeaturedLordsDivision.objects.filter(filters).select_related('target')
 
         return [x.division for x in commons] + [y.division for y in lords]
 

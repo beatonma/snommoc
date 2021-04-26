@@ -18,7 +18,7 @@ class ZeitgeistItem(GenericTargetMixin, BaseModel):
 
     """
     Represents something that is important now, because of social interaction
-    or they have been featured..
+    or they have been featured.
     """
     reason = models.CharField(
         max_length=24,

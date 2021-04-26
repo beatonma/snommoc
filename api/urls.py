@@ -66,7 +66,6 @@ detail_only_views = (
     (endpoints.MEMBER_VOTES_COMMONS, MemberCommonsVotesViewSet),
     (endpoints.MEMBER_VOTES_LORDS, MemberLordsVotesViewSet),
     (endpoints.MEMBER_FOR_CONSTITUENCY, MemberForConstituencyViewSet),
-    # (endpoints.ZEITGEIST, ZeitgeistViewSet),
 )
 
 

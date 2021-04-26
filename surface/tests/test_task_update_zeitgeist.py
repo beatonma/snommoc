@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 
 
 def _create_featured_person(person: Person):
-    f = FeaturedPerson.objects.create(person=person)
+    f = FeaturedPerson.objects.create(target=person)
     f.save()
     return f
 

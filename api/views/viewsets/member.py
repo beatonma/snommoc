@@ -123,8 +123,8 @@ class FeaturedMembersViewSet(KeyRequiredViewSet):
             Q(start__isnull=True) | Q(start__lte=today)
         ).filter(
             Q(end__isnull=True) | Q(end__gte=today)
-        ).select_related('person')
-        return [item.person for item in qs]
+        ).select_related('target')
+        return [item.target for item in qs]
 
 
 class MemberVotesViewSet(BaseMemberViewSet):

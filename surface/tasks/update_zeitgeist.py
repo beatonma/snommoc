@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.utils import timezone
 
-from notifications.models.task_notification import task_notification
+from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models import (
     Bill,
     CommonsDivision,
@@ -46,7 +46,7 @@ ZEITGEIST_TARGET_MODELS = [
 
 
 @shared_task
-@task_notification(label='Update zeitgeist')
+@task_notification(label='Update zeitgeist', level=TaskNotification.LEVEL_DEBUG)
 def update_zeitgeist(**kwargs):
     _reset_zeitgeist()
 
@@ -55,7 +55,7 @@ def update_zeitgeist(**kwargs):
 
 
 def _update_from_featured():
-    today = timezone.datetime.today().date()
+    today = timezone.now().today()
 
     _update_featured_people(today)
     _update_featured_commons_divisions(today)
@@ -97,32 +97,32 @@ def _filter_social_content(model: Type[BaseModel], content_type: ContentType) ->
     )
 
 
-def _filter_featured_content(model: Type[BaseFeatured], related: str, today: datetime.date):
+def _filter_featured_content(model: Type[BaseFeatured], today: datetime.date):
     return model.objects.filter(
         Q(start__isnull=True) | Q(start__lte=today)
     ).filter(
         Q(end__isnull=True) | Q(end__gte=today)
-    ).select_related(related)
+    ).select_related('target')
 
 
 def _update_featured_people(today: datetime.date):
-    for x in _filter_featured_content(FeaturedPerson, 'person', today):
-        _create_featured_zeitgeist_item(Person, x.start or today, x.person.pk)
+    for x in _filter_featured_content(FeaturedPerson, today):
+        _create_featured_zeitgeist_item(Person, x.start or today, x.target.pk)
 
 
 def _update_featured_commons_divisions(today: datetime.date):
-    for x in _filter_featured_content(FeaturedCommonsDivision, 'division', today):
-        _create_featured_zeitgeist_item(CommonsDivision, x.start or today, x.division.pk)
+    for x in _filter_featured_content(FeaturedCommonsDivision, today):
+        _create_featured_zeitgeist_item(CommonsDivision, x.start or today, x.target.pk)
 
 
 def _update_featured_lords_divisions(today: datetime.date):
-    for x in _filter_featured_content(FeaturedLordsDivision, 'division', today):
-        _create_featured_zeitgeist_item(LordsDivision, x.start or today, x.division.pk)
+    for x in _filter_featured_content(FeaturedLordsDivision, today):
+        _create_featured_zeitgeist_item(LordsDivision, x.start or today, x.target.pk)
 
 
 def _update_featured_bills(today: datetime.date):
-    for x in _filter_featured_content(FeaturedBill, 'bill', today):
-        _create_featured_zeitgeist_item(Bill, x.start or today, x.bill.pk)
+    for x in _filter_featured_content(FeaturedBill, today):
+        _create_featured_zeitgeist_item(Bill, x.start or today, x.target.pk)
 
 
 def _create_featured_zeitgeist_item(model, created: datetime.date, _id):

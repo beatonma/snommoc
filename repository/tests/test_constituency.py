@@ -83,6 +83,13 @@ class ConstituencyTests(LocalTestCase):
             start=datetime.date(year=2005, month=4, day=2),
         )
 
+        Constituency.objects.create(
+            parliamentdotuk=11,
+            name='D',
+            start=None,
+            end=None,
+        )
+
     def test_get_constituency_for_date(self):
         # Date is before our earliest constituency. Should return earliest available.
         c = get_constituency_for_date(
@@ -134,6 +141,9 @@ class ConstituencyTests(LocalTestCase):
             date=datetime.date(year=2101, month=1, day=1)
         )
         self.assertEqual(c.parliamentdotuk, 10)
+
+        c = get_constituency_for_date('D', date=datetime.date(year=2101, month=1, day=1))
+        self.assertEqual(c.parliamentdotuk, 11)
 
     def test_get_current_constituency(self):
         # Most recent start does not have an end date so should be considered current.

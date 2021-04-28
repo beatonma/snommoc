@@ -20,6 +20,7 @@ from .constituency import (
     Constituency,
     ConstituencyBoundary,
     ConstituencyResult,
+    ConstituencyAlsoKnownAs,
     UnlinkedConstituency,
 )
 from .declared_interests import (

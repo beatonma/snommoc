@@ -75,11 +75,13 @@ def _create_commons_vote(division_id, vote):
     CommonsDivisionVote.objects.update_or_create(
         division_id=division_id,
         person_id=_get_vote_commons_member_id(vote),
-        aye=vote_type == votes_contract.VOTE_AYE,
-        no=vote_type == votes_contract.VOTE_NO,
-        abstention=vote_type == votes_contract.VOTE_ABSTAINS,
-        did_not_vote=vote_type == votes_contract.VOTE_DID_NOT,
-        suspended_or_expelled=vote_type == votes_contract.VOTE_SUSPENDED_EXPELLED,
+        defaults={
+            'aye': vote_type == votes_contract.VOTE_AYE,
+            'no': vote_type == votes_contract.VOTE_NO,
+            'abstention': vote_type == votes_contract.VOTE_ABSTAINS,
+            'did_not_vote': vote_type == votes_contract.VOTE_DID_NOT,
+            'suspended_or_expelled': vote_type == votes_contract.VOTE_SUSPENDED_EXPELLED,
+        }
     )
 
 
@@ -89,30 +91,32 @@ def _create_lords_vote(division_id, vote):
     LordsDivisionVote.objects.update_or_create(
         division_id=division_id,
         person_id=_get_vote_lords_member_id(vote),
-        aye=vote_type == votes_contract.VOTE_CONTENT,
-        no=vote_type == votes_contract.VOTE_NOT_CONTENT,
+        defaults={
+            'aye': vote_type == votes_contract.VOTE_CONTENT,
+            'no': vote_type == votes_contract.VOTE_NOT_CONTENT,
+        }
     )
 
 
 def _create_commons_division(parliamentdotuk: int, data: dict) -> Optional[str]:
-    division = CommonsDivision.objects.create(
+    division, _ = CommonsDivision.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
-        title=coerce_to_str(data.get(contract.TITLE)),
-        abstentions=unwrap_value_int(data, contract.ABSTENTIONS),
-        ayes=unwrap_value_int(data, contract.AYES),
-        noes=unwrap_value_int(data, contract.NOES),
-        did_not_vote=unwrap_value_int(data, contract.DID_NOT_VOTE),
-        non_eligible=unwrap_value_int(data, contract.NON_ELIGIBLE),
-        errors=unwrap_value_int(data, contract.ERRORS),
-        suspended_or_expelled=unwrap_value_int(data, contract.SUSPENDED_OR_EXPELLED),
-        date=unwrap_value_date(data, contract.DATE),
-        deferred_vote=coerce_to_boolean(data.get(contract.DEFERRED_VOTE)),
-        session=_get_session(data),
-        uin=data.get(contract.UIN),
-        division_number=coerce_to_int(data.get(contract.DIVISION_NUMBER)),
+        defaults={
+            'title': coerce_to_str(data.get(contract.TITLE)),
+            'abstentions': unwrap_value_int(data, contract.ABSTENTIONS),
+            'ayes': unwrap_value_int(data, contract.AYES),
+            'noes': unwrap_value_int(data, contract.NOES),
+            'did_not_vote': unwrap_value_int(data, contract.DID_NOT_VOTE),
+            'non_eligible': unwrap_value_int(data, contract.NON_ELIGIBLE),
+            'errors': unwrap_value_int(data, contract.ERRORS),
+            'suspended_or_expelled': unwrap_value_int(data, contract.SUSPENDED_OR_EXPELLED),
+            'date': unwrap_value_date(data, contract.DATE),
+            'deferred_vote': coerce_to_boolean(data.get(contract.DEFERRED_VOTE)),
+            'session': _get_session(data),
+            'uin': data.get(contract.UIN),
+            'division_number': coerce_to_int(data.get(contract.DIVISION_NUMBER)),
+        }
     )
-
-    division.save()
 
     votes = data.get(contract.VOTES)
     for vote in votes:
@@ -122,20 +126,20 @@ def _create_commons_division(parliamentdotuk: int, data: dict) -> Optional[str]:
 
 
 def _create_lords_division(parliamentdotuk: int, data: dict) -> Optional[str]:
-    division = LordsDivision.objects.create(
+    division, _ = LordsDivision.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
-        title=coerce_to_str(data.get(contract.TITLE)),
-        description=coerce_to_str(data.get(contract.DESCRIPTION)[0]),
-        ayes=coerce_to_int(data.get(contract.CONTENT)),
-        noes=coerce_to_int(data.get(contract.NOT_CONTENT)),
-        date=unwrap_value_date(data, contract.DATE),
-        session=_get_session(data),
-        uin=data.get(contract.UIN),
-        division_number=coerce_to_int(data.get(contract.DIVISION_NUMBER)),
-        whipped_vote=coerce_to_boolean(data.get(contract.WHIPPED_VOTE)),
+        defaults={
+            'title': coerce_to_str(data.get(contract.TITLE)),
+            'description': coerce_to_str(data.get(contract.DESCRIPTION)[0]),
+            'ayes': coerce_to_int(data.get(contract.CONTENT)),
+            'noes': coerce_to_int(data.get(contract.NOT_CONTENT)),
+            'date': unwrap_value_date(data, contract.DATE),
+            'session': _get_session(data),
+            'uin': data.get(contract.UIN),
+            'division_number': coerce_to_int(data.get(contract.DIVISION_NUMBER)),
+            'whipped_vote': coerce_to_boolean(data.get(contract.WHIPPED_VOTE)),
+        }
     )
-
-    division.save()
 
     votes = data.get(contract.VOTES)
     for vote in votes:

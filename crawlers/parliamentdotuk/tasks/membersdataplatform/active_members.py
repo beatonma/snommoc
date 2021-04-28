@@ -152,15 +152,15 @@ def _postprocess_update(person: Person) -> None:
     _postprocess_update_current_post(person)
 
 
-def _update_or_create_election(
+def _get_or_create_election(
     data: Optional[ElectionResponseData],
 ) -> Tuple[Election, bool]:
     """Convenience function as elections can be created via multiple routes
     including _update_historical_constituencies and _update_elections_contested."""
-    election_type, _ = ElectionType.objects.update_or_create(
+    election_type, _ = ElectionType.objects.get_or_create(
         name=data.get_election_type()
     )
-    election, created = Election.objects.update_or_create(
+    election, created = Election.objects.get_or_create(
         parliamentdotuk=data.get_election_id(),
         defaults={
             "name": data.get_election_name(),
@@ -208,7 +208,9 @@ def _update_house_membership(
             person=person,
             house=house,
             start=hm.get_start_date(),
-            defaults={"end": hm.get_end_date()},
+            defaults={
+                "end": hm.get_end_date()
+            },
         )
 
     _catch_item_errors(person, memberships, _item_func)
@@ -219,17 +221,14 @@ def _update_historical_constituencies(
 ) -> None:
     def _item_func(c: ConstituencyResponseData):
         constituency_name = c.get_constituency_name()
-        election, _ = _update_or_create_election(c.get_election())
+        election, _ = _get_or_create_election(c.get_election())
 
-        constituency = get_constituency_for_date(
-            constituency_name, election.date,
-        ) or get_current_constituency(constituency_name)
-
-        if constituency is None:
-            constituency = Constituency.objects.create(
-                parliamentdotuk=c.get_constituency_id(),
-                name=constituency_name,
-            )
+        constituency, _ = Constituency.objects.get_or_create(
+            parliamentdotuk=c.get_constituency_id(),
+            defaults={
+                'name': constituency_name,
+            }
+        )
 
         result, _ = ConstituencyResult.objects.update_or_create(
             constituency=constituency,
@@ -254,7 +253,9 @@ def _update_party_associations(
             person=person,
             party=party,
             start=p.get_start_date(),
-            defaults={"end": p.get_end_date(),},
+            defaults={
+                "end": p.get_end_date(),
+            },
         )
 
     _catch_item_errors(person, historical_parties, _item_func)
@@ -264,21 +265,27 @@ def _update_committees(person: Person, committees: List[CommitteeResponseData]) 
     def _item_func(c):
         committee, _ = Committee.objects.update_or_create(
             parliamentdotuk=c.get_committee_id(),
-            defaults={"name": c.get_committee_name()},
+            defaults={
+                "name": c.get_committee_name(),
+            },
         )
 
         committee_membership, _ = CommitteeMember.objects.update_or_create(
             person=person,
             committee=committee,
             start=c.get_start_date(),
-            defaults={"end": c.get_end_date(),},
+            defaults={
+                "end": c.get_end_date(),
+            },
         )
 
         for chair in c.get_chair():
             CommitteeChair.objects.update_or_create(
                 member=committee_membership,
                 start=chair.get_start_date(),
-                defaults={"end": chair.get_end_date(),},
+                defaults={
+                    "end": chair.get_end_date(),
+                },
             )
 
     _catch_item_errors(person, committees, _item_func)
@@ -303,7 +310,9 @@ def _update_posts(
             person=person,
             post=post,
             start=p.get_start_date(),
-            defaults={"end": p.get_end_date(),},
+            defaults={
+                "end": p.get_end_date(),
+            },
         )
 
     _catch_item_errors(person, posts, _item_func)
@@ -346,7 +355,9 @@ def _update_addresses(person: Person, addresses: List[AddressResponseData]) -> N
             WebAddress.objects.update_or_create(
                 person=person,
                 description=a.get_type(),
-                defaults={"url": a.get_address(),},
+                defaults={
+                    "url": a.get_address(),
+                },
             )
 
     _catch_item_errors(person, addresses, _item_func)
@@ -376,7 +387,9 @@ def _update_declared_interests(
     def _item_func(c):
         category, _ = DeclaredInterestCategory.objects.update_or_create(
             parliamentdotuk=c.get_category_id(),
-            defaults={"name": c.get_category_name(),},
+            defaults={
+                "name": c.get_category_name(),
+            },
         )
 
         interests = c.get_interests()
@@ -401,13 +414,13 @@ def _update_subjects_of_interest(
     person: Person, subjects_of_interest: List[SubjectsOfInterestResponseData]
 ) -> None:
     def _item_func(interest):
-        category, _ = SubjectOfInterestCategory.objects.update_or_create(
+        category, _ = SubjectOfInterestCategory.objects.get_or_create(
             title=interest.get_category()
         )
-        SubjectOfInterest.objects.update_or_create(
+        SubjectOfInterest.objects.get_or_create(
             person=person,
             category=category,
-            defaults={"subject": interest.get_entry(),},
+            subject=interest.get_entry()
         )
 
     _catch_item_errors(person, subjects_of_interest, _item_func)
@@ -417,7 +430,7 @@ def _update_experiences(
     person: Person, experiences: List[ExperiencesResponseData]
 ) -> None:
     def _item_func(exp):
-        category, _ = ExperienceCategory.objects.update_or_create(name=exp.get_type())
+        category, _ = ExperienceCategory.objects.get_or_create(name=exp.get_type())
         Experience.objects.update_or_create(
             person=person,
             organisation=exp.get_organisation(),
@@ -437,7 +450,7 @@ def _update_elections_contested(
     person: Person, contested: List[ContestedElectionResponseData]
 ) -> None:
     def _item_func(c):
-        election, _ = _update_or_create_election(c.get_election())
+        election, _ = _get_or_create_election(c.get_election())
 
         constituency_name = c.get_constituency_name()
 
@@ -448,8 +461,10 @@ def _update_elections_contested(
         ) or get_current_constituency(constituency_name)
 
         if constituency is None:
-            UnlinkedConstituency.objects.create(
-                name=constituency_name, election=election, mp=person
+            UnlinkedConstituency.objects.get_or_create(
+                name=constituency_name,
+                election=election,
+                mp=person,
             )
         else:
             ContestedElection.objects.update_or_create(
@@ -465,6 +480,5 @@ def _update_elections_contested(
 
 def _postprocess_update_current_post(person: Person) -> None:
     current_post_membership = get_current_post_for_person(person)
-    if current_post_membership is not None:
-        person.current_post = current_post_membership.post.name
-        person.save()
+    person.current_post = current_post_membership.post.name
+    person.save()

@@ -159,7 +159,9 @@ def get_constituency_for_date(name: str, date: Optional[datetime.date]) -> Optio
     def _generalised_filter(n: str):
         """Remove punctuation, conjunctions, etc which may not be formatted the
         same way from different sources e.g. 'and' vs '&'."""
-        name_regex = n.replace(',', ',?').replace('&', '(&|and)').replace(' and ', ' (&|and) ')
+        name_regex = n.replace(',', ',?')\
+            .replace('&', '(&|and)')\
+            .replace(' and ', ' (&|and) ')
         return {'name__iregex': name_regex}
 
     c = Constituency.objects.filter(**_generalised_filter(name))

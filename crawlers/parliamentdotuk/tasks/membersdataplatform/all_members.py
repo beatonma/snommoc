@@ -93,6 +93,7 @@ def _update_member_basic_info(data: MemberResponseData) -> Optional[str]:
     party = get_or_create_party(data.get_party_id(), data.get_party())
     house, _ = _get_or_create_or_none(House, name=data.get_house())
     is_active = data.get_is_active()
+
     if is_active:
         constituency = get_current_constituency(data.get_constituency())
     else:

@@ -34,7 +34,6 @@ def update_constituencies(follow_pagination=True, **kwargs) -> None:
                 'end': get_date(json_data, constituencies_contract.DATE_ENDED),
             }
         )
-        constituency.save()
 
         if created:
             return name

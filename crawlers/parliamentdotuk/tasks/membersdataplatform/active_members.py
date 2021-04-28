@@ -6,18 +6,12 @@ more details data about them.
 """
 import logging
 import time
-from typing import (
-    List,
-    Optional,
-    Type,
-    Tuple,
-    Callable,
-)
+from typing import Callable, List, Optional, Tuple, Type
 
-from celery import shared_task
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
+from celery import shared_task
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     AddressResponseData,
@@ -81,11 +75,12 @@ from repository.models.posts import (
     get_current_post_for_person,
 )
 
+
 log = logging.getLogger(__name__)
 
 
 @shared_task
-@task_notification(label='Update active member details')
+@task_notification(label="Update active member details")
 def update_active_member_details(debug_max_updates: Optional[int] = None, **kwargs):
     """
     In development you may provide a value for debug_max_updates to avoid
@@ -101,7 +96,7 @@ def update_active_member_details(debug_max_updates: Optional[int] = None, **kwar
 
 
 @shared_task
-@task_notification(label='Update all member details')
+@task_notification(label="Update all member details")
 def update_all_member_details(**kwargs):
     _update_details_for_members(Person.objects.all(), **kwargs)
 
@@ -113,7 +108,7 @@ def _update_details_for_members(members, **kwargs):
 
 
 @shared_task
-@task_notification(label='Update details for single member')
+@task_notification(label="Update details for single member")
 def update_details_for_member(member_id: int, **kwargs):
     update_members(
         endpoints.member_biography(member_id),
@@ -157,9 +152,7 @@ def _get_or_create_election(
 ) -> Tuple[Election, bool]:
     """Convenience function as elections can be created via multiple routes
     including _update_historical_constituencies and _update_elections_contested."""
-    election_type, _ = ElectionType.objects.get_or_create(
-        name=data.get_election_type()
-    )
+    election_type, _ = ElectionType.objects.get_or_create(name=data.get_election_type())
     election, created = Election.objects.get_or_create(
         parliamentdotuk=data.get_election_id(),
         defaults={
@@ -173,12 +166,7 @@ def _get_or_create_election(
 
 def _catch_item_errors(person: Person, items: List, func: Callable) -> None:
     for item in items:
-        try:
-            func(item)
-        except Exception as e:
-            log.warning(
-                f"Item update error ({item.__str__()[:64]}) [{person}: {func}]: {e}"
-            )
+        func(item)
 
 
 def _update_basic_details(person: Person, data: BasicInfoResponseData):
@@ -193,7 +181,8 @@ def _update_basic_details(person: Person, data: BasicInfoResponseData):
 
         if town_name:
             person.town_of_birth, _ = Town.objects.get_or_create(
-                name=town_name, country=person.country_of_birth,
+                name=town_name,
+                country=person.country_of_birth,
             )
 
     person.save()
@@ -209,7 +198,7 @@ def _update_house_membership(
             house=house,
             start=hm.get_start_date(),
             defaults={
-                "end": hm.get_end_date()
+                "end": hm.get_end_date(),
             },
         )
 
@@ -226,17 +215,17 @@ def _update_historical_constituencies(
         constituency, _ = Constituency.objects.get_or_create(
             parliamentdotuk=c.get_constituency_id(),
             defaults={
-                'name': constituency_name,
-            }
+                "name": constituency_name,
+            },
         )
 
         result, _ = ConstituencyResult.objects.update_or_create(
             constituency=constituency,
             election=election,
+            mp=person,
             defaults={
                 "start": c.get_start_date(),
                 "end": c.get_end_date(),
-                "mp": person,
             },
         )
 
@@ -418,9 +407,7 @@ def _update_subjects_of_interest(
             title=interest.get_category()
         )
         SubjectOfInterest.objects.get_or_create(
-            person=person,
-            category=category,
-            subject=interest.get_entry()
+            person=person, category=category, subject=interest.get_entry()
         )
 
     _catch_item_errors(person, subjects_of_interest, _item_func)
@@ -456,9 +443,13 @@ def _update_elections_contested(
 
         # Find the constituency that was active at the date of the election
         # If we can't find one, use the most recent definition by that name.
-        constituency = get_constituency_for_date(
-            constituency_name, election.date,
-        ) or get_current_constituency(constituency_name)
+        constituency = (
+            get_constituency_for_date(
+                constituency_name,
+                election.date,
+            )
+            or get_current_constituency(constituency_name)
+        )
 
         if constituency is None:
             UnlinkedConstituency.objects.get_or_create(

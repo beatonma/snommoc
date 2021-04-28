@@ -165,7 +165,6 @@ def update_model(
         item_uses_network: bool = False,  # If True we will add a delay in the item loop for rate limiting
         **kwargs,
 ) -> None:
-    new_items = []
     page_number = 0
     next_page = 'next-page-placeholder'
 
@@ -181,18 +180,18 @@ def update_model(
             data = response.json()
             items = data.get('result').get('items')
         except AttributeError as e:
-            log.warning(f'Could not read item list: {e}')
             notification.append(f'Failed to read item list for url={endpoint_url} page={page_number}')
+            notification.mark_as_failed(e)
             return
 
         for item in items:
             try:
-                new_name = update_item_func(item)
-                if new_name:
-                    new_items.append(new_name)
+                update_item_func(item)
             except Exception as e:
                 log.warning(f'Failed to update item: {e} {item}')
                 notification.append(f'Failed to read item for url={endpoint_url} page={page_number}')
+                notification.mark_as_failed(e)
+                return
 
             if item_uses_network:
                 time.sleep(page_load_delay)
@@ -202,5 +201,3 @@ def update_model(
         if next_page:
             log.debug(f'Fetching page {next_page} in {page_load_delay} seconds...')
             time.sleep(page_load_delay)
-
-    notification.append(f'{len(new_items)} new items')

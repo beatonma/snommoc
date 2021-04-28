@@ -461,29 +461,23 @@ def update_members(
     response_class: Type[ResponseData],
     notification: TaskNotification,
 ) -> None:
-    new_members: List[str] = []
-
     response = get(endpoint_url)
     try:
-        data = response.json()
-        members = data.get("Members").get("Member")
+        members = response.json().get("Members").get("Member")
 
         if not isinstance(members, list):
             members = [members]
 
     except AttributeError as e:
-        log.warning(f"Could not read item list: {e}")
         notification.append(f'Failed to read item list for url={endpoint_url}')
+        notification.mark_as_failed(e)
         return
 
     for member in members:
         try:
-            new_name = update_member_func(response_class(member))
-            if new_name:
-                new_members.append(new_name)
+            update_member_func(response_class(member))
         except Exception as e:
-            message = f'Failed to update member=[{member.__str__()[:255]}...]: {e}'
-            log.warning(message)
+            message = f'Failed to update member=[{member.__str__()[:64]}...]: {e}'
             notification.append(message)
-
-    notification.append(f'{len(new_members)} new members')
+            notification.mark_as_failed(e)
+            return

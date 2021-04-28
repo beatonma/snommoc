@@ -10,13 +10,12 @@ from functools import wraps
 from django.db import models
 from django.utils import timezone
 
-from repository.models.mixins import BaseModel
 from notifications import permissions
 
 log = logging.getLogger(__name__)
 
 
-class TaskNotification(BaseModel):
+class TaskNotification(models.Model):
     class Meta:
         permissions = [
             (permissions.VIEW_NOTIFICATION,
@@ -29,6 +28,9 @@ class TaskNotification(BaseModel):
     LEVEL_DEBUG = 1
     LEVEL_INFO = 2
     LEVEL_WARN = 3
+
+    created_on = models.DateTimeField(default=timezone.now)
+    modified_on = models.DateTimeField(auto_now=True)
 
     title = models.CharField(max_length=255, blank=True, null=True)
     content = models.TextField(null=True, blank=True)
@@ -51,6 +53,14 @@ class TaskNotification(BaseModel):
         self.save()
 
     def mark_as_complete(self):
+        if self.failed:
+            log.warning('TaskNotification.mark_as_complete called on task already marked as FAILED')
+            return
+
+        if self.complete:
+            log.warning('TaskNotification.mark_as_complete called on task already marked as complete')
+            return
+
         self.complete = True
         self.finished_at = timezone.now()
         self.save()
@@ -64,6 +74,9 @@ class TaskNotification(BaseModel):
         self.save()
 
     def append(self, content: str):
+        if self.finished:
+            log.warning('Task marked as finished but still being appended to')
+        log.info(content)
         self.content = (self.content or '') + '\n' + content
         self.save()
 
@@ -83,7 +96,9 @@ def task_notification(label, level=TaskNotification.LEVEL_INFO):
     def notification_decoration(func):
         @wraps(func)
         def create_notification(*args, **kwargs):
-            if 'notification' in kwargs:
+            is_root_task = 'notification' not in kwargs
+
+            if not is_root_task:
                 notification = kwargs['notification']
             else:
                 notification = TaskNotification.objects.create(title=f'{label}', level=level)
@@ -92,14 +107,15 @@ def task_notification(label, level=TaskNotification.LEVEL_INFO):
 
             try:
                 func(*args, **kwargs)
-                notification.mark_as_complete()
+                if is_root_task:
+                    notification.mark_as_complete()
 
             except (Exception, KeyboardInterrupt) as e:
                 log.error(e)
                 notification.mark_as_failed(err=e)
 
             finally:
-                if not notification.finished:
+                if is_root_task and not notification.finished:
                     notification.mark_as_failed()
 
         return create_notification

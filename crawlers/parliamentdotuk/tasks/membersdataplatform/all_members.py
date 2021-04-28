@@ -63,19 +63,10 @@ def update_all_lords_basic_info(**kwargs):
     Refresh basic data for all MPs, both active and historic.
     https://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7Cmembership=all/
     """
-    def _build_report(new_lords) -> Tuple[str, str]:
-        title = 'Basic info updated for all Lords'
-        if new_lords:
-            name_list = '\n'.join(new_lords)
-            content = f'{len(new_lords)} new Lords:\n{name_list}'
-        else:
-            content = 'No new Lords'
-        return title, content
 
     mdp_client.update_members(
         endpoint_url=endpoints.LORDS_MEMBERS_ALL,
         update_member_func=_update_member_basic_info,
-        report_func=_build_report,
         response_class=MemberResponseData
     )
 

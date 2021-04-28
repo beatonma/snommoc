@@ -104,6 +104,10 @@ def update_all_member_details(**kwargs):
 def _update_details_for_members(members, **kwargs):
     for member in members:
         update_details_for_member(member.parliamentdotuk, **kwargs)
+
+        if kwargs['notification'].finished:
+            return
+
         time.sleep(1)
 
 
@@ -212,12 +216,17 @@ def _update_historical_constituencies(
         constituency_name = c.get_constituency_name()
         election, _ = _get_or_create_election(c.get_election())
 
-        constituency, _ = Constituency.objects.get_or_create(
-            parliamentdotuk=c.get_constituency_id(),
-            defaults={
-                "name": constituency_name,
-            },
-        )
+        constituency = get_constituency_for_date(constituency_name, election.date)
+
+        if constituency is None:
+            raise Exception(f'Unknown constituency={constituency_name} for election={election} ({election.date})')
+
+        # constituency, _ = Constituency.objects.get_or_create(
+        #     parliamentdotuk=c.get_constituency_id(),
+        #     defaults={
+        #         "name": constituency_name,
+        #     },
+        # )
 
         result, _ = ConstituencyResult.objects.update_or_create(
             constituency=constituency,

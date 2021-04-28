@@ -2,7 +2,7 @@ import datetime
 from typing import Optional
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, UniqueConstraint
 
 from repository.models.mixins import (
     PeriodMixin,
@@ -101,19 +101,17 @@ class UnlinkedConstituency(BaseModel):
         on_delete=models.CASCADE,
     )
 
-    constituency = models.ForeignKey(
-        'Constituency',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        help_text='Constituency which this is supposed to refer to.'
-    )
-
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = 'Unlinked constituencies'
+        constraints = [
+            UniqueConstraint(
+                fields=['name', 'mp', 'election'],
+                name='unique_election_result',
+            )
+        ]
 
 
 class ConstituencyBoundary(BaseModel):

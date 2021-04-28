@@ -373,7 +373,6 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         self.assertEqual(unlinked_constituency.name, "Some Unknown Constituency")
         self.assertEqual(unlinked_constituency.mp, self.person)
         self.assertEqual(unlinked_constituency.election.name, "1998 General Election")
-        self.assertIsNone(unlinked_constituency.constituency)
 
     def test__update_subjects_of_interest(self):
         experiences = [

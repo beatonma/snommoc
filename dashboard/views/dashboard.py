@@ -10,12 +10,6 @@ from notifications.models import TaskNotification
 from repository.models.constituency import UnlinkedConstituency
 
 
-def _with_unread_notifications(context: dict):
-    context['notifications'] = TaskNotification.objects.order_by('-created_on')[:20]
-    context['unlinked_constituencies'] = UnlinkedConstituency.objects.all()
-    return context
-
-
 class StaffView(UserPassesTestMixin, View):
     """Dashboard is only viewable by staff accounts."""
 
@@ -45,7 +39,7 @@ class DashboardView(StaffView):
 
 
 class UnlinkedConstituencyViewSet(StaffViewSet):
-    queryset = UnlinkedConstituency.objects.all()
+    queryset = UnlinkedConstituency.objects.all().order_by('name', 'election__date')
     serializer_class = UnlinkedConstituencySerializer
 
 

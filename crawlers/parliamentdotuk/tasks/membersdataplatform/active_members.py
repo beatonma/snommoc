@@ -4,8 +4,8 @@ Tasks for updating details on active members.
 Active members are of higher interest than historical ones so we maintain
 more details data about them.
 """
+import datetime
 import logging
-import time
 from typing import Callable, List, Optional, Tuple, Type
 
 from phonenumber_field.phonenumber import PhoneNumber
@@ -35,7 +35,6 @@ from repository.models import (
     Committee,
     CommitteeChair,
     CommitteeMember,
-    Constituency,
     ConstituencyResult,
     ContestedElection,
     Country,
@@ -74,14 +73,26 @@ from repository.models.posts import (
     BasePostMember,
     get_current_post_for_person,
 )
-
+from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_cache import (
+    JsonResponseCache,
+)
 
 log = logging.getLogger(__name__)
 
 
+def _get_cache(name: str = "active-members") -> JsonResponseCache:
+    return JsonResponseCache(
+        name, time_to_live_seconds=datetime.timedelta(days=2).total_seconds()
+    )
+
+
 @shared_task
 @task_notification(label="Update active member details")
-def update_active_member_details(debug_max_updates: Optional[int] = None, **kwargs):
+def update_active_member_details(
+    debug_max_updates: Optional[int] = None,
+    cache=_get_cache,
+    **kwargs,
+):
     """
     In development you may provide a value for debug_max_updates to avoid
     updating hundreds of profiles unnecessarily.
@@ -92,32 +103,40 @@ def update_active_member_details(debug_max_updates: Optional[int] = None, **kwar
     if debug_max_updates:
         members = members[:debug_max_updates]
 
-    _update_details_for_members(members, **kwargs)
+    _update_details_for_members(members, cache=cache, **kwargs)
 
 
 @shared_task
 @task_notification(label="Update all member details")
-def update_all_member_details(**kwargs):
-    _update_details_for_members(Person.objects.all(), **kwargs)
+def update_all_member_details(cache=_get_cache, **kwargs):
+    _update_details_for_members(Person.objects.all(), cache=cache, **kwargs)
 
 
-def _update_details_for_members(members, **kwargs):
+def _update_details_for_members(members, cache, **kwargs):
+    if callable(cache):
+        cache = cache()
+
     for member in members:
-        update_details_for_member(member.parliamentdotuk, **kwargs)
+        update_details_for_member(member.parliamentdotuk, cache=cache, **kwargs)
 
         if kwargs["notification"].finished:
-            return
+            log.warning("Exiting early - notification marked as finished")
+            break
 
-        time.sleep(1)
+    if cache:
+        cache.finish()
 
 
 @shared_task
 @task_notification(label="Update details for single member")
-def update_details_for_member(member_id: int, **kwargs):
+def update_details_for_member(
+    member_id: int, cache: Optional[JsonResponseCache], **kwargs
+):
     update_members(
         endpoints.member_biography(member_id),
         update_member_func=_update_member_biography,
         response_class=MemberBiographyResponseData,
+        cache=cache,
         **kwargs,
     )
 
@@ -219,6 +238,10 @@ def _update_historical_constituencies(
         constituency = get_constituency_for_date(constituency_name, election.date)
 
         if constituency is None:
+            log.warning(
+                f"Unknown constituency={constituency_name} for election={election} ({election.date})"
+            )
+
             UnlinkedConstituency.objects.get_or_create(
                 name=constituency_name,
                 election=election,
@@ -226,10 +249,6 @@ def _update_historical_constituencies(
                     "person": person,
                     "person_won": True,
                 },
-            )
-
-            log.warning(
-                f"Unknown constituency={constituency_name} for election={election} ({election.date})"
             )
 
         else:

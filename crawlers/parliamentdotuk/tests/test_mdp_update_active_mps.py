@@ -422,7 +422,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
         puk = 965
 
-        active_members.update_active_member_details()
+        active_members.update_active_member_details(cache=None)
 
         person = Person.objects.get(parliamentdotuk=puk)
 

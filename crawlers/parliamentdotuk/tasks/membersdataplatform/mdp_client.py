@@ -3,11 +3,11 @@
 """
 import datetime
 import logging
+import time
 from typing import (
     Callable,
     List,
     Optional,
-    Tuple,
     Type,
 )
 
@@ -39,6 +39,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
     coerce_to_date,
 )
+from .mdp_cache import JsonResponseCache
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +53,27 @@ def get(url: str):
     """Get the url using our standard headers and fix response encoding."""
     response = requests.get(url, headers=settings.HTTP_REQUEST_HEADERS_JSON)
     response.encoding = "utf-8-sig"
+
+    time.sleep(1)
     return response
+
+
+def get_json(url: str, using_cache: Optional[JsonResponseCache]) -> dict:
+    if using_cache:
+        return get_json_with_cache(url, cache=using_cache)
+
+    return get(url).json()
+
+
+def get_json_with_cache(url: str, cache: JsonResponseCache) -> dict:
+    cached = cache.get_json(url)
+    if cached:
+        return cached
+
+    else:
+        data = get_json(url)
+        cache.remember(url, data)
+        return data
 
 
 def _is_xml_null(obj: dict) -> bool:
@@ -115,7 +136,7 @@ class ResponseData:
         return [response_class(o) for o in objects]
 
     def __str__(self):
-        return f'{self.data}'
+        return f"{self.data}"
 
 
 class MemberResponseData(ResponseData):
@@ -292,7 +313,7 @@ class PostResponseData(ResponseData):
         return self._get_date(posts_contract.END_DATE)
 
     def __str__(self):
-        return f'{self.data}'
+        return f"{self.data}"
 
 
 class AddressResponseData(ResponseData):
@@ -460,16 +481,17 @@ def update_members(
     update_member_func: Callable[[ResponseData], Optional[str]],
     response_class: Type[ResponseData],
     notification: TaskNotification,
+    cache: Optional[JsonResponseCache] = None,
 ) -> None:
-    response = get(endpoint_url)
+    response = get_json(endpoint_url, using_cache=cache)
     try:
-        members = response.json().get("Members").get("Member")
+        members = response.get("Members").get("Member")
 
         if not isinstance(members, list):
             members = [members]
 
     except AttributeError as e:
-        notification.append(f'Failed to read item list for url={endpoint_url}')
+        notification.append(f"Failed to read item list for url={endpoint_url}")
         notification.mark_as_failed(e)
         return
 
@@ -477,7 +499,7 @@ def update_members(
         try:
             update_member_func(response_class(member))
         except Exception as e:
-            message = f'Failed to update member=[{member.__str__()[:64]}...]: {e}'
+            message = f"Failed to update member=[{member.__str__()[:64]}...]: {e}"
             notification.append(message)
             notification.mark_as_failed(e)
             return

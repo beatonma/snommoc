@@ -159,7 +159,7 @@ class Person(
 
 
 class PersonAlsoKnownAs(PersonMixin, BaseModel):
-    alias = models.CharField(max_length=NAME_MAX_LENGTH)
+    alias = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
 
     class Meta:
         verbose_name_plural = 'People also known as'

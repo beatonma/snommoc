@@ -61,7 +61,7 @@ from .party import (
     PartyAlsoKnownAs,
     PartyAssociation,
 )
-from .person import Person
+from .person import Person, PersonAlsoKnownAs
 from .portrait import MemberPortrait
 from .posts import (
     GovernmentPost,

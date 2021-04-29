@@ -58,7 +58,7 @@ def get(url: str):
     return response
 
 
-def get_json(url: str, using_cache: Optional[JsonResponseCache]) -> dict:
+def get_json(url: str, using_cache: Optional[JsonResponseCache] = None) -> dict:
     if using_cache:
         return get_json_with_cache(url, cache=using_cache)
 
@@ -71,7 +71,7 @@ def get_json_with_cache(url: str, cache: JsonResponseCache) -> dict:
         return cached
 
     else:
-        data = get_json(url)
+        data = get(url).json()
         cache.remember(url, data)
         return data
 

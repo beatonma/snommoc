@@ -2,7 +2,7 @@
 Functions for updating information on all MPs, both current and historical.
 This is the baseline - we will need to provide additional data for active MPs.
 """
-
+import datetime
 import logging
 
 from celery import shared_task
@@ -22,47 +22,69 @@ from repository.models.houses import HOUSE_OF_COMMONS
 from repository.models.party import get_or_create_party
 from repository.models.person import Person
 from crawlers.parliamentdotuk.tasks.membersdataplatform import mdp_client, endpoints
+from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_cache import (
+    JsonResponseCache,
+)
+
 
 log = logging.getLogger(__name__)
 
 
+def _get_cache(name: str = "all-members") -> JsonResponseCache:
+    return JsonResponseCache(
+        name, time_to_live_seconds=datetime.timedelta(days=2).total_seconds()
+    )
+
+
 @shared_task
 @task_notification(label="Update all members basic info")
-def update_all_members_basic_info(**kwargs):
-    update_all_mps_basic_info(**kwargs)
-    update_all_lords_basic_info(**kwargs)
+def update_all_members_basic_info(cache=_get_cache, **kwargs):
+    update_all_mps_basic_info(cache=cache, **kwargs)
+    update_all_lords_basic_info(cache=cache, **kwargs)
 
 
 @shared_task
 @task_notification(label="Update all MPs basic info")
-def update_all_mps_basic_info(**kwargs):
+def update_all_mps_basic_info(cache=_get_cache, **kwargs):
     """
     Refresh basic data for all MPs, both active and historic.
     https://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7Cmembership=all/
     """
+    if callable(cache):
+        cache = cache()
 
     mdp_client.update_members(
         endpoint_url=endpoints.COMMONS_MEMBERS_ALL,
         update_member_func=_update_member_basic_info,
         response_class=MemberResponseData,
+        cache=cache,
         **kwargs,
     )
+
+    if cache:
+        cache.finish()
 
 
 @shared_task
 @task_notification(label="Update all Lords basic info")
-def update_all_lords_basic_info(**kwargs):
+def update_all_lords_basic_info(cache=_get_cache, **kwargs):
     """
     Refresh basic data for all MPs, both active and historic.
     https://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7Cmembership=all/
     """
+    if callable(cache):
+        cache = cache()
 
     mdp_client.update_members(
         endpoint_url=endpoints.LORDS_MEMBERS_ALL,
         update_member_func=_update_member_basic_info,
         response_class=MemberResponseData,
+        cache=cache,
         **kwargs,
     )
+
+    if cache:
+        cache.finish()
 
 
 def _update_member_basic_info(data: MemberResponseData) -> None:

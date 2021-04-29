@@ -10,25 +10,25 @@ class UnlinkedConstituencySerializer(serializers.ModelSerializer):
     election = serializers.SerializerMethodField()
 
     def get_url(self, obj):
-        return reverse('admin:repository_unlinkedconstituency_change', args=[obj.pk])
+        return reverse("admin:repository_unlinkedconstituency_change", args=[obj.pk])
 
     def get_mp(self, obj):
         return {
-            'name': obj.mp.name,
-            'url': reverse('member-detail', args=[obj.mp.pk]),
+            "name": obj.person.name,
+            "url": reverse("member-detail", args=[obj.person.pk]),
         }
 
     def get_election(self, obj):
         return {
-            'name': obj.election.name,
-            'url': reverse('admin:repository_election_change', args=[obj.election.pk]),
+            "name": obj.election.name,
+            "url": reverse("admin:repository_election_change", args=[obj.election.pk]),
         }
 
     class Meta:
         model = UnlinkedConstituency
         fields = [
-            'name',
-            'url',
-            'mp',
-            'election',
+            "name",
+            "url",
+            "person",
+            "election",
         ]

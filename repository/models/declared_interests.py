@@ -14,17 +14,15 @@ class DeclaredInterestCategory(ParliamentDotUkMixin, BaseModel):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Declared interest categories'
+        verbose_name_plural = "Declared interest categories"
 
 
 class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
     """Declared investments/involvements/relationships that a person has with
     organisations that could potentially influence their work in Parliament."""
-    category = models.ForeignKey(
-        'DeclaredInterestCategory',
-        on_delete=models.CASCADE
-    )
-    description = models.CharField(max_length=1024)
+
+    category = models.ForeignKey("DeclaredInterestCategory", on_delete=models.CASCADE)
+    description = models.TextField()
 
     created = models.DateField(blank=True, null=True)
     amended = models.DateField(blank=True, null=True)
@@ -32,4 +30,4 @@ class DeclaredInterest(ParliamentDotUkMixin, PersonMixin, BaseModel):
     registered_late = models.BooleanField()
 
     def __str__(self):
-        return f'{self.person}: {self.description}'
+        return f"{self.person}: {self.description}"

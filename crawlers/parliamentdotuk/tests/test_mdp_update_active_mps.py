@@ -72,18 +72,30 @@ def get_mock_biography_response(*args, **kwargs):
 
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
-    """"""
+    """ """
 
     def setUp(self) -> None:
         commons, _ = House.objects.update_or_create(name=HOUSE_OF_COMMONS)
         House.objects.update_or_create(name=HOUSE_OF_LORDS)
+
+        Constituency.objects.create(
+            parliamentdotuk=146260,
+            name="Stockton South",
+            start=datetime.date(1983, 6, 9),
+            end=datetime.date(1997, 5, 1),
+        )
+
+        Constituency.objects.create(
+            parliamentdotuk=13124,
+            name="Thornaby",
+        )
+
         self.person = Person.objects.create(
             parliamentdotuk=965,  # ID for Lord Wrigglesworth, used in SAMPLE_BIOGRAPHY_RESPONSE
             name=values.EXAMPLE_NAME,
             active=True,
             house=commons,
         )
-        self.person.save()
 
     def test__update_house_membership(self):
         house_memberships = [
@@ -119,7 +131,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             self.person, historical_constituencies
         )
 
-        stockton_south = Constituency.objects.get(parliamentdotuk=2800)
+        stockton_south = Constituency.objects.get(parliamentdotuk=146260)
         result = ConstituencyResult.objects.get(
             constituency=stockton_south, start=datetime.date(year=1983, month=6, day=9)
         )
@@ -349,7 +361,8 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def test__update_elections_contested(self):
         Constituency.objects.create(
-            parliamentdotuk=1, name="Clwyd South",
+            parliamentdotuk=1,
+            name="Clwyd South",
         )
 
         contested = [
@@ -371,7 +384,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
         unlinked_constituency = UnlinkedConstituency.objects.first()
         self.assertEqual(unlinked_constituency.name, "Some Unknown Constituency")
-        self.assertEqual(unlinked_constituency.mp, self.person)
+        self.assertEqual(unlinked_constituency.person, self.person)
         self.assertEqual(unlinked_constituency.election.name, "1998 General Election")
 
     def test__update_subjects_of_interest(self):
@@ -396,7 +409,9 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         )
 
     @mock.patch.object(
-        requests, "get", mock.Mock(side_effect=get_mock_biography_response),
+        requests,
+        "get",
+        mock.Mock(side_effect=get_mock_biography_response),
     )
     def test_update_active_member_details(self):
         """Check that all of the update methods have been called.

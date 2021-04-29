@@ -63,6 +63,14 @@ class MdpUpdateMpsTest(LocalTestCase):
             parliamentdotuk=12345,
             name='Hackney North and Stoke Newington',
         ).save()
+        Constituency.objects.create(
+            parliamentdotuk=23456,
+            name='Torfaen',
+        ).save()
+        Constituency.objects.create(
+            parliamentdotuk=34567,
+            name='Oldham East and Saddleworth',
+        ).save()
 
     """Ensure that basic info is retrieved from API response correctly."""
     def _assert_values_for_diane_abbott(self, ms_abbott: Person):

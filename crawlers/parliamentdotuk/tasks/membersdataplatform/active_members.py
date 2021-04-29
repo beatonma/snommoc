@@ -105,7 +105,7 @@ def _update_details_for_members(members, **kwargs):
     for member in members:
         update_details_for_member(member.parliamentdotuk, **kwargs)
 
-        if kwargs['notification'].finished:
+        if kwargs["notification"].finished:
             return
 
         time.sleep(1)
@@ -219,24 +219,29 @@ def _update_historical_constituencies(
         constituency = get_constituency_for_date(constituency_name, election.date)
 
         if constituency is None:
-            raise Exception(f'Unknown constituency={constituency_name} for election={election} ({election.date})')
+            UnlinkedConstituency.objects.get_or_create(
+                name=constituency_name,
+                election=election,
+                defaults={
+                    "person": person,
+                    "person_won": True,
+                },
+            )
 
-        # constituency, _ = Constituency.objects.get_or_create(
-        #     parliamentdotuk=c.get_constituency_id(),
-        #     defaults={
-        #         "name": constituency_name,
-        #     },
-        # )
+            log.warning(
+                f"Unknown constituency={constituency_name} for election={election} ({election.date})"
+            )
 
-        result, _ = ConstituencyResult.objects.update_or_create(
-            constituency=constituency,
-            election=election,
-            mp=person,
-            defaults={
-                "start": c.get_start_date(),
-                "end": c.get_end_date(),
-            },
-        )
+        else:
+            ConstituencyResult.objects.update_or_create(
+                constituency=constituency,
+                election=election,
+                defaults={
+                    "mp": person,
+                    "start": c.get_start_date(),
+                    "end": c.get_end_date(),
+                },
+            )
 
     _catch_item_errors(person, historical_constituencies, _item_func)
 
@@ -464,7 +469,10 @@ def _update_elections_contested(
             UnlinkedConstituency.objects.get_or_create(
                 name=constituency_name,
                 election=election,
-                mp=person,
+                defaults={
+                    "person": person,
+                    "person_won": False,
+                },
             )
         else:
             ContestedElection.objects.update_or_create(

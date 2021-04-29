@@ -1,4 +1,5 @@
 import datetime
+import re
 from typing import Optional
 
 from django.db import models
@@ -14,24 +15,29 @@ from repository.models.mixins import (
 class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     name = models.CharField(max_length=64)
     mp = models.OneToOneField(
-        'Person',
+        "Person",
         on_delete=models.SET_NULL,
-        related_name='+',
+        related_name="+",
         null=True,
-        help_text='Current representative',
+        help_text="Current representative",
     )
 
     ordinance_survey_name = models.CharField(max_length=64, null=True, blank=True)
     gss_code = models.CharField(
-        max_length=12, null=True, blank=True,
-        help_text='Government Statistical Service ID')
+        max_length=12,
+        null=True,
+        blank=True,
+        help_text="Government Statistical Service ID",
+    )
     constituency_type = models.CharField(
-        max_length=10, null=True,
+        max_length=10,
+        null=True,
         choices=[
-            ('county', 'County'),
-            ('borough', 'Borough'),
+            ("county", "County"),
+            ("borough", "Borough"),
         ],
-        help_text='Borough, county...')
+        help_text="Borough, county...",
+    )
 
     @property
     def is_extant(self) -> bool:
@@ -41,75 +47,88 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         return self.end is None
 
     @property
-    def canonical(self) -> 'Constituency':
+    def canonical(self) -> "Constituency":
         try:
             return ConstituencyAlsoKnownAs.objects.get(alias=self).canonical
         except:
             return self
 
     def __str__(self):
-        return f'{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}'
+        return f"{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}"
 
     class Meta:
-        verbose_name_plural = 'Constituencies'
+        verbose_name_plural = "Constituencies"
 
 
 class ConstituencyResult(PeriodMixin, BaseModel):
     """
     Track which MP won in this constituency at this election.
     """
+
     election = models.ForeignKey(
-        'Election',
+        "Election",
         on_delete=models.CASCADE,
     )
 
     mp = models.ForeignKey(
-        'Person',
+        "Person",
         on_delete=models.CASCADE,
     )
 
     constituency = models.ForeignKey(
-        'Constituency',
+        "Constituency",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.election}: {self.constituency}'
+        return f"{self.election}: {self.constituency}"
 
     class Meta:
-        unique_together = [
-            ['election', 'constituency'],
-            ['election', 'mp'],
+        constraints = [
+            UniqueConstraint(
+                fields=["election", "constituency", "mp"],
+                name="unique_constituency_result",
+            )
         ]
 
 
-class UnlinkedConstituency(BaseModel):
-    """A placeholder for a constituency which is known by name only.
+class UnlinkedConstituency(PeriodMixin, BaseModel):
+    """
+    A placeholder for a constituency which is known by name only.
 
-    Contested Elections data sometimes list a constituency for which we have
-    no data. In those cases, create an UnlinkedConstituency which can be checked
-    manually."""
+    [ConstituencyResult] and [ContestedElection] source data only provides a name (no ID),
+    and sometimes we are unable to resolve that name to a canonical [Constituency] instance.
+
+    In those cases, create an UnlinkedConstituency which can be checked manually.
+
+    TODO
+        Once resolved:
+        - If person_won, and start/end values are set, this should be used to create a ConstituencyResult object.
+        - Otherwise, this should be used to create a ContestedElection object.
+    """
 
     name = models.CharField(max_length=64)
     election = models.ForeignKey(
-        'Election',
+        "Election",
         on_delete=models.CASCADE,
     )
 
-    mp = models.ForeignKey(
-        'Person',
+    person = models.ForeignKey(
+        "Person",
         on_delete=models.CASCADE,
     )
+
+    person_won = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Unlinked constituencies'
+        verbose_name_plural = "Unlinked constituencies"
         constraints = [
             UniqueConstraint(
-                fields=['name', 'mp', 'election'],
-                name='unique_election_result',
+                fields=["name", "person", "election"],
+                name="unique_election_result",
             )
         ]
 
@@ -119,7 +138,7 @@ class ConstituencyBoundary(BaseModel):
         Constituency,
         on_delete=models.CASCADE,
     )
-    boundary_kml = models.TextField(help_text='KML file content')
+    boundary_kml = models.TextField(help_text="KML file content")
     center_latitude = models.CharField(max_length=24)
     center_longitude = models.CharField(max_length=24)
     area = models.CharField(max_length=24)
@@ -129,38 +148,44 @@ class ConstituencyBoundary(BaseModel):
         return self.constituency.name
 
     class Meta:
-        verbose_name_plural = 'Constituency Boundaries'
+        verbose_name_plural = "Constituency Boundaries"
 
 
 class ConstituencyAlsoKnownAs(BaseModel):
     canonical = models.ForeignKey(
-        'Constituency',
+        "Constituency",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='+',
+        related_name="+",
     )
     alias = models.OneToOneField(
-        'Constituency',
+        "Constituency",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
     )
 
     def __str__(self):
-        return f'{self.alias.name} [{self.alias_id}] -> {self.canonical.name} [{self.canonical_id}]'
+        return f"{self.alias.name} [{self.alias_id}] -> {self.canonical.name} [{self.canonical_id}]"
 
     class Meta:
-        verbose_name_plural = 'Constituency AKAs'
+        verbose_name_plural = "Constituency AKAs"
 
 
-def get_constituency_for_date(name: str, date: Optional[datetime.date]) -> Optional[Constituency]:
+def get_constituency_for_date(
+    name: str, date: Optional[datetime.date]
+) -> Optional[Constituency]:
     def _generalised_filter(n: str):
         """Remove punctuation, conjunctions, etc which may not be formatted the
         same way from different sources e.g. 'and' vs '&'."""
-        name_regex = n.replace(',', ',?')\
-            .replace('&', '(&|and)')\
-            .replace(' and ', ' (&|and) ')
-        return {'name__iregex': name_regex}
+        name_regex = (
+            re.escape(n)
+            .replace(",", ",?")
+            .replace("&", "(&|and)")
+            .replace(" and ", " (&|and) ")
+        )
+
+        return {"name__iregex": name_regex}
 
     c = Constituency.objects.filter(**_generalised_filter(name))
     count = c.count()
@@ -176,7 +201,7 @@ def get_constituency_for_date(name: str, date: Optional[datetime.date]) -> Optio
         date = datetime.date.today()
 
     # More complicated
-    with_start = c.exclude(start=None).order_by('start')
+    with_start = c.exclude(start=None).order_by("start")
 
     filtered_by_date = with_start.filter(
         Q(start__lte=date) & (Q(end__gt=date) | Q(end__isnull=True))

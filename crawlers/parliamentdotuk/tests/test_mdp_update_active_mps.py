@@ -68,7 +68,7 @@ log = logging.getLogger(__name__)
 
 
 def get_mock_biography_response(*args, **kwargs):
-    return MockJsonResponse(args[0], SAMPLE_BIOGRAPHY_RESPONSE, 200)
+    return MockJsonResponse(args[0].url, SAMPLE_BIOGRAPHY_RESPONSE, 200)
 
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
@@ -409,12 +409,13 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         )
 
     @mock.patch.object(
-        requests,
-        "get",
+        requests.Session,
+        "send",
         mock.Mock(side_effect=get_mock_biography_response),
     )
     def test_update_active_member_details(self):
-        """Check that all of the update methods have been called.
+        """
+        Check that all of the update methods have been called.
 
         The other tests here ensure the methods work correctly so we just need to
         check that the expected models were created to verify that the methods

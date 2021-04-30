@@ -192,11 +192,11 @@ EXAMPLE_RESPONSE_MANY_MPS = {
 
 
 def get_mock_json_response_single_mp(*args, **kwargs):
-    return MockJsonResponse(args[0], EXAMPLE_RESPONSE_SINGLE_MP, 200)
+    return MockJsonResponse(args[0].url, EXAMPLE_RESPONSE_SINGLE_MP, 200)
 
 
 def get_mock_json_response_many_mps(*args, **kwargs):
-    return MockJsonResponse(args[0], EXAMPLE_RESPONSE_MANY_MPS, 200)
+    return MockJsonResponse(args[0].url, EXAMPLE_RESPONSE_MANY_MPS, 200)
 
 
 class ResponseDataTest(LocalTestCase):
@@ -261,8 +261,8 @@ class MdpUpdateMpsTest(LocalTestCase):
         self.assertIsNone(ms_abbott.date_left_house)
 
     @mock.patch.object(
-        requests,
-        "get",
+        requests.Session,
+        "send",
         mock.Mock(side_effect=get_mock_json_response_single_mp),
     )
     def test_mdp_client_update_members__wraps_individual_result_in_list(self):
@@ -279,8 +279,8 @@ class MdpUpdateMpsTest(LocalTestCase):
         self._assert_values_for_diane_abbott(people.first())
 
     @mock.patch.object(
-        requests,
-        "get",
+        requests.Session,
+        "send",
         mock.Mock(side_effect=get_mock_json_response_many_mps),
     )
     def test_update_all_mps_basic_info(self):

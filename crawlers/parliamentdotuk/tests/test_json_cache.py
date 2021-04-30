@@ -6,14 +6,17 @@ from django.conf import settings
 
 from basetest.testcase import LocalTestCase
 
-from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_cache import (
+from crawlers.parliamentdotuk.tasks.network.cache import (
     JsonResponseCache,
     _url_to_filename,
+    json_cache,
 )
 
 
-class MdpCacheTest(LocalTestCase):
-    cache_name = "mdp-cache-test"
+class JsonCacheTest(LocalTestCase):
+    """JsonResponseCache tests"""
+
+    cache_name = "json-cache-test"
 
     def test__url_to_filename(self):
         url = "http://data.parliament.uk/membersdataplatform/services/mnis/members/query/id=2451/FullBiog/"
@@ -66,3 +69,53 @@ class MdpCacheTest(LocalTestCase):
         cache_dir = os.path.join(settings.CRAWLER_CACHE_ROOT, self.cache_name)
         if os.path.exists(cache_dir):
             shutil.rmtree(cache_dir)
+
+
+class JsonCacheDecoratorTest(LocalTestCase):
+    """@json_cache decorator tests"""
+
+    root_url = "https://snommoc.org/example/request/root.json"
+    root_data = {"abc": 123}
+
+    child_url = "https://snommoc.org/example/request/child.json"
+    child_data = {"def": 456}
+
+    @json_cache(name="decorated-root")
+    def decorated_root(self, **kwargs):
+        kwargs["cache"].remember(self.root_url, self.root_data)
+        self.decorated_child(**kwargs)
+
+    @json_cache(name="decorated-child")
+    def decorated_child(self, **kwargs):
+        kwargs["cache"].remember(self.child_url, self.child_data)
+
+    def _get_cache_path(self, name, url):
+        dir = os.path.join(settings.CRAWLER_CACHE_ROOT, name)
+        if not url:
+            return dir
+
+        filename = _url_to_filename(url)
+        return os.path.join(dir, filename)
+
+    def test_json_cache_decorator__data_is_retrievable(self):
+        self.decorated_child()
+
+        cache = JsonResponseCache("decorated-child")
+        self.assertDictEqual(cache.get_json(self.child_url), self.child_data)
+
+    def test_json_cache_decorator_nested__should_share_root_cache(self):
+        self.decorated_root()
+
+        cache = JsonResponseCache("decorated-root")
+        self.assertDictEqual(cache.get_json(self.root_url), self.root_data)
+        self.assertDictEqual(cache.get_json(self.child_url), self.child_data)
+
+        self.assertFalse(os.path.exists(self._get_cache_path("decorated-child", "")))
+
+    def tearDown(self) -> None:
+        dirs = ["decorated-root", "decorated-child"]
+
+        for d in dirs:
+            cache_dir = os.path.join(settings.CRAWLER_CACHE_ROOT, d)
+            if os.path.exists(cache_dir):
+                shutil.rmtree(cache_dir)

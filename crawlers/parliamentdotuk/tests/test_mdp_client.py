@@ -1,7 +1,6 @@
 """
 
 """
-import datetime
 import logging
 
 from basetest.testcase import LocalTestCase
@@ -11,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 class MdpClientTests(LocalTestCase):
-    """"""
+    """ """
 
     def test__is_xml_null(self):
         test_func = mdp_client._is_xml_null

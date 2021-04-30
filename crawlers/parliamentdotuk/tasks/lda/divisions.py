@@ -35,6 +35,7 @@ from repository.models import (
     LordsDivisionVote,
     ParliamentarySession,
 )
+from crawlers.parliamentdotuk.tasks.network import json_cache
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +63,9 @@ def _get_session(data):
 
 
 def _get_vote_commons_member_id(vote_data):
-    return get_parliamentdotuk_id(vote_data.get(contract.VOTE_MEMBER)[0].get(contract.ABOUT))
+    return get_parliamentdotuk_id(
+        vote_data.get(contract.VOTE_MEMBER)[0].get(contract.ABOUT)
+    )
 
 
 def _get_vote_lords_member_id(vote_data):
@@ -70,31 +73,32 @@ def _get_vote_lords_member_id(vote_data):
 
 
 def _create_commons_vote(division_id, vote):
-    vote_type = coerce_to_str(vote.get(contract.VOTE_TYPE)).split('#')[1]
+    vote_type = coerce_to_str(vote.get(contract.VOTE_TYPE)).split("#")[1]
 
     CommonsDivisionVote.objects.update_or_create(
         division_id=division_id,
         person_id=_get_vote_commons_member_id(vote),
         defaults={
-            'aye': vote_type == votes_contract.VOTE_AYE,
-            'no': vote_type == votes_contract.VOTE_NO,
-            'abstention': vote_type == votes_contract.VOTE_ABSTAINS,
-            'did_not_vote': vote_type == votes_contract.VOTE_DID_NOT,
-            'suspended_or_expelled': vote_type == votes_contract.VOTE_SUSPENDED_EXPELLED,
-        }
+            "aye": vote_type == votes_contract.VOTE_AYE,
+            "no": vote_type == votes_contract.VOTE_NO,
+            "abstention": vote_type == votes_contract.VOTE_ABSTAINS,
+            "did_not_vote": vote_type == votes_contract.VOTE_DID_NOT,
+            "suspended_or_expelled": vote_type
+            == votes_contract.VOTE_SUSPENDED_EXPELLED,
+        },
     )
 
 
 def _create_lords_vote(division_id, vote):
-    vote_type = coerce_to_str(vote.get(contract.VOTE_TYPE)).split('#')[1]
+    vote_type = coerce_to_str(vote.get(contract.VOTE_TYPE)).split("#")[1]
 
     LordsDivisionVote.objects.update_or_create(
         division_id=division_id,
         person_id=_get_vote_lords_member_id(vote),
         defaults={
-            'aye': vote_type == votes_contract.VOTE_CONTENT,
-            'no': vote_type == votes_contract.VOTE_NOT_CONTENT,
-        }
+            "aye": vote_type == votes_contract.VOTE_CONTENT,
+            "no": vote_type == votes_contract.VOTE_NOT_CONTENT,
+        },
     )
 
 
@@ -102,20 +106,22 @@ def _create_commons_division(parliamentdotuk: int, data: dict) -> Optional[str]:
     division, _ = CommonsDivision.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'title': coerce_to_str(data.get(contract.TITLE)),
-            'abstentions': unwrap_value_int(data, contract.ABSTENTIONS),
-            'ayes': unwrap_value_int(data, contract.AYES),
-            'noes': unwrap_value_int(data, contract.NOES),
-            'did_not_vote': unwrap_value_int(data, contract.DID_NOT_VOTE),
-            'non_eligible': unwrap_value_int(data, contract.NON_ELIGIBLE),
-            'errors': unwrap_value_int(data, contract.ERRORS),
-            'suspended_or_expelled': unwrap_value_int(data, contract.SUSPENDED_OR_EXPELLED),
-            'date': unwrap_value_date(data, contract.DATE),
-            'deferred_vote': coerce_to_boolean(data.get(contract.DEFERRED_VOTE)),
-            'session': _get_session(data),
-            'uin': data.get(contract.UIN),
-            'division_number': coerce_to_int(data.get(contract.DIVISION_NUMBER)),
-        }
+            "title": coerce_to_str(data.get(contract.TITLE)),
+            "abstentions": unwrap_value_int(data, contract.ABSTENTIONS),
+            "ayes": unwrap_value_int(data, contract.AYES),
+            "noes": unwrap_value_int(data, contract.NOES),
+            "did_not_vote": unwrap_value_int(data, contract.DID_NOT_VOTE),
+            "non_eligible": unwrap_value_int(data, contract.NON_ELIGIBLE),
+            "errors": unwrap_value_int(data, contract.ERRORS),
+            "suspended_or_expelled": unwrap_value_int(
+                data, contract.SUSPENDED_OR_EXPELLED
+            ),
+            "date": unwrap_value_date(data, contract.DATE),
+            "deferred_vote": coerce_to_boolean(data.get(contract.DEFERRED_VOTE)),
+            "session": _get_session(data),
+            "uin": data.get(contract.UIN),
+            "division_number": coerce_to_int(data.get(contract.DIVISION_NUMBER)),
+        },
     )
 
     votes = data.get(contract.VOTES)
@@ -129,16 +135,16 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> Optional[str]:
     division, _ = LordsDivision.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'title': coerce_to_str(data.get(contract.TITLE)),
-            'description': coerce_to_str(data.get(contract.DESCRIPTION)[0]),
-            'ayes': coerce_to_int(data.get(contract.CONTENT)),
-            'noes': coerce_to_int(data.get(contract.NOT_CONTENT)),
-            'date': unwrap_value_date(data, contract.DATE),
-            'session': _get_session(data),
-            'uin': data.get(contract.UIN),
-            'division_number': coerce_to_int(data.get(contract.DIVISION_NUMBER)),
-            'whipped_vote': coerce_to_boolean(data.get(contract.WHIPPED_VOTE)),
-        }
+            "title": coerce_to_str(data.get(contract.TITLE)),
+            "description": coerce_to_str(data.get(contract.DESCRIPTION)[0]),
+            "ayes": coerce_to_int(data.get(contract.CONTENT)),
+            "noes": coerce_to_int(data.get(contract.NOT_CONTENT)),
+            "date": unwrap_value_date(data, contract.DATE),
+            "session": _get_session(data),
+            "uin": data.get(contract.UIN),
+            "division_number": coerce_to_int(data.get(contract.DIVISION_NUMBER)),
+            "whipped_vote": coerce_to_boolean(data.get(contract.WHIPPED_VOTE)),
+        },
     )
 
     votes = data.get(contract.VOTES)
@@ -149,14 +155,16 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> Optional[str]:
 
 
 @shared_task
-@task_notification(label='Update all divisions')
+@task_notification(label="Update all divisions")
+@json_cache("divisions")
 def update_all_divisions(follow_pagination=True, **kwargs) -> None:
     update_commons_divisions(follow_pagination)
     update_lords_divisions(follow_pagination)
 
 
 @shared_task
-@task_notification(label='Update Commons divisions')
+@task_notification(label="Update Commons divisions")
+@json_cache("divisions")
 def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
@@ -170,7 +178,9 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 
     def fetch_and_create_division(parliamentdotuk) -> Optional[str]:
         try:
-            data = get_item_data(endpoints.COMMONS_DIVISION.format(parliamentdotuk=parliamentdotuk))
+            data = get_item_data(
+                endpoints.COMMONS_DIVISION.format(parliamentdotuk=parliamentdotuk)
+            )
             if data is None:
                 return None
 
@@ -187,7 +197,8 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 
 
 @shared_task
-@task_notification(label='Update Lords divisions')
+@task_notification(label="Update Lords divisions")
+@json_cache("divisions")
 def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
@@ -201,7 +212,9 @@ def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
 
     def fetch_and_create_division(parliamentdotuk) -> Optional[str]:
         try:
-            data = get_item_data(endpoints.LORDS_DIVISION.format(parliamentdotuk=parliamentdotuk))
+            data = get_item_data(
+                endpoints.LORDS_DIVISION.format(parliamentdotuk=parliamentdotuk)
+            )
             if data is None:
                 return None
 
@@ -214,8 +227,5 @@ def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
         endpoints.LORDS_DIVISIONS,
         update_item_func=update_division,
         follow_pagination=follow_pagination,
-        item_uses_network=True,
-        **kwargs
+        **kwargs,
     )
-
-

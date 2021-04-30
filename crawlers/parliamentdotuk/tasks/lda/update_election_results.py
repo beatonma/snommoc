@@ -1,8 +1,5 @@
 import logging
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import Optional
 
 from celery import shared_task
 
@@ -29,21 +26,26 @@ from repository.models import (
 )
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from repository.models.util.queryset import get_or_none
-
+from crawlers.parliamentdotuk.tasks.network import json_cache
 
 log = logging.getLogger(__name__)
 
 
 def _create_election_result(parliamentdotuk, data):
     constituency_id = get_parliamentdotuk_id(
-        get_nested_value(data, contract.CONSTITUENCY_ABOUT))
+        get_nested_value(data, contract.CONSTITUENCY_ABOUT)
+    )
     election_name = coerce_to_str(get_nested_value(data, contract.ELECTION_NAME))
 
     constituency = get_or_none(Constituency, parliamentdotuk=constituency_id)
-    election, _ = Election.objects.get_or_create(name=election_name, defaults={
-        'parliamentdotuk': get_parliamentdotuk_id(
-            get_nested_value(data, contract.ELECTION_ABOUT))
-    })
+    election, _ = Election.objects.get_or_create(
+        name=election_name,
+        defaults={
+            "parliamentdotuk": get_parliamentdotuk_id(
+                get_nested_value(data, contract.ELECTION_ABOUT)
+            )
+        },
+    )
 
     try:
         constituency_result = ConstituencyResult.objects.get(
@@ -51,8 +53,10 @@ def _create_election_result(parliamentdotuk, data):
             constituency=constituency,
         )
     except Exception as e:
-        log.warning(f'Could not retrieve ConstituencyResult: '
-                    f'constituency={constituency}, election={election}')
+        log.warning(
+            f"Could not retrieve ConstituencyResult: "
+            f"constituency={constituency}, election={election}"
+        )
         raise e
 
     electorate = get_int(data, contract.ELECTORATE)
@@ -62,13 +66,13 @@ def _create_election_result(parliamentdotuk, data):
     result, _ = ConstituencyResultDetail.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'constituency_result': constituency_result,
-            'electorate': electorate,
-            'majority': get_int(data, contract.MAJORITY),
-            'result': get_str(data, contract.RESULT_OF_ELECTION),
-            'turnout': turnout,
-            'turnout_fraction': turnout_fraction,
-        }
+            "constituency_result": constituency_result,
+            "electorate": electorate,
+            "majority": get_int(data, contract.MAJORITY),
+            "result": get_str(data, contract.RESULT_OF_ELECTION),
+            "turnout": turnout,
+            "turnout_fraction": turnout_fraction,
+        },
     )
 
     candidates = get_list(data, contract.CANDIDATES)
@@ -83,15 +87,16 @@ def _create_candidate(election_result, candidate):
         election_result=election_result,
         name=name,
         defaults={
-            'votes': get_int(candidate, contract.CANDIDATE_VOTES),
-            'order': get_int(candidate, contract.CANDIDATE_ORDINAL),
-            'party': unwrap_value_str(candidate, contract.CANDIDATE_PARTY)
-        }
+            "votes": get_int(candidate, contract.CANDIDATE_VOTES),
+            "order": get_int(candidate, contract.CANDIDATE_ORDINAL),
+            "party": unwrap_value_str(candidate, contract.CANDIDATE_PARTY),
+        },
     )
 
 
 @shared_task
-@task_notification(label='Update constituency results')
+@task_notification(label="Update constituency results")
+@json_cache(name="election-results")
 def update_election_results(follow_pagination=True) -> None:
     def update_result_details(json_data) -> Optional[str]:
         puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
@@ -103,7 +108,9 @@ def update_election_results(follow_pagination=True) -> None:
 
     def fetch_and_create_election_result(parliamentdotuk) -> Optional[str]:
         try:
-            data = get_item_data(endpoints.ELECTION_RESULT_DETAIL.format(parliamentdotuk=parliamentdotuk))
+            data = get_item_data(
+                endpoints.ELECTION_RESULT_DETAIL.format(parliamentdotuk=parliamentdotuk)
+            )
             if data is None:
                 return None
 
@@ -115,5 +122,4 @@ def update_election_results(follow_pagination=True) -> None:
         endpoints.ELECTION_RESULTS,
         update_item_func=update_result_details,
         follow_pagination=follow_pagination,
-        item_uses_network=True,
     )

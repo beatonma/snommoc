@@ -3,10 +3,7 @@
 """
 
 import logging
-from typing import (
-    Optional,
-    Tuple,
-)
+from typing import Optional
 
 from celery import shared_task
 
@@ -41,6 +38,7 @@ from repository.models import (
     BillStageSitting,
 )
 from repository.models.person import PersonAlsoKnownAs
+from crawlers.parliamentdotuk.tasks.network import json_cache
 
 log = logging.getLogger(__name__)
 
@@ -54,8 +52,8 @@ def _get_session(data):
     session, _ = ParliamentarySession.objects.get_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'name': session_data.get(contract.SESSION_NAME),
-        }
+            "name": session_data.get(contract.SESSION_NAME),
+        },
     )
     return session
 
@@ -69,20 +67,22 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
     bill, bill_created = Bill.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'act_name': coerce_to_str(data.get(contract.ACT_NAME)),
-            'bill_chapter': coerce_to_str(data.get(contract.BILL_CHAPTER)),
-            'bill_type': bill_type,
-            'ballot_number': unwrap_value_int(data, contract.BALLOT_NUMBER),
-            'date': unwrap_value_date(data, contract.DATE),
-            'description': unwrap_str(data, contract.DESCRIPTION),
-            'homepage': coerce_to_str(data.get(contract.HOMEPAGE)),
-            'is_money_bill': coerce_to_boolean(data.get(contract.MONEY_BILL)),
-            'is_private': coerce_to_boolean(data.get(contract.PRIVATE_BILL)),
-            'label': unwrap_value_str(data, contract.LABEL),
-            'public_involvement_allowed': coerce_to_boolean(data.get(contract.PUBLIC_INVOLVED)),
-            'session': _get_session(data),
-            'title': coerce_to_str(data.get(contract.TITLE)),
-        }
+            "act_name": coerce_to_str(data.get(contract.ACT_NAME)),
+            "bill_chapter": coerce_to_str(data.get(contract.BILL_CHAPTER)),
+            "bill_type": bill_type,
+            "ballot_number": unwrap_value_int(data, contract.BALLOT_NUMBER),
+            "date": unwrap_value_date(data, contract.DATE),
+            "description": unwrap_str(data, contract.DESCRIPTION),
+            "homepage": coerce_to_str(data.get(contract.HOMEPAGE)),
+            "is_money_bill": coerce_to_boolean(data.get(contract.MONEY_BILL)),
+            "is_private": coerce_to_boolean(data.get(contract.PRIVATE_BILL)),
+            "label": unwrap_value_str(data, contract.LABEL),
+            "public_involvement_allowed": coerce_to_boolean(
+                data.get(contract.PUBLIC_INVOLVED)
+            ),
+            "session": _get_session(data),
+            "title": coerce_to_str(data.get(contract.TITLE)),
+        },
     )
 
     publications = coerce_to_list(data.get(contract.BILL_PUBLICATIONS))
@@ -106,9 +106,9 @@ def _update_bill_publication(bill, publication):
     BillPublication.objects.update_or_create(
         parliamentdotuk=pub_puk,
         defaults={
-            'bill': bill,
-            'title': coerce_to_str(publication.get(contract.TITLE)),
-        }
+            "bill": bill,
+            "title": coerce_to_str(publication.get(contract.TITLE)),
+        },
     )
 
 
@@ -126,10 +126,10 @@ def _update_bill_stage(bill, data: dict):
     stage, _ = BillStage.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
-            'bill': bill,
-            'bill_stage_type': stage_type,
-            'session': session,
-        }
+            "bill": bill,
+            "bill_stage_type": stage_type,
+            "session": session,
+        },
     )
 
     sittings = coerce_to_list(data.get(contract.BILL_STAGE_SITTINGS))
@@ -137,10 +137,10 @@ def _update_bill_stage(bill, data: dict):
         BillStageSitting.objects.get_or_create(
             parliamentdotuk=get_parliamentdotuk_id(sitting.get(contract.ABOUT)),
             defaults={
-                'bill_stage': stage,
-                'date': unwrap_value_date(sitting, contract.DATE),
-                'formal': coerce_to_boolean(sitting.get(contract.FORMAL)),
-                'provisional': coerce_to_boolean(sitting.get(contract.PROVISIONAL)),
+                "bill_stage": stage,
+                "date": unwrap_value_date(sitting, contract.DATE),
+                "formal": coerce_to_boolean(sitting.get(contract.FORMAL)),
+                "provisional": coerce_to_boolean(sitting.get(contract.PROVISIONAL)),
             },
         )
 
@@ -183,7 +183,8 @@ def _update_sponsor(bill, data):
 
 
 @shared_task
-@task_notification(label='Update bills')
+@task_notification(label="Update bills")
+@json_cache(name="bills")
 def update_bills(follow_pagination=True, **kwargs) -> None:
     def fetch_and_update_bill(json_data) -> Optional[str]:
         parliamentdotuk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
@@ -203,6 +204,5 @@ def update_bills(follow_pagination=True, **kwargs) -> None:
         endpoints.BILLS,
         update_item_func=fetch_and_update_bill,
         follow_pagination=follow_pagination,
-        item_uses_network=True,
         **kwargs,
     )

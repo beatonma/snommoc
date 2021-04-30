@@ -4,7 +4,6 @@ Tasks for updating details on active members.
 Active members are of higher interest than historical ones so we maintain
 more details data about them.
 """
-import datetime
 import logging
 from typing import Callable, List, Optional, Tuple, Type
 
@@ -73,24 +72,18 @@ from repository.models.posts import (
     BasePostMember,
     get_current_post_for_person,
 )
-from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_cache import (
-    JsonResponseCache,
-)
+from crawlers.parliamentdotuk.tasks.network import json_cache
+
+CACHE_NAME = "active-members"
 
 log = logging.getLogger(__name__)
 
 
-def _get_cache(name: str = "active-members") -> JsonResponseCache:
-    return JsonResponseCache(
-        name, time_to_live_seconds=datetime.timedelta(days=2).total_seconds()
-    )
-
-
 @shared_task
 @task_notification(label="Update active member details")
+@json_cache(name=CACHE_NAME)
 def update_active_member_details(
     debug_max_updates: Optional[int] = None,
-    cache=_get_cache,
     **kwargs,
 ):
     """
@@ -103,40 +96,34 @@ def update_active_member_details(
     if debug_max_updates:
         members = members[:debug_max_updates]
 
-    _update_details_for_members(members, cache=cache, **kwargs)
+    _update_details_for_members(members, **kwargs)
 
 
 @shared_task
 @task_notification(label="Update all member details")
-def update_all_member_details(cache=_get_cache, **kwargs):
-    _update_details_for_members(Person.objects.all(), cache=cache, **kwargs)
+@json_cache(name=CACHE_NAME)
+def update_all_member_details(**kwargs):
+    _update_details_for_members(Person.objects.all(), **kwargs)
 
 
-def _update_details_for_members(members, cache, **kwargs):
-    if callable(cache):
-        cache = cache()
-
+@json_cache(name=CACHE_NAME)
+def _update_details_for_members(members, **kwargs):
     for member in members:
-        update_details_for_member(member.parliamentdotuk, cache=cache, **kwargs)
+        update_details_for_member(member.parliamentdotuk, **kwargs)
 
         if kwargs["notification"].finished:
             log.warning("Exiting early - notification marked as finished")
             break
 
-    if cache:
-        cache.finish()
-
 
 @shared_task
 @task_notification(label="Update details for single member")
-def update_details_for_member(
-    member_id: int, cache: Optional[JsonResponseCache], **kwargs
-):
+@json_cache(name=CACHE_NAME)
+def update_details_for_member(member_id: int, **kwargs):
     update_members(
         endpoints.member_biography(member_id),
         update_member_func=_update_member_biography,
         response_class=MemberBiographyResponseData,
-        cache=cache,
         **kwargs,
     )
 

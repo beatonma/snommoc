@@ -3,7 +3,6 @@
 """
 import datetime
 import logging
-import time
 from typing import (
     Callable,
     List,
@@ -11,11 +10,9 @@ from typing import (
     Type,
 )
 
-import requests
-from django.conf import settings
 
 from notifications.models import TaskNotification
-from .contract import (
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     addresses as address_contract,
     basic_details as basic_contract,
     biography_entries as bio_entries_contract,
@@ -39,7 +36,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
     coerce_to_date,
 )
-from .mdp_cache import JsonResponseCache
+from crawlers.parliamentdotuk.tasks.network import JsonResponseCache, get_json
 
 log = logging.getLogger(__name__)
 
@@ -47,33 +44,6 @@ log = logging.getLogger(__name__)
 Get addresses (physical/internets) for all members of a house: http://data.parliament.uk/membersdataplatform/services/mnis/members/query/house=Lords/Addresses/
 Get MP status: http://data.parliament.uk/membersdataplatform/services/mnis/members/query/house=Commons/Statuses/
 """
-
-
-def get(url: str):
-    """Get the url using our standard headers and fix response encoding."""
-    response = requests.get(url, headers=settings.HTTP_REQUEST_HEADERS_JSON)
-    response.encoding = "utf-8-sig"
-
-    time.sleep(1)
-    return response
-
-
-def get_json(url: str, using_cache: Optional[JsonResponseCache] = None) -> dict:
-    if using_cache:
-        return get_json_with_cache(url, cache=using_cache)
-
-    return get(url).json()
-
-
-def get_json_with_cache(url: str, cache: JsonResponseCache) -> dict:
-    cached = cache.get_json(url)
-    if cached:
-        return cached
-
-    else:
-        data = get(url).json()
-        cache.remember(url, data)
-        return data
 
 
 def _is_xml_null(obj: dict) -> bool:
@@ -483,7 +453,7 @@ def update_members(
     notification: TaskNotification,
     cache: Optional[JsonResponseCache] = None,
 ) -> None:
-    response = get_json(endpoint_url, using_cache=cache)
+    response = get_json(endpoint_url, cache=cache)
     try:
         members = response.get("Members").get("Member")
 

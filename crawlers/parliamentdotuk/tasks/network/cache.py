@@ -3,12 +3,16 @@ import json
 import logging
 import os
 import re
+from functools import wraps
 from typing import Optional
 
 from django.conf import settings
+from django.utils import timezone
 
 log = logging.getLogger(__name__)
-URL_REGEX = re.compile(r"(?:http|https)://(?:.*?\.)?parliament\.uk/(.*)")
+
+TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=2).total_seconds()
+URL_REGEX = re.compile(r"(?:http|https)://.*?/(.*)")
 
 
 def _url_to_filename(url) -> str:
@@ -29,8 +33,8 @@ class JsonResponseCache:
     def __init__(
         self,
         name,
-        time_to_live_seconds=86400 * 2,
-        now: datetime.datetime = datetime.datetime.now(),
+        time_to_live_seconds=TIME_TO_LIVE_DEFAULT,
+        now: datetime.datetime = timezone.datetime.now(),
     ):
         root = settings.CRAWLER_CACHE_ROOT
         self.cache_dir = os.path.join(root, name)
@@ -60,7 +64,7 @@ class JsonResponseCache:
         with open(filepath, "w") as f:
             json.dump(json_data, f)
 
-    def finish(self, now: datetime.datetime = datetime.datetime.now()):
+    def finish(self, now: datetime.datetime = timezone.datetime.now()):
         """Remember the timestamp so we can use time_to_live to determine whether
         we should use the cache next time."""
         data = {"timestamp": now.isoformat()}
@@ -100,3 +104,37 @@ class JsonResponseCache:
             filepath = os.path.join(self.cache_dir, f)
             log.debug(f"Flushing cache file {filepath}")
             os.remove(filepath)
+
+
+def json_cache(
+    name: str,
+    ttl_seconds: int = TIME_TO_LIVE_DEFAULT,
+    now: datetime.datetime = timezone.datetime.now(),
+):
+    def cached_call(func):
+        @wraps(func)
+        def using_cache(*args, **kwargs):
+            # Check if a cache is already in use by caller
+            is_root = "cache" not in kwargs
+
+            if is_root:
+                cache = JsonResponseCache(
+                    name=name, time_to_live_seconds=ttl_seconds, now=now
+                )
+                kwargs["cache"] = cache
+
+            try:
+                func(*args, **kwargs)
+
+            except Exception as e:
+                log.warning(e)
+
+            finally:
+                if is_root:
+                    cache = kwargs["cache"]
+                    if cache:
+                        cache.finish()
+
+        return using_cache
+
+    return cached_call

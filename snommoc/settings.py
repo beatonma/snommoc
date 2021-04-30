@@ -98,3 +98,4 @@ MEDIA_URL = "/media/"
 CRAWLER_CACHE_ROOT = os.path.join(BASE_DIR, "cache/")
 
 APPEND_SLASH = False
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

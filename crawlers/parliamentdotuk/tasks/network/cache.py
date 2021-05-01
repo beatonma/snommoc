@@ -11,7 +11,7 @@ from django.utils import timezone
 
 log = logging.getLogger(__name__)
 
-TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=2).total_seconds()
+TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=4).total_seconds()
 URL_REGEX = re.compile(r"(?:http|https)://.*?/(.*)")
 
 

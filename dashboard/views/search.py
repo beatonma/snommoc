@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
@@ -12,29 +14,50 @@ from repository.models import (
     Person,
 )
 from repository.models.util.queryset import get_or_none
-from surface.models import FeaturedBill, FeaturedCommonsDivision, FeaturedLordsDivision, FeaturedPerson
+from surface.models import (
+    FeaturedBill,
+    FeaturedCommonsDivision,
+    FeaturedLordsDivision,
+    FeaturedPerson,
+)
 
 
 class DashboardSearch(StaffView):
     def get(self, request, *args, **kwargs):
-        query = kwargs.get('query')
+        query = kwargs.get("query")
 
         results = {
-            'Person': _for_named_model(Person, query, 'member-detail', FeaturedModel=FeaturedPerson),
-            'Party': _for_named_model(Party, query, 'party-detail'),
-            'Constituency': _for_named_model(Constituency, query, 'constituency-detail'),
-            'Bill': _for_titled_model(Bill, query, 'bill-detail', FeaturedModel=FeaturedBill),
-            'CommonsDivision': _for_titled_model(CommonsDivision, query, 'division/commons-detail',
-                                                 FeaturedModel=FeaturedCommonsDivision),
-            'LordsDivision': _for_titled_model(LordsDivision, query, 'division/lords-detail',
-                                               FeaturedModel=FeaturedLordsDivision),
+            "Person": _for_named_model(
+                Person, query, "member-detail", FeaturedModel=FeaturedPerson
+            ),
+            "Party": _for_named_model(Party, query, "party-detail"),
+            "Constituency": _for_named_model(
+                Constituency, query, "constituency-detail"
+            ),
+            "Bill": _for_titled_model(
+                Bill, query, "bill-detail", FeaturedModel=FeaturedBill
+            ),
+            "CommonsDivision": _for_titled_model(
+                CommonsDivision,
+                query,
+                "division/commons-detail",
+                FeaturedModel=FeaturedCommonsDivision,
+            ),
+            "LordsDivision": _for_titled_model(
+                LordsDivision,
+                query,
+                "division/lords-detail",
+                FeaturedModel=FeaturedLordsDivision,
+            ),
         }
 
         return JsonResponse(data=results)
 
 
 def _for_named_model(Model, query, pathname, FeaturedModel=None) -> list:
-    results = Model.objects.filter(Q(name__icontains=query))[:5]
+    results = Model.objects.filter(Q(name__icontains=query) | Q(pk__contains=query))[
+        :10
+    ]
 
     return [
         _result(
@@ -42,28 +65,49 @@ def _for_named_model(Model, query, pathname, FeaturedModel=None) -> list:
             url=reverse(pathname, args=[x.pk]),
             id=x.pk,
             featured=_check_is_featured(FeaturedModel, x),
-        ) for x in results
+            start=_get_date(x, "start"),
+            end=_get_date(x, "end"),
+            date=_get_date(x, "date"),
+        )
+        for x in results
     ]
 
 
 def _for_titled_model(Model, query, pathname, FeaturedModel=None) -> list:
-    results = Model.objects.filter(Q(title__icontains=query))[:5]
+    results = Model.objects.filter(Q(title__icontains=query) | Q(pk__contains=query))[
+        :10
+    ]
     return [
         _result(
             name=x.title,
             url=reverse(pathname, args=[x.pk]),
             id=x.pk,
             featured=_check_is_featured(FeaturedModel, x),
-        ) for x in results
+            start=_get_date(x, "start"),
+            end=_get_date(x, "end"),
+            date=_get_date(x, "date"),
+        )
+        for x in results
     ]
 
 
-def _result(name, url, id, featured) -> dict:
+def _get_date(obj, attr) -> Optional[str]:
+    date = getattr(obj, attr, None)
+    if date is None:
+        return None
+
+    return date.isoformat()
+
+
+def _result(name, url, id, featured, start, end, date) -> dict:
     return {
-        'name': name,
-        'url': url,
-        'id': id,
-        'featured': featured,
+        "name": name,
+        "url": url,
+        "id": id,
+        "featured": featured,
+        "start": start,
+        "end": end,
+        "date": date,
     }
 
 

@@ -35,7 +35,6 @@ def get_json(
     with sessions.Session() as session:
         response = session.send(r)
 
-    print("RESPONSE", response)
     response.encoding = "utf-8-sig"
     time.sleep(1)  # Rate limiting
 

@@ -1,4 +1,5 @@
 from typing import Optional
+from fuzzywuzzy import fuzz
 
 from django.db.models import Q
 from django.http import JsonResponse
@@ -26,41 +27,52 @@ class DashboardSearch(StaffView):
     def get(self, request, *args, **kwargs):
         query = kwargs.get("query")
 
-        results = {
-            "Person": _for_named_model(
-                Person, query, "member-detail", FeaturedModel=FeaturedPerson
-            ),
-            "Party": _for_named_model(Party, query, "party-detail"),
-            "Constituency": _for_named_model(
-                Constituency, query, "constituency-detail"
-            ),
-            "Bill": _for_titled_model(
-                Bill, query, "bill-detail", FeaturedModel=FeaturedBill
-            ),
-            "CommonsDivision": _for_titled_model(
-                CommonsDivision,
-                query,
-                "division/commons-detail",
-                FeaturedModel=FeaturedCommonsDivision,
-            ),
-            "LordsDivision": _for_titled_model(
-                LordsDivision,
-                query,
-                "division/lords-detail",
-                FeaturedModel=FeaturedLordsDivision,
-            ),
-        }
+        people = _for_named_model(
+            Person, query, "member-detail", FeaturedModel=FeaturedPerson
+        )
+        parties = _for_named_model(Party, query, "party-detail")
+        constituencies = _for_named_model(Constituency, query, "constituency-detail")
 
-        return JsonResponse(data=results)
+        bills = _for_titled_model(
+            Bill, query, "bill-detail", FeaturedModel=FeaturedBill
+        )
+
+        commonsdivisions = _for_titled_model(
+            CommonsDivision,
+            query,
+            "division/commons-detail",
+            FeaturedModel=FeaturedCommonsDivision,
+        )
+
+        lordsdivisions = _for_titled_model(
+            LordsDivision,
+            query,
+            "division/lords-detail",
+            FeaturedModel=FeaturedLordsDivision,
+        )
+
+        results = (
+            people
+            + parties
+            + constituencies
+            + bills
+            + commonsdivisions
+            + lordsdivisions
+        )[:20]
+
+        results.sort(key=lambda item: (item["score"]), reverse=True)
+
+        return JsonResponse(data={"results": results})
 
 
 def _for_named_model(Model, query, pathname, FeaturedModel=None) -> list:
     results = Model.objects.filter(Q(name__icontains=query) | Q(pk__contains=query))[
-        :10
+        :20
     ]
 
     return [
         _result(
+            type=Model.__name__,
             name=x.name,
             url=reverse(pathname, args=[x.pk]),
             id=x.pk,
@@ -68,6 +80,7 @@ def _for_named_model(Model, query, pathname, FeaturedModel=None) -> list:
             start=_get_date(x, "start"),
             end=_get_date(x, "end"),
             date=_get_date(x, "date"),
+            score=_score(query, x.name),
         )
         for x in results
     ]
@@ -75,10 +88,11 @@ def _for_named_model(Model, query, pathname, FeaturedModel=None) -> list:
 
 def _for_titled_model(Model, query, pathname, FeaturedModel=None) -> list:
     results = Model.objects.filter(Q(title__icontains=query) | Q(pk__contains=query))[
-        :10
+        :20
     ]
     return [
         _result(
+            type=Model.__name__,
             name=x.title,
             url=reverse(pathname, args=[x.pk]),
             id=x.pk,
@@ -86,6 +100,7 @@ def _for_titled_model(Model, query, pathname, FeaturedModel=None) -> list:
             start=_get_date(x, "start"),
             end=_get_date(x, "end"),
             date=_get_date(x, "date"),
+            score=_score(query, x.title),
         )
         for x in results
     ]
@@ -99,8 +114,9 @@ def _get_date(obj, attr) -> Optional[str]:
     return date.isoformat()
 
 
-def _result(name, url, id, featured, start, end, date) -> dict:
+def _result(type, name, url, id, featured, start, end, date, score) -> dict:
     return {
+        "type": type,
         "name": name,
         "url": url,
         "id": id,
@@ -108,6 +124,7 @@ def _result(name, url, id, featured, start, end, date) -> dict:
         "start": start,
         "end": end,
         "date": date,
+        "score": score,
     }
 
 
@@ -121,3 +138,7 @@ def _check_is_featured(FeaturedModel, obj):
         target = get_or_none(FeaturedModel, target_id=obj.pk)
 
         return target is not None
+
+
+def _score(*args):
+    return fuzz.token_set_ratio(*args)

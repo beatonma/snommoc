@@ -1,6 +1,8 @@
-import datetime
+from datetime import date as _date
 import re
-from typing import Optional
+from functools import reduce
+from operator import __or__
+from typing import List, Optional
 
 from django.db import models
 from django.db.models import Q, UniqueConstraint
@@ -173,7 +175,7 @@ class ConstituencyAlsoKnownAs(BaseModel):
 
 
 def get_constituency_for_date(
-    name: str, date: Optional[datetime.date]
+    name: str, date: Optional[_date]
 ) -> Optional[Constituency]:
     def _generalised_filter(n: str):
         """Remove punctuation, conjunctions, etc which may not be formatted the
@@ -198,7 +200,7 @@ def get_constituency_for_date(
         return c.first()
 
     if date is None:
-        date = datetime.date.today()
+        date = _date.today()
 
     # More complicated
     with_start = c.exclude(start=None).order_by("start")
@@ -225,4 +227,51 @@ def get_constituency_for_date(
 
 
 def get_current_constituency(name: str) -> Optional[Constituency]:
-    return get_constituency_for_date(name, datetime.date.today())
+    return get_constituency_for_date(name, _date.today())
+
+
+def get_suggested_constituencies(name: str, date: _date) -> List[Constituency]:
+    """
+    Return a list of constituencies that existed at the time of the election
+    and have a similar [i.e. matching word(s)] name
+    """
+
+    def _remove_substrings(string, chars: list) -> str:
+        for c in chars:
+            string = string.replace(c, "")
+
+        return string
+
+    def _remove_words(string, words: list) -> str:
+        print(string)
+        for word in words:
+            string = re.sub(rf"\b{word}\b", "", string)
+
+        string = string.replace("  ", " ")
+
+        print(string)
+        return string
+
+    stripped_name = _remove_substrings(name, ["&", ","])
+    stripped_name = _remove_words(
+        stripped_name, ["and", "East", "West", "North", "South"]
+    )
+    stripped_name = re.sub(
+        r"\s+", " ", stripped_name
+    )  # Ensure remaining words are separated by only one space
+    name_chunks = stripped_name.split(" ")[:5]
+
+    if not name_chunks:
+        return []
+
+    name_filters = reduce(__or__, [Q(name__icontains=x) for x in name_chunks])
+
+    date_filter = Q(start__lte=date) & (Q(end__gte=date) | Q(end__isnull=True))
+
+    suggestions = Constituency.objects.filter(date_filter).filter(name_filters)
+
+    if not suggestions:
+        # If no result using date and name, try again just using name
+        suggestions = Constituency.objects.filter(name_filters)
+
+    return suggestions

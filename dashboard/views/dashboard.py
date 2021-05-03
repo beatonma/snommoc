@@ -4,7 +4,10 @@ from django.views import View
 from rest_framework.viewsets import ModelViewSet
 
 from dashboard.views.serializers.task_notifications import TaskNotificationSerializer
-from dashboard.views.serializers.unlinked_constituencies import UnlinkedConstituencySerializer
+from dashboard.views.serializers.unlinked_constituencies import (
+    UnlinkedConstituencyDetailedSerializer,
+    UnlinkedConstituencySerializer,
+)
 from notifications.models import TaskNotification
 
 from repository.models.constituency import UnlinkedConstituency
@@ -34,15 +37,23 @@ class DashboardView(StaffView):
     def get(self, request):
         return render(
             request,
-            'dashboard.html',
+            "dashboard.html",
         )
 
 
 class UnlinkedConstituencyViewSet(StaffViewSet):
-    queryset = UnlinkedConstituency.objects.all().order_by('name', 'election__date')
+    queryset = UnlinkedConstituency.objects.all().order_by("name", "election__date")
     serializer_class = UnlinkedConstituencySerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return UnlinkedConstituencyDetailedSerializer
+        else:
+            return UnlinkedConstituencySerializer
 
 
 class RecentNotificationsViewSet(StaffViewSet):
-    queryset = TaskNotification.objects.filter(level__gte=TaskNotification.LEVEL_INFO).order_by('-created_on')[:50]
+    queryset = TaskNotification.objects.filter(
+        level__gte=TaskNotification.LEVEL_INFO
+    ).order_by("-created_on")[:50]
     serializer_class = TaskNotificationSerializer

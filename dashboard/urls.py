@@ -1,6 +1,6 @@
 from django.urls import include, path
-from rest_framework.routers import Route, SimpleRouter
 
+from common.network.routers import ListOnlyRouter, ListOrDetailRouter
 from dashboard.views.actions import (
     ToggleFeaturedBillView,
     ToggleFeaturedCommonsDivisionView,
@@ -15,46 +15,12 @@ from dashboard.views.dashboard import (
 from dashboard.views.search import DashboardSearch
 
 
-class _ListRouter(SimpleRouter):
-    routes = [
-        Route(
-            url=r"^{prefix}{trailing_slash}$",
-            mapping={"get": "list"},
-            name="{basename}-list",
-            detail=False,
-            initkwargs={},
-        ),
-    ]
-
-
-class _ListOrDetailRouter(SimpleRouter):
-    # Read-only list/detail views
-    routes = [
-        # All objects, simple overview
-        Route(
-            url=r"^{prefix}{trailing_slash}$",
-            mapping={"get": "list"},
-            name="{basename}-list",
-            detail=False,
-            initkwargs={},
-        ),
-        # Single object, more detailed data
-        Route(
-            url=r"^{prefix}/{lookup}{trailing_slash}$",
-            mapping={"get": "retrieve"},
-            name="{basename}-detail",
-            detail=True,
-            initkwargs={"suffix": "Instance"},
-        ),
-    ]
-
-
-list_router = _ListRouter()
+list_router = ListOnlyRouter()
 list_router.register(
     "recent-notifications", RecentNotificationsViewSet, basename="recent-notifications"
 )
 
-list_or_detail_router = _ListOrDetailRouter()
+list_or_detail_router = ListOrDetailRouter()
 list_or_detail_router.register(
     "unlinked-constituencies",
     UnlinkedConstituencyViewSet,
@@ -65,6 +31,7 @@ urlpatterns = [
     path("", include(list_router.urls)),
     path("", include(list_or_detail_router.urls)),
     path("", DashboardView.as_view(), name="dashboard"),
+    path("search/<str:query>/", DashboardSearch.as_view(), name="dashboard-search"),
     path(
         "actions/featured-person/<int:id>/",
         ToggleFeaturedMemberView.as_view(),
@@ -85,5 +52,4 @@ urlpatterns = [
         ToggleFeaturedLordsDivisionView.as_view(),
         name="action-featured-lordsdivision",
     ),
-    path("search/<str:query>/", DashboardSearch.as_view(), name="dashboard-search"),
 ]

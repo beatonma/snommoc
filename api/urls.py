@@ -4,12 +4,7 @@ from django.urls import (
 )
 
 from api import endpoints
-from api.views.routers import (
-    DetailOnlyRouter,
-    ListOrDetailRouter,
-    ListOnlyRouter,
-    SingletonRouter,
-)
+
 from api.views.viewsets.constituency import (
     ConstituencyResultDetailViewSet,
     ConstituencyViewSet,
@@ -36,6 +31,12 @@ from api.views.viewsets.procedure import (
     RecentlyUpdatedDivisionsViewSet,
 )
 from api.views.viewsets.zeitgeist import ZeitgeistViewSet
+from common.network.routers import (
+    DetailOnlyRouter,
+    ListOnlyRouter,
+    ListOrDetailRouter,
+    SingletonRouter,
+)
 
 
 def _register(router, endpoint, viewset):
@@ -70,9 +71,7 @@ detail_only_views = (
 
 
 # Detailed, but only one target object so no IDs necessary.
-singleton_views = (
-    (endpoints.ZEITGEIST, ZeitgeistViewSet),
-)
+singleton_views = ((endpoints.ZEITGEIST, ZeitgeistViewSet),)
 
 
 list_only_router = ListOnlyRouter()
@@ -93,14 +92,15 @@ for e, v in singleton_views:
 
 
 urlpatterns = [
-    path('ping/', PingView.as_view(), name='api_ping_view'),
-    path('', include(list_only_router.urls)),
-    path('', include(list_or_detail_router.urls)),
-    path('', include(detail_only_router.urls)),
-    path('', include(singleton_router.urls)),
-
+    path("ping/", PingView.as_view(), name="api_ping_view"),
+    path("", include(list_only_router.urls)),
+    path("", include(list_or_detail_router.urls)),
+    path("", include(detail_only_router.urls)),
+    path("", include(singleton_router.urls)),
     # This one requires 2 keys
-    path(f'{endpoints.CONSTITUENCY}/<int:pk>/election/<int:election_id>/',
-         ConstituencyResultDetailViewSet.as_view({'get': 'retrieve'}),
-         name=endpoints.CONSTITUENCY_RESULTS),
+    path(
+        f"{endpoints.CONSTITUENCY}/<int:pk>/election/<int:election_id>/",
+        ConstituencyResultDetailViewSet.as_view({"get": "retrieve"}),
+        name=endpoints.CONSTITUENCY_RESULTS,
+    ),
 ]

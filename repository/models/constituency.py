@@ -183,8 +183,8 @@ def get_constituency_for_date(
         name_regex = (
             re.escape(n)
             .replace(",", ",?")
-            .replace("&", "(&|and)")
-            .replace(" and ", " (&|and) ")
+            .replace("\&", "(&|and)")
+            .replace(" and\ ", " (&|and) ")
         )
 
         return {"name__iregex": name_regex}

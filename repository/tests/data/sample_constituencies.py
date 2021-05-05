@@ -1,5 +1,6 @@
-from repository.models import Constituency
 from datetime import date
+
+from repository.models import Constituency
 
 
 def create_sample_constituencies():
@@ -105,93 +106,97 @@ def create_sample_constituencies():
         pk=145915,
         start=date(1997, 5, 1),
         end=date(2005, 5, 5),
+    ),
+
+    Constituency.objects.create(
+        name="Barnsley",
+        pk=143584,
+        start=date(1918, 12, 14),
+        end=date(1950, 2, 23),
+    )
+    Constituency.objects.create(
+        name="Barnsley",
+        pk=143585,
+        start=date(1950, 2, 23),
+        end=date(1974, 2, 28),
+    )
+    Constituency.objects.create(
+        name="Barnsley",
+        pk=143586,
+        start=date(1974, 2, 28),
+        end=date(1983, 6, 9),
+    )
+    Constituency.objects.create(
+        name="Barnsley Central",
+        pk=143587,
+        start=date(1983, 6, 9),
+        end=date(1997, 5, 1),
+    )
+    Constituency.objects.create(
+        name="Barnsley Central",
+        pk=143588,
+        start=date(1997, 5, 1),
+        end=date(2010, 5, 6),
+    )
+    Constituency.objects.create(
+        name="Barnsley Central",
+        pk=146762,
+        start=date(2010, 5, 6),
+        end=None,
+    )
+    Constituency.objects.create(
+        name="Barnsley East",
+        pk=143589,
+        start=date(1983, 6, 9),
+        end=date(1997, 5, 1),
+    )
+    Constituency.objects.create(
+        name="Barnsley East",
+        pk=146763,
+        start=date(2010, 5, 6),
+        end=None,
+    )
+    Constituency.objects.create(
+        name="Barnsley East & Mexborough",
+        pk=143590,
+        start=date(1997, 5, 1),
+        end=date(2010, 5, 6),
+    )
+    Constituency.objects.create(
+        name="Barnsley West & Penistone",
+        pk=143591,
+        start=date(1983, 6, 9),
+        end=date(1997, 5, 1),
+    )
+    Constituency.objects.create(
+        name="Barnsley West & Penistone",
+        pk=143592,
+        start=date(1997, 5, 1),
+        end=date(2010, 5, 6),
     )
 
-    # Constituency.objects.create(
-    #     pk=143465,
-    #     name="Aberavon",
-    # )
-    # Constituency.objects.create(
-    #     pk=143468,
-    #     name="Aberdeen Central",
-    # )
-    # Constituency.objects.create(
-    #     pk=143473,
-    #     name="Aberdeen North",
-    # )
-    # Constituency.objects.create(
-    #     pk=145419,
-    #     name="Mid Ulster",
-    # )
-    # Constituency.objects.create(
-    #     pk=145460,
-    #     name="Montgomeryshire",
-    # )
-    # Constituency.objects.create(
-    #     pk=145463,
-    #     name="Moray",
-    # )
-    # Constituency.objects.create(
-    #     pk=145471,
-    #     name="Morecambe & Lunesdale",
-    # )
-    # Constituency.objects.create(
-    #     pk=145473,
-    #     name="Morley & Rothwell",
-    # )
-    # Constituency.objects.create(
-    #     pk=145521,
-    #     name="Newcastle upon Tyne East & Wallsend",
-    # )
-    # Constituency.objects.create(
-    #     pk=145526,
-    #     name="Newcastle upon Tyne North",
-    # )
-    # Constituency.objects.create(
-    #     pk=145534,
-    #     name="Newcastle-under-Lyme",
-    # )
-    # Constituency.objects.create(
-    #     pk=145545,
-    #     name="Newport East",
-    # )
-    # Constituency.objects.create(
-    #     pk=145547,
-    #     name="Newport West",
-    # )
-    # Constituency.objects.create(
-    #     pk=145549,
-    #     name="Newry & Armagh",
-    # )
-    # Constituency.objects.create(
-    #     pk=145557,
-    #     name="Normanton",
-    # )
-    # Constituency.objects.create(
-    #     pk=145563,
-    #     name="North Antrim",
-    # )
-    # Constituency.objects.create(
-    #     pk=145571,
-    #     name="North Cornwall",
-    # )
-    # Constituency.objects.create(
-    #     pk=145861,
-    #     name="Reading West",
-    # )
-    # Constituency.objects.create(
-    #     pk=145864,
-    #     name="Redcar",
-    # )
-    # Constituency.objects.create(
-    #     pk=145865,
-    #     name="Redditch",
-    # )
-    # Constituency.objects.create(
-    #     pk=145866,
-    #     name="Regent's Park & Kensington North",
-    # )
-    # Constituency.objects.create(
-    #     pk=145871,
-    #     name="Reigate",
-    # )
+    Constituency.objects.create(
+        name="Dumfriesshire, Clydesdale and Tweeddale",
+        pk=144374,
+        start=date(2005, 4, 5),
+        end=None,
+    )
+    Constituency.objects.create(
+        name="Tweeddale, Ettrick & Lauderdale",
+        pk=146426,
+        start=date(1983, 6, 9),
+        end=date(1997, 5, 1),
+    )
+    Constituency.objects.create(
+        name="Tweeddale, Ettrick & Lauderdale",
+        pk=146427,
+        start=date(1997, 5, 1),
+        end=date(2005, 5, 5),
+    )
+
+    Constituency.objects.create(
+        name="Ealing, Acton & Shepherd's Bush",
+        pk=144408,
+        start=date(1997, 5, 1),
+        end=date(2010, 5, 6),
+    )

@@ -1,12 +1,9 @@
-"""
-
-"""
 from datetime import date
 import logging
 
 from basetest.testcase import LocalTestCase
-from repository.models import Constituency
-from repository.models.constituency import (
+from repository.models import Constituency, ConstituencyAlsoKnownAs
+from repository.resolution.constituency import (
     get_constituency_for_date,
     get_current_constituency,
     get_suggested_constituencies,
@@ -94,6 +91,19 @@ class ConstituencyTests(LocalTestCase):
             end=None,
         )
 
+        ConstituencyAlsoKnownAs.objects.create(
+            name="Alias of A",
+            canonical_id=3,
+            start=date(year=1978, month=8, day=2),
+            end=date(year=2005, month=4, day=1),
+        )
+
+        ConstituencyAlsoKnownAs.objects.create(
+            name="Alias of A",
+            canonical_id=4,
+            start=date(year=2005, month=4, day=2),
+        )
+
     def test_get_constituency_for_date(self):
         # Date is before our earliest constituency. Should return earliest available.
         c = get_constituency_for_date(name="A", date=date(year=1932, month=1, day=1))
@@ -162,6 +172,15 @@ class ConstituencyTests(LocalTestCase):
         )
         self.assertEqual(c.parliamentdotuk, 144408)
 
+    def test_get_constituency_for_date_via_constituency_aka(self):
+        c = get_constituency_for_date("Alias of A", date(1987, 5, 16))
+        self.assertEqual(c.parliamentdotuk, 3)
+        self.assertEqual(c.name, "A")
+
+        c = get_constituency_for_date("Alias of A", date(2021, 5, 16))
+        self.assertEqual(c.parliamentdotuk, 4)
+        self.assertEqual(c.name, "A")
+
     def test_get_current_constituency(self):
         # Most recent start does not have an end date so should be considered current.
         c = get_current_constituency("A")
@@ -181,4 +200,7 @@ class ConstituencyTests(LocalTestCase):
         self.assertTrue(Constituency(pk=143477, name="Aberdeen South") in suggestions)
 
     def tearDown(self) -> None:
-        self.delete_instances_of(Constituency)
+        self.delete_instances_of(
+            Constituency,
+            ConstituencyAlsoKnownAs,
+        )

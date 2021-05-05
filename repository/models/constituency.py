@@ -1,11 +1,5 @@
-from datetime import date as _date
-import re
-from functools import reduce
-from operator import __or__
-from typing import List, Optional
-
 from django.db import models
-from django.db.models import Q, UniqueConstraint
+from django.db.models import UniqueConstraint
 
 from repository.models.mixins import (
     PeriodMixin,
@@ -47,13 +41,6 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         i.e. It has not undergone boundary/name changes and is represented by
         an MP in parliament."""
         return self.end is None
-
-    @property
-    def canonical(self) -> "Constituency":
-        try:
-            return ConstituencyAlsoKnownAs.objects.get(alias=self).canonical
-        except:
-            return self
 
     def __str__(self):
         return f"{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}"
@@ -153,7 +140,7 @@ class ConstituencyBoundary(BaseModel):
         verbose_name_plural = "Constituency Boundaries"
 
 
-class ConstituencyAlsoKnownAs(BaseModel):
+class ConstituencyAlsoKnownAs(PeriodMixin, BaseModel):
     canonical = models.ForeignKey(
         "Constituency",
         on_delete=models.CASCADE,
@@ -161,117 +148,10 @@ class ConstituencyAlsoKnownAs(BaseModel):
         blank=True,
         related_name="+",
     )
-    alias = models.OneToOneField(
-        "Constituency",
-        on_delete=models.CASCADE,
-        related_name="+",
-    )
+    name = models.CharField(max_length=64, default="")
 
     def __str__(self):
-        return f"{self.alias.name} [{self.alias_id}] -> {self.canonical.name} [{self.canonical_id}]"
+        return f"{self.name} -> {self.canonical.name} [{self.canonical_id}]"
 
     class Meta:
         verbose_name_plural = "Constituency AKAs"
-
-
-def get_constituency_for_date(
-    name: str, date: Optional[_date]
-) -> Optional[Constituency]:
-    def _generalised_filter(n: str):
-        """Remove punctuation, conjunctions, etc which may not be formatted the
-        same way from different sources e.g. 'and' vs '&'."""
-        name_regex = (
-            re.escape(n)
-            .replace(",", ",?")
-            .replace("\&", "(&|and)")
-            .replace(" and\ ", " (&|and) ")
-        )
-
-        return {"name__iregex": name_regex}
-
-    c = Constituency.objects.filter(**_generalised_filter(name))
-    count = c.count()
-
-    # Simple cases
-    if count == 0:
-        return None
-
-    elif count == 1:
-        return c.first()
-
-    if date is None:
-        date = _date.today()
-
-    # More complicated
-    with_start = c.exclude(start=None).order_by("start")
-
-    filtered_by_date = with_start.filter(
-        Q(start__lte=date) & (Q(end__gt=date) | Q(end__isnull=True))
-    )
-
-    if filtered_by_date:
-        # Result was found that matches the date requirement
-        return filtered_by_date.first()
-
-    if with_start.count() == 0:
-        # No useful date, just return the first result.
-        return c.first()
-
-    earliest = with_start.first()
-    if earliest.start > date:
-        # Date is before earliest result -> return earliest available result
-        return earliest
-
-    # All else fails, return the latest available result.
-    return with_start.last()
-
-
-def get_current_constituency(name: str) -> Optional[Constituency]:
-    return get_constituency_for_date(name, _date.today())
-
-
-def get_suggested_constituencies(name: str, date: _date) -> List[Constituency]:
-    """
-    Return a list of constituencies that existed at the time of the election
-    and have a similar [i.e. matching word(s)] name
-    """
-
-    def _remove_substrings(string, chars: list) -> str:
-        for c in chars:
-            string = string.replace(c, "")
-
-        return string
-
-    def _remove_words(string, words: list) -> str:
-        print(string)
-        for word in words:
-            string = re.sub(rf"\b{word}\b", "", string)
-
-        string = string.replace("  ", " ")
-
-        print(string)
-        return string
-
-    stripped_name = _remove_substrings(name, ["&", ","])
-    stripped_name = _remove_words(
-        stripped_name, ["and", "East", "West", "North", "South"]
-    )
-    stripped_name = re.sub(
-        r"\s+", " ", stripped_name
-    )  # Ensure remaining words are separated by only one space
-    name_chunks = stripped_name.split(" ")[:5]
-
-    if not name_chunks:
-        return []
-
-    name_filters = reduce(__or__, [Q(name__icontains=x) for x in name_chunks])
-
-    date_filter = Q(start__lte=date) & (Q(end__gte=date) | Q(end__isnull=True))
-
-    suggestions = Constituency.objects.filter(date_filter).filter(name_filters)
-
-    if not suggestions:
-        # If no result using date and name, try again just using name
-        suggestions = Constituency.objects.filter(name_filters)
-
-    return suggestions

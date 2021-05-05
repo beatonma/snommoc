@@ -2,6 +2,7 @@ from django.urls import include, path
 
 from common.network.routers import ListOnlyRouter, ListOrDetailRouter
 from dashboard.views.actions import (
+    ConfirmConstituencyView,
     ToggleFeaturedBillView,
     ToggleFeaturedCommonsDivisionView,
     ToggleFeaturedLordsDivisionView,
@@ -51,5 +52,10 @@ urlpatterns = [
         "actions/featured-lordsdivision/<int:id>/",
         ToggleFeaturedLordsDivisionView.as_view(),
         name="action-featured-lordsdivision",
+    ),
+    path(
+        "actions/confirm-constituency/<int:unlinked_id>/<int:constituency_id>/",
+        ConfirmConstituencyView.as_view(),
+        name="action-confirm-constituency",
     ),
 ]

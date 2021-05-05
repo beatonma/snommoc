@@ -11,9 +11,8 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
 )
 from repository.models.util.queryset import get_or_none
 from notifications.models.task_notification import task_notification
-from repository.models import House
-from repository.models.constituency import (
-    Constituency,
+from repository.models import House, Constituency
+from repository.resolution.constituency import (
     get_current_constituency,
     get_constituency_for_date,
 )

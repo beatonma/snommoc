@@ -62,7 +62,7 @@ from repository.models import (
     WebAddress,
 )
 from repository.models.address import PHONE_NUMBER_REGION
-from repository.models.constituency import (
+from repository.resolution.constituency import (
     get_constituency_for_date,
     get_current_constituency,
 )

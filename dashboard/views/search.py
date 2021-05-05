@@ -1,11 +1,11 @@
 from typing import Optional
-from fuzzywuzzy import fuzz
 
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
 
 from dashboard.views.dashboard import StaffView
+from dashboard.views.scoring import get_similarity_score
 from repository.models import (
     Bill,
     CommonsDivision,
@@ -80,7 +80,7 @@ def _for_named_model(Model, query, pathname, FeaturedModel=None) -> list:
             start=_get_date(x, "start"),
             end=_get_date(x, "end"),
             date=_get_date(x, "date"),
-            score=_score(query, x.name),
+            score=get_similarity_score(query, x.name),
         )
         for x in results
     ]
@@ -100,7 +100,7 @@ def _for_titled_model(Model, query, pathname, FeaturedModel=None) -> list:
             start=_get_date(x, "start"),
             end=_get_date(x, "end"),
             date=_get_date(x, "date"),
-            score=_score(query, x.title),
+            score=get_similarity_score(query, x.title),
         )
         for x in results
     ]
@@ -138,7 +138,3 @@ def _check_is_featured(FeaturedModel, obj):
         target = get_or_none(FeaturedModel, target_id=obj.pk)
 
         return target is not None
-
-
-def _score(*args):
-    return fuzz.token_set_ratio(*args)

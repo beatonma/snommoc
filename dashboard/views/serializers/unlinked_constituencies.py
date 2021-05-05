@@ -3,6 +3,7 @@ from typing import List
 from django.urls import reverse
 from rest_framework import serializers
 
+from dashboard.views.scoring import get_similarity_score
 from repository.models.constituency import get_suggested_constituencies
 from repository.models import Constituency, UnlinkedConstituency
 
@@ -52,6 +53,7 @@ class UnlinkedConstituencyDetailedSerializer(UnlinkedConstituencySerializer):
                 "url": reverse("constituency-detail", args=[x.pk]),
                 "start": x.start,
                 "end": x.end,
+                "score": get_similarity_score(obj.name, x.name),
             }
             for x in suggestions
         ]

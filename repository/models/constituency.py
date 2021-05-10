@@ -35,13 +35,6 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         help_text="Borough, county...",
     )
 
-    @property
-    def is_extant(self) -> bool:
-        """Return True if this constituency still exists.
-        i.e. It has not undergone boundary/name changes and is represented by
-        an MP in parliament."""
-        return self.end is None
-
     def __str__(self):
         return f"{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}"
 
@@ -90,10 +83,7 @@ class UnlinkedConstituency(PeriodMixin, BaseModel):
 
     In those cases, create an UnlinkedConstituency which can be checked manually.
 
-    TODO
-        Once resolved:
-        - If person_won, and start/end values are set, this should be used to create a ConstituencyResult object.
-        - Otherwise, this should be used to create a ContestedElection object.
+    See :py:func:`<repository.resolution.resolve_unlinked_constituency>`
     """
 
     name = models.CharField(max_length=64)

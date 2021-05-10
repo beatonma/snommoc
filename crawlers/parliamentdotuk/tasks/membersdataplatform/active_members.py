@@ -128,7 +128,7 @@ def update_details_for_member(member_id: int, **kwargs):
     )
 
 
-def _update_member_biography(data: MemberBiographyResponseData) -> Optional[str]:
+def _update_member_biography(data: MemberBiographyResponseData):
     parliamentdotuk: int = data.get_parliament_id()
 
     person = Person.objects.get(parliamentdotuk=parliamentdotuk)

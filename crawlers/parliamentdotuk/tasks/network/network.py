@@ -6,6 +6,7 @@ import requests
 from django.conf import settings
 from requests import sessions
 
+from common.network.rate_limit import rate_limit
 from crawlers.parliamentdotuk.tasks.network import JsonResponseCache
 
 log = logging.getLogger(__name__)
@@ -29,6 +30,7 @@ def get_json(
     if cache:
         cached = cache.get_json(encoded_url)
         if cached:
+            log.info(f"[cached] {encoded_url}")
             return cached
 
     log.info(encoded_url)
@@ -36,7 +38,7 @@ def get_json(
         response = session.send(r)
 
     response.encoding = "utf-8-sig"
-    time.sleep(1)  # Rate limiting
+    rate_limit()
 
     data = response.json()
     if cache:

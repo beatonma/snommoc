@@ -11,14 +11,13 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
 )
 from repository.models.util.queryset import get_or_none
 from notifications.models.task_notification import task_notification
-from repository.models import House, Constituency
+from repository.models import Person, House, Constituency, LordsType
 from repository.resolution.constituency import (
     get_current_constituency,
     get_constituency_for_date,
 )
-from repository.models.houses import HOUSE_OF_COMMONS
+from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.party import get_or_create_party
-from repository.models.person import Person
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints, mdp_client
 from crawlers.parliamentdotuk.tasks.network import json_cache
 
@@ -70,20 +69,58 @@ def update_all_lords_basic_info(**kwargs):
 
 
 def _update_member_basic_info(data: MemberResponseData) -> None:
+    house, _ = House.objects.get_or_create(name=data.get_house())
+
+    if house.name == HOUSE_OF_COMMONS:
+        _update_mp_basic_info(data, house)
+    elif house.name == HOUSE_OF_LORDS:
+        _update_lord_basic_info(data, house)
+
+
+def _update_lord_basic_info(data: MemberResponseData, house: House) -> None:
     member_id = data.get_parliament_id()
 
     party = get_or_create_party(data.get_party_id(), data.get_party())
-    house, _ = House.objects.get_or_create(name=data.get_house())
+    is_active = data.get_is_active()
+
+    try:
+        lords_type, _ = LordsType.objects.get_or_create(name=data.get_lords_type())
+    except:
+        lords_type = None
+
+    Person.objects.update_or_create(
+        parliamentdotuk=member_id,
+        defaults={
+            "name": data.get_name(),
+            "full_title": data.get_full_title(),
+            "party": party,
+            "lords_type": lords_type,
+            "house": house,
+            "date_entered_house": data.get_house_start_date(),
+            "date_left_house": data.get_house_end_date(),
+            "date_of_birth": data.get_date_of_birth(),
+            "date_of_death": data.get_date_of_death(),
+            "gender": data.get_gender(),
+            "active": is_active,
+        },
+    )
+
+
+def _update_mp_basic_info(data: MemberResponseData, house: House) -> None:
+    member_id = data.get_parliament_id()
+
+    party = get_or_create_party(data.get_party_id(), data.get_party())
     is_active = data.get_is_active()
 
     if is_active:
         constituency = get_current_constituency(data.get_constituency())
     else:
         constituency = get_constituency_for_date(
-            data.get_constituency(), data.get_house_start_date()
+            data.get_constituency(),
+            data.get_house_end_date() or data.get_house_start_date(),
         )
 
-    person, created = Person.objects.update_or_create(
+    person, _ = Person.objects.update_or_create(
         parliamentdotuk=member_id,
         defaults={
             "name": data.get_name(),

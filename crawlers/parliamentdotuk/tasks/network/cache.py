@@ -102,7 +102,6 @@ class JsonResponseCache:
     def _flush(self):
         for f in [x for x in os.listdir(self.cache_dir) if x.endswith(".json")]:
             filepath = os.path.join(self.cache_dir, f)
-            log.debug(f"Flushing cache file {filepath}")
             os.remove(filepath)
 
 

@@ -9,6 +9,7 @@ from repository.models.houses import (
 from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
+    PeriodMixin,
     TheyWorkForYouMixin,
     PersonMixin,
     WikipediaMixin,
@@ -28,30 +29,30 @@ class Person(
 ):
     name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text='Canonical name for this person.',
+        help_text="Canonical name for this person.",
     )
     given_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text='First name',
+        help_text="First name",
         null=True,
         blank=True,
     )
     family_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text='Last name',
+        help_text="Last name",
         null=True,
         blank=True,
     )
     additional_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text='Middle name(s)',
+        help_text="Middle name(s)",
         blank=True,
         null=True,
     )
 
     full_title = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text='Official name with honorifics.',
+        help_text="Official name with honorifics.",
         blank=True,
         null=True,
     )
@@ -75,37 +76,46 @@ class Person(
     )
 
     town_of_birth = models.ForeignKey(
-        'Town',
+        "Town",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     country_of_birth = models.ForeignKey(
-        'Country',
+        "Country",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
 
     constituency = models.ForeignKey(
-        'Constituency',
+        "Constituency",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         default=None,
     )
 
-    party = models.ForeignKey(
-        'Party',
+    lords_type = models.ForeignKey(
+        "LordsType",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        help_text='Current party membership. Historic memberships can be '
-                  'retrieved via PartyAssociation model.',
+        default=None,
+        help_text="The source of this person's lordship, if applicable (e.g. hereditary, bishop, peerage, etc)",
+    )
+
+    party = models.ForeignKey(
+        "Party",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Current party membership. Historic memberships can be "
+        "retrieved via PartyAssociation model.",
     )
 
     house = models.ForeignKey(
-        'House',
+        "House",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -121,7 +131,7 @@ class Person(
         blank=True,
     )
     active = models.BooleanField(
-        help_text='Whether this person currently has a seat in parliament.',
+        help_text="Whether this person currently has a seat in parliament.",
     )
 
     current_post = models.CharField(
@@ -151,19 +161,33 @@ class Person(
         return self.active and self.house.name == HOUSE_OF_LORDS
 
     def __str__(self):
-        return f'{self.name} [{self.parliamentdotuk}]'
+        return f"{self.name} [{self.parliamentdotuk}]"
 
     class Meta:
-        ordering = ['name']
-        verbose_name_plural = 'People'
+        ordering = ["name"]
+        verbose_name_plural = "People"
 
 
 class PersonAlsoKnownAs(PersonMixin, BaseModel):
     alias = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
 
     class Meta:
-        verbose_name_plural = 'People also known as'
-        verbose_name = 'PersonAlsoKnownAs'
+        verbose_name_plural = "People also known as"
+        verbose_name = "PersonAlsoKnownAs"
 
     def __str__(self):
-        return f'{self.alias} -> {self.person}'
+        return f"{self.alias} -> {self.person}"
+
+
+class LifeEvent(PeriodMixin, PersonMixin):
+    """
+    [UNUSED]
+    Miscellaneous additional data about an event in a Person's life.
+    e.g. Graduations? Marriage/significant relationships? Arrests?
+
+    If this is used in future, would likely need to be maintained manually - could potentially be done through wiki-like
+    crowd-sourcing but that brings potential issues with significance/neutrality/sourcing/moderation/truth.
+    """
+
+    title = models.CharField(max_length=512)
+    description = models.TextField(blank=True, null=True)

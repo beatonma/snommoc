@@ -55,13 +55,14 @@ from .houses import (
     House,
     HouseMembership,
 )
+from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech
 from .party import (
     Party,
     PartyAlsoKnownAs,
     PartyAssociation,
 )
-from .person import Person, PersonAlsoKnownAs
+from .person import Person, PersonAlsoKnownAs, LifeEvent
 from .portrait import MemberPortrait
 from .posts import (
     GovernmentPost,

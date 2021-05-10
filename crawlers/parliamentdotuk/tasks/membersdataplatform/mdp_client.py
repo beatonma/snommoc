@@ -125,6 +125,9 @@ class MemberResponseData(ResponseData):
     def get_constituency(self) -> Optional[str]:
         return self._get_str(member_contract.MEMBER_FROM)
 
+    def get_lords_type(self) -> Optional[str]:
+        return self._get_str(member_contract.MEMBER_FROM)
+
     def get_house(self) -> Optional[str]:
         return self._get_str(member_contract.HOUSE)
 
@@ -469,7 +472,8 @@ def update_members(
         try:
             update_member_func(response_class(member))
         except Exception as e:
-            message = f"Failed to update member=[{member.__str__()[:64]}...]: {e}"
-            notification.append(message)
+            notification.append(
+                f'Failed to update member=[{member}…][<a href="{endpoint_url}">endpoint</a>]: {e}'
+            )
             notification.mark_as_failed(e)
             return

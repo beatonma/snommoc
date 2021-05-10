@@ -34,6 +34,9 @@ def get_constituency_for_date(
 
         return {"name__iregex": name_regex}
 
+    if name is None:
+        return None
+
     if date is None:
         date = _date.today()
 

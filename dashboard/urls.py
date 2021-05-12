@@ -7,6 +7,11 @@ from dashboard.views.actions import (
     ToggleFeaturedCommonsDivisionView,
     ToggleFeaturedLordsDivisionView,
     ToggleFeaturedMemberView,
+    UpdateBillsTaskView,
+    UpdateDivisionsTaskView,
+    UpdateElectionResultsTaskView,
+    UpdatePortraitsTaskView,
+    UpdateProfilesTaskView,
 )
 from dashboard.views.dashboard import (
     DashboardView,
@@ -57,5 +62,30 @@ urlpatterns = [
         "actions/confirm-constituency/<int:unlinked_id>/<int:constituency_id>/",
         ConfirmConstituencyView.as_view(),
         name="action-confirm-constituency",
+    ),
+    path(
+        "actions/update-profiles/",
+        UpdateProfilesTaskView.as_view(),
+        name="action-update-profiles",
+    ),
+    path(
+        "actions/update-portraits/",
+        UpdatePortraitsTaskView.as_view(),
+        name="action-update-portraits",
+    ),
+    path(
+        "actions/update-bills/",
+        UpdateBillsTaskView.as_view(),
+        name="action-update-bills",
+    ),
+    path(
+        "actions/update-divisions/",
+        UpdateDivisionsTaskView.as_view(),
+        name="action-update-divisions",
+    ),
+    path(
+        "actions/update-election-results/",
+        UpdateElectionResultsTaskView.as_view(),
+        name="action-update-election-results",
     ),
 ]

@@ -13,6 +13,13 @@ from surface.models import (
     FeaturedLordsDivision,
 )
 from surface.tasks import update_zeitgeist
+from crawlers.parliamentdotuk.tasks import (
+    update_member_portraits,
+    update_profiles_for_active_members,
+    update_all_divisions,
+    update_bills,
+    update_election_results,
+)
 
 
 log = logging.getLogger(__name__)
@@ -91,3 +98,31 @@ class ConfirmConstituencyView(StaffView):
             return HttpResponse(status=400)
 
         return HttpResponse(status=204)
+
+
+class TaskView(StaffView):
+    func = None
+
+    def post(self, request, *args, **kwargs):
+        self.func.delay()
+        return HttpResponse(status=204)
+
+
+class UpdateProfilesTaskView(TaskView):
+    func = update_profiles_for_active_members
+
+
+class UpdatePortraitsTaskView(TaskView):
+    func = update_member_portraits
+
+
+class UpdateBillsTaskView(TaskView):
+    func = update_bills
+
+
+class UpdateDivisionsTaskView(TaskView):
+    func = update_all_divisions
+
+
+class UpdateElectionResultsTaskView(TaskView):
+    func = update_election_results

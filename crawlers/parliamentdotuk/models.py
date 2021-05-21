@@ -14,8 +14,8 @@ log = logging.getLogger(__name__)
 
 class UpdateError(BaseModel):
     parliamentdotuk = models.PositiveIntegerField()
-    error_message = models.TextField()
-    trace = models.TextField()
+    error_message = models.TextField(default="")
+    trace = models.TextField(default="")
     handled = models.BooleanField(default=False)
 
     @classmethod

@@ -156,14 +156,15 @@ def _update_sponsor(bill, data):
         )
         return
 
-    except Person.DoesNotExist:
-        pass
     except Person.MultipleObjectsReturned:
         BillSponsor.objects.get_or_create(
             name=sponsor_name,
             bill=bill,
         )
         return
+
+    except Person.DoesNotExist:
+        pass
 
     try:
         # Check if we have registered any aliases that match the name.
@@ -174,12 +175,10 @@ def _update_sponsor(bill, data):
         )
         return
     except PersonAlsoKnownAs.DoesNotExist:
-        pass
-
-    BillSponsor.objects.get_or_create(
-        name=sponsor_name,
-        bill=bill,
-    )
+        BillSponsor.objects.get_or_create(
+            name=sponsor_name,
+            bill=bill,
+        )
 
 
 @shared_task

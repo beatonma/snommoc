@@ -14,7 +14,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_parliamentdotuk_id,
     get_item_data,
     unwrap_value_int,
-    unwrap_str,
+    unwrap_str_from_list,
     unwrap_value_date,
     unwrap_value_str,
     update_model,
@@ -72,7 +72,7 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
             "bill_type": bill_type,
             "ballot_number": unwrap_value_int(data, contract.BALLOT_NUMBER),
             "date": unwrap_value_date(data, contract.DATE),
-            "description": unwrap_str(data, contract.DESCRIPTION),
+            "description": unwrap_str_from_list(data, contract.DESCRIPTION),
             "homepage": coerce_to_str(data.get(contract.HOMEPAGE)),
             "is_money_bill": coerce_to_boolean(data.get(contract.MONEY_BILL)),
             "is_private": coerce_to_boolean(data.get(contract.PRIVATE_BILL)),
@@ -146,7 +146,7 @@ def _update_bill_stage(bill, data: dict):
 
 
 def _update_sponsor(bill, data):
-    sponsor_name = unwrap_str(data, contract.SPONSOR_NAME)
+    sponsor_name = unwrap_str_from_list(data, contract.SPONSOR_NAME)
 
     try:
         person = Person.objects.get(name=sponsor_name)

@@ -1,5 +1,4 @@
 import re
-import time
 import datetime
 from typing import (
     Dict,
@@ -57,18 +56,22 @@ def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
 def unwrap_value(data, key):
     """Many values are provided in an object wrapped with an array of length=1"""
     obj = data.get(key)
-    if isinstance(obj, list):
+    if obj is None:
+        return None
+    elif isinstance(obj, list):
         return obj[0].get("_value")
     else:
         return obj.get("_value")
 
 
-def unwrap(data, key):
+def unwrap_from_list(data, key):
+    """Some values are returned as a single-item list - use this to get the item."""
     return data.get(key)[0]
 
 
-def unwrap_str(data, key) -> str:
-    return coerce_to_str(unwrap(data, key))
+def unwrap_str_from_list(data, key) -> str:
+    """Some strings are returned as a single-item list - use this to get the string."""
+    return coerce_to_str(unwrap_from_list(data, key))
 
 
 def unwrap_value_str(data, key) -> str:
@@ -91,7 +94,7 @@ def get_int(data, key, default=None) -> Optional[int]:
     return coerce_to_int(data.get(key), default=default)
 
 
-def get_list(data, key, default=None) -> list:
+def get_list(data, key) -> list:
     return coerce_to_list(data.get(key))
 
 

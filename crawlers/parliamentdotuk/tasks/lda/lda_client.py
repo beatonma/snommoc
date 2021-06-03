@@ -1,6 +1,7 @@
 import re
 import datetime
 from typing import (
+    Any,
     Dict,
     Optional,
     Callable,
@@ -14,6 +15,7 @@ from crawlers.parliamentdotuk.tasks.lda.endpoints import (
     PARAM_PAGE,
 )
 from crawlers.parliamentdotuk.tasks.util.coercion import (
+    coerce_to_boolean,
     coerce_to_date,
     coerce_to_int,
     coerce_to_list,
@@ -21,77 +23,78 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
 )
 from notifications.models import TaskNotification
 from crawlers.parliamentdotuk.tasks.network import get_json
+from crawlers.parliamentdotuk.tasks.lda import contract
+
 
 log = get_task_logger(__name__)
 
 
 def get_next_page_url(json_response) -> Optional[str]:
     try:
-        return json_response.get("result").get("next")
+        return json_response["result"]["next"]
     except AttributeError as e:
         log.warning(e)
         return None
 
 
-def get_value(data: Dict, key: str) -> Optional[str]:
-    """LDA data values are often but not always wrapped in a structure like
-    {'label': { '_value': 'actual value' } }"""
-    v = data.get(key)
-    if isinstance(v, str):
+def get_value(data: Dict, key: str) -> Optional[Any]:
+    """
+    LDA data values are often but not always wrapped in a structure like
+    {
+      'label': {
+        '_value': 'actual value'
+      }
+    }
+
+    Similarly, some values are wrapped in a single-item list.
+    """
+    if "." in key:
+        v = get_nested_value(data, key)
+    else:
+        v = data.get(key)
+
+    if v is None:
+        return None
+
+    if isinstance(v, str) or isinstance(v, int) or isinstance(v, bool):
         return v
-    elif isinstance(v, Dict):
+
+    elif isinstance(v, dict):
         if "_value" in v.keys():
             return v.get("_value")
         elif "label" in v.keys():
             try:
-                return v.get("label").get("_value")
+                return v["label"]["_value"]
             except AttributeError:
                 return None
+
+    elif isinstance(v, list):
+        if len(v) == 1:
+            item = v[0]
+            if isinstance(item, dict):
+                return v[0].get("_value")
+            else:
+                return item
 
 
 def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
     return coerce_to_date(get_value(data, key))
 
 
-def unwrap_value(data, key):
-    """Many values are provided in an object wrapped with an array of length=1"""
-    obj = data.get(key)
-    if obj is None:
-        return None
-    elif isinstance(obj, list):
-        return obj[0].get("_value")
-    else:
-        return obj.get("_value")
-
-
-def unwrap_from_list(data, key):
-    """Some values are returned as a single-item list - use this to get the item."""
-    return data.get(key)[0]
-
-
-def unwrap_str_from_list(data, key) -> str:
-    """Some strings are returned as a single-item list - use this to get the string."""
-    return coerce_to_str(unwrap_from_list(data, key))
-
-
-def unwrap_value_str(data, key) -> str:
-    return coerce_to_str(unwrap_value(data, key))
-
-
-def unwrap_value_int(data, key) -> int:
-    return coerce_to_int(unwrap_value(data, key))
-
-
-def unwrap_value_date(data, key) -> datetime.date:
-    return coerce_to_date(unwrap_value(data, key))
-
-
 def get_str(data, key, default=None) -> Optional[str]:
-    return coerce_to_str(data.get(key), default=default)
+    return coerce_to_str(get_value(data, key), default=default)
 
 
 def get_int(data, key, default=None) -> Optional[int]:
-    return coerce_to_int(data.get(key), default=default)
+    return coerce_to_int(get_value(data, key), default=default)
+
+
+def get_boolean(data, key, default=None) -> Optional[bool]:
+    result = coerce_to_boolean(get_value(data, key))
+    if result is None:
+        return default
+    else:
+        return result
 
 
 def get_list(data, key) -> list:
@@ -106,10 +109,14 @@ def is_xml_null(obj: dict) -> bool:
     return isinstance(obj, dict) and obj.get("@xsi:nil", "").lower() == "true"
 
 
-def get_parliamentdotuk_id(about_url: str) -> Optional[int]:
+def parse_parliamentdotuk_id(about_url: str) -> Optional[int]:
     matches = re.findall(r".*?/([\d]+)$", about_url)
     if matches:
         return int(matches[0])
+
+
+def get_parliamentdotuk_id(obj: dict, key: str = contract.ABOUT) -> Optional[int]:
+    return parse_parliamentdotuk_id(get_value(obj, key))
 
 
 def get_nested_value(obj: dict, key: str):
@@ -144,12 +151,12 @@ def _get_list_page_json(
 
 def get_item_data(endpoint: str, **kwargs) -> Optional[Dict]:
     data = get_json(endpoint, **kwargs)
-    return data.get("result").get("primaryTopic")
+    return data["result"]["primaryTopic"]
 
 
 def update_model(
     endpoint_url: str,
-    update_item_func: Callable[[Dict], Optional[str]],
+    update_item_func: Callable[[Dict], None],
     notification: TaskNotification,
     page_size=MAX_PAGE_SIZE,
     follow_pagination: bool = True,
@@ -166,7 +173,7 @@ def update_model(
             **kwargs,
         )
 
-        items = data.get("result").get("items")
+        items = data["result"]["items"]
 
         for item in items:
             try:

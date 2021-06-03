@@ -149,7 +149,7 @@ class LdaClientTests(LocalTestCase):
 
     def test_get_parliamentdotuk_id(self):
         parliamentdotuk = lda_client.get_parliamentdotuk_id(
-            lda_client.get_value(EXAMPLE_ITEM, constituencies_contract.ABOUT)
+            EXAMPLE_ITEM, constituencies_contract.ABOUT
         )
         self.assertEqual(parliamentdotuk, 146747)
 

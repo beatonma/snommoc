@@ -75,10 +75,7 @@ class CommonsDivisionsTestCase(LocalTestCase):
     def test_create_commons_division(self):
         data = EXAMPLE_COMMONS_DIVISION
 
-        return_value = _create_commons_division(1171292, data)
-        self.assertEqual(
-            return_value, "The Queen's Speech: Jeremy Corbyn's amendment (c) "
-        )
+        _create_commons_division(1171292, data)
 
         division: CommonsDivision = CommonsDivision.objects.get(parliamentdotuk=1171292)
         self.assertEqual(division.ayes, 222)

@@ -35,12 +35,15 @@ def coerce_to_int(value, default=None) -> Optional[int]:
 
 
 def coerce_to_str(value, default=None) -> Optional[str]:
-    return str(value) if value else default
-
-
-def coerce_to_boolean(value) -> Optional[bool]:
     if value is None:
-        return None
+        return default
+    else:
+        return str(value)
+
+
+def coerce_to_boolean(value, default=None) -> Optional[bool]:
+    if value is None:
+        return default
 
     if isinstance(value, str):
         if value.lower() == "true":

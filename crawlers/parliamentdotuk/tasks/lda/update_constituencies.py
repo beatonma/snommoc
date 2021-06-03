@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from celery import shared_task
 
@@ -10,10 +9,10 @@ from crawlers.parliamentdotuk.tasks.lda.contract import (
 from notifications.models.task_notification import task_notification
 from repository.models import Constituency
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
-    get_value,
+    get_parliamentdotuk_id,
+    get_str,
     update_model,
     get_date,
-    get_parliamentdotuk_id,
 )
 from crawlers.parliamentdotuk.tasks.network import json_cache
 
@@ -24,27 +23,25 @@ log = logging.getLogger(__name__)
 @task_notification(label="Update constituencies")
 @json_cache(name="constituencies")
 def update_constituencies(follow_pagination=True, **kwargs) -> None:
-    def build_constituency(json_data) -> Optional[str]:
-        puk = get_parliamentdotuk_id(
-            get_value(json_data, constituencies_contract.ABOUT)
-        )
-        name = get_value(json_data, constituencies_contract.NAME)
-        constituency, created = Constituency.objects.update_or_create(
+    def build_constituency(json_data):
+        puk = get_parliamentdotuk_id(json_data)
+        name = get_str(json_data, constituencies_contract.NAME)
+
+        Constituency.objects.update_or_create(
             parliamentdotuk=puk,
             defaults={
                 "name": name,
-                "gss_code": get_value(json_data, constituencies_contract.GSS_CODE),
-                "ordinance_survey_name": get_value(
-                    json_data, constituencies_contract.ORDINANCE_SURVEY_NAME
+                "gss_code": get_str(json_data, constituencies_contract.GSS_CODE),
+                "ordinance_survey_name": get_str(
+                    json_data,
+                    constituencies_contract.ORDINANCE_SURVEY_NAME,
+                    default="",
                 ),
-                "constituency_type": get_value(json_data, constituencies_contract.TYPE),
+                "constituency_type": get_str(json_data, constituencies_contract.TYPE),
                 "start": get_date(json_data, constituencies_contract.DATE_STARTED),
                 "end": get_date(json_data, constituencies_contract.DATE_ENDED),
             },
         )
-
-        if created:
-            return name
 
     update_model(
         endpoints.CONSTITUENCIES_BASE_URL,

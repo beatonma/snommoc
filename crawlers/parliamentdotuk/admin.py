@@ -29,15 +29,13 @@ class UpdateErrorAdmin(admin.ModelAdmin):
     def source_url(self, obj):
         """Add a link to the API page that was being read when the error occurred."""
         if isinstance(obj, BillUpdateError):
-            url = endpoints.BILL.format(parliamentdotuk=obj.parliamentdotuk)
+            url = endpoints.url_for_bill(obj.parliamentdotuk)
         elif isinstance(obj, CommonsDivisionUpdateError):
-            url = endpoints.COMMONS_DIVISION.format(parliamentdotuk=obj.parliamentdotuk)
+            url = endpoints.url_for_commons_division(obj.parliamentdotuk)
         elif isinstance(obj, LordsDivisionUpdateError):
-            url = endpoints.LORDS_DIVISION.format(parliamentdotuk=obj.parliamentdotuk)
+            url = endpoints.url_for_lords_division(obj.parliamentdotuk)
         elif isinstance(obj, ElectionResultUpdateError):
-            url = endpoints.ELECTION_RESULT_DETAIL.format(
-                parliamentdotuk=obj.parliamentdotuk
-            )
+            url = endpoints.url_for_election_result(obj.parliamentdotuk)
         else:
             url = "UNHANDLED TYPE"
 

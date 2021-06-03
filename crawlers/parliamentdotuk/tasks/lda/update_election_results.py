@@ -9,13 +9,10 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_int,
     get_item_data,
     get_list,
-    get_nested_value,
     get_parliamentdotuk_id,
     get_str,
-    unwrap_value_str,
     update_model,
 )
-from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_str
 from notifications.models.task_notification import task_notification
 from repository.models import (
     Constituency,
@@ -32,18 +29,14 @@ log = logging.getLogger(__name__)
 
 
 def _create_election_result(parliamentdotuk, data):
-    constituency_id = get_parliamentdotuk_id(
-        get_nested_value(data, contract.CONSTITUENCY_ABOUT)
-    )
-    election_name = coerce_to_str(get_nested_value(data, contract.ELECTION_NAME))
+    constituency_id = get_parliamentdotuk_id(data, contract.CONSTITUENCY_ABOUT)
+    election_name = get_str(data, contract.ELECTION_NAME)
 
     constituency = get_or_none(Constituency, parliamentdotuk=constituency_id)
     election, _ = Election.objects.get_or_create(
         name=election_name,
         defaults={
-            "parliamentdotuk": get_parliamentdotuk_id(
-                get_nested_value(data, contract.ELECTION_ABOUT)
-            )
+            "parliamentdotuk": get_parliamentdotuk_id(data, contract.ELECTION_ABOUT)
         },
     )
 
@@ -61,7 +54,11 @@ def _create_election_result(parliamentdotuk, data):
 
     electorate = get_int(data, contract.ELECTORATE)
     turnout = get_int(data, contract.TURNOUT)
-    turnout_fraction = turnout / electorate
+
+    if not electorate or not turnout:
+        turnout_fraction = 0
+    else:
+        turnout_fraction = turnout / electorate
 
     result, _ = ConstituencyResultDetail.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
@@ -81,7 +78,7 @@ def _create_election_result(parliamentdotuk, data):
 
 
 def _create_candidate(election_result, candidate):
-    name = unwrap_value_str(candidate, contract.CANDIDATE_NAME)
+    name = get_str(candidate, contract.CANDIDATE_NAME)
 
     ConstituencyCandidate.objects.update_or_create(
         election_result=election_result,
@@ -89,7 +86,7 @@ def _create_candidate(election_result, candidate):
         defaults={
             "votes": get_int(candidate, contract.CANDIDATE_VOTES),
             "order": get_int(candidate, contract.CANDIDATE_ORDINAL),
-            "party": unwrap_value_str(candidate, contract.CANDIDATE_PARTY),
+            "party": get_str(candidate, contract.CANDIDATE_PARTY),
         },
     )
 
@@ -99,7 +96,7 @@ def _create_candidate(election_result, candidate):
 @json_cache(name="election-results")
 def update_election_results(follow_pagination=True) -> None:
     def update_result_details(json_data) -> Optional[str]:
-        puk = get_parliamentdotuk_id(json_data.get(contract.ABOUT))
+        puk = get_parliamentdotuk_id(json_data)
 
         try:
             ConstituencyResultDetail.objects.get(parliamentdotuk=puk)
@@ -108,9 +105,7 @@ def update_election_results(follow_pagination=True) -> None:
 
     def fetch_and_create_election_result(parliamentdotuk) -> Optional[str]:
         try:
-            data = get_item_data(
-                endpoints.ELECTION_RESULT_DETAIL.format(parliamentdotuk=parliamentdotuk)
-            )
+            data = get_item_data(endpoints.url_for_election_result(parliamentdotuk))
             if data is None:
                 return None
 

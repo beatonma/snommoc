@@ -17,7 +17,8 @@ log = logging.getLogger(__name__)
 
 
 class TypeCoercionTests(LocalTestCase):
-    """"""
+    """ """
+
     def test__coerce_to_list(self):
         test_func = coerce_to_list
 
@@ -43,10 +44,10 @@ class TypeCoercionTests(LocalTestCase):
         test_func = coerce_to_str
 
         self.assertEqual(test_func("abc"), "abc")
+        self.assertEqual(test_func(""), "")
         self.assertEqual(test_func(123), "123")
         self.assertEqual(test_func(True), "True")
         self.assertEqual(test_func(None), None)
-        self.assertEqual(test_func([]), None)
 
     def test__coerce_to_date(self):
         test_func = coerce_to_date
@@ -60,14 +61,24 @@ class TypeCoercionTests(LocalTestCase):
         self.assertEqual(test_func("abcd"), None)
 
         self.assertEqual(
-            test_func({"Year": 1997,}), datetime.date(year=1997, month=12, day=25)
+            test_func(
+                {
+                    "Year": 1997,
+                }
+            ),
+            datetime.date(year=1997, month=12, day=25),
         )
         self.assertEqual(
             test_func({"Year": 2001, "Month": 5, "Day": 6}),
             datetime.date(year=2001, month=5, day=6),
         )
         self.assertEqual(
-            test_func({"Year": "1997",}), datetime.date(year=1997, month=12, day=25)
+            test_func(
+                {
+                    "Year": "1997",
+                }
+            ),
+            datetime.date(year=1997, month=12, day=25),
         )
         self.assertEqual(
             test_func({"Year": "2001", "Month": "5", "Day": "6"}),

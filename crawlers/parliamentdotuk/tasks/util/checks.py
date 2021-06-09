@@ -13,4 +13,7 @@ def _has_required_fields(obj: dict, names: List[str]) -> bool:
 def check_required_fields(obj: dict, names: List[str]) -> None:
     """Raise MissingFieldException if the given object does not contain all of the provided field names."""
     if not _has_required_fields(obj, names):
-        raise MissingFieldException()
+        missing_fields = ", ".join([x for x in names if x not in obj.keys()])
+        raise MissingFieldException(
+            f"Missing fields [{missing_fields}] from object {obj}"
+        )

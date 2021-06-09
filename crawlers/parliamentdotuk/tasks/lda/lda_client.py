@@ -133,9 +133,9 @@ def update_model(
             try:
                 update_item_func(item)
 
-            except MissingFieldException:
+            except MissingFieldException as e:
                 log.warning(
-                    f"Item response is missing required data and will be skipped: [{endpoint_url} page #{page_number}] {item}"
+                    f"Item response is missing required data and will be skipped: [{endpoint_url} page #{page_number}] {e}"
                 )
                 continue
 

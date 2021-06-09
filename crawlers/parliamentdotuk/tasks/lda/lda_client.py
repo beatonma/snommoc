@@ -24,17 +24,9 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
 from notifications.models import TaskNotification
 from crawlers.parliamentdotuk.tasks.network import get_json
 from crawlers.parliamentdotuk.tasks.lda import contract
-
+from crawlers.parliamentdotuk.tasks.util.checks import MissingFieldException
 
 log = get_task_logger(__name__)
-
-
-def get_next_page_url(json_response) -> Optional[str]:
-    try:
-        return json_response["result"]["next"]
-    except AttributeError as e:
-        log.warning(e)
-        return None
 
 
 def get_value(data: Dict, key: str) -> Optional[Any]:
@@ -49,7 +41,7 @@ def get_value(data: Dict, key: str) -> Optional[Any]:
     Similarly, some values are wrapped in a single-item list.
     """
     if "." in key:
-        v = get_nested_value(data, key)
+        v = _get_nested_value(data, key)
     else:
         v = data.get(key)
 
@@ -77,7 +69,7 @@ def get_value(data: Dict, key: str) -> Optional[Any]:
                 return item
 
 
-def get_date(data: Dict, key: str) -> Optional[datetime.datetime]:
+def get_date(data: Dict, key: str) -> Optional[datetime.date]:
     return coerce_to_date(get_value(data, key))
 
 
@@ -101,14 +93,6 @@ def get_list(data, key) -> list:
     return coerce_to_list(data.get(key))
 
 
-def is_xml_null(obj: dict) -> bool:
-    """Some values return an xml-schema-wrapped version of null.
-
-    Return True iff the given object is an instance of xml-wrapped null.
-    """
-    return isinstance(obj, dict) and obj.get("@xsi:nil", "").lower() == "true"
-
-
 def parse_parliamentdotuk_id(about_url: str) -> Optional[int]:
     matches = re.findall(r".*?/([\d]+)$", about_url)
     if matches:
@@ -117,36 +101,6 @@ def parse_parliamentdotuk_id(about_url: str) -> Optional[int]:
 
 def get_parliamentdotuk_id(obj: dict, key: str = contract.ABOUT) -> Optional[int]:
     return parse_parliamentdotuk_id(get_value(obj, key))
-
-
-def get_nested_value(obj: dict, key: str):
-    parts = key.split(".")
-    parent = obj
-    while len(parts) > 1:
-        parent = parent.get(parts.pop(0))
-        if parent is None or not isinstance(parent, dict):
-            return None
-
-    result = parent.get(parts.pop())
-    if is_xml_null(result):
-        return None
-    return result
-
-
-def _get_list_page_json(
-    endpoint: str,
-    page_number: int = 0,
-    page_size: int = MAX_PAGE_SIZE,
-    **kwargs,
-) -> dict:
-    return get_json(
-        endpoint,
-        params={
-            PARAM_PAGE_SIZE: page_size,
-            PARAM_PAGE: page_number,
-        },
-        **kwargs,
-    )
 
 
 def get_item_data(endpoint: str, **kwargs) -> Optional[Dict]:
@@ -178,6 +132,13 @@ def update_model(
         for item in items:
             try:
                 update_item_func(item)
+
+            except MissingFieldException:
+                log.warning(
+                    f"Item response is missing required data and will be skipped: [{endpoint_url} page #{page_number}] {item}"
+                )
+                continue
+
             except Exception as e:
                 log.warning(f"Failed to update item: {e} {item}")
                 notification.append(
@@ -187,4 +148,50 @@ def update_model(
                 return
 
         page_number += 1
-        next_page = get_next_page_url(data) if follow_pagination else None
+        next_page = _get_next_page_url(data) if follow_pagination else None
+
+
+def _get_nested_value(obj: dict, key: str):
+    parts = key.split(".")
+    parent = obj
+    while len(parts) > 1:
+        parent = parent.get(parts.pop(0))
+        if parent is None or not isinstance(parent, dict):
+            return None
+
+    result = parent.get(parts.pop())
+    if _is_xml_null(result):
+        return None
+    return result
+
+
+def _is_xml_null(obj: dict) -> bool:
+    """Some values return an xml-schema-wrapped version of null.
+
+    Return True iff the given object is an instance of xml-wrapped null.
+    """
+    return isinstance(obj, dict) and obj.get("@xsi:nil", "").lower() == "true"
+
+
+def _get_next_page_url(json_response) -> Optional[str]:
+    try:
+        return json_response["result"]["next"]
+    except AttributeError as e:
+        log.warning(e)
+        return None
+
+
+def _get_list_page_json(
+    endpoint: str,
+    page_number: int = 0,
+    page_size: int = MAX_PAGE_SIZE,
+    **kwargs,
+) -> dict:
+    return get_json(
+        endpoint,
+        params={
+            PARAM_PAGE_SIZE: page_size,
+            PARAM_PAGE: page_number,
+        },
+        **kwargs,
+    )

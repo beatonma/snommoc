@@ -126,7 +126,7 @@ class MockCommonsDivisionTestCase(LocalTestCase):
         mock.Mock(side_effect=get_mock_divisions),
     )
     @mock.patch.object(
-        lda_client, "get_next_page_url", mock.Mock(side_effect=lambda x: None)
+        lda_client, "_get_next_page_url", mock.Mock(side_effect=lambda x: None)
     )
     def test_update_commons_divisions(self):
         update_commons_divisions(follow_pagination=False, cache=None)

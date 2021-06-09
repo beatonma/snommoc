@@ -30,7 +30,7 @@ class UpdateConstituenciesTest(LocalTestCase):
         mock.Mock(side_effect=get_mock_json_response),
     )
     @mock.patch.object(
-        lda_client, "get_next_page_url", mock.Mock(side_effect=lambda x: None)
+        lda_client, "_get_next_page_url", mock.Mock(side_effect=lambda x: None)
     )
     def test_update_constituencies(self):
         self.assertEqual(len(Constituency.objects.all()), 0)

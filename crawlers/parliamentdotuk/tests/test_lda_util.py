@@ -138,19 +138,19 @@ EXAMPLE_ITEM = {
 
 
 class LdaClientTests(LocalTestCase):
-    """ """
+    """
+    lda_client helper function tests.
+    """
 
     def test_get_next_page_url(self):
-        next_page_url = lda_client.get_next_page_url(EXAMPLE_RESPONSE)
+        next_page_url = lda_client._get_next_page_url(EXAMPLE_RESPONSE)
         self.assertEqual(
             next_page_url,
             "http://eldaddp.azurewebsites.net/constituencies.json?_page=1",
         )
 
     def test_get_parliamentdotuk_id(self):
-        parliamentdotuk = lda_client.get_parliamentdotuk_id(
-            EXAMPLE_ITEM, constituencies_contract.ABOUT
-        )
+        parliamentdotuk = lda_client.get_parliamentdotuk_id(EXAMPLE_ITEM)
         self.assertEqual(parliamentdotuk, 146747)
 
     def test_get_value(self):

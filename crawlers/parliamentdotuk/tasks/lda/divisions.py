@@ -149,8 +149,8 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> None:
 @task_notification(label="Update all divisions")
 @json_cache("divisions")
 def update_all_divisions(follow_pagination=True, **kwargs) -> None:
-    update_commons_divisions(follow_pagination)
-    update_lords_divisions(follow_pagination)
+    update_commons_divisions(follow_pagination, **kwargs)
+    update_lords_divisions(follow_pagination, **kwargs)
 
 
 @shared_task
@@ -167,7 +167,7 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
         except CommonsDivision.DoesNotExist:
             fetch_and_create_division(puk)
 
-    def fetch_and_create_division(parliamentdotuk) -> Optional[str]:
+    def fetch_and_create_division(parliamentdotuk) -> None:
         try:
             data = get_item_data(endpoints.url_for_commons_division(parliamentdotuk))
             if data is None:
@@ -190,7 +190,7 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 @json_cache("divisions")
 def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> Optional[str]:
-        puk = parse_parliamentdotuk_id(json_data.get(contract.ABOUT))
+        puk = get_parliamentdotuk_id(json_data)
 
         try:
             LordsDivision.objects.get(parliamentdotuk=puk)
@@ -199,7 +199,7 @@ def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
         except LordsDivision.DoesNotExist:
             return fetch_and_create_division(puk)
 
-    def fetch_and_create_division(parliamentdotuk) -> Optional[str]:
+    def fetch_and_create_division(parliamentdotuk) -> None:
         try:
             data = get_item_data(endpoints.url_for_lords_division(parliamentdotuk))
             if data is None:

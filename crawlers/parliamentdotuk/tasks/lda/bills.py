@@ -20,6 +20,10 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_str,
     update_model,
 )
+from crawlers.parliamentdotuk.tasks.util.checks import (
+    MissingFieldException,
+    check_required_fields,
+)
 from notifications.models.task_notification import task_notification
 
 from repository.models import (
@@ -40,9 +44,24 @@ log = logging.getLogger(__name__)
 
 
 def _get_session(data):
+    check_required_fields(
+        data,
+        [
+            contract.SESSION,
+        ],
+    )
+
     session_data = data.get(contract.SESSION)
     if isinstance(session_data, list):
         session_data = session_data[0]
+
+    check_required_fields(
+        session_data,
+        [
+            contract.ABOUT,
+            contract.SESSION_NAME,
+        ],
+    )
 
     parliamentdotuk = get_parliamentdotuk_id(session_data)
     session, _ = ParliamentarySession.objects.get_or_create(
@@ -55,6 +74,29 @@ def _get_session(data):
 
 
 def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
+    check_required_fields(
+        data,
+        [
+            contract.ABOUT,
+            contract.BILL_TYPE,
+            contract.BILL_TYPE_DESCRIPTION,
+            contract.DATE,
+            contract.ACT_NAME,
+            contract.BILL_CHAPTER,
+            contract.BALLOT_NUMBER,
+            contract.DATE,
+            contract.DESCRIPTION,
+            contract.HOMEPAGE,
+            contract.MONEY_BILL,
+            contract.PRIVATE_BILL,
+            contract.LABEL,
+            contract.PUBLIC_INVOLVED,
+            contract.TITLE,
+            contract.BILL_PUBLICATIONS,
+            contract.BILL_STAGES,
+            contract.SPONSORS,
+        ],
+    )
 
     bill_type, _ = BillType.objects.get_or_create(
         name=get_str(data, contract.BILL_TYPE),
@@ -97,6 +139,14 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
 
 
 def _update_bill_publication(bill, publication):
+    check_required_fields(
+        publication,
+        [
+            contract.ABOUT,
+            contract.TITLE,
+        ],
+    )
+
     pub_puk = get_parliamentdotuk_id(publication)
     BillPublication.objects.update_or_create(
         parliamentdotuk=pub_puk,
@@ -108,6 +158,15 @@ def _update_bill_publication(bill, publication):
 
 
 def _update_bill_stage(bill, data: dict):
+    check_required_fields(
+        data,
+        [
+            contract.ABOUT,
+            contract.BILL_STAGE_TYPE,
+            contract.BILL_STAGE_SITTINGS,
+        ],
+    )
+
     parliamentdotuk = get_parliamentdotuk_id(data)
 
     stage_type_data = data.get(contract.BILL_STAGE_TYPE)
@@ -184,10 +243,12 @@ def update_bills(follow_pagination=True, **kwargs) -> None:
         parliamentdotuk = get_parliamentdotuk_id(json_data)
         try:
             data = get_item_data(endpoints.url_for_bill(parliamentdotuk))
-            if data is None:
-                return None
+            if data is not None:
+                return _update_bill(parliamentdotuk, data)
 
-            return _update_bill(parliamentdotuk, data)
+        except MissingFieldException as e:
+            raise e
+
         except Exception as e:
             BillUpdateError.create(parliamentdotuk, e)
             raise e

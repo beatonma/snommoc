@@ -30,6 +30,7 @@ log = logging.getLogger(__name__)
 
 class Command(AsyncCommand):
     def add_arguments(self, parser):
+        super().add_arguments(parser)
         parser.add_argument(
             "-clear",
             action="store_true",

@@ -22,7 +22,7 @@ from repository.models import (
     BillStageType,
     BillType,
 )
-from tasks.network import json_cache
+from crawlers.parliamentdotuk.tasks.network import json_cache
 from util.management.async_command import AsyncCommand
 
 log = logging.getLogger(__name__)
@@ -85,9 +85,7 @@ def _clear_bill_data():
 def __update_bill(parliamentdotuk: int, **kwargs) -> Optional[str]:
     log.info(f"Updating bill #{parliamentdotuk}")
     try:
-        data = get_item_data(
-            endpoints.BILL.format(parliamentdotuk=parliamentdotuk), **kwargs
-        )
+        data = get_item_data(endpoints.url_for_bill(parliamentdotuk), **kwargs)
         log.info(data)
         if data is None:
             return None

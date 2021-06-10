@@ -3,6 +3,7 @@
 """
 
 import logging
+import traceback
 
 import uuid as uuid
 from functools import wraps
@@ -76,7 +77,9 @@ class TaskNotification(models.Model):
 
     def mark_as_failed(self, err=None):
         if err:
-            self.content = (self.content or "") + "\n" + str(err)
+            self.content = (
+                self.content or ""
+            ) + f"\n{err}\n\n{traceback.format_exc(limit=20)}"
 
         self.failed = True
         self.finished_at = get_now()

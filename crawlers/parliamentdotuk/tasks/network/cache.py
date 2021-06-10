@@ -95,9 +95,10 @@ class JsonResponseCache:
             # Could not read the previous timestamp - assume cache is old.
             return True
 
-        previous_timestamp = timezone.make_aware(
-            timezone.datetime.fromisoformat(previous_timestamp_str)
-        )
+        previous_timestamp = timezone.datetime.fromisoformat(previous_timestamp_str)
+        if timezone.is_naive(previous_timestamp):
+            previous_timestamp = timezone.make_aware(previous_timestamp)
+
         delta = now - previous_timestamp
 
         if delta.total_seconds() >= self.time_to_live:

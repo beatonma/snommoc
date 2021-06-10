@@ -1,7 +1,6 @@
 import logging
 
 from django.http import HttpResponse
-from django.utils import timezone
 
 from dashboard.views.dashboard import StaffView
 from repository.models import Constituency, UnlinkedConstituency
@@ -20,7 +19,7 @@ from crawlers.parliamentdotuk.tasks import (
     update_bills,
     update_election_results,
 )
-
+from util.time import get_today
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ class _ToggleFeaturedView(StaffView):
             self.model.objects.update_or_create(
                 target_id=parliamentdotuk,
                 defaults={
-                    "start": timezone.now().date(),
+                    "start": get_today(),
                 },
             )
         except Exception as e:

@@ -8,7 +8,6 @@ To enable a module for testing:
 
 Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
-import datetime
 import importlib
 import json
 import re
@@ -27,6 +26,7 @@ from django_nose import BasicNoseRunner
 
 from basetest.args import RUNTESTS_CLARGS
 from basetest.test_settings_default import *
+from util.time import get_now
 
 TEST_METHOD_REGEX = re.compile(r"(test_[^\s]+)")
 ERROR_REGEX = re.compile(r".*\n([^\n]+)", re.DOTALL)
@@ -228,7 +228,7 @@ def _compare_tests_with_previous(tests_run: int):
             json.dump(
                 {
                     "tests_run": tests_run,
-                    "timestamp": datetime.datetime.now().strftime("%y-%m-%d"),
+                    "timestamp": get_now().strftime("%y-%m-%d"),
                 },
                 f,
             )

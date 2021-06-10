@@ -11,6 +11,7 @@ from crawlers.parliamentdotuk.tasks.network.cache import (
     _url_to_filename,
     json_cache,
 )
+from util.time import get_now
 
 
 class JsonCacheTest(LocalTestCase):
@@ -44,7 +45,7 @@ class JsonCacheTest(LocalTestCase):
         url = "https://parliament.uk/example/request/data.json"
         data = {"a": 5, "b": 17}
 
-        now = datetime.datetime.now()
+        now = get_now()
         live_cache_timestamp = now + datetime.timedelta(minutes=55)
         expired_timestamp = now + datetime.timedelta(minutes=65)
 

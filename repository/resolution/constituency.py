@@ -14,7 +14,7 @@ from repository.models import (
     ContestedElection,
     UnlinkedConstituency,
 )
-
+from util.time import get_today
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ def get_constituency_for_date(
         return None
 
     if date is None:
-        date = _date.today()
+        date = get_today()
 
     c = Constituency.objects.filter(**_generalised_filter(name))
     count = c.count()
@@ -82,7 +82,7 @@ def get_constituency_for_date(
 
 
 def get_current_constituency(name: str) -> Optional[Constituency]:
-    return get_constituency_for_date(name, _date.today())
+    return get_constituency_for_date(name, get_today())
 
 
 def get_suggested_constituencies(name: str, date: _date) -> List[Constituency]:

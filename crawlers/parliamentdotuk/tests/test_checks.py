@@ -31,14 +31,12 @@ class CheckTests(LocalTestCase):
             "c": 13,
         }
 
-        check_required_fields(data, ["a", "b", "c"])
+        check_required_fields(data, "a", "b", "c")
 
         self.assertRaises(
-            MissingFieldException, check_required_fields, data, ["a", "b", "c", "d"]
+            MissingFieldException, check_required_fields, data, "a", "b", "c", "d"
         )
+        self.assertRaises(MissingFieldException, check_required_fields, data, "c", "d")
         self.assertRaises(
-            MissingFieldException, check_required_fields, data, ["c", "d"]
-        )
-        self.assertRaises(
-            MissingFieldException, check_required_fields, data, ["x", "y", "z"]
+            MissingFieldException, check_required_fields, data, "x", "y", "z"
         )

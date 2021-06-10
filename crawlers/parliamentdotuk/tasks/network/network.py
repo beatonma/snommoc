@@ -32,6 +32,8 @@ def get_json(
         if cached:
             log.info(f"[cached] {encoded_url}")
             return cached
+    else:
+        log.warning(f"No cache specified for call to '{url}'")
 
     log.info(encoded_url)
     with sessions.Session() as session:

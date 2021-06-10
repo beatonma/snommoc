@@ -35,6 +35,10 @@ from repository.models import (
     ParliamentarySession,
 )
 from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.parliamentdotuk.tasks.util.checks import (
+    check_required_fields,
+    MissingFieldException,
+)
 
 log = logging.getLogger(__name__)
 
@@ -100,6 +104,14 @@ def _create_lords_vote(division_id, vote):
 
 
 def _create_commons_division(parliamentdotuk: int, data: dict) -> None:
+    check_required_fields(
+        data,
+        contract.TITLE,
+        contract.DATE,
+        contract.DIVISION_NUMBER,
+        contract.UIN,
+    )
+
     division, _ = CommonsDivision.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
@@ -125,11 +137,22 @@ def _create_commons_division(parliamentdotuk: int, data: dict) -> None:
 
 
 def _create_lords_division(parliamentdotuk: int, data: dict) -> None:
+    check_required_fields(
+        data,
+        contract.TITLE,
+        contract.DESCRIPTION,
+        contract.DATE,
+        contract.DIVISION_NUMBER,
+        contract.UIN,
+        contract.CONTENT,
+        contract.NOT_CONTENT,
+    )
+
     division, _ = LordsDivision.objects.update_or_create(
         parliamentdotuk=parliamentdotuk,
         defaults={
             "title": get_str(data, contract.TITLE),
-            "description": get_str(data, contract.DESCRIPTION[0]),
+            "description": get_str(data, contract.DESCRIPTION),
             "ayes": get_int(data, contract.CONTENT),
             "noes": get_int(data, contract.NOT_CONTENT),
             "date": get_date(data, contract.DATE),
@@ -169,11 +192,18 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 
     def fetch_and_create_division(parliamentdotuk) -> None:
         try:
-            data = get_item_data(endpoints.url_for_commons_division(parliamentdotuk))
+            data = get_item_data(
+                endpoints.url_for_commons_division(parliamentdotuk),
+                cache=kwargs.get("cache"),
+            )
             if data is None:
                 return None
 
             _create_commons_division(parliamentdotuk, data)
+
+        except MissingFieldException as e:
+            raise e
+
         except Exception as e:
             CommonsDivisionUpdateError.create(parliamentdotuk, e)
 
@@ -201,11 +231,17 @@ def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
 
     def fetch_and_create_division(parliamentdotuk) -> None:
         try:
-            data = get_item_data(endpoints.url_for_lords_division(parliamentdotuk))
+            data = get_item_data(
+                endpoints.url_for_lords_division(parliamentdotuk),
+                cache=kwargs.get("cache"),
+            )
             if data is None:
                 return None
 
             return _create_lords_division(parliamentdotuk, data)
+
+        except MissingFieldException as e:
+            raise e
 
         except Exception as e:
             LordsDivisionUpdateError.create(parliamentdotuk, e)

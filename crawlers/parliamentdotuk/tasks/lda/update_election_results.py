@@ -21,14 +21,26 @@ from repository.models import (
     ConstituencyResultDetail,
     Election,
 )
-from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from repository.models.util.queryset import get_or_none
+from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.parliamentdotuk.tasks.util.checks import (
+    check_required_fields,
+    MissingFieldException,
+)
 
 log = logging.getLogger(__name__)
 
 
 def _create_election_result(parliamentdotuk, data):
+    check_required_fields(
+        data,
+        contract.CONSTITUENCY,
+        contract.ELECTION,
+        contract.RESULT_OF_ELECTION,
+        contract.MAJORITY,
+    )
+
     constituency_id = get_parliamentdotuk_id(data, contract.CONSTITUENCY_ABOUT)
     election_name = get_str(data, contract.ELECTION_NAME)
 
@@ -47,8 +59,7 @@ def _create_election_result(parliamentdotuk, data):
         )
     except Exception as e:
         log.warning(
-            f"Could not retrieve ConstituencyResult: "
-            f"constituency={constituency}, election={election}"
+            f"Could not retrieve ConstituencyResult, constituency={constituency}, election={election}: {e}"
         )
         raise e
 
@@ -78,6 +89,12 @@ def _create_election_result(parliamentdotuk, data):
 
 
 def _create_candidate(election_result, candidate):
+    check_required_fields(
+        candidate,
+        contract.CANDIDATE_NAME,
+        contract.CANDIDATE_PARTY,
+    )
+
     name = get_str(candidate, contract.CANDIDATE_NAME)
 
     ConstituencyCandidate.objects.update_or_create(
@@ -94,8 +111,9 @@ def _create_candidate(election_result, candidate):
 @shared_task
 @task_notification(label="Update constituency results")
 @json_cache(name="election-results")
-def update_election_results(follow_pagination=True) -> None:
+def update_election_results(follow_pagination=True, **kwargs) -> None:
     def update_result_details(json_data) -> Optional[str]:
+        """Data does not require updates so we only need to fetch it if we don't already have it."""
         puk = get_parliamentdotuk_id(json_data)
 
         try:
@@ -105,11 +123,18 @@ def update_election_results(follow_pagination=True) -> None:
 
     def fetch_and_create_election_result(parliamentdotuk) -> Optional[str]:
         try:
-            data = get_item_data(endpoints.url_for_election_result(parliamentdotuk))
+            data = get_item_data(
+                endpoints.url_for_election_result(parliamentdotuk),
+                cache=kwargs.get("cache"),
+            )
             if data is None:
                 return None
 
             return _create_election_result(parliamentdotuk, data)
+
+        except MissingFieldException as e:
+            raise e
+
         except Exception as e:
             ElectionResultUpdateError.create(parliamentdotuk, e)
 
@@ -117,4 +142,5 @@ def update_election_results(follow_pagination=True) -> None:
         endpoints.ELECTION_RESULTS,
         update_item_func=update_result_details,
         follow_pagination=follow_pagination,
+        **kwargs,
     )

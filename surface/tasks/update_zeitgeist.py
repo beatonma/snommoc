@@ -8,7 +8,6 @@ from typing import Type
 from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.utils import timezone
 
 from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models import (
@@ -30,6 +29,7 @@ from surface.models.featured import (
     FeaturedLordsDivision,
 )
 from surface.models.zeitgeist import ZeitgeistItem
+from util.time import get_today
 
 log = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ ZEITGEIST_TARGET_MODELS = [
 
 
 @shared_task
-@task_notification(label='Update zeitgeist', level=TaskNotification.LEVEL_DEBUG)
+@task_notification(label="Update zeitgeist", level=TaskNotification.LEVEL_DEBUG)
 def update_zeitgeist(**kwargs):
     _reset_zeitgeist()
 
@@ -55,7 +55,7 @@ def update_zeitgeist(**kwargs):
 
 
 def _update_from_featured():
-    today = timezone.now().today()
+    today = get_today()
 
     _update_featured_people(today)
     _update_featured_commons_divisions(today)
@@ -74,9 +74,9 @@ def _update_from_social():
                 target_id=_id,
                 target_type=ct,
                 defaults={
-                    'reason': ZeitgeistItem.REASON_SOCIAL,
-                    'created_on': created_on,
-                }
+                    "reason": ZeitgeistItem.REASON_SOCIAL,
+                    "created_on": created_on,
+                },
             )
 
 
@@ -88,21 +88,23 @@ def _filter_social_content(model: Type[BaseModel], content_type: ContentType) ->
     return list(
         model.objects.filter(
             target_type=content_type,
-        ).order_by(
-            'created_on',
-        ).values_list(
-            'created_on',
-            'target_id',
+        )
+        .order_by(
+            "created_on",
+        )
+        .values_list(
+            "created_on",
+            "target_id",
         )[:RECENT_ENGAGEMENT_SAMPLE_SIZE]
     )
 
 
 def _filter_featured_content(model: Type[BaseFeatured], today: datetime.date):
-    return model.objects.filter(
-        Q(start__isnull=True) | Q(start__lte=today)
-    ).filter(
-        Q(end__isnull=True) | Q(end__gte=today)
-    ).select_related('target')
+    return (
+        model.objects.filter(Q(start__isnull=True) | Q(start__lte=today))
+        .filter(Q(end__isnull=True) | Q(end__gte=today))
+        .select_related("target")
+    )
 
 
 def _update_featured_people(today: datetime.date):
@@ -131,7 +133,7 @@ def _create_featured_zeitgeist_item(model, created: datetime.date, _id):
         target_id=_id,
         target_type=ct,
         defaults={
-            'reason': ZeitgeistItem.REASON_FEATURE,
-            'created_on': created,
-        }
+            "reason": ZeitgeistItem.REASON_FEATURE,
+            "created_on": created,
+        },
     )

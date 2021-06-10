@@ -7,7 +7,8 @@ from functools import wraps
 from typing import Optional
 
 from django.conf import settings
-from django.utils import timezone
+
+from util.time import get_now
 
 log = logging.getLogger(__name__)
 
@@ -34,8 +35,10 @@ class JsonResponseCache:
         self,
         name,
         time_to_live_seconds=TIME_TO_LIVE_DEFAULT,
-        now: datetime.datetime = timezone.datetime.now(),
+        now=get_now,
     ):
+        if callable(now):
+            now = now()
         root = settings.CRAWLER_CACHE_ROOT
         self.cache_dir = os.path.join(root, name)
         self.time_to_live = time_to_live_seconds
@@ -64,9 +67,11 @@ class JsonResponseCache:
         with open(filepath, "w") as f:
             json.dump(json_data, f)
 
-    def finish(self, now: datetime.datetime = timezone.datetime.now()):
+    def finish(self, now=get_now):
         """Remember the timestamp so we can use time_to_live to determine whether
         we should use the cache next time."""
+        if callable(now):
+            now = now()
         data = {"timestamp": now.isoformat()}
         with open(self._get_meta_filepath(), "w") as f:
             json.dump(data, f)
@@ -77,9 +82,9 @@ class JsonResponseCache:
     def _get_filepath(self, url) -> str:
         return os.path.join(self.cache_dir, _url_to_filename(url))
 
-    def _cache_is_expired(
-        self, now: datetime.datetime = datetime.datetime.now()
-    ) -> bool:
+    def _cache_is_expired(self, now=get_now) -> bool:
+        if callable(now):
+            now = now()
         """Return True if the previous cache timestamp is more than time_to_live seconds in the past"""
         try:
             with open(self._get_meta_filepath(), "r") as f:
@@ -108,8 +113,11 @@ class JsonResponseCache:
 def json_cache(
     name: str,
     ttl_seconds: int = TIME_TO_LIVE_DEFAULT,
-    now: datetime.datetime = timezone.datetime.now(),
+    now=get_now,
 ):
+    if callable(now):
+        now = now()
+
     def cached_call(func):
         @wraps(func)
         def using_cache(*args, **kwargs):

@@ -6,8 +6,6 @@ Update Bills with:
 import logging
 from typing import Optional
 
-from django.core.management import BaseCommand
-
 from crawlers.parliamentdotuk.models import BillUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.bills import (
@@ -24,6 +22,7 @@ from repository.models import (
     BillStageType,
     BillType,
 )
+from tasks.network import json_cache
 from util.management.async_command import AsyncCommand
 
 log = logging.getLogger(__name__)
@@ -32,34 +31,34 @@ log = logging.getLogger(__name__)
 class Command(AsyncCommand):
     def add_arguments(self, parser):
         parser.add_argument(
-            '-clear',
-            action='store_true',
-            help='Delete all divisions and related votes',
+            "-clear",
+            action="store_true",
+            help="Delete all divisions and related votes",
         )
         parser.add_argument(
-            '--id',
+            "--id",
             type=int,
-            help='Update a specific bill by parliamentdotuk ID',
+            help="Update a specific bill by parliamentdotuk ID",
         )
         parser.add_argument(
-            '-fix',
-            action='store_true',
-            help='Try to fix bills that previously generated a BillUpdatedError',
+            "-fix",
+            action="store_true",
+            help="Try to fix bills that previously generated a BillUpdatedError",
         )
 
     def handle(self, *args, **options):
-        if options['clear']:
+        if options["clear"]:
             _clear_bill_data()
 
         func_kwargs = {}
-        if options['id']:
-            options['instant'] = True
+        if options["id"]:
+            options["instant"] = True
             func = _update_bill
             func_kwargs = {
-                'parliamentdotuk': options['id'],
+                "parliamentdotuk": options["id"],
             }
-        elif options['fix']:
-            options['instant'] = True
+        elif options["fix"]:
+            options["instant"] = True
             func = _fix_errored_bills
         else:
             func = update_bills
@@ -82,10 +81,13 @@ def _clear_bill_data():
         M.objects.all().delete()
 
 
-def _update_bill(parliamentdotuk: int) -> Optional[str]:
-    log.info(f'Updating bill #{parliamentdotuk}')
+@json_cache(name="bills")
+def __update_bill(parliamentdotuk: int, **kwargs) -> Optional[str]:
+    log.info(f"Updating bill #{parliamentdotuk}")
     try:
-        data = get_item_data(endpoints.BILL.format(parliamentdotuk=parliamentdotuk))
+        data = get_item_data(
+            endpoints.BILL.format(parliamentdotuk=parliamentdotuk), **kwargs
+        )
         log.info(data)
         if data is None:
             return None
@@ -98,11 +100,12 @@ def _update_bill(parliamentdotuk: int) -> Optional[str]:
 
 def _fix_errored_bills():
     parliamentdotuk_ids = BillUpdateError.objects.values_list(
-        'parliamentdotuk',
-        flat=True
+        "parliamentdotuk", flat=True
     )
 
     for parliamentdotuk in parliamentdotuk_ids:
-        value = _update_bill(parliamentdotuk)
+        value = __update_bill(parliamentdotuk)
         if value is not None:
-            BillUpdateError.objects.filter(parliamentdotuk=parliamentdotuk).update(handled=True)
+            BillUpdateError.objects.filter(parliamentdotuk=parliamentdotuk).update(
+                handled=True
+            )

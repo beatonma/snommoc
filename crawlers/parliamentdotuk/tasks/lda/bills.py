@@ -46,9 +46,7 @@ log = logging.getLogger(__name__)
 def _get_session(data):
     check_required_fields(
         data,
-        [
-            contract.SESSION,
-        ],
+        contract.SESSION,
     )
 
     session_data = data.get(contract.SESSION)
@@ -57,10 +55,8 @@ def _get_session(data):
 
     check_required_fields(
         session_data,
-        [
-            contract.ABOUT,
-            contract.SESSION_NAME,
-        ],
+        contract.ABOUT,
+        contract.SESSION_NAME,
     )
 
     parliamentdotuk = get_parliamentdotuk_id(session_data)
@@ -76,26 +72,13 @@ def _get_session(data):
 def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
     check_required_fields(
         data,
-        [
-            contract.ABOUT,
-            contract.BILL_TYPE,
-            contract.BILL_TYPE_DESCRIPTION,
-            contract.DATE,
-            contract.ACT_NAME,
-            contract.BILL_CHAPTER,
-            contract.BALLOT_NUMBER,
-            contract.DATE,
-            contract.DESCRIPTION,
-            contract.HOMEPAGE,
-            contract.MONEY_BILL,
-            contract.PRIVATE_BILL,
-            contract.LABEL,
-            contract.PUBLIC_INVOLVED,
-            contract.TITLE,
-            contract.BILL_PUBLICATIONS,
-            contract.BILL_STAGES,
-            contract.SPONSORS,
-        ],
+        contract.ABOUT,
+        contract.TITLE,
+        contract.DATE,
+        contract.HOMEPAGE,
+        contract.LABEL,
+        contract.BILL_TYPE,
+        contract.BILL_TYPE_DESCRIPTION,
     )
 
     bill_type, _ = BillType.objects.get_or_create(
@@ -141,10 +124,7 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
 def _update_bill_publication(bill, publication):
     check_required_fields(
         publication,
-        [
-            contract.ABOUT,
-            contract.TITLE,
-        ],
+        contract.TITLE,
     )
 
     pub_puk = get_parliamentdotuk_id(publication)
@@ -160,16 +140,14 @@ def _update_bill_publication(bill, publication):
 def _update_bill_stage(bill, data: dict):
     check_required_fields(
         data,
-        [
-            contract.ABOUT,
-            contract.BILL_STAGE_TYPE,
-            contract.BILL_STAGE_SITTINGS,
-        ],
+        contract.ABOUT,
+        contract.BILL_STAGE_TYPE,
     )
 
     parliamentdotuk = get_parliamentdotuk_id(data)
 
     stage_type_data = data.get(contract.BILL_STAGE_TYPE)
+    check_required_fields(stage_type_data, contract.ABOUT, contract.LABEL)
     stage_type, _ = BillStageType.objects.get_or_create(
         parliamentdotuk=get_parliamentdotuk_id(stage_type_data),
         name=get_str(stage_type_data, contract.LABEL),
@@ -193,8 +171,10 @@ def _update_bill_stage(bill, data: dict):
             defaults={
                 "bill_stage": stage,
                 "date": get_date(sitting, contract.DATE),
-                "formal": get_boolean(sitting, contract.FORMAL),
-                "provisional": get_boolean(sitting, contract.PROVISIONAL),
+                "formal": get_boolean(sitting, contract.FORMAL, default=False),
+                "provisional": get_boolean(
+                    sitting, contract.PROVISIONAL, default=False
+                ),
             },
         )
 
@@ -242,7 +222,10 @@ def update_bills(follow_pagination=True, **kwargs) -> None:
     def fetch_and_update_bill(json_data) -> Optional[str]:
         parliamentdotuk = get_parliamentdotuk_id(json_data)
         try:
-            data = get_item_data(endpoints.url_for_bill(parliamentdotuk))
+            data = get_item_data(
+                endpoints.url_for_bill(parliamentdotuk),
+                cache=kwargs.get("cache"),
+            )
             if data is not None:
                 return _update_bill(parliamentdotuk, data)
 

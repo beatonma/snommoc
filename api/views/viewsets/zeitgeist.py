@@ -21,6 +21,7 @@ from surface.models import (
     MessageOfTheDay,
     ZeitgeistItem,
 )
+from util.time import get_today
 
 log = logging.getLogger(__name__)
 
@@ -29,17 +30,22 @@ class ZeitgeistViewSet(KeyRequiredViewSet):
     """
     Trending/featured stuff.
     """
+
     def get_queryset(self):
         return ZeitgeistItem.objects.all()
 
     def get_object(self):
-        today = timezone.datetime.today()
+        today = get_today()
         queryset = self.filter_queryset(self.get_queryset())
         items = queryset
 
         people = items.filter(target_type=ContentType.objects.get_for_model(Person))
-        commons_divisions = items.filter(target_type=ContentType.objects.get_for_model(CommonsDivision))
-        lords_divisions = items.filter(target_type=ContentType.objects.get_for_model(LordsDivision))
+        commons_divisions = items.filter(
+            target_type=ContentType.objects.get_for_model(CommonsDivision)
+        )
+        lords_divisions = items.filter(
+            target_type=ContentType.objects.get_for_model(LordsDivision)
+        )
         bills = items.filter(target_type=ContentType.objects.get_for_model(Bill))
 
         motd = MessageOfTheDay.objects.filter(
@@ -49,10 +55,10 @@ class ZeitgeistViewSet(KeyRequiredViewSet):
         )
 
         return {
-            'motd': motd,
-            'people': people,
-            'divisions': commons_divisions.union(lords_divisions),
-            'bills': bills,
+            "motd": motd,
+            "people": people,
+            "divisions": commons_divisions.union(lords_divisions),
+            "bills": bills,
         }
 
     serializer_class = ZeitgeistSerializer

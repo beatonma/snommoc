@@ -7,6 +7,7 @@ from functools import wraps
 from typing import Optional
 
 from django.conf import settings
+from django.utils import timezone
 
 from util.time import get_now
 
@@ -83,9 +84,10 @@ class JsonResponseCache:
         return os.path.join(self.cache_dir, _url_to_filename(url))
 
     def _cache_is_expired(self, now=get_now) -> bool:
+        """Return True if the previous cache timestamp is more than time_to_live seconds in the past"""
         if callable(now):
             now = now()
-        """Return True if the previous cache timestamp is more than time_to_live seconds in the past"""
+
         try:
             with open(self._get_meta_filepath(), "r") as f:
                 previous_timestamp_str = json.load(f).get("timestamp")
@@ -93,7 +95,7 @@ class JsonResponseCache:
             # Could not read the previous timestamp - assume cache is old.
             return True
 
-        previous_timestamp = datetime.datetime.fromisoformat(previous_timestamp_str)
+        previous_timestamp = timezone.datetime.fromisoformat(previous_timestamp_str)
         delta = now - previous_timestamp
 
         if delta.total_seconds() >= self.time_to_live:

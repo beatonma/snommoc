@@ -79,6 +79,7 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
         contract.LABEL,
         contract.BILL_TYPE,
         contract.BILL_TYPE_DESCRIPTION,
+        contract.BALLOT_NUMBER,
     )
 
     bill_type, _ = BillType.objects.get_or_create(
@@ -92,7 +93,7 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
             "act_name": get_str(data, contract.ACT_NAME),
             "bill_chapter": get_str(data, contract.BILL_CHAPTER),
             "bill_type": bill_type,
-            "ballot_number": get_int(data, contract.BALLOT_NUMBER),
+            "ballot_number": get_int(data, contract.BALLOT_NUMBER, default=0),
             "date": get_date(data, contract.DATE),
             "description": get_str(data, contract.DESCRIPTION),
             "homepage": get_str(data, contract.HOMEPAGE),

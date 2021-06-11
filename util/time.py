@@ -18,6 +18,13 @@ def get_today() -> datetime.date:
     return get_now().date()
 
 
+def coerce_timezone(dt):
+    if not isinstance(dt, datetime.datetime) or timezone.is_aware(dt):
+        return dt
+    else:
+        return timezone.make_aware(dt)
+
+
 def years_between(
     date_from: Optional[datetime.date],
     date_to: Optional[datetime.date],

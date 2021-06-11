@@ -33,10 +33,15 @@ PASSWORD_HASHERS = [
 ]
 
 LANGUAGE_CODE = "en-gb"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
 TEST_API_KEY = uuid.uuid4()
 HTTP_REQUEST_HEADERS = {}
 HTTP_REQUEST_HEADERS_JSON = {}
+
 
 CRAWLER_CACHE_ROOT = os.path.join(BASE_DIR, "cache/")
 

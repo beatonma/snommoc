@@ -79,7 +79,6 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
         contract.LABEL,
         contract.BILL_TYPE,
         contract.BILL_TYPE_DESCRIPTION,
-        contract.BALLOT_NUMBER,
     )
 
     bill_type, _ = BillType.objects.get_or_create(

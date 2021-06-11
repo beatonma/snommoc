@@ -9,7 +9,7 @@ from typing import Optional
 from django.conf import settings
 from django.utils import timezone
 
-from util.time import get_now
+from util.time import get_now, coerce_timezone
 
 log = logging.getLogger(__name__)
 
@@ -95,9 +95,9 @@ class JsonResponseCache:
             # Could not read the previous timestamp - assume cache is old.
             return True
 
-        previous_timestamp = timezone.datetime.fromisoformat(previous_timestamp_str)
-        if timezone.is_naive(previous_timestamp):
-            previous_timestamp = timezone.make_aware(previous_timestamp)
+        previous_timestamp = coerce_timezone(
+            timezone.datetime.fromisoformat(previous_timestamp_str)
+        )
 
         delta = now - previous_timestamp
 

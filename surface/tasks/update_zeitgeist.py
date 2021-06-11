@@ -29,7 +29,7 @@ from surface.models.featured import (
     FeaturedLordsDivision,
 )
 from surface.models.zeitgeist import ZeitgeistItem
-from util.time import get_today
+from util.time import get_today, coerce_timezone
 
 log = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ def _update_from_social():
                 target_type=ct,
                 defaults={
                     "reason": ZeitgeistItem.REASON_SOCIAL,
-                    "created_on": created_on,
+                    "created_on": coerce_timezone(created_on),
                 },
             )
 
@@ -127,13 +127,13 @@ def _update_featured_bills(today: datetime.date):
         _create_featured_zeitgeist_item(Bill, x.start or today, x.target.pk)
 
 
-def _create_featured_zeitgeist_item(model, created: datetime.date, _id):
+def _create_featured_zeitgeist_item(model, created: datetime.datetime, _id):
     ct = ContentType.objects.get_for_model(model)
     ZeitgeistItem.objects.update_or_create(
         target_id=_id,
         target_type=ct,
         defaults={
             "reason": ZeitgeistItem.REASON_FEATURE,
-            "created_on": created,
+            "created_on": coerce_timezone(created),
         },
     )

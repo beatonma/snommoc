@@ -7,6 +7,9 @@ class MissingFieldException(Exception):
 
 
 def _has_required_fields(obj: dict, names: List[str]) -> bool:
+    if obj is None:
+        return False
+
     return reduce(lambda x, y: x and (y in obj), names)
 
 

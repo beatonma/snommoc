@@ -45,8 +45,6 @@ class PersonPropertyTests(LocalTestCase):
     def test_person_is_mp(self):
         commons = House.objects.create(name=HOUSE_OF_COMMONS)
         lords = House.objects.create(name=HOUSE_OF_LORDS)
-        commons.save()
-        lords.save()
 
         inactive_mp = Person(name=values.EXAMPLE_NAME, active=False, house=commons)
         self.assertFalse(inactive_mp.is_mp)
@@ -63,8 +61,6 @@ class PersonPropertyTests(LocalTestCase):
     def test_person_is_lord(self):
         commons = House.objects.create(name=HOUSE_OF_COMMONS)
         lords = House.objects.create(name=HOUSE_OF_LORDS)
-        commons.save()
-        lords.save()
 
         inactive_mp = Person(name=values.EXAMPLE_NAME, active=False, house=commons)
         self.assertFalse(inactive_mp.is_lord)

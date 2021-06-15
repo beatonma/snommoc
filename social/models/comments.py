@@ -21,11 +21,11 @@ class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
     text = models.CharField(max_length=240)
     flagged = models.BooleanField(
         default=False,
-        help_text='Somebody has flagged this comment for review',
+        help_text="Somebody has flagged this comment for review",
     )
     visible = models.BooleanField(
         default=True,
-        help_text='This comment may be displayed publicly',
+        help_text="This comment may be displayed publicly",
     )
 
     def mark_pending_deletion(self):
@@ -33,26 +33,25 @@ class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
         self.visible = False
 
     def create_placeholder(self):
-        placeholder = Comment.objects.create(
+        Comment.objects.create(
             user=None,
-            text='',
+            text="",
             visible=True,
             target_type=self.target_type,
             target_id=self.target_id,
             created_on=self.created_on,
         )
-        placeholder.save()
 
     class Meta:
-        verbose_name_plural = 'Comments'
-        verbose_name = 'Comment'
+        verbose_name_plural = "Comments"
+        verbose_name = "Comment"
 
         constraints = [
             models.UniqueConstraint(
-                fields=['target_type', 'target_id', 'text', 'user'],
-                name='unique_comment_per_user_per_object'
+                fields=["target_type", "target_id", "text", "user"],
+                name="unique_comment_per_user_per_object",
             )
         ]
 
     def __str__(self):
-        return f'{self.target_id} {self.text}'
+        return f"{self.target_id} {self.text}"

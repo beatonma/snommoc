@@ -22,27 +22,24 @@ from social.views import contract
 log = logging.getLogger(__name__)
 
 
-_COMMENT = 'This is a simple comment'
+_COMMENT = "This is a simple comment"
 
 
 class CommentTests(LocalTestCase):
     """Social comments tests."""
-    VIEW_NAME = 'social-member-comments'
+
+    VIEW_NAME = "social-member-comments"
 
     def setUp(self, *args, **kwargs) -> None:
         self.valid_token = uuid.uuid4()
 
-        Person.objects.create(
-            parliamentdotuk=4837,
-            name='Aaron Bell',
-            active=True
-        ).save()
+        Person.objects.create(parliamentdotuk=4837, name="Aaron Bell", active=True)
 
-        create_sample_usertoken('testuser', token=self.valid_token)
+        create_sample_usertoken("testuser", token=self.valid_token)
 
     def test_post_comment_with_valid_user(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
                 contract.COMMENT_TEXT: _COMMENT,
@@ -54,7 +51,7 @@ class CommentTests(LocalTestCase):
         self.assertLengthEquals(comments, 1)
 
         comment: Comment = comments.first()
-        self.assertEqual(comment.user.username, 'testuser')
+        self.assertEqual(comment.user.username, "testuser")
         self.assertEqual(comment.text, _COMMENT)
 
         # Ensure comment points to the correct target
@@ -65,7 +62,7 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_invalid_user(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: uuid.uuid4(),
                 contract.COMMENT_TEXT: _COMMENT,
@@ -77,7 +74,7 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_no_user(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.COMMENT_TEXT: _COMMENT,
             },
@@ -88,7 +85,7 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_invalid_target(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 101012}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 101012}),
             {
                 contract.USER_TOKEN: self.valid_token,
                 contract.COMMENT_TEXT: _COMMENT,
@@ -100,10 +97,10 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_invalid_comment(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: 'a'*300,  # Too long
+                contract.COMMENT_TEXT: "a" * 300,  # Too long
             },
         )
 
@@ -111,24 +108,24 @@ class CommentTests(LocalTestCase):
         self.assertNoneCreated(Comment)
 
     def test_get_comments(self):
-        user = UserToken.objects.get(username='testuser')
+        user = UserToken.objects.get(username="testuser")
         Comment.objects.create(
             user=user,
             text=_COMMENT,
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
-        ).save()
+        )
 
         # @api_key_required
         response = self.client.get(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Disable @api_key_required
         settings.DEBUG = True
         response = self.client.get(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
         )
         settings.DEBUG = False
 
@@ -138,23 +135,23 @@ class CommentTests(LocalTestCase):
 
         comment = data[0]
         self.assertEqual(comment.get(contract.COMMENT_TEXT), _COMMENT)
-        self.assertEqual(comment.get(contract.USER_NAME), 'testuser')
+        self.assertEqual(comment.get(contract.USER_NAME), "testuser")
 
     def test_comment_unique_per_user_per_object(self):
-        user = UserToken.objects.get(username='testuser')
+        user = UserToken.objects.get(username="testuser")
         Comment.objects.create(
             user=user,
             text=_COMMENT,
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
-        ).save()
+        )
 
         Comment.objects.create(
             user=user,
-            text='different comment',
+            text="different comment",
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
-        ).save()
+        )
 
         # Different user, same target and comment
         Comment.objects.create(
@@ -162,19 +159,22 @@ class CommentTests(LocalTestCase):
             text=_COMMENT,
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
-        ).save()
+        )
 
         # Duplicate of first comment
-        self.assertRaises(IntegrityError, lambda: Comment.objects.create(
-            user=user,
-            text=_COMMENT,
-            target_type=ContentType.objects.get_for_model(Person),
-            target_id=4837,
-        ).save())
+        self.assertRaises(
+            IntegrityError,
+            lambda: Comment.objects.create(
+                user=user,
+                text=_COMMENT,
+                target_type=ContentType.objects.get_for_model(Person),
+                target_id=4837,
+            ),
+        )
 
     def test_post_comment_with_html_is_stripped(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
                 contract.COMMENT_TEXT: 'blah <a href="https://snommoc.org/">just the text</a><script>',
@@ -184,11 +184,11 @@ class CommentTests(LocalTestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         comment: Comment = Comment.objects.first()
-        self.assertEqual(comment.text, 'blah just the text')
+        self.assertEqual(comment.text, "blah just the text")
 
     def test_post_comment_with_html_is_flagged(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
                 contract.COMMENT_TEXT: '<a href="https://snommoc.org/">This should be flagged for review</a><script>',
@@ -203,7 +203,7 @@ class CommentTests(LocalTestCase):
 
     def test_post_comment_with_no_html_is_not_flagged(self):
         response = self.client.post(
-            reverse(CommentTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
                 contract.COMMENT_TEXT: _COMMENT,

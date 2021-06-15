@@ -94,9 +94,7 @@ class TaskNotification(models.Model):
 
     @classmethod
     def create(cls, content: str, title: str = "Task notification"):
-        n = TaskNotification.objects.create(content=content, title=title)
-        n.save()
-        return n
+        return TaskNotification.objects.create(content=content, title=title)
 
     def __str__(self):
         return f"{self.title}"
@@ -116,7 +114,6 @@ def task_notification(label, level=TaskNotification.LEVEL_INFO):
                 notification = TaskNotification.objects.create(
                     title=f"{label}", level=level
                 )
-                notification.save()
                 kwargs["notification"] = notification
 
             try:

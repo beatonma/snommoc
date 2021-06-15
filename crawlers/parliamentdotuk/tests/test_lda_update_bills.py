@@ -33,16 +33,17 @@ log = logging.getLogger(__name__)
 
 class UpdateBillPartialTests(LocalTestCase):
     """"""
+
     def setUp(self) -> None:
         Bill.objects.create(
             parliamentdotuk=754405,
-            title='title',
-            description='description',
+            title="title",
+            description="description",
             date=datetime.date(2018, 12, 21),
-            act_name='act_name',
-            label='label',
-            homepage='https://homepage.example.org',
-        ).save()
+            act_name="act_name",
+            label="label",
+            homepage="https://homepage.example.org",
+        )
 
     def _get_bill(self):
         return Bill.objects.get(parliamentdotuk=754405)
@@ -67,14 +68,14 @@ class UpdateBillPartialTests(LocalTestCase):
 
         session: ParliamentarySession = sessions.first()
         self.assertEqual(session.parliamentdotuk, 730830)
-        self.assertEqual(session.name, '2017-2019')
+        self.assertEqual(session.name, "2017-2019")
 
         stage_types = BillStageType.objects.all()
         self.assertLengthEquals(stage_types, 1)
 
         stage_type: BillStageType = stage_types.first()
         self.assertEqual(stage_type.parliamentdotuk, 392164)
-        self.assertEqual(stage_type.name, 'Committee stage')
+        self.assertEqual(stage_type.name, "Committee stage")
 
     def test_update_bill_publication(self):
         data = EXAMPLE_BILL_PUBLICATION
@@ -85,7 +86,7 @@ class UpdateBillPartialTests(LocalTestCase):
         publication = BillPublication.objects.get(pk=1030167)
         self.assertEqual(
             publication.title,
-            'Prisons (Interference with Wireless Telegraphy) Act 2018 (c. 32)'
+            "Prisons (Interference with Wireless Telegraphy) Act 2018 (c. 32)",
         )
 
     def test_update_bill_sponsors__no_person(self):
@@ -98,7 +99,7 @@ class UpdateBillPartialTests(LocalTestCase):
 
         nameonly_sponsor: BillSponsor = BillSponsor.objects.first()
         self.assertIsNone(nameonly_sponsor.person)
-        self.assertEqual(nameonly_sponsor.name, 'Baroness Pidding')
+        self.assertEqual(nameonly_sponsor.name, "Baroness Pidding")
         self.assertEqual(nameonly_sponsor.bill, bill)
 
     def test_update_bill_sponsors(self):
@@ -107,16 +108,16 @@ class UpdateBillPartialTests(LocalTestCase):
         bill = self._get_bill()
         Person.objects.create(
             parliamentdotuk=12345,
-            name='Baroness Pidding',
+            name="Baroness Pidding",
             active=True,
             house_id=0,
-        ).save()
+        )
 
         _update_sponsor(bill, data)
 
         nameonly_sponsor: BillSponsor = BillSponsor.objects.first()
         self.assertIsNone(nameonly_sponsor.name)
-        self.assertEqual(nameonly_sponsor.person.name, 'Baroness Pidding')
+        self.assertEqual(nameonly_sponsor.person.name, "Baroness Pidding")
         self.assertEqual(nameonly_sponsor.bill, bill)
 
     def tearDown(self) -> None:
@@ -132,20 +133,31 @@ class UpdateBillPartialTests(LocalTestCase):
 
 class UpdateBillTests(LocalTestCase):
     """"""
+
     def test_update_bill(self):
         data = EXAMPLE_BILL
         _update_bill(754405, data)
 
         bill = Bill.objects.first()
         self.assertEqual(bill.parliamentdotuk, 754405)
-        self.assertEqual(bill.bill_chapter, '32')
+        self.assertEqual(bill.bill_chapter, "32")
         self.assertEqual(bill.ballot_number, 13)
-        self.assertEqual(bill.act_name, 'Prisons (Interference with Wireless Telegraphy) Act 2018')
-        self.assertEqual(bill.title, 'Prisons (Interference with Wireless Telegraphy) Bill')
-        self.assertEqual(bill.description, 'A Bill to make provision about interference with wireless telegraphy in prisons and similar institutions.')
-        self.assertEqual(bill.label, 'Prisons (Interference with Wireless Telegraphy)')
+        self.assertEqual(
+            bill.act_name, "Prisons (Interference with Wireless Telegraphy) Act 2018"
+        )
+        self.assertEqual(
+            bill.title, "Prisons (Interference with Wireless Telegraphy) Bill"
+        )
+        self.assertEqual(
+            bill.description,
+            "A Bill to make provision about interference with wireless telegraphy in prisons and similar institutions.",
+        )
+        self.assertEqual(bill.label, "Prisons (Interference with Wireless Telegraphy)")
         self.assertEqual(bill.date, datetime.date(year=2018, month=12, day=21))
-        self.assertEqual(bill.homepage, 'http://services.parliament.uk/bills/2017-19/prisonsinterferencewithwirelesstelegraphy.html')
+        self.assertEqual(
+            bill.homepage,
+            "http://services.parliament.uk/bills/2017-19/prisonsinterferencewithwirelesstelegraphy.html",
+        )
 
         self.assertFalse(bill.is_money_bill)
         self.assertFalse(bill.is_private)
@@ -155,5 +167,7 @@ class UpdateBillTests(LocalTestCase):
         self.assertLengthEquals(bill.billstage_set.all(), 11)
         self.assertLengthEquals(bill.billpublication_set.all(), 12)
 
-        self.assertEqual(bill.bill_type.name, 'Ballot')
-        self.assertEqual(bill.bill_type.description, "Private Members' Bill (Ballot Bill)")
+        self.assertEqual(bill.bill_type.name, "Ballot")
+        self.assertEqual(
+            bill.bill_type.description, "Private Members' Bill (Ballot Bill)"
+        )

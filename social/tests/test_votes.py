@@ -29,44 +29,38 @@ def _create_person_vote(user, vote_type, target_id=4837):
         user=user,
         target_type=ContentType.objects.get_for_model(Person),
         target_id=target_id,
-        vote_type=vote_type
-    ).save()
+        vote_type=vote_type,
+    )
 
 
 class VoteTests(LocalTestCase):
     """Social votes tests."""
-    VIEW_NAME = 'social-member-votes'
+
+    VIEW_NAME = "social-member-votes"
 
     def setUp(self) -> None:
         self.valid_token = uuid.uuid4()
 
         self.target_person = Person.objects.create(
-            parliamentdotuk=4837,
-            name='Aaron Bell',
-            active=True
+            parliamentdotuk=4837, name="Aaron Bell", active=True
         )
-        self.target_person.save()
 
-        Person.objects.create(
-            parliamentdotuk=1423,
-            name='Boris Johnson',
-            active=True
-        ).save()
+        Person.objects.create(parliamentdotuk=1423, name="Boris Johnson", active=True)
 
-        self.valid_user = create_sample_usertoken('testuser', self.valid_token)
+        self.valid_user = create_sample_usertoken("testuser", self.valid_token)
 
     def test_post_vote_with_valid_user(self):
         response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
-                contract.VOTE_TYPE: 'aye'
-            }
+                contract.VOTE_TYPE: "aye",
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        VoteType.objects.get(name='aye')  # Ensure VoteType was created
+        VoteType.objects.get(name="aye")  # Ensure VoteType was created
         self.assertLengthEquals(Vote.objects.all(), 1)
 
         # Ensure vote points to the correct target
@@ -77,11 +71,8 @@ class VoteTests(LocalTestCase):
 
     def test_post_vote_with_invalid_user(self):
         response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),
-            {
-                contract.USER_TOKEN: uuid.uuid4(),
-                contract.VOTE_TYPE: 'aye'
-            }
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
+            {contract.USER_TOKEN: uuid.uuid4(), contract.VOTE_TYPE: "aye"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -89,10 +80,8 @@ class VoteTests(LocalTestCase):
 
     def test_post_vote_with_no_user(self):
         response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),
-            {
-                contract.VOTE_TYPE: 'aye'
-            }
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
+            {contract.VOTE_TYPE: "aye"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -100,11 +89,8 @@ class VoteTests(LocalTestCase):
 
     def test_post_vote_with_invalid_target(self):
         response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 3181}),
-            {
-                contract.USER_TOKEN: self.valid_token,
-                contract.VOTE_TYPE: 'aye'
-            }
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 3181}),
+            {contract.USER_TOKEN: self.valid_token, contract.VOTE_TYPE: "aye"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -112,11 +98,11 @@ class VoteTests(LocalTestCase):
 
     def test_post_vote_with_invalid_type(self):
         response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
-                contract.VOTE_TYPE: 'a'*20,  # Too long
-            }
+                contract.VOTE_TYPE: "a" * 20,  # Too long
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -124,18 +110,15 @@ class VoteTests(LocalTestCase):
 
     def test_votes_one_vote_per_user_per_target(self):
         """Ensure a user can only vote once for a given target object."""
-        vote_type_aye = VoteType.objects.create(name='aye')
-        vote_type_aye.save()
-
-        vote_type_no = VoteType.objects.create(name='no')
-        vote_type_no.save()
+        vote_type_aye = VoteType.objects.create(name="aye")
+        vote_type_no = VoteType.objects.create(name="no")
 
         Vote.objects.create(
             user=self.valid_user,
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
             vote_type=vote_type_aye,
-        ).save()
+        )
 
         # Different user
         Vote.objects.create(
@@ -143,21 +126,22 @@ class VoteTests(LocalTestCase):
             target_type=ContentType.objects.get_for_model(Person),
             target_id=4837,
             vote_type=vote_type_aye,
-        ).save()
+        )
 
         # User duplicate same target
-        self.assertRaises(IntegrityError, lambda: Vote.objects.create(
-            user=self.valid_user,
-            target_type=ContentType.objects.get_for_model(Person),
-            target_id=4837,
-            vote_type=vote_type_no,
-        ).save())
+        self.assertRaises(
+            IntegrityError,
+            lambda: Vote.objects.create(
+                user=self.valid_user,
+                target_type=ContentType.objects.get_for_model(Person),
+                target_id=4837,
+                vote_type=vote_type_no,
+            ),
+        )
 
     def test_get_votes(self):
-        vote_type_aye = VoteType.objects.create(name='aye')
-        vote_type_no = VoteType.objects.create(name='no')
-        vote_type_aye.save()
-        vote_type_no.save()
+        vote_type_aye = VoteType.objects.create(name="aye")
+        vote_type_no = VoteType.objects.create(name="no")
 
         _create_person_vote(self.valid_user, vote_type_aye)
         _create_person_vote(create_sample_usertoken(), vote_type_aye)
@@ -167,14 +151,14 @@ class VoteTests(LocalTestCase):
 
         # @api_key_required
         response = self.client.get(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Disable @api_key_required
         settings.DEBUG = True
         response = self.client.get(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 4837}),
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
         )
         settings.DEBUG = False
 
@@ -182,14 +166,12 @@ class VoteTests(LocalTestCase):
 
         data = json.loads(response.content)
 
-        self.assertEqual(data['aye'], 3)
-        self.assertEqual(data['no'], 2)
+        self.assertEqual(data["aye"], 3)
+        self.assertEqual(data["no"], 2)
 
     def test_delete_vote(self):
-        vote_type_aye = VoteType.objects.create(name='aye')
-        vote_type_no = VoteType.objects.create(name='no')
-        vote_type_aye.save()
-        vote_type_no.save()
+        vote_type_aye = VoteType.objects.create(name="aye")
+        vote_type_no = VoteType.objects.create(name="no")
 
         _create_person_vote(self.valid_user, vote_type_aye)
         _create_person_vote(self.valid_user, vote_type_aye, target_id=1423)
@@ -202,11 +184,11 @@ class VoteTests(LocalTestCase):
         self.assertLengthEquals(Vote.objects.filter(user=self.valid_user), 2)
 
         response = self.client.delete(
-            reverse(VoteTests.VIEW_NAME, kwargs={'pk': 1423}),
-            content_type='application/json',
+            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 1423}),
+            content_type="application/json",
             data={
                 contract.USER_TOKEN: self.valid_token.hex,
-            }
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

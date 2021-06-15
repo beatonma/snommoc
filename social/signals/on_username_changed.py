@@ -18,10 +18,10 @@ log = logging.getLogger(__name__)
 @receiver(
     pre_save,
     sender=UserToken,
-    dispatch_uid='create_previous_username_on_usertoken_name_changed'
+    dispatch_uid="create_previous_username_on_usertoken_name_changed",
 )
 def create_previous_username_on_usertoken_name_changed(
-        sender, instance: UserToken, *args, **kwargs
+    sender, instance: UserToken, *args, **kwargs
 ):
     try:
         existing: UserToken = sender.objects.get(pk=instance.pk)
@@ -33,4 +33,4 @@ def create_previous_username_on_usertoken_name_changed(
                 token=instance,
                 new_name=instance.username,
                 previous_name=existing.username,
-            ).save()
+            )

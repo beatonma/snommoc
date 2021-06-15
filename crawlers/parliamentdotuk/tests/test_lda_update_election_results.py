@@ -32,23 +32,23 @@ class UpdateElectionResultsTests(LocalTestCase):
         Constituency.objects.create(
             parliamentdotuk=143474,
             name="Aberdeen North",
-        ).save()
+        )
 
         Election.objects.create(
             parliamentdotuk=382037,
             name="2010 General Election",
             date=get_today(),
-        ).save()
+        )
 
         Person.objects.create(
             parliamentdotuk=1423,
             name="Boris Johnson",
             active=True,
-        ).save()
+        )
 
         ConstituencyResult.objects.create(
             election_id=382037, constituency_id=143474, mp_id=1423
-        ).save()
+        )
 
     def tearDown(self) -> None:
         self.delete_instances_of(

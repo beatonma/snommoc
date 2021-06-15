@@ -1,6 +1,8 @@
 import os
 import uuid
 
+from datetime import timedelta
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
@@ -44,6 +46,7 @@ HTTP_REQUEST_HEADERS_JSON = {}
 
 
 CRAWLER_CACHE_ROOT = os.path.join(BASE_DIR, "cache/")
+CRAWLER_CACHE_TTL = timedelta(days=10_000).total_seconds()
 
 SNOMMOC = {
     "SOCIAL": {

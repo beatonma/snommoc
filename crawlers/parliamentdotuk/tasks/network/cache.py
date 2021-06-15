@@ -13,7 +13,11 @@ from util.time import get_now, coerce_timezone
 
 log = logging.getLogger(__name__)
 
-TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=4).total_seconds()
+if hasattr(settings, "CRAWLER_CACHE_TTL"):
+    TIME_TO_LIVE_DEFAULT = settings.CRAWLER_CACHE_TTL
+else:
+    TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=4).total_seconds()
+
 URL_REGEX = re.compile(r"(?:http|https)://.*?/(.*)")
 
 
@@ -40,6 +44,7 @@ class JsonResponseCache:
     ):
         if callable(now):
             now = now()
+
         root = settings.CRAWLER_CACHE_ROOT
         self.cache_dir = os.path.join(root, name)
         self.time_to_live = time_to_live_seconds
@@ -83,10 +88,8 @@ class JsonResponseCache:
     def _get_filepath(self, url) -> str:
         return os.path.join(self.cache_dir, _url_to_filename(url))
 
-    def _cache_is_expired(self, now=get_now) -> bool:
+    def _cache_is_expired(self, now: datetime.datetime) -> bool:
         """Return True if the previous cache timestamp is more than time_to_live seconds in the past"""
-        if callable(now):
-            now = now()
 
         try:
             with open(self._get_meta_filepath(), "r") as f:

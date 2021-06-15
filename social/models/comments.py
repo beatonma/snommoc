@@ -33,6 +33,7 @@ class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
         self.visible = False
 
     def create_placeholder(self):
+        """If this comment is deleted, replace it with an empty placeholder."""
         Comment.objects.create(
             user=None,
             text="",

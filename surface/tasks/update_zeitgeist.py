@@ -114,7 +114,11 @@ def _update_featured_people(today: datetime.date):
 
 def _update_featured_commons_divisions(today: datetime.date):
     for x in _filter_featured_content(FeaturedCommonsDivision, today):
-        _create_featured_zeitgeist_item(CommonsDivision, x.start or today, x.target.pk)
+        _create_featured_zeitgeist_item(
+            CommonsDivision,
+            x.start or today,
+            x.target.pk,
+        )
 
 
 def _update_featured_lords_divisions(today: datetime.date):
@@ -127,7 +131,7 @@ def _update_featured_bills(today: datetime.date):
         _create_featured_zeitgeist_item(Bill, x.start or today, x.target.pk)
 
 
-def _create_featured_zeitgeist_item(model, created: datetime.datetime, _id):
+def _create_featured_zeitgeist_item(model, created: datetime.date, _id):
     ct = ContentType.objects.get_for_model(model)
     ZeitgeistItem.objects.update_or_create(
         target_id=_id,

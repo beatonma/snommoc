@@ -9,7 +9,6 @@ import uuid as uuid
 from functools import wraps
 
 from django.db import models
-from django.utils import timezone
 
 from notifications import permissions
 from util.time import get_now
@@ -35,7 +34,7 @@ class TaskNotification(models.Model):
     LEVEL_INFO = 2
     LEVEL_WARN = 3
 
-    created_on = models.DateTimeField(default=timezone.now)
+    created_on = models.DateTimeField(default=get_now)
     modified_on = models.DateTimeField(auto_now=True)
 
     title = models.CharField(max_length=255, blank=True, null=True)

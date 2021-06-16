@@ -100,4 +100,3 @@ class PostTests(LocalTestCase):
             Person,
             House,
         )
-        print("teardown")

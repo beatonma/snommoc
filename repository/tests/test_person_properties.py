@@ -36,7 +36,6 @@ class PersonPropertyTests(LocalTestCase):
         )
 
         with patch("util.time.timezone") as mock_time:
-            # print(mock_time, mock_time.now, util.time.timezone)
             mock_time.now.return_value = timezone.datetime(2021, 3, 5, 11, 13, 17)
 
             self.assertEqual(living_person.age, 47)

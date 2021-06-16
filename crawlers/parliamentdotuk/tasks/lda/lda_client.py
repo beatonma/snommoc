@@ -13,6 +13,7 @@ from crawlers.parliamentdotuk.tasks.lda.endpoints import (
     MAX_PAGE_SIZE,
     PARAM_PAGE_SIZE,
     PARAM_PAGE,
+    debug_url,
 )
 from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
@@ -100,7 +101,10 @@ def parse_parliamentdotuk_id(about_url: str) -> Optional[int]:
 
 
 def get_parliamentdotuk_id(obj: dict, key: str = contract.ABOUT) -> Optional[int]:
-    return parse_parliamentdotuk_id(get_value(obj, key))
+    try:
+        return parse_parliamentdotuk_id(get_value(obj, key))
+    except Exception as e:
+        raise MissingFieldException(e)
 
 
 def get_item_data(endpoint: str, **kwargs) -> Optional[Dict]:
@@ -134,15 +138,18 @@ def update_model(
                 update_item_func(item)
 
             except MissingFieldException as e:
-                log.warning(
-                    f"Item response is missing required data and will be skipped: [{endpoint_url} page #{page_number}] {e}"
+                notification.warning(
+                    f"Item response is missing required data and will be skipped: "
+                    f"[url={debug_url(endpoint_url, **{PARAM_PAGE:page_number, PARAM_PAGE_SIZE:page_size,})}] {e}"
                 )
                 continue
 
             except Exception as e:
                 log.warning(f"Failed to update item: {e} {item}")
+
                 notification.append(
-                    f"Failed to read item for url={endpoint_url} page={page_number}"
+                    f"Failed to read item for"
+                    f"url={debug_url(endpoint_url, **{PARAM_PAGE:page_number, PARAM_PAGE_SIZE:page_size,})}"
                 )
                 notification.mark_as_failed(e)
                 return
@@ -176,7 +183,7 @@ def _is_xml_null(obj: dict) -> bool:
 def _get_next_page_url(json_response) -> Optional[str]:
     try:
         return json_response["result"]["next"]
-    except AttributeError as e:
+    except (KeyError, AttributeError) as e:
         log.warning(e)
         return None
 

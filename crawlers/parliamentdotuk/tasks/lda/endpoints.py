@@ -45,3 +45,8 @@ def url_for_lords_division(parliamentdotuk: int) -> str:
 
 def url_for_election_result(parliamentdotuk: int) -> str:
     return ELECTION_RESULT_DETAIL.format(parliamentdotuk=parliamentdotuk)
+
+
+def debug_url(base: str, **params) -> str:
+    param_str = "&".join([f"{key}={value}" for (key, value) in params.items()])
+    return f"{base}?{param_str}"

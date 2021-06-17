@@ -1,8 +1,10 @@
+from django.db.models import QuerySet
+
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models import Constituency, Person, Party
 
 
-def get_active_members(**kwargs):
+def get_active_members(**kwargs) -> QuerySet[Person]:
     return Person.objects.filter(active=True, **kwargs)
 
 

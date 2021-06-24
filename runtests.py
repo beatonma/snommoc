@@ -37,8 +37,10 @@ TEST_HISTORY_FILE = os.path.join(BASE_DIR, ".runtests.json")
 
 
 TEST_APPS = [
+    "basetest",
     "api",
     "crawlers.parliamentdotuk",
+    "crawlers.wikipedia",
     "dashboard",
     "notifications",
     "repository",

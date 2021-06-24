@@ -6,7 +6,7 @@ from django.conf import settings
 
 from basetest.testcase import LocalTestCase
 
-from crawlers.parliamentdotuk.tasks.network.cache import (
+from crawlers.network.cache import (
     JsonResponseCache,
     _url_to_filename,
     json_cache,

@@ -19,7 +19,7 @@ from repository.resolution.constituency import (
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.party import get_or_create_party
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints, mdp_client
-from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.network import json_cache
 
 CACHE_NAME = "all-members"
 

@@ -22,7 +22,7 @@ from repository.models import (
     BillStageType,
     BillType,
 )
-from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.network import json_cache
 from util.management.async_command import AsyncCommand
 
 log = logging.getLogger(__name__)

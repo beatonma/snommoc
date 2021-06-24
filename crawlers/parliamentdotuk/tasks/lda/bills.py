@@ -38,7 +38,7 @@ from repository.models import (
     BillStageSitting,
 )
 from repository.models.person import PersonAlsoKnownAs
-from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.network import json_cache
 
 log = logging.getLogger(__name__)
 

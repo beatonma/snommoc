@@ -12,7 +12,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     update_model,
     get_date,
 )
-from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.util.checks import check_required_fields
 
 log = logging.getLogger(__name__)

@@ -23,7 +23,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_str,
 )
 from notifications.models import TaskNotification
-from crawlers.parliamentdotuk.tasks.network import get_json
+from crawlers.network import get_json
 from crawlers.parliamentdotuk.tasks.lda import contract
 from crawlers.parliamentdotuk.tasks.util.checks import MissingFieldException
 

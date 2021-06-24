@@ -36,7 +36,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
     coerce_to_date,
 )
-from crawlers.parliamentdotuk.tasks.network import JsonResponseCache, get_json
+from crawlers.network import JsonResponseCache, get_json
 
 log = logging.getLogger(__name__)
 
@@ -451,7 +451,7 @@ class MemberBiographyResponseData(MemberResponseData):
 
 def update_members(
     endpoint_url: str,
-    update_member_func: Callable[[ResponseData], Optional[str]],
+    update_member_func: Callable[[Type[ResponseData]], None],
     response_class: Type[ResponseData],
     notification: TaskNotification,
     cache: Optional[JsonResponseCache] = None,

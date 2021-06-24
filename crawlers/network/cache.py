@@ -131,6 +131,7 @@ def json_cache(
         def using_cache(*args, **kwargs):
             # Check if a cache is already in use by caller
             is_root = "cache" not in kwargs
+            result = None
 
             if is_root:
                 cache = JsonResponseCache(
@@ -139,7 +140,7 @@ def json_cache(
                 kwargs["cache"] = cache
 
             try:
-                func(*args, **kwargs)
+                result = func(*args, **kwargs)
 
             except Exception as e:
                 log.warning(e)
@@ -149,6 +150,8 @@ def json_cache(
                     cache = kwargs["cache"]
                     if cache:
                         cache.finish()
+
+            return result
 
         return using_cache
 

@@ -34,7 +34,7 @@ from repository.models import (
     LordsDivisionVote,
     ParliamentarySession,
 )
-from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.util.checks import (
     check_required_fields,
     MissingFieldException,

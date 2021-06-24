@@ -5,11 +5,29 @@ Update member portrait urls
 import logging
 
 from util.management.async_command import AsyncCommand
-from crawlers.parliamentdotuk.tasks import update_member_portraits
+from crawlers.parliamentdotuk.tasks import (
+    update_member_portraits,
+    update_missing_member_portraits_wikipedia,
+)
 
 log = logging.getLogger(__name__)
 
 
 class Command(AsyncCommand):
+    def add_arguments(self, parser):
+        super().add_arguments(parser)
+
+        parser.add_argument(
+            "-wiki",
+            action="store_true",
+            default=False,
+            help="Use confirmed wikipedia pages to find missing portraits.",
+        )
+
     def handle(self, *args, **options):
-        self.handle_async(update_member_portraits, *args, **options)
+        if options.get("wiki"):
+            func = update_missing_member_portraits_wikipedia
+        else:
+            func = update_member_portraits
+
+        self.handle_async(func, *args, **options)

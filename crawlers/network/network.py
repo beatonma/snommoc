@@ -1,13 +1,13 @@
 import logging
-import time
 from typing import Optional
+from urllib.parse import urlparse
 
 import requests
 from django.conf import settings
 from requests import sessions
 
 from common.network.rate_limit import rate_limit
-from crawlers.parliamentdotuk.tasks.network import JsonResponseCache
+from crawlers.network import JsonResponseCache
 
 log = logging.getLogger(__name__)
 
@@ -16,8 +16,13 @@ def get_json(
     url: str,
     params: Optional[dict] = None,
     cache: Optional[JsonResponseCache] = None,
+    dangerous_encoded_params: bool = False,
     **kwargs,
 ) -> dict:
+    """
+    If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().
+    """
+    print("get_json", url, params)
     req = requests.Request(
         "GET",
         url,
@@ -25,17 +30,24 @@ def get_json(
         params=params,
     )
     r = req.prepare()
+
+    if dangerous_encoded_params is True and isinstance(params, str):
+        encoded_url = urlparse(r.url)
+        r.url = encoded_url.geturl().replace(encoded_url.query, params)
+
     encoded_url = r.url
+    print(f"URL {encoded_url}")
 
     if cache:
         cached = cache.get_json(encoded_url)
+        print("CACHED", cached)
         if cached:
             log.info(f"[cached] {encoded_url}")
             return cached
     else:
         log.warning(f"No cache specified for call to '{url}'")
 
-    log.info(encoded_url)
+    log.info(f"[using network] {encoded_url}")
     with sessions.Session() as session:
         response = session.send(r)
 

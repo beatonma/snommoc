@@ -72,7 +72,7 @@ from repository.models.posts import (
     BasePostMember,
     get_current_post_for_person,
 )
-from crawlers.parliamentdotuk.tasks.network import json_cache
+from crawlers.network import json_cache
 
 CACHE_NAME = "active-members"
 

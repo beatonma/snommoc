@@ -1,5 +1,7 @@
 import logging
+from typing import Optional
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from repository.models.houses import (
@@ -159,6 +161,20 @@ class Person(
     @property
     def is_lord(self) -> bool:
         return self.active and self.house.name == HOUSE_OF_LORDS
+
+    @property
+    def portrait_thumbnail_url(self) -> Optional[str]:
+        try:
+            return self.memberportrait.square_url
+        except (AttributeError, ObjectDoesNotExist):
+            pass
+
+    @property
+    def portrait_fullsize_url(self) -> Optional[str]:
+        try:
+            return self.memberportrait.fullsize_url
+        except (AttributeError, ObjectDoesNotExist):
+            pass
 
     def __str__(self):
         return f"{self.name} [{self.parliamentdotuk}]"

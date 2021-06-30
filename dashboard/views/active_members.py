@@ -19,6 +19,7 @@ class ActiveMembersView(StaffView):
                     {
                         "parliamentdotuk": m.pk,
                         "name": m.name,
+                        "simple_name": f"{m.given_name} {m.family_name}",
                         "wikipedia": m.wikipedia,
                         "party": m.party.name if m.party else None,
                         "house": m.house.name,

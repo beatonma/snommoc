@@ -20,6 +20,7 @@ class ActiveMembersView(StaffView):
                         "parliamentdotuk": m.pk,
                         "name": m.name,
                         "wikipedia": m.wikipedia,
+                        "party": m.party.name if m.party else None,
                         "house": m.house.name,
                         "has_portrait": m.portrait_fullsize_url is not None,
                     }

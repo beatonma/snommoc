@@ -20,6 +20,7 @@ default_params = {
     "action": "query",
     "format": "json",
     "pilicense": "free",
+    "maxlag": 2,
 }
 
 T = TypeVar("T")

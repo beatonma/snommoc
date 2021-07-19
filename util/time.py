@@ -49,11 +49,8 @@ def years_between(
 
 
 def years_since(date: Optional[datetime.date], now=get_today) -> int:
-    print("now", now)
     if callable(now):
         now = now()
-
-    print("now()", now)
 
     return years_between(date, now)
 

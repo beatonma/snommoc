@@ -127,20 +127,19 @@ def _get_wikipedia_portraits(members: QuerySet[Person]):
         )
 
 
-def _get_portrait_url(member_id: int) -> Optional[str]:
+def _get_portrait_url(member_id: int, **kwargs) -> Optional[str]:
     try:
-        data = get_json(endpoints.MEMBER_PORTRAIT_URL.format(id=member_id))
+        data = get_json(endpoints.MEMBER_PORTRAIT_URL.format(id=member_id), **kwargs)
         return data.get("value")
     except Exception as e:
         log.warning(f"Could not get portrait url [{member_id}]: {e}")
         return None
 
 
-def _url_with_croptype(base_url: str, croptype: str):
-    return f"{base_url}?cropType={croptype}"
-
-
 def _update_member_portrait(member: Person, portrait_url: str):
+    def _url_with_croptype(base_url: str, croptype: str):
+        return f"{base_url}?cropType={croptype}"
+
     base_url = MEMBER_PORTRAIT_URL_PATTERN.match(portrait_url).group(1)
 
     try:
@@ -163,7 +162,7 @@ def update_member_portraits(**kwargs):
     active_members = get_active_members()
 
     for m in active_members:
-        url = _get_portrait_url(m.parliamentdotuk)
+        url = _get_portrait_url(m.parliamentdotuk, **kwargs)
         if url is not None:
             _update_member_portrait(m, url)
 

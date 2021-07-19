@@ -1,12 +1,8 @@
-"""
-
-"""
-
 import logging
 
 from rest_framework import serializers
 
-from api.serializers import DetailedModelSerializer
+from api.serializers.base import DetailedModelSerializer
 from repository.models import (
     GovernmentPostMember,
     ParliamentaryPostMember,
@@ -18,18 +14,18 @@ log = logging.getLogger(__name__)
 
 
 class PostMemberSerializer(DetailedModelSerializer):
-    parliamentdotuk = serializers.IntegerField(source='post.parliamentdotuk')
-    name = serializers.CharField(source='post.name')
-    hansard = serializers.CharField(source='post.hansard_name')
+    parliamentdotuk = serializers.IntegerField(source="post.parliamentdotuk")
+    name = serializers.CharField(source="post.name")
+    hansard = serializers.CharField(source="post.hansard_name")
 
 
 class PostMetaClass:
     fields = [
-        'parliamentdotuk',
-        'name',
-        'hansard',
-        'start',
-        'end',
+        "parliamentdotuk",
+        "name",
+        "hansard",
+        "start",
+        "end",
     ]
 
 
@@ -51,21 +47,21 @@ class OppositionPostMemberSerializer(PostMemberSerializer):
 class AllPostSerializer(DetailedModelSerializer):
     governmental = GovernmentPostMemberSerializer(
         many=True,
-        source='governmentpostmember_set',
+        source="governmentpostmember_set",
     )
     parliamentary = ParliamentaryPostMemberSerializer(
         many=True,
-        source='parliamentarypostmember_set',
+        source="parliamentarypostmember_set",
     )
     opposition = OppositionPostMemberSerializer(
         many=True,
-        source='oppositionpostmember_set',
+        source="oppositionpostmember_set",
     )
 
     class Meta:
         model = Person
         fields = [
-            'governmental',
-            'parliamentary',
-            'opposition',
+            "governmental",
+            "parliamentary",
+            "opposition",
         ]

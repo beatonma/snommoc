@@ -1,13 +1,7 @@
-"""
-
-"""
-
 import logging
 
-from api.serializers import (
-    DetailedModelSerializer,
-    InlinePartySerializer,
-)
+from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
+
 from repository.models import (
     Party,
     Person,
@@ -17,16 +11,25 @@ from repository.models import (
 log = logging.getLogger(__name__)
 
 
+class InlinePartySerializer(InlineModelSerializer):
+    class Meta:
+        model = Party
+        fields = [
+            "parliamentdotuk",
+            "name",
+        ]
+
+
 class PartySerializer(DetailedModelSerializer):
     class Meta:
         model = Party
         fields = [
-            'name',
-            'short_name',
-            'long_name',
-            'homepage',
-            'year_founded',
-            'wikipedia',
+            "name",
+            "short_name",
+            "long_name",
+            "homepage",
+            "year_founded",
+            "wikipedia",
         ]
 
 
@@ -36,9 +39,9 @@ class HistoricalPartySerializer(DetailedModelSerializer):
     class Meta:
         model = PartyAssociation
         fields = [
-            'party',
-            'start',
-            'end',
+            "party",
+            "start",
+            "end",
         ]
 
 
@@ -48,5 +51,5 @@ class HistoricalPartyCollectionSerializer(DetailedModelSerializer):
     class Meta:
         model = Person
         fields = [
-            'parties',
+            "parties",
         ]

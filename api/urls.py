@@ -11,7 +11,6 @@ from api.views.viewsets.constituency import (
 )
 from api.views.viewsets.member import (
     MemberForConstituencyViewSet,
-    PartyViewSet,
     MemberViewSet,
     FeaturedMembersViewSet,
     MemberVotesViewSet,
@@ -19,6 +18,7 @@ from api.views.viewsets.member import (
     MemberCommonsVotesViewSet,
     MemberLordsVotesViewSet,
 )
+from api.views.viewsets.party import PartyViewSet
 from api.views.views import PingView
 
 # Views which can return a list of inline viewsets, or a single detailed viewset.

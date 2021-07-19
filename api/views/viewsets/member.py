@@ -6,11 +6,9 @@ import logging
 
 from django.db.models import Q
 
-from api.serializers import (
-    InlineMemberSerializer,
-    InlinePartySerializer,
+from api.serializers.inline import InlineMemberSerializer
+from api.serializers.profile import (
     SimpleProfileSerializer,
-    PartySerializer,
     FullProfileSerializer,
 )
 from api.serializers.votes import (
@@ -24,7 +22,6 @@ from api.views.viewsets import (
 )
 from repository.models import (
     Constituency,
-    Party,
     Person,
     CommonsDivisionVote,
     LordsDivisionVote,
@@ -35,22 +32,9 @@ from util.time import get_today
 log = logging.getLogger(__name__)
 
 
-class PartyViewSet(Searchable, KeyRequiredViewSet):
-    """Political party."""
-
-    queryset = Party.objects.all()
-
-    search_fields = ["name"]
-
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return PartySerializer
-        else:
-            return InlinePartySerializer
-
-
 class MemberViewSet(Searchable, KeyRequiredViewSet):
-    """Member of Parliament."""
+    """Member of Parliament: minimal, most important data.
+    For more detail see [ProfileViewSet]"""
 
     queryset = Person.objects.all().prefetch_related("party", "constituency")
 
@@ -73,42 +57,7 @@ class BaseMemberViewSet(KeyRequiredViewSet):
 
 
 class ProfileViewSet(BaseMemberViewSet):
-    """Return all data about a person.
-
-    Please see individual endpoints for documentation.
-
-    Fields:
-
-      - `profile`
-        - `parliamentdotuk`: Person ID as used on parliament.uk API
-        - `name`: Full name
-        - `full_title`: Full title with honorifics
-        - `given_name`: Simple first name
-        - `family_name`: Simple surname
-        - `active`: Whether this person is currently a member of parliament
-        - `theyworkforyou`: Person ID as used on theyworkforyou.com API
-        - `party`: Current party association
-        - `constituency`: Current constituency represented by this Person
-        - `is_mp`: Whether this person is a current MP
-        - `is_lord`: Whether this person is a current Lord
-        - `date_of_birth`: When this person was born
-        - `date_of_death`: When this person died, if they have passed
-        - `age`: The person's current age, or age at time of death if they have passed
-        - `gender`: This person's 'registered' gender
-        - `place_of_birth`: Town and country of birth
-            - `town`
-            - `country`
-      - `address`
-      - `committees`
-      - `constituencies`
-      - `experiences`
-      - `houses`
-      - `interests`
-      - `speeches`
-      - `parties`
-      - `posts`
-      - `subjects`
-    """
+    """Return detailed data about a person."""
 
     serializer_class = FullProfileSerializer
 
@@ -132,7 +81,7 @@ class MemberVotesViewSet(BaseMemberViewSet):
     serializer_class = MemberVotesSerializer
 
 
-class MemberHouseVotesViewSet(KeyRequiredViewSet):
+class _MemberHouseVotesViewSet(KeyRequiredViewSet):
     """Abstract class for showing votes by a member in a specific house."""
 
     model = None
@@ -150,12 +99,12 @@ class MemberHouseVotesViewSet(KeyRequiredViewSet):
         )
 
 
-class MemberCommonsVotesViewSet(MemberHouseVotesViewSet):
+class MemberCommonsVotesViewSet(_MemberHouseVotesViewSet):
     serializer_class = CommonsVotesSerializer
     model = CommonsDivisionVote
 
 
-class MemberLordsVotesViewSet(MemberHouseVotesViewSet):
+class MemberLordsVotesViewSet(_MemberHouseVotesViewSet):
     serializer_class = LordsVotesSerializer
     model = LordsDivisionVote
 

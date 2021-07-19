@@ -1,12 +1,8 @@
-"""
-
-"""
-
 import logging
 
 from rest_framework.fields import SerializerMethodField
 
-from api.serializers import DetailedModelSerializer
+from api.serializers.base import DetailedModelSerializer
 from repository.models import (
     PhysicalAddress,
     WebAddress,

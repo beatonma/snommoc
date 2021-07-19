@@ -1,40 +1,30 @@
-"""
-
-"""
-
 import logging
 
-from rest_framework import serializers
-
-from api.serializers import (
-    DetailedModelSerializer,
-    InlineConstituencySerializer,
-)
 from api.serializers.election import ElectionSerializer
-from repository.models import Person
-from repository.models.election import ContestedElection
+from repository.models import Person, ContestedElection
+from api.serializers.base import DetailedModelSerializer
+from api.serializers.inline import InlineConstituencySerializer
 
 log = logging.getLogger(__name__)
 
 
 class ContestedElectionSerializer(DetailedModelSerializer):
-    # election = serializers.CharField(source='election.name')
     election = ElectionSerializer()
     constituency = InlineConstituencySerializer()
 
     class Meta:
         model = ContestedElection
         fields = [
-            'election',
-            'constituency',
+            "election",
+            "constituency",
         ]
 
 
 class ContestedElectionCollectionSerializer(DetailedModelSerializer):
-    contested = ContestedElectionSerializer(many=True, source='contestedelection_set')
+    contested = ContestedElectionSerializer(many=True, source="contestedelection_set")
 
     class Meta:
         model = Person
         fields = [
-            'contested',
+            "contested",
         ]

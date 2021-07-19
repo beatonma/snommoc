@@ -1,12 +1,8 @@
-"""
-
-"""
-
 import logging
 
 from rest_framework import serializers
 
-from api.serializers import (
+from api.serializers.base import (
     DetailedModelSerializer,
     InlineModelSerializer,
 )
@@ -39,10 +35,10 @@ class InlineCommonsDivisionSerializer(InlineModelSerializer):
     class Meta:
         model = CommonsDivision
         fields = [
-            'parliamentdotuk',
-            'title',
-            'date',
-            'passed',
+            "parliamentdotuk",
+            "title",
+            "date",
+            "passed",
         ]
 
 
@@ -50,10 +46,10 @@ class InlineLordsDivisionSerializer(InlineModelSerializer):
     class Meta:
         model = LordsDivision
         fields = [
-            'parliamentdotuk',
-            'title',
-            'date',
-            'passed',
+            "parliamentdotuk",
+            "title",
+            "date",
+            "passed",
         ]
 
 
@@ -63,8 +59,8 @@ class CommonsVotesSerializer(InlineModelSerializer):
     class Meta:
         model = CommonsDivisionVote
         fields = [
-            'division',
-            'vote_type',
+            "division",
+            "vote_type",
         ]
 
 
@@ -74,13 +70,14 @@ class LordsVotesSerializer(InlineModelSerializer):
     class Meta:
         model = CommonsDivisionVote
         fields = [
-            'division',
-            'vote_type',
+            "division",
+            "vote_type",
         ]
 
 
 class MemberVotesSerializer(DetailedModelSerializer):
     """Votes by a Person, ordered with most recent first."""
+
     commons = serializers.SerializerMethodField()
     lords = serializers.SerializerMethodField()
 
@@ -91,14 +88,16 @@ class MemberVotesSerializer(DetailedModelSerializer):
         return self._get(person, LordsDivisionVote, LordsVotesSerializer)
 
     def _get(self, person, model, serializer_model):
-        qset = model.objects.filter(person=person) \
-            .prefetch_related('division') \
-            .order_by('-division__date')
+        qset = (
+            model.objects.filter(person=person)
+            .prefetch_related("division")
+            .order_by("-division__date")
+        )
         return serializer_model(qset, many=True).data
 
     class Meta:
         model = Person
         fields = [
-            'commons',
-            'lords',
+            "commons",
+            "lords",
         ]

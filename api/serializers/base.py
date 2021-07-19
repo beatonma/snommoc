@@ -1,7 +1,3 @@
-"""
-
-"""
-
 import logging
 
 from django.http import HttpResponse
@@ -16,11 +12,13 @@ log = logging.getLogger(__name__)
 class InlineModelSerializer(serializers.ModelSerializer):
     """Return basic data about the object with a link for further
     details if required."""
+
     pass
 
 
 class DetailedModelSerializer(serializers.ModelSerializer):
     """Return all details about the object."""
+
     pass
 
 

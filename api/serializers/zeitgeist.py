@@ -1,16 +1,10 @@
-"""
-
-"""
-
 import logging
 
 from rest_framework import serializers
 
-from api.serializers import (
-    InlineMemberSerializer,
-)
 from api.serializers.base import ReadOnlySerializer
-from api.serializers.inline import InlineBillSerializer
+from api.serializers.bills import InlineBillSerializer
+from api.serializers.inline import InlineMemberSerializer
 from api.serializers.motd import MessageOfTheDaySerializer
 from api.serializers.votes import GenericInlineDivisionSerializer
 

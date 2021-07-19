@@ -20,12 +20,14 @@ class JsonCacheTest(LocalTestCase):
     cache_name = "json-cache-test"
 
     def test__url_to_filename(self):
-        url = "http://data.parliament.uk/membersdataplatform/services/mnis/members/query/id=2451/FullBiog/"
+        url = "https://data.parliament.uk/membersdataplatform/services/mnis/members/query/id=2451/FullBiog/"
         filename = _url_to_filename(url)
+
+        expected_hash = "d8dc34c9f9e48db70d8858eb611afbd3a1f8f875"
 
         self.assertEqual(
             filename,
-            "membersdataplatform-services-mnis-members-query-id=2451-FullBiog-.json",
+            f"{expected_hash}.json",
         )
 
     def test_cache_is_correct(self):

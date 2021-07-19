@@ -1,8 +1,8 @@
 import datetime
+import hashlib
 import json
 import logging
 import os
-import re
 from functools import wraps
 from typing import Optional
 
@@ -18,17 +18,15 @@ if hasattr(settings, "CRAWLER_CACHE_TTL"):
 else:
     TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=4).total_seconds()
 
-URL_REGEX = re.compile(r"(?:http|https)://.*?/(.*)")
 
+def _url_to_filename(url: str) -> str:
+    """Convert a url to a safe filename.
 
-def _url_to_filename(url) -> str:
+    By hashing with sha1 we get a reproducible 45 character (hash + extension) filename with safe characters.
     """
-    e.g.
-    http://data.parliament.uk/membersdataplatform/services/mnis/members/query/id=2451/FullBiog/
-    -> membersdataplatform-services-mnis-members-query-id=2451-FullBiog-.json
-    """
-    url_path = re.match(URL_REGEX, url).group(1).replace("/", "-")
-    return f"{url_path}.json"
+    hashed = hashlib.sha1(url.encode()).hexdigest()
+
+    return f"{hashed}.json"
 
 
 class JsonResponseCache:

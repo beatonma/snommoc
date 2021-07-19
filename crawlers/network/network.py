@@ -22,7 +22,6 @@ def get_json(
     """
     If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().
     """
-    print("get_json", url, params)
     req = requests.Request(
         "GET",
         url,

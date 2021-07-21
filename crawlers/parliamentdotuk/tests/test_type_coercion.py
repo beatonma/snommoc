@@ -1,19 +1,13 @@
-"""
-
-"""
 import datetime
-import logging
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.util.coercion import (
-    coerce_to_list,
-    coerce_to_int,
-    coerce_to_str,
-    coerce_to_date,
     coerce_to_boolean,
+    coerce_to_date,
+    coerce_to_int,
+    coerce_to_list,
+    coerce_to_str,
 )
-
-log = logging.getLogger(__name__)
 
 
 class TypeCoercionTests(LocalTestCase):

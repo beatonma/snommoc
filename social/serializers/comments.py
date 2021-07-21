@@ -1,9 +1,4 @@
-"""
-
-"""
-
-import logging
-
+import bleach
 from rest_framework import serializers
 
 from social.models.comments import Comment
@@ -11,21 +6,17 @@ from social.models.mixins import get_target_kwargs
 from social.models.token import UserToken
 from social.views import contract
 
-import bleach
-
-log = logging.getLogger(__name__)
-
 
 class CommentSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username')
+    username = serializers.CharField(source="user.username")
 
     class Meta:
         model = Comment
         fields = [
             contract.USER_NAME,
             contract.COMMENT_TEXT,
-            'created_on',
-            'modified_on',
+            "created_on",
+            "modified_on",
         ]
 
 
@@ -39,8 +30,7 @@ class PostCommentSerializer(serializers.ModelSerializer):
     def validate(self, data):
         original_text = data[contract.COMMENT_TEXT]
         stripped_text = bleach.clean(
-            original_text,
-            tags=[], attributes={}, styles=[], strip=True
+            original_text, tags=[], attributes={}, styles=[], strip=True
         )
         if original_text != stripped_text:
             data[contract.FLAGGED] = True

@@ -1,19 +1,13 @@
-"""
-
-"""
 import datetime
-import logging
 
 from django.db import models
 from django.db.models import Q
 
 from util.time import (
-    is_current,
-    in_range,
     get_now,
+    in_range,
+    is_current,
 )
-
-log = logging.getLogger(__name__)
 
 
 class BaseModel(models.Model):

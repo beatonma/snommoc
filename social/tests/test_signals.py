@@ -1,11 +1,18 @@
-"""
-
-"""
-
-import logging
-
 from django.contrib.auth.models import User
-from django.utils import timezone
+
+from basetest.test_util import create_test_user
+from basetest.testcase import LocalTestCase
+from social.models import Comment
+from social.models.token import (
+    SignInServiceProvider,
+    UserToken,
+)
+from social.tests.util import (
+    create_sample_comment,
+    create_sample_usertoken,
+)
+from util.time import get_now
+from django.contrib.auth.models import User
 
 from basetest.test_util import create_test_user
 from basetest.testcase import LocalTestCase
@@ -20,14 +27,11 @@ from social.tests.util import (
 )
 from util.time import get_now
 
-log = logging.getLogger(__name__)
-
 
 class SocialSignalTest(LocalTestCase):
     """Social signals tests."""
 
     def test_create_usertoken_on_user_created_is_correct(self):
-
         create_test_user()
 
         self.assertEqual(SignInServiceProvider.objects.first().name, "snommoc.org")

@@ -1,34 +1,27 @@
-"""
-
-"""
-
-import logging
 import datetime
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.lda.bills import (
-    _update_bill_stage,
-    _update_bill_publication,
-    _update_sponsor,
     _update_bill,
+    _update_bill_publication,
+    _update_bill_stage,
+    _update_sponsor,
 )
 from crawlers.parliamentdotuk.tests.data_lda_update_bills import (
-    EXAMPLE_BILL_PUBLICATION,
-    EXAMPLE_BILL_STAGE,
-    EXAMPLE_BILL_SPONSOR,
     EXAMPLE_BILL,
+    EXAMPLE_BILL_PUBLICATION,
+    EXAMPLE_BILL_SPONSOR,
+    EXAMPLE_BILL_STAGE,
 )
 from repository.models import (
     Bill,
     BillPublication,
-    BillStageSitting,
-    ParliamentarySession,
-    BillStageType,
     BillSponsor,
+    BillStageSitting,
+    BillStageType,
+    ParliamentarySession,
     Person,
 )
-
-log = logging.getLogger(__name__)
 
 
 class UpdateBillPartialTests(LocalTestCase):

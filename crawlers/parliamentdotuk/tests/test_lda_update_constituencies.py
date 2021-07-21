@@ -1,5 +1,4 @@
 import datetime
-import logging
 from unittest import mock
 
 import requests
@@ -10,11 +9,8 @@ from crawlers.parliamentdotuk.tasks.lda.update_constituencies import (
     update_constituencies,
 )
 from repository.models import Constituency
-
 from .data_lda_update_constituencies import EXAMPLE_RESPONSE
 from .mock import MockJsonResponse
-
-log = logging.getLogger(__name__)
 
 
 def get_mock_json_response(*args, **kwargs):

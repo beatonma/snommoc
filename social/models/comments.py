@@ -1,9 +1,11 @@
-"""
+from django.db import models
 
-"""
-
-import logging
-
+from repository.models.mixins import BaseModel
+from social.models.mixins import (
+    DeletionPendingMixin,
+    GenericTargetMixin,
+    UserMixin,
+)
 from django.db import models
 
 from repository.models.mixins import BaseModel
@@ -13,11 +15,8 @@ from social.models.mixins import (
     UserMixin,
 )
 
-log = logging.getLogger(__name__)
-
 
 class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
-
     text = models.CharField(max_length=240)
     flagged = models.BooleanField(
         default=False,

@@ -1,45 +1,36 @@
-"""
-
-"""
-
-import logging
-
 from crawlers.parliamentdotuk.tasks import (
     update_profiles_for_active_members,
     update_profiles_for_all_members,
 )
-from crawlers.parliamentdotuk.tasks.membersdataplatform.active_members import update_details_for_member
+from crawlers.parliamentdotuk.tasks.membersdataplatform.active_members import (
+    update_details_for_member,
+)
 from util.management.async_command import AsyncCommand
-
-log = logging.getLogger(__name__)
 
 
 class Command(AsyncCommand):
-
     def add_arguments(self, parser):
         super().add_arguments(parser)
 
         parser.add_argument(
-            '-all',
-            action='store_true',
+            "-all",
+            action="store_true",
             default=False,
-            help='Update profile details for active and historic members.'
+            help="Update profile details for active and historic members.",
         )
 
         parser.add_argument(
-            '--member_id',
-            type=int,
-            help='Update all details for a single person.'
+            "--member_id", type=int, help="Update all details for a single person."
         )
 
     def handle(self, *args, **options):
         kwargs = None
 
-        if options['member_id']:
+        if options["member_id"]:
             func = update_details_for_member
-            kwargs = {'member_id': options['member_id']}
+            kwargs = {"member_id": options["member_id"]}
 
-        elif options['all']:
+        elif options["all"]:
             func = update_profiles_for_all_members
 
         else:

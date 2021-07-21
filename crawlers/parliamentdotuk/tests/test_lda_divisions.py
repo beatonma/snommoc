@@ -1,42 +1,33 @@
-"""
-
-"""
 import datetime
-import logging
 from unittest import mock
 
 import requests
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.lda import (
-    lda_client,
-    endpoints,
-)
+from crawlers.parliamentdotuk.tasks.lda import endpoints, lda_client
 from crawlers.parliamentdotuk.tasks.lda.divisions import (
-    _get_vote_commons_member_id,
-    _get_vote_lords_member_id,
     _create_commons_division,
     _create_commons_vote,
+    _get_vote_commons_member_id,
+    _get_vote_lords_member_id,
     update_commons_divisions,
 )
 from crawlers.parliamentdotuk.tests.data_lda_divisions import (
-    EXAMPLE_LORDS_VOTE,
-    EXAMPLE_COMMONS_VOTE,
     EXAMPLE_COMMONS_DIVISION,
+    EXAMPLE_COMMONS_DIVISIONS_LIST,
+    EXAMPLE_COMMONS_DIVISION_COMPLETE,
+    EXAMPLE_COMMONS_VOTE,
     EXAMPLE_COMMONS_VOTE_AYE,
     EXAMPLE_COMMONS_VOTE_NO,
-    EXAMPLE_COMMONS_DIVISION_COMPLETE,
-    EXAMPLE_COMMONS_DIVISIONS_LIST,
+    EXAMPLE_LORDS_VOTE,
 )
 from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivisionVote,
     LordsDivision,
+    LordsDivisionVote,
 )
-
-log = logging.getLogger(__name__)
 
 
 class CommonsDivisionsTestCase(LocalTestCase):

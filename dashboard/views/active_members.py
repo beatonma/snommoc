@@ -1,6 +1,6 @@
 import logging
 
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from dashboard.views.dashboard import StaffView
 from repository.models import Person

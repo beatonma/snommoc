@@ -1,7 +1,3 @@
-"""
-
-"""
-
 import logging
 
 from django.conf import settings
@@ -32,30 +28,32 @@ class VerifyGoogleTokenView(View):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        token = request.POST.get('token', None)
+        token = request.POST.get("token", None)
         if token is None:
-            log.warning('No token provided in POST data')
-            return HttpResponseBadRequest('Required data is missing')
+            log.warning("No token provided in POST data")
+            return HttpResponseBadRequest("Required data is missing")
 
         try:
             id_info = id_token.verify_oauth2_token(token, requests.Request())
         except Exception as e:
-            log.warning(f'Token verification failed: {e}')
-            return HttpResponseBadRequest('Bad token')
+            log.warning(f"Token verification failed: {e}")
+            return HttpResponseBadRequest("Bad token")
 
-        audience = id_info['aud']
-        issuer = id_info['iss']
+        audience = id_info["aud"]
+        issuer = id_info["iss"]
 
         if audience not in settings.G_CLIENT_IDS:
-            log.warning(f'Token has wrong audience "{audience}". Expected one of {settings.G_CLIENT_IDS}')
-            return HttpResponseBadRequest('Bad token')
-        if issuer not in ['accounts.google.com', 'https://accounts.google.com']:
-            log.warning(f'Wrong issuer: {issuer}')
-            return HttpResponseBadRequest('Bad token')
+            log.warning(
+                f'Token has wrong audience "{audience}". Expected one of {settings.G_CLIENT_IDS}'
+            )
+            return HttpResponseBadRequest("Bad token")
+        if issuer not in ["accounts.google.com", "https://accounts.google.com"]:
+            log.warning(f"Wrong issuer: {issuer}")
+            return HttpResponseBadRequest("Bad token")
 
-        userid = id_info['sub']
+        userid = id_info["sub"]
 
-        provider, _ = SignInServiceProvider.objects.get_or_create(name='google')
+        provider, _ = SignInServiceProvider.objects.get_or_create(name="google")
         user_token, _ = UserToken.objects.get_or_create(
             provider=provider,
             provider_account_id=userid,
@@ -67,12 +65,14 @@ class VerifyGoogleTokenView(View):
                 {
                     contract.USER_NAME: user_token.username,
                 },
-                status=status.HTTP_410_GONE
+                status=status.HTTP_410_GONE,
             )
 
         else:
-            return JsonResponse({
-                contract.GOOGLE_TOKEN: token[:32],
-                contract.USER_TOKEN: user_token.token,
-                contract.USER_NAME: user_token.username,
-            })
+            return JsonResponse(
+                {
+                    contract.GOOGLE_TOKEN: token[:32],
+                    contract.USER_TOKEN: user_token.token,
+                    contract.USER_NAME: user_token.username,
+                }
+            )

@@ -2,28 +2,24 @@
 Functions for updating information on all MPs, both current and historical.
 This is the baseline - we will need to provide additional data for active MPs.
 """
-import logging
-
 from celery import shared_task
 
+from crawlers.network import json_cache
+from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints, mdp_client
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     MemberResponseData,
 )
-from repository.models.util.queryset import get_or_none
 from notifications.models.task_notification import task_notification
-from repository.models import Person, House, Constituency, LordsType
-from repository.resolution.constituency import (
-    get_current_constituency,
-    get_constituency_for_date,
-)
+from repository.models import Constituency, House, LordsType, Person
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.party import get_or_create_party
-from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints, mdp_client
-from crawlers.network import json_cache
+from repository.models.util.queryset import get_or_none
+from repository.resolution.constituency import (
+    get_constituency_for_date,
+    get_current_constituency,
+)
 
 CACHE_NAME = "all-members"
-
-log = logging.getLogger(__name__)
 
 
 @shared_task

@@ -1,12 +1,5 @@
-"""
-
-"""
-import logging
-
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.membersdataplatform import mdp_client
-
-log = logging.getLogger(__name__)
 
 
 class MdpClientTests(LocalTestCase):

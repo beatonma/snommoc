@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
@@ -12,8 +6,6 @@ from repository.models.mixins import (
     PeriodMixin,
     PersonMixin,
 )
-
-log = logging.getLogger(__name__)
 
 
 class BasePost(ParliamentDotUkMixin, BaseModel):
@@ -50,39 +42,39 @@ class BasePostMember(PersonMixin, PeriodMixin, BaseModel):
 
 class GovernmentPostMember(BasePostMember):
     post = models.ForeignKey(
-        'GovernmentPost',
+        "GovernmentPost",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.person}: {self.post}'
+        return f"{self.person}: {self.post}"
 
 
 class ParliamentaryPostMember(BasePostMember):
     post = models.ForeignKey(
-        'ParliamentaryPost',
+        "ParliamentaryPost",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.person}: {self.post}'
+        return f"{self.person}: {self.post}"
 
 
 class OppositionPostMember(BasePostMember):
     post = models.ForeignKey(
-        'OppositionPost',
+        "OppositionPost",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.person}: {self.post}'
+        return f"{self.person}: {self.post}"
 
 
 def get_current_post_for_person(person):
     kw = {
-        'person': person,
-        'start__isnull': False,
-        'end__isnull': True,
+        "person": person,
+        "start__isnull": False,
+        "end__isnull": True,
     }
 
     for model in [GovernmentPostMember, ParliamentaryPostMember, OppositionPostMember]:

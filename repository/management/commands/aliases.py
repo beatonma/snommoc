@@ -1,7 +1,3 @@
-"""
-
-"""
-
 import logging
 
 from django.core.management import BaseCommand
@@ -19,10 +15,10 @@ def _update_sponsor_aliases():
 
     unlinked_sponsors = BillSponsor.objects.filter(person=None)
     if unlinked_sponsors.count() == 0:
-        log.info('All sponsors are already linked!')
+        log.info("All sponsors are already linked!")
         return
     else:
-        log.info(f'Attempting to link {unlinked_sponsors.count()} sponsors...')
+        log.info(f"Attempting to link {unlinked_sponsors.count()} sponsors...")
 
     for sponsor in unlinked_sponsors:
         try:
@@ -30,21 +26,23 @@ def _update_sponsor_aliases():
             sponsor.person = alias.person
             sponsor.save()
 
-            log.info(f'Linked sponsor name={sponsor.name} -> person={alias.person}')
+            log.info(f"Linked sponsor name={sponsor.name} -> person={alias.person}")
 
         except PersonAlsoKnownAs.DoesNotExist:
             pass
 
     unlinked_sponsors = BillSponsor.objects.filter(person=None)
     if unlinked_sponsors.count() == 0:
-        log.info('All sponsors are now linked!')
+        log.info("All sponsors are now linked!")
     else:
-        log.info(f'{unlinked_sponsors.count()} sponsors are still unlinked:')
+        log.info(f"{unlinked_sponsors.count()} sponsors are still unlinked:")
         for sponsor in unlinked_sponsors:
             log.info(f'  "{sponsor.name}"')
 
-        log.info('Please create a PersonAlsoKnownAs instance for these names '
-                 'and re-run the command so they can be linked correctly.')
+        log.info(
+            "Please create a PersonAlsoKnownAs instance for these names "
+            "and re-run the command so they can be linked correctly."
+        )
 
 
 class Command(BaseCommand):

@@ -1,4 +1,3 @@
-import logging
 from typing import Optional
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,15 +11,13 @@ from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
     PeriodMixin,
-    TheyWorkForYouMixin,
     PersonMixin,
+    TheyWorkForYouMixin,
     WikipediaMixin,
 )
 from util import time as timeutil
 
 NAME_MAX_LENGTH = 128
-
-log = logging.getLogger(__name__)
 
 
 class Person(

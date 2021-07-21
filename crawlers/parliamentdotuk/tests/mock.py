@@ -1,12 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
-
 class MockJsonResponse:
     def __init__(self, url, json_data, status_code):
         self.json_data = json_data

@@ -1,8 +1,4 @@
-"""
-
-"""
 import json
-import logging
 import uuid
 
 from django.conf import settings
@@ -18,9 +14,6 @@ from social.models import Comment
 from social.models.token import UserToken
 from social.tests.util import create_sample_usertoken
 from social.views import contract
-
-log = logging.getLogger(__name__)
-
 
 _COMMENT = "This is a simple comment"
 

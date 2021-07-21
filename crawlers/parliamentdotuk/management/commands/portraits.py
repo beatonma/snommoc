@@ -1,16 +1,11 @@
 """
 Update member portrait urls
 """
-
-import logging
-
-from util.management.async_command import AsyncCommand
 from crawlers.parliamentdotuk.tasks import (
     update_member_portraits,
     update_missing_member_portraits_wikipedia,
 )
-
-log = logging.getLogger(__name__)
+from util.management.async_command import AsyncCommand
 
 
 class Command(AsyncCommand):

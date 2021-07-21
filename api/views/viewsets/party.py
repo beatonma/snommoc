@@ -1,6 +1,12 @@
+from api.serializers.parties import (
+    PartySerializer,
+    InlinePartySerializer,
+)
+from api.views.viewsets import (
+    Searchable,
+    KeyRequiredViewSet,
+)
 from repository.models import Party
-from api.serializers.parties import PartySerializer, InlinePartySerializer
-from api.views.viewsets import Searchable, KeyRequiredViewSet
 
 
 class PartyViewSet(Searchable, KeyRequiredViewSet):

@@ -1,8 +1,4 @@
-"""
-
-"""
 import datetime
-import logging
 
 from basetest.testcase import (
     LocalTestCase,
@@ -12,9 +8,6 @@ from crawlers.parliamentdotuk.tasks.lda import lda_client
 from crawlers.parliamentdotuk.tasks.lda.contract import (
     constituencies as constituencies_contract,
 )
-
-log = logging.getLogger(__name__)
-
 
 EXAMPLE_RESPONSE = {
     "format": "linked-data-api",

@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
@@ -11,8 +5,6 @@ from repository.models.mixins import (
     ParliamentDotUkMixin,
     PersonMixin,
 )
-
-log = logging.getLogger(__name__)
 
 
 class ElectionType(BaseModel):
@@ -29,10 +21,7 @@ class Election(ParliamentDotUkMixin, BaseModel):
     )
     date = models.DateField(blank=True, null=True, default=None)
     election_type = models.ForeignKey(
-        'ElectionType',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
+        "ElectionType", on_delete=models.CASCADE, null=True, blank=True
     )
 
     def __str__(self):
@@ -41,30 +30,31 @@ class Election(ParliamentDotUkMixin, BaseModel):
 
 class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):
     election = models.ForeignKey(
-        'Election',
+        "Election",
         on_delete=models.CASCADE,
     )
 
     winning_party = models.ForeignKey(
-        'Party',
+        "Party",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.election}: {self.winning_party}'
+        return f"{self.election}: {self.winning_party}"
 
 
 class ContestedElection(PersonMixin, BaseModel):
     """Elections in which the person took part but did not win."""
+
     election = models.ForeignKey(
-        'Election',
+        "Election",
         on_delete=models.CASCADE,
     )
 
     constituency = models.ForeignKey(
-        'Constituency',
+        "Constituency",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.election}: {self.constituency}'
+        return f"{self.election}: {self.constituency}"

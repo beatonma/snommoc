@@ -1,12 +1,3 @@
-"""
-
-"""
-
-import logging
-
-log = logging.getLogger(__name__)
-
-
 KML_FILE_CONTENT = """<?xml version="1.0" encoding="utf-8" ?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document id="root_doc">

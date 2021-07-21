@@ -1,8 +1,4 @@
-"""
-
-"""
 import datetime
-import logging
 from unittest import mock
 
 import requests
@@ -14,6 +10,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     BasicInfoResponseData,
     CommitteeResponseData,
     ConstituencyResponseData,
+    ContestedElectionResponseData,
     DeclaredInterestCategoryResponseData,
     ExperiencesResponseData,
     HouseMembershipResponseData,
@@ -21,7 +18,6 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     PostResponseData,
     SpeechResponseData,
     SubjectsOfInterestResponseData,
-    ContestedElectionResponseData,
 )
 from repository.models import (
     Committee,
@@ -60,11 +56,8 @@ from repository.models.houses import (
     HOUSE_OF_LORDS,
 )
 from repository.tests import values
-
 from .data_mdp_update_active_mps import *
 from .mock import MockJsonResponse
-
-log = logging.getLogger(__name__)
 
 
 def get_mock_biography_response(*args, **kwargs):

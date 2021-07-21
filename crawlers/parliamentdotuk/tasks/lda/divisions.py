@@ -1,31 +1,32 @@
-"""
-
-"""
-
-import logging
 from typing import Optional
 
 from celery import shared_task
 
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.models import (
     CommonsDivisionUpdateError,
     LordsDivisionUpdateError,
 )
 from crawlers.parliamentdotuk.tasks.lda import endpoints
+from crawlers.parliamentdotuk.tasks.lda.contract import (
+    divisions as contract,
+    votes as votes_contract,
+)
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_boolean,
     get_date,
     get_int,
+    get_item_data,
     get_list,
     get_parliamentdotuk_id,
     get_str,
-    update_model,
     parse_parliamentdotuk_id,
-    get_item_data,
+    update_model,
 )
-
-from crawlers.parliamentdotuk.tasks.lda.contract import divisions as contract
-from crawlers.parliamentdotuk.tasks.lda.contract import votes as votes_contract
+from crawlers.parliamentdotuk.tasks.util.checks import (
+    MissingFieldException,
+    check_required_fields,
+)
 from notifications.models.task_notification import task_notification
 from repository.models import (
     CommonsDivision,
@@ -34,13 +35,6 @@ from repository.models import (
     LordsDivisionVote,
     ParliamentarySession,
 )
-from crawlers.network import json_cache
-from crawlers.parliamentdotuk.tasks.util.checks import (
-    check_required_fields,
-    MissingFieldException,
-)
-
-log = logging.getLogger(__name__)
 
 
 def _get_session(data):

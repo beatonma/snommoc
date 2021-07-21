@@ -1,5 +1,3 @@
-import logging
-
 from basetest.test_util import create_sample_dates
 from basetest.testcase import LocalTestCase
 from repository.models import (
@@ -26,8 +24,6 @@ from surface.models import (
     ZeitgeistItem,
 )
 from surface.tasks import update_zeitgeist
-
-log = logging.getLogger(__name__)
 
 
 def _create_featured_person(person: Person):

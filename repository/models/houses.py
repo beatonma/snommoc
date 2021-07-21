@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
@@ -12,11 +6,8 @@ from repository.models.mixins import (
     PersonMixin,
 )
 
-log = logging.getLogger(__name__)
-
-
-HOUSE_OF_COMMONS = 'Commons'
-HOUSE_OF_LORDS = 'Lords'
+HOUSE_OF_COMMONS = "Commons"
+HOUSE_OF_LORDS = "Lords"
 
 
 class House(BaseModel):
@@ -31,14 +22,14 @@ class House(BaseModel):
 
 class HouseMembership(PersonMixin, PeriodMixin, BaseModel):
     house = models.ForeignKey(
-        'House',
+        "House",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return f'{self.house}: {self.person}'
+        return f"{self.house}: {self.person}"
 
     class Meta:
         unique_together = [
-            ['start', 'house', 'person'],
+            ["start", "house", "person"],
         ]

@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
@@ -12,15 +6,14 @@ from repository.models.mixins import (
 )
 from repository.models.person import NAME_MAX_LENGTH
 
-log = logging.getLogger(__name__)
-
 
 class ConstituencyResultDetail(ParliamentDotUkMixin, BaseModel):
     """e.g. https://lda.data.parliament.uk/electionresults/382387.json"""
+
     constituency_result = models.OneToOneField(
-        'ConstituencyResult',
+        "ConstituencyResult",
         on_delete=models.CASCADE,
-        related_name='result_detail',
+        related_name="result_detail",
         null=True,
         blank=True,
     )
@@ -31,14 +24,14 @@ class ConstituencyResultDetail(ParliamentDotUkMixin, BaseModel):
     result = models.CharField(max_length=32)
 
     def __str__(self):
-        return f'{self.constituency_result}'
+        return f"{self.constituency_result}"
 
 
 class ConstituencyCandidate(BaseModel):
     election_result = models.ForeignKey(
-        'ConstituencyResultDetail',
+        "ConstituencyResultDetail",
         on_delete=models.CASCADE,
-        related_name='candidates',
+        related_name="candidates",
     )
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     votes = models.PositiveIntegerField(default=0)
@@ -47,8 +40,8 @@ class ConstituencyCandidate(BaseModel):
 
     class Meta:
         unique_together = [
-            ['election_result', 'name'],
+            ["election_result", "name"],
         ]
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"

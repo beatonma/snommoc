@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.houses import (
@@ -12,11 +6,9 @@ from repository.models.houses import (
 )
 from repository.models.mixins import (
     BaseModel,
-    PersonMixin,
     ParliamentDotUkMixin,
+    PersonMixin,
 )
-
-log = logging.getLogger(__name__)
 
 
 class Division(ParliamentDotUkMixin, BaseModel):
@@ -24,7 +16,7 @@ class Division(ParliamentDotUkMixin, BaseModel):
     date = models.DateField()
 
     session = models.ForeignKey(
-        'ParliamentarySession',
+        "ParliamentarySession",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -35,10 +27,10 @@ class Division(ParliamentDotUkMixin, BaseModel):
     uin = models.CharField(max_length=64)
 
     ayes = models.PositiveSmallIntegerField(
-        help_text='How many members voted for the motion',
+        help_text="How many members voted for the motion",
     )
     noes = models.PositiveSmallIntegerField(
-        help_text='How many members voted against the motion',
+        help_text="How many members voted against the motion",
     )
 
     @property
@@ -60,21 +52,21 @@ class Division(ParliamentDotUkMixin, BaseModel):
 class CommonsDivision(Division):
     deferred_vote = models.BooleanField(
         default=False,
-        help_text='A deferred vote is one that is not held immediately '
-                  'at the end of the debate, but at a later \'convenient\' time',
+        help_text="A deferred vote is one that is not held immediately "
+        "at the end of the debate, but at a later 'convenient' time",
     )
     abstentions = models.PositiveSmallIntegerField(
-        help_text='How many members abstained from voting',
+        help_text="How many members abstained from voting",
     )
     did_not_vote = models.PositiveSmallIntegerField()
     errors = models.PositiveSmallIntegerField(
-        help_text='How many votes were found to be recorded in error'
+        help_text="How many votes were found to be recorded in error"
     )
     non_eligible = models.PositiveSmallIntegerField(
-        help_text='How many members were ineligible to vote in this division',
+        help_text="How many members were ineligible to vote in this division",
     )
     suspended_or_expelled = models.PositiveSmallIntegerField(
-        help_text='How many members were unable to vote due to suspension or expulsion'
+        help_text="How many members were unable to vote due to suspension or expulsion"
     )
 
     @property
@@ -111,15 +103,15 @@ class DivisionVote(PersonMixin, BaseModel):
     @property
     def vote_type(self):
         if self.aye:
-            return 'AyeVote'
+            return "AyeVote"
         elif self.no:
-            return 'NoVote'
+            return "NoVote"
         elif self.abstention:
-            return 'Abstains'
+            return "Abstains"
         elif self.did_not_vote:
-            return 'DidNotVote'
+            return "DidNotVote"
         elif self.suspended_or_expelled:
-            return 'SuspendedOrExpelledVote'
+            return "SuspendedOrExpelledVote"
 
     class Meta:
         abstract = True
@@ -127,21 +119,21 @@ class DivisionVote(PersonMixin, BaseModel):
 
 class CommonsDivisionVote(DivisionVote):
     division = models.ForeignKey(
-        'CommonsDivision',
+        "CommonsDivision",
         on_delete=models.CASCADE,
-        related_name='votes',
+        related_name="votes",
     )
 
     def __str__(self):
-        return f'{self.person} [{self.vote_type}]: {self.division}'
+        return f"{self.person} [{self.vote_type}]: {self.division}"
 
 
 class LordsDivisionVote(DivisionVote):
     division = models.ForeignKey(
-        'LordsDivision',
+        "LordsDivision",
         on_delete=models.CASCADE,
-        related_name='votes',
+        related_name="votes",
     )
 
     def __str__(self):
-        return f'{self.person} [{self.vote_type}]: {self.division}'
+        return f"{self.person} [{self.vote_type}]: {self.division}"

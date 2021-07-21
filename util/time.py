@@ -1,13 +1,7 @@
-"""
-
-"""
 import datetime
-import logging
 from typing import Optional
 
 from django.utils import timezone
-
-log = logging.getLogger(__name__)
 
 
 def get_now() -> datetime.datetime:

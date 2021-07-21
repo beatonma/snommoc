@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from rest_framework import serializers
 
 from social.models.mixins import get_target_kwargs
@@ -13,8 +7,6 @@ from social.models.votes import (
     VoteType,
 )
 from social.views import contract
-
-log = logging.getLogger(__name__)
 
 
 class PostVoteSerializer(serializers.Serializer):
@@ -29,12 +21,14 @@ class PostVoteSerializer(serializers.Serializer):
         pass
 
     def create(self, validated_data):
-        vote_type, _ = VoteType.objects.get_or_create(name=validated_data.get(contract.VOTE_TYPE))
+        vote_type, _ = VoteType.objects.get_or_create(
+            name=validated_data.get(contract.VOTE_TYPE)
+        )
         vote, _ = Vote.objects.update_or_create(
             user=UserToken.objects.get(token=validated_data.get(contract.USER_TOKEN)),
             **get_target_kwargs(self.target),
             defaults={
-                'vote_type': vote_type,
+                "vote_type": vote_type,
             }
         )
         return vote

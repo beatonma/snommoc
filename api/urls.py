@@ -4,13 +4,17 @@ from django.urls import (
 )
 
 from api import endpoints
-
+from api.views import PingView
 from api.views.viewsets.constituency import (
     ConstituencyResultDetailViewSet,
     ConstituencyViewSet,
 )
+from api.views.viewsets.divisions import (
+    CommonsDivisionViewSet,
+    RecentlyUpdatedDivisionsViewSet,
+    LordsDivisionViewSet,
+)
 from api.views.viewsets.member import (
-    MemberForConstituencyViewSet,
     MemberViewSet,
     FeaturedMembersViewSet,
     MemberVotesViewSet,
@@ -19,15 +23,9 @@ from api.views.viewsets.member import (
     MemberLordsVotesViewSet,
 )
 from api.views.viewsets.party import PartyViewSet
-from api.views import PingView
-
-# Views which can return a list of inline viewsets, or a single detailed viewset.
-from api.views.viewsets.procedure import (
+from api.views.viewsets.bills import (
     BillViewSet,
-    CommonsDivisionViewSet,
-    LordsDivisionViewSet,
     RecentlyUpdatedBillsViewSet,
-    RecentlyUpdatedDivisionsViewSet,
 )
 from api.views.viewsets.zeitgeist import ZeitgeistViewSet
 from common.network.routers import (
@@ -64,13 +62,10 @@ detail_only_views = (
     (endpoints.MEMBER_VOTES, MemberVotesViewSet),
     (endpoints.MEMBER_VOTES_COMMONS, MemberCommonsVotesViewSet),
     (endpoints.MEMBER_VOTES_LORDS, MemberLordsVotesViewSet),
-    (endpoints.MEMBER_FOR_CONSTITUENCY, MemberForConstituencyViewSet),
 )
-
 
 # Detailed, but only one target object so no IDs necessary.
 singleton_views = ((endpoints.ZEITGEIST, ZeitgeistViewSet),)
-
 
 list_only_router = ListOnlyRouter()
 for e, v in list_only_views:
@@ -87,7 +82,6 @@ for e, v in detail_only_views:
 singleton_router = SingletonRouter()
 for e, v in singleton_views:
     _register(singleton_router, e, v)
-
 
 urlpatterns = [
     path("ping/", PingView.as_view(), name="api_ping_view"),

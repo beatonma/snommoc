@@ -1,8 +1,4 @@
-"""
-
-"""
 import datetime
-import logging
 from typing import Type
 
 from celery import shared_task
@@ -29,13 +25,9 @@ from surface.models.featured import (
     FeaturedLordsDivision,
 )
 from surface.models.zeitgeist import ZeitgeistItem
-from util.time import get_today, coerce_timezone
-
-log = logging.getLogger(__name__)
-
+from util.time import coerce_timezone, get_today
 
 RECENT_ENGAGEMENT_SAMPLE_SIZE = 20
-
 
 ZEITGEIST_TARGET_MODELS = [
     Person,

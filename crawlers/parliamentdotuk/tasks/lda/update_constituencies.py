@@ -1,21 +1,17 @@
-import logging
-
 from celery import shared_task
 
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import constituencies as contract
-from notifications.models.task_notification import task_notification
-from repository.models import Constituency
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
+    get_date,
     get_parliamentdotuk_id,
     get_str,
     update_model,
-    get_date,
 )
-from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.util.checks import check_required_fields
-
-log = logging.getLogger(__name__)
+from notifications.models.task_notification import task_notification
+from repository.models import Constituency
 
 
 @shared_task

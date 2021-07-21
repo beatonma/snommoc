@@ -2,7 +2,6 @@
 Tests for user account management.
 """
 import json
-import logging
 import uuid
 from typing import List
 
@@ -11,13 +10,11 @@ from rest_framework import status
 
 from basetest.testcase import LocalTestCase
 from social.models.token import (
-    UsernameChanged,
     SignInServiceProvider,
     UserToken,
+    UsernameChanged,
 )
 from social.views import contract
-
-log = logging.getLogger(__name__)
 
 
 class UserAccountViewTests(LocalTestCase):
@@ -55,7 +52,6 @@ class UserAccountViewPostTests(UserAccountViewTests):
     """Tests for user-triggered account updates."""
 
     def _check_response_code(self, newname: str, expected_status_code: int):
-        log.warning(f"name: {newname}")
         response = self.client.post(
             reverse(UserAccountViewTests.VIEW_NAME),
             json.dumps(

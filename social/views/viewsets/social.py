@@ -1,6 +1,3 @@
-"""
-
-"""
 import json
 import logging
 from abc import abstractmethod
@@ -21,8 +18,10 @@ from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Bill,
     CommonsDivision,
+    Constituency,
+    ConstituencyResult,
     LordsDivision,
-    Person, Constituency, ConstituencyResult,
+    Person,
 )
 from social.models import Comment
 from social.models.mixins import get_target_kwargs
@@ -44,20 +43,20 @@ log = logging.getLogger(__name__)
 
 
 def _get_comment_serializer(method):
-    if method == 'POST':
+    if method == "POST":
         return PostCommentSerializer
     else:
         return CommentSerializer
 
 
 def _get_vote_serializer(method):
-    if method == 'POST':
+    if method == "POST":
         return PostVoteSerializer
     else:
-        log.warning(f'UNSUPPORTED METHOD {method}')
+        log.warning(f"UNSUPPORTED METHOD {method}")
 
 
-class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
+class _AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
     model_class = None
 
     class Meta:
@@ -77,7 +76,7 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
     def get_queryset_for_target(self, Model):
         return Model.objects.filter(
             target_type=ContentType.objects.get_for_model(self.model_class),
-            target_id=self.kwargs.get('pk')
+            target_id=self.kwargs.get("pk"),
         )
 
     def get_vote_queryset(self):
@@ -86,26 +85,26 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
     def get_comment_queryset(self):
         return self.get_queryset_for_target(Comment)
 
-    @action(methods=['get', 'post'], detail=False)
+    @action(methods=["get", "post"], detail=False)
     def comments(self, request, *args, **kwargs):
-        if request.method == 'GET':
+        if request.method == "GET":
             return self.get_comments()
 
-        elif request.method == 'POST':
+        elif request.method == "POST":
             return self.create_comment(request)
 
-    @action(methods=['get', 'post', 'delete'], detail=False)
+    @action(methods=["get", "post", "delete"], detail=False)
     def votes(self, request, *args, **kwargs):
-        if request.method == 'GET':
+        if request.method == "GET":
             return self.get_votes()
 
-        elif request.method == 'POST':
+        elif request.method == "POST":
             return self.create_vote(request)
 
-        elif request.method == 'DELETE':
+        elif request.method == "DELETE":
             return self.delete_vote(request)
 
-    @action(methods=['get'], detail=False)
+    @action(methods=["get"], detail=False)
     def all(self, request, *args, **kwargs):
         target = self.get_target_or_404()
         user_vote = self.get_user_vote_type(request, target)
@@ -122,12 +121,12 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         return self.get_comment_queryset()
 
     def get_comments(self):
-        data = _get_comment_serializer('GET')(self._get_comments_data(), many=True)
+        data = _get_comment_serializer("GET")(self._get_comments_data(), many=True)
         return Response(data=data.data)
 
     @user_token_required
     def create_comment(self, request, token):
-        return self._create(request, _get_comment_serializer('POST'))
+        return self._create(request, _get_comment_serializer("POST"))
 
     def _get_votes_data(self) -> Dict[str, int]:
         qs = self.get_vote_queryset()
@@ -135,10 +134,7 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         vote_counts = {}
 
         for vt in vote_types:
-            vote_counts[vt.name] = qs.filter(
-                vote_type=vt,
-                user__enabled=True
-            ).count()
+            vote_counts[vt.name] = qs.filter(vote_type=vt, user__enabled=True).count()
         return vote_counts
 
     def get_votes(self):
@@ -156,7 +152,7 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
         try:
             return UserToken.objects.get(token=token)
         except Exception as e:
-            log.warning(f'Unable to retrieve UserToken for received token: {e}')
+            log.warning(f"Unable to retrieve UserToken for received token: {e}")
             return None
 
     def get_user_vote_type(self, request, target):
@@ -174,7 +170,7 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
 
     @user_token_required
     def create_vote(self, request, token):
-        return self._create(request, _get_vote_serializer('POST'))
+        return self._create(request, _get_vote_serializer("POST"))
 
     def _create(self, request, serializer):
         target = self.get_target_or_404()
@@ -184,7 +180,7 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
             data.save()
             return HttpResponse(status=status.HTTP_201_CREATED)
         else:
-            log.warning(f'Invalid data [{request.path}]: {data}')
+            log.warning(f"Invalid data [{request.path}]: {data}")
             return Response(data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete_vote(self, request):
@@ -199,50 +195,50 @@ class AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
                 **get_target_kwargs(target),
             ).delete()
         except Exception as e:
-            log.warning(f'Failed to delete vote: {e} {target}')
+            log.warning(f"Failed to delete vote: {e} {target}")
 
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
 
     def get_target_or_404(self):
-        return get_object_or_404(self.model_class, pk=self.kwargs.get('pk'))
+        return get_object_or_404(self.model_class, pk=self.kwargs.get("pk"))
 
 
-class MemberSocialViewSet(AbstractSocialViewSet):
+class MemberSocialViewSet(_AbstractSocialViewSet):
     def get_target_title(self, target: Person) -> str:
         return target.name
 
     model_class = Person
 
 
-class CommonsDivisionSocialViewSet(AbstractSocialViewSet):
+class CommonsDivisionSocialViewSet(_AbstractSocialViewSet):
     def get_target_title(self, target: CommonsDivision) -> str:
         return target.title
 
     model_class = CommonsDivision
 
 
-class LordsDivisionSocialViewSet(AbstractSocialViewSet):
+class LordsDivisionSocialViewSet(_AbstractSocialViewSet):
     def get_target_title(self, target: LordsDivision) -> str:
         return target.title
 
     model_class = LordsDivision
 
 
-class BillSocialViewSet(AbstractSocialViewSet):
+class BillSocialViewSet(_AbstractSocialViewSet):
     def get_target_title(self, target: Bill) -> str:
         return target.title
 
     model_class = Bill
 
 
-class ConstituencySocialViewSet(AbstractSocialViewSet):
+class ConstituencySocialViewSet(_AbstractSocialViewSet):
     def get_target_title(self, target) -> str:
         return target.name
 
     model_class = Constituency
 
 
-class ConstituencyResultSocialViewSet(AbstractSocialViewSet):
+class ConstituencyResultSocialViewSet(_AbstractSocialViewSet):
     def get_target_title(self, target) -> str:
         return target.election.name
 

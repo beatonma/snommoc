@@ -1,5 +1,4 @@
 from datetime import date
-import logging
 
 from basetest.testcase import LocalTestCase
 from repository.models import Constituency, ConstituencyAlsoKnownAs
@@ -9,9 +8,6 @@ from repository.resolution.constituency import (
     get_suggested_constituencies,
 )
 from repository.tests.data.sample_constituencies import create_sample_constituencies
-
-
-log = logging.getLogger(__name__)
 
 
 class ConstituencyTests(LocalTestCase):

@@ -1,8 +1,3 @@
-"""
-
-"""
-import logging
-
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.lda.update_election_results import (
     _create_election_result,
@@ -21,8 +16,6 @@ from repository.models.election_result import (
     ConstituencyResultDetail,
 )
 from util.time import get_today
-
-log = logging.getLogger(__name__)
 
 
 class UpdateElectionResultsTests(LocalTestCase):

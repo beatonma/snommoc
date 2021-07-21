@@ -1,8 +1,4 @@
-"""
-
-"""
 import datetime
-import logging
 from unittest.mock import patch
 
 from django.utils import timezone
@@ -15,9 +11,6 @@ from repository.models.houses import (
 )
 from repository.models.person import Person
 from repository.tests import values
-
-
-log = logging.getLogger(__name__)
 
 
 class PersonPropertyTests(LocalTestCase):

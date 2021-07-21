@@ -1,7 +1,3 @@
-"""
-
-"""
-
 import logging
 
 from django.core.management import BaseCommand
@@ -12,10 +8,10 @@ log = logging.getLogger(__name__)
 class AsyncCommand(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
-            '-instant',
-            action='store_true',
+            "-instant",
+            action="store_true",
             default=False,
-            help='Run the task synchronously.',
+            help="Run the task synchronously.",
         )
 
     def handle_async(self, func, *args, kwargs=None, **options):
@@ -26,14 +22,14 @@ class AsyncCommand(BaseCommand):
         def handle(self, *args, **options):
             self.handle_async(myfunc, *args, **options)
         """
-        if options['instant']:
-            log.info(f'Launching function `{func}` synchronously.')
+        if options["instant"]:
+            log.info(f"Launching function `{func}` synchronously.")
             if kwargs:
                 func(**kwargs)
             else:
                 func()
         else:
-            log.info(f'Dispatching function `{func}` to worker.')
+            log.info(f"Dispatching function `{func}` to worker.")
             if kwargs:
                 func.delay(**kwargs)
             else:

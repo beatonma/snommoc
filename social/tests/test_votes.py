@@ -1,8 +1,4 @@
-"""
-
-"""
 import json
-import logging
 import uuid
 
 from django.conf import settings
@@ -20,8 +16,6 @@ from social.models.votes import (
 )
 from social.tests.util import create_sample_usertoken
 from social.views import contract
-
-log = logging.getLogger(__name__)
 
 
 def _create_person_vote(user, vote_type, target_id=4837):

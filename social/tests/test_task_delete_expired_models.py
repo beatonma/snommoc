@@ -1,11 +1,4 @@
-"""
-
-"""
-
-import logging
 from datetime import timedelta
-
-from django.utils import timezone
 
 from basetest.testcase import LocalTestCase
 from social.models import Comment
@@ -20,8 +13,6 @@ from social.tests.util import (
     create_sample_usertoken,
 )
 from util.time import get_now
-
-log = logging.getLogger(__name__)
 
 
 class TestDeleteExpiredTask(LocalTestCase):

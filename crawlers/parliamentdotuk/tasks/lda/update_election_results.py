@@ -3,8 +3,10 @@ from typing import Optional
 
 from celery import shared_task
 
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.models import ElectionResultUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
+from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_int,
     get_item_data,
@@ -12,6 +14,10 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_parliamentdotuk_id,
     get_str,
     update_model,
+)
+from crawlers.parliamentdotuk.tasks.util.checks import (
+    MissingFieldException,
+    check_required_fields,
 )
 from notifications.models.task_notification import task_notification
 from repository.models import (
@@ -22,12 +28,6 @@ from repository.models import (
     Election,
 )
 from repository.models.util.queryset import get_or_none
-from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
-from crawlers.network import json_cache
-from crawlers.parliamentdotuk.tasks.util.checks import (
-    check_required_fields,
-    MissingFieldException,
-)
 
 log = logging.getLogger(__name__)
 

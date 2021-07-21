@@ -1,8 +1,8 @@
 from api.serializers.constituencies import ConstituencySerializer
-from api.serializers.inline import InlineConstituencySerializer
 from api.serializers.constituencies.election_results import (
     ConstituencyResultDetailsSerializer,
 )
+from api.serializers.inline import InlineConstituencySerializer
 from api.views.viewsets import (
     KeyRequiredViewSet,
     Searchable,

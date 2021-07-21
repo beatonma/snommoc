@@ -1,12 +1,8 @@
-"""
-
-"""
-
-import logging
 from typing import Optional
 
 from celery import shared_task
 
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.models import BillUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import bills as contract
@@ -14,9 +10,9 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_boolean,
     get_date,
     get_int,
+    get_item_data,
     get_list,
     get_parliamentdotuk_id,
-    get_item_data,
     get_str,
     update_model,
 )
@@ -25,22 +21,18 @@ from crawlers.parliamentdotuk.tasks.util.checks import (
     check_required_fields,
 )
 from notifications.models.task_notification import task_notification
-
 from repository.models import (
     Bill,
     BillPublication,
+    BillSponsor,
+    BillStage,
+    BillStageSitting,
+    BillStageType,
     BillType,
     ParliamentarySession,
     Person,
-    BillSponsor,
-    BillStage,
-    BillStageType,
-    BillStageSitting,
 )
 from repository.models.person import PersonAlsoKnownAs
-from crawlers.network import json_cache
-
-log = logging.getLogger(__name__)
 
 
 def _get_session(data):

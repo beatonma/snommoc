@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 
@@ -21,8 +15,6 @@ from surface.models import (
     ZeitgeistItem,
 )
 from util.time import get_today
-
-log = logging.getLogger(__name__)
 
 
 class ZeitgeistViewSet(KeyRequiredViewSet):

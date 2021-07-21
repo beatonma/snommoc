@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
@@ -11,13 +5,11 @@ from repository.models.mixins import (
     PersonMixin,
 )
 
-log = logging.getLogger(__name__)
-
 
 class MaidenSpeech(PersonMixin, BaseModel):
     date = models.DateField()
     house = models.ForeignKey(
-        'House',
+        "House",
         on_delete=models.CASCADE,
     )
     subject = models.CharField(
@@ -29,11 +21,11 @@ class MaidenSpeech(PersonMixin, BaseModel):
         max_length=32,
         blank=True,
         null=True,
-        help_text='Hansard ID',
+        help_text="Hansard ID",
     )
 
     def __str__(self):
-        return f'{self.person}: {self.house}'
+        return f"{self.person}: {self.house}"
 
     class Meta:
-        verbose_name_plural = 'Maiden Speeches'
+        verbose_name_plural = "Maiden Speeches"

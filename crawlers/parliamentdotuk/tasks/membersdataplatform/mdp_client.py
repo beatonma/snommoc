@@ -1,8 +1,4 @@
-"""
-
-"""
 import datetime
-import logging
 from typing import (
     Callable,
     List,
@@ -10,8 +6,7 @@ from typing import (
     Type,
 )
 
-
-from notifications.models import TaskNotification
+from crawlers.network import JsonResponseCache, get_json
 from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     addresses as address_contract,
     basic_details as basic_contract,
@@ -30,15 +25,13 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     status as status_contract,
 )
 from crawlers.parliamentdotuk.tasks.util.coercion import (
-    coerce_to_list,
-    coerce_to_str,
-    coerce_to_int,
     coerce_to_boolean,
     coerce_to_date,
+    coerce_to_int,
+    coerce_to_list,
+    coerce_to_str,
 )
-from crawlers.network import JsonResponseCache, get_json
-
-log = logging.getLogger(__name__)
+from notifications.models import TaskNotification
 
 """
 Get addresses (physical/internets) for all members of a house: http://data.parliament.uk/membersdataplatform/services/mnis/members/query/house=Lords/Addresses/

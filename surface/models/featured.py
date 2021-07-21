@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
@@ -11,48 +5,46 @@ from repository.models.mixins import (
     PeriodMixin,
 )
 
-log = logging.getLogger(__name__)
-
 
 class BaseFeatured(PeriodMixin, BaseModel):
-    """Use start/end to define a period during which the item is featured.
-    """
+    """Use start/end to define a period during which the item is featured."""
+
     target = None
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        return f'{self.target}: {self.start} -> {self.end}'
+        return f"{self.target}: {self.start} -> {self.end}"
 
 
 class FeaturedPerson(BaseFeatured):
     target = models.ForeignKey(
-        'repository.Person',
+        "repository.Person",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
     )
 
 
 class FeaturedBill(BaseFeatured):
     target = models.ForeignKey(
-        'repository.Bill',
+        "repository.Bill",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
     )
 
 
 class FeaturedCommonsDivision(BaseFeatured):
     target = models.ForeignKey(
-        'repository.CommonsDivision',
+        "repository.CommonsDivision",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
     )
 
 
 class FeaturedLordsDivision(BaseFeatured):
     target = models.ForeignKey(
-        'repository.LordsDivision',
+        "repository.LordsDivision",
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
     )

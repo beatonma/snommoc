@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from basetest.testcase import LocalTestCase
 from social.models import (
     Comment,
@@ -16,13 +10,7 @@ from social.tests.util import (
     create_sample_vote,
 )
 
-log = logging.getLogger(__name__)
-
-
-SAMPLE_COMMENT_TEXT = [
-    'This is an insightful comment.',
-    'Very nuanced input.'
-]
+SAMPLE_COMMENT_TEXT = ["This is an insightful comment.", "Very nuanced input."]
 
 
 class AccountDeletionTest(LocalTestCase):
@@ -47,7 +35,7 @@ class AccountDeletionTest(LocalTestCase):
         # Comments should be replaced by empty placeholders via signals.on_comment_deleted
         self.assertLengthEquals(Comment.objects.all(), 3)
         self.assertLengthEquals(Comment.objects.filter(user=None), 2)
-        self.assertLengthEquals(Comment.objects.filter(text=''), 2)
+        self.assertLengthEquals(Comment.objects.filter(text=""), 2)
 
     def test_account_deletion_also_deletes_votes_by_account(self):
         target = create_sample_usertoken()
@@ -55,8 +43,8 @@ class AccountDeletionTest(LocalTestCase):
         token = create_sample_usertoken()
         another_token = create_sample_usertoken()
 
-        create_sample_vote(target, token, 'aye')
-        create_sample_vote(target, another_token, 'aye')
+        create_sample_vote(target, token, "aye")
+        create_sample_vote(target, another_token, "aye")
 
         self.assertLengthEquals(Vote.objects.all(), 2)
 

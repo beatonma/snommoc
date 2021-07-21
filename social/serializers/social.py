@@ -1,13 +1,5 @@
-"""
-
-"""
-
-import logging
-
 from social.serializers.comments import CommentSerializer
 from social.views import contract
-
-log = logging.getLogger(__name__)
 
 
 class SocialSerializer:

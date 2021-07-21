@@ -3,8 +3,6 @@ Update Divisions with:
     python manage.py divisions
 """
 
-import logging
-
 from util.management.async_command import AsyncCommand
 from crawlers.parliamentdotuk.tasks import (
     update_commons_divisions,
@@ -18,31 +16,29 @@ from repository.models import (
     CommonsDivisionVote,
 )
 
-log = logging.getLogger(__name__)
-
 
 class Command(AsyncCommand):
     def add_arguments(self, parser):
         super().add_arguments(parser)
 
         parser.add_argument(
-            '-clear',
-            action='store_true',
-            help='Delete all divisions and related votes',
+            "-clear",
+            action="store_true",
+            help="Delete all divisions and related votes",
         )
         parser.add_argument(
-            '-commons',
-            action='store_true',
-            help='Only update Commons divisions.',
+            "-commons",
+            action="store_true",
+            help="Only update Commons divisions.",
         )
         parser.add_argument(
-            '-lords',
-            action='store_true',
-            help='Only update Lords divisions.',
+            "-lords",
+            action="store_true",
+            help="Only update Lords divisions.",
         )
 
     def handle(self, *args, **options):
-        if options['clear']:
+        if options["clear"]:
             for M in [
                 LordsDivision,
                 CommonsDivision,
@@ -53,9 +49,9 @@ class Command(AsyncCommand):
 
             return
 
-        if options['commons']:
+        if options["commons"]:
             func = update_commons_divisions
-        elif options['lords']:
+        elif options["lords"]:
             func = update_lords_divisions
         else:
             func = update_all_divisions

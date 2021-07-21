@@ -1,7 +1,6 @@
 """
 Basic consistency checks to make sure our data makes sense.
 """
-import logging
 
 import colorama
 from django.apps import apps
@@ -12,9 +11,6 @@ from repository.resolution import (
     get_active_constituencies,
     get_active_mps,
 )
-
-
-log = logging.getLogger(__name__)
 
 
 def check_consistency():

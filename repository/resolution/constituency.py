@@ -1,12 +1,12 @@
+import logging
 import re
 from datetime import date as _date
 from functools import reduce
-import logging
 from operator import __or__
 from typing import List, Optional
 
 from django.db.models import Q
-from repository.models.mixins import PeriodMixin
+
 from repository.models import (
     Constituency,
     ConstituencyAlsoKnownAs,
@@ -14,13 +14,15 @@ from repository.models import (
     ContestedElection,
     UnlinkedConstituency,
 )
+from repository.models.mixins import PeriodMixin
 from util.time import get_today
 
 log = logging.getLogger(__name__)
 
 
 def get_constituency_for_date(
-    name: str, date: Optional[_date]
+    name: str,
+    date: Optional[_date],
 ) -> Optional[Constituency]:
     def _generalised_filter(n: str):
         """Remove punctuation, conjunctions, etc which may not be formatted the

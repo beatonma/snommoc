@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.contrib import admin
 
 from social.models import (
@@ -12,8 +6,14 @@ from social.models import (
     VoteType,
 )
 from social.models.token import UserToken, UsernameChanged
+from django.contrib import admin
 
-log = logging.getLogger(__name__)
+from social.models import (
+    Comment,
+    Vote,
+    VoteType,
+)
+from social.models.token import UserToken, UsernameChanged
 
 
 @admin.register(
@@ -31,15 +31,15 @@ class DefaultSocialAdmin(admin.ModelAdmin):
 )
 class CommentAdmin(DefaultSocialAdmin):
     list_display = [
-        'user',
-        'flagged',
-        'modified_on',
-        'visible',
-        'text',
+        "user",
+        "flagged",
+        "modified_on",
+        "visible",
+        "text",
     ]
     ordering = [
-        'modified_on',
-        'user',
+        "modified_on",
+        "user",
     ]
 
 
@@ -48,7 +48,7 @@ class CommentAdmin(DefaultSocialAdmin):
 )
 class VoteAdmin(DefaultSocialAdmin):
     list_display = [
-        'user',
-        'target',
-        'vote_type',
+        "user",
+        "target",
+        "vote_type",
     ]

@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -12,16 +6,13 @@ from repository.models.mixins import (
     PersonMixin,
 )
 
-log = logging.getLogger(__name__)
-
-
-PHONE_NUMBER_REGION = 'GB'
+PHONE_NUMBER_REGION = "GB"
 
 
 class PhysicalAddress(PersonMixin, BaseModel):
     description = models.CharField(
         max_length=128,
-        help_text='What kind of address is this? e.g Parliamentary, Constituency...'
+        help_text="What kind of address is this? e.g Parliamentary, Constituency...",
     )
     address = models.CharField(max_length=512)
     postcode = models.CharField(max_length=10, null=True, blank=True)
@@ -30,22 +21,22 @@ class PhysicalAddress(PersonMixin, BaseModel):
     email = models.EmailField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.person} {self.description}'
+        return f"{self.person} {self.description}"
 
     class Meta:
-        verbose_name_plural = 'Physical addresses'
+        verbose_name_plural = "Physical addresses"
 
 
 class WebAddress(PersonMixin, BaseModel):
     description = models.CharField(
         max_length=128,
-        help_text='What kind of address is this? e.g Twitter, personal site...'
+        help_text="What kind of address is this? e.g Twitter, personal site...",
     )
 
     url = models.URLField()
 
     def __str__(self):
-        return f'{self.person} {self.description}'
+        return f"{self.person} {self.description}"
 
     class Meta:
-        verbose_name_plural = 'Web addresses'
+        verbose_name_plural = "Web addresses"

@@ -6,7 +6,6 @@ from dashboard.views.dashboard import StaffView
 from repository.models import Constituency, UnlinkedConstituency
 from repository.resolution.constituency import resolve_unlinked_constituency
 
-
 log = logging.getLogger(__name__)
 
 

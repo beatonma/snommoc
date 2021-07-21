@@ -1,15 +1,8 @@
-"""
-
-"""
-
-import logging
 import traceback
 
 from django.db import models
 
 from repository.models.mixins import BaseModel
-
-log = logging.getLogger(__name__)
 
 
 class UpdateError(BaseModel):

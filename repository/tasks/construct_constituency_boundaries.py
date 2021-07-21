@@ -15,52 +15,50 @@ from repository.models import (
     ConstituencyBoundary,
 )
 
-VALUE_GSS = 'pcon18cd'
-VALUE_NAME = 'pcon18nm'
-VALUE_LATITUDE = 'lat'
-VALUE_LONGITUDE = 'long'
-VALUE_AREA = 'st_areashape'
-VALUE_LENGTH = 'st_lengthshape'
+VALUE_GSS = "pcon18cd"
+VALUE_NAME = "pcon18nm"
+VALUE_LATITUDE = "lat"
+VALUE_LONGITUDE = "long"
+VALUE_AREA = "st_areashape"
+VALUE_LENGTH = "st_lengthshape"
 
-TAG_PLACEMARK = 'Placemark'
-TAG_MULTIGEOMETRY = 'MultiGeometry'
-TAG_POLYGON = 'Polygon'
-TAG_SIMPLEDATA = 'SimpleData'
-
+TAG_PLACEMARK = "Placemark"
+TAG_MULTIGEOMETRY = "MultiGeometry"
+TAG_POLYGON = "Polygon"
+TAG_SIMPLEDATA = "SimpleData"
 
 log = logging.getLogger(__name__)
-
 
 error_count = 0
 
 
 class Polygon:
-    def __init__(self, kml=''):
+    def __init__(self, kml=""):
         self.kml = kml
         self.is_open = False
 
     def add_tag(self, tag, attrs):
         self.is_open = True
-        attr_string = ''
+        attr_string = ""
         for key, value in attrs:
             attr_string = f'{attr_string} {key}="{value}"'
-        self.kml = f'{self.kml}<{tag}{attr_string}>'
+        self.kml = f"{self.kml}<{tag}{attr_string}>"
 
     def add_value(self, value):
         self.is_open = True
         self.kml = self.kml + value
 
     def close_tag(self, tag):
-        self.kml = f'{self.kml}</{tag}>'
+        self.kml = f"{self.kml}</{tag}>"
         if tag == TAG_POLYGON:
             self.is_open = False
 
     def validate(self):
-        assert(self.kml != '')
-        assert(self.is_open is False)
+        assert self.kml != ""
+        assert self.is_open is False
 
     def __str__(self):
-        return 'EMPTY!' if self.kml == '' else 'HAS KML'
+        return "EMPTY!" if self.kml == "" else "HAS KML"
 
 
 class Geometry:
@@ -94,24 +92,31 @@ class Geometry:
             self.is_open = False
 
     def kml(self):
-        polygon_kml = ''.join([p.kml for p in self.polygons])
+        polygon_kml = "".join([p.kml for p in self.polygons])
         if len(self.polygons) > 1:
-            return f'<{TAG_MULTIGEOMETRY}>{polygon_kml}</{TAG_MULTIGEOMETRY}>'
+            return f"<{TAG_MULTIGEOMETRY}>{polygon_kml}</{TAG_MULTIGEOMETRY}>"
         else:
             return polygon_kml
 
     def validate(self):
-        assert(len(self.polygons) > 0)
+        assert len(self.polygons) > 0
         for p in self.polygons:
             p.validate()
 
     def __str__(self):
-        return f'Geometry: {len(self.polygons)} shapes'
+        return f"Geometry: {len(self.polygons)} shapes"
 
 
 class Placemark:
     def __init__(
-            self, gss='', name='', lat='', long='', area='', boundary_length='', polygons=None
+        self,
+        gss="",
+        name="",
+        lat="",
+        long="",
+        area="",
+        boundary_length="",
+        polygons=None,
     ):
         self.gss = gss
         self.name = name
@@ -124,19 +129,19 @@ class Placemark:
         self.current_tag = None
 
     def validate(self):
-        assert(self.gss != '')
-        assert(self.name != '')
-        assert(self.lat != '')
-        assert(self.long != '')
-        assert(self.area != '')
-        assert(self.boundary_length != '')
+        assert self.gss != ""
+        assert self.name != ""
+        assert self.lat != ""
+        assert self.long != ""
+        assert self.area != ""
+        assert self.boundary_length != ""
         self.geometry.validate()
 
     def __str__(self):
-        return f'{self.gss} {self.name} {self.lat} {self.long} {self.area} {self.boundary_length} {self.geometry}'
+        return f"{self.gss} {self.name} {self.lat} {self.long} {self.area} {self.boundary_length} {self.geometry}"
 
     def open_data_tag(self, attrs):
-        self.current_tag = attrs['name']
+        self.current_tag = attrs["name"]
 
     def open_tag(self, tag, attrs):
         if tag == TAG_MULTIGEOMETRY or tag == TAG_POLYGON or self.geometry.is_open:
@@ -180,18 +185,18 @@ def _create_boundary(placemark: Placemark):
     try:
         constituency = Constituency.objects.get(gss_code=placemark.gss)
     except (Constituency.DoesNotExist, Constituency.MultipleObjectsReturned) as e:
-        log.warning(f'Constituency lookup failed for placemark={placemark}')
+        log.warning(f"Constituency lookup failed for placemark={placemark}")
         return
 
     c, _ = ConstituencyBoundary.objects.update_or_create(
         constituency=constituency,
         defaults={
-            'boundary_kml': _geometry_to_kml(placemark.geometry),
-            'center_latitude': placemark.lat,
-            'center_longitude': placemark.long,
-            'area': placemark.area,
-            'boundary_length': placemark.boundary_length,
-        }
+            "boundary_kml": _geometry_to_kml(placemark.geometry),
+            "center_latitude": placemark.lat,
+            "center_longitude": placemark.long,
+            "area": placemark.area,
+            "boundary_length": placemark.boundary_length,
+        },
     )
 
 
@@ -203,7 +208,7 @@ def import_boundaries_from_file(filepath):
 
         if tag == TAG_PLACEMARK:
             if placemark is not None:
-                raise Exception(f'placemark has not been reset correctly: {placemark}')
+                raise Exception(f"placemark has not been reset correctly: {placemark}")
             placemark = Placemark()
 
         elif tag == TAG_SIMPLEDATA:
@@ -235,15 +240,14 @@ def import_boundaries_from_file(filepath):
 
         placemark.set_value(chars)
 
-    parser = expat.ParserCreate('utf-8')
+    parser = expat.ParserCreate("utf-8")
     parser.StartElementHandler = start_handler
     parser.CharacterDataHandler = character_handler
     parser.EndElementHandler = end_handler
 
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         parser.ParseFile(f)
 
 
 def _geometry_to_kml(geometry: Geometry) -> str:
     return f"""<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><Placemark>{geometry.kml()}</Placemark></Document></kml>"""
-

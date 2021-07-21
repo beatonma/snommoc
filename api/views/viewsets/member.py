@@ -6,14 +6,14 @@ import logging
 
 from django.db.models import Q
 
-from api.serializers.inline import InlineMemberSerializer
-from api.serializers.member import (
-    SimpleProfileSerializer,
-    FullProfileSerializer,
-)
 from api.serializers.divisions.votes import (
     CommonsVotesSerializer,
     LordsVotesSerializer,
+)
+from api.serializers.inline import InlineMemberSerializer
+from api.serializers.member import (
+    FullProfileSerializer,
+    SimpleProfileSerializer,
 )
 from api.serializers.member.votes import MemberVotesSerializer
 from api.views.viewsets import (
@@ -21,15 +21,20 @@ from api.views.viewsets import (
     Searchable,
 )
 from repository.models import (
-    Constituency,
-    Person,
     CommonsDivisionVote,
+    Constituency,
     LordsDivisionVote,
+    Person,
 )
 from surface.models import FeaturedPerson
+from util.cleanup import UnusedClass
 from util.time import get_today
 
 log = logging.getLogger(__name__)
+
+
+class _BaseMemberViewSet(KeyRequiredViewSet):
+    queryset = Person.objects.all()
 
 
 class MemberViewSet(Searchable, KeyRequiredViewSet):
@@ -52,11 +57,7 @@ class MemberViewSet(Searchable, KeyRequiredViewSet):
             return InlineMemberSerializer
 
 
-class BaseMemberViewSet(KeyRequiredViewSet):
-    queryset = Person.objects.all()
-
-
-class ProfileViewSet(BaseMemberViewSet):
+class ProfileViewSet(_BaseMemberViewSet):
     """Return detailed data about a person."""
 
     serializer_class = FullProfileSerializer
@@ -77,7 +78,7 @@ class FeaturedMembersViewSet(KeyRequiredViewSet):
         return [item.target for item in qs]
 
 
-class MemberVotesViewSet(BaseMemberViewSet):
+class MemberVotesViewSet(_BaseMemberViewSet):
     serializer_class = MemberVotesSerializer
 
 
@@ -109,7 +110,7 @@ class MemberLordsVotesViewSet(_MemberHouseVotesViewSet):
     model = LordsDivisionVote
 
 
-class MemberForConstituencyViewSet(BaseMemberViewSet):
+class MemberForConstituencyViewSet(UnusedClass, _BaseMemberViewSet):
     serializer_class = InlineMemberSerializer
 
     def get_object(self):

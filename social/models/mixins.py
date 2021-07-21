@@ -1,16 +1,10 @@
-"""
-
-"""
 import datetime
-import logging
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from util.time import get_now
-
-log = logging.getLogger(__name__)
 
 
 class UserMixin(models.Model):

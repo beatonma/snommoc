@@ -1,25 +1,18 @@
-"""
-
-"""
-import logging
-
 from basetest.testcase import LocalTestCase
 from repository.models import (
     GovernmentPost,
-    ParliamentaryPost,
-    OppositionPost,
-    Person,
     GovernmentPostMember,
     House,
+    OppositionPost,
+    ParliamentaryPost,
+    Person,
 )
 from repository.models.posts import (
-    get_current_post_for_person,
-    ParliamentaryPostMember,
     OppositionPostMember,
+    ParliamentaryPostMember,
+    get_current_post_for_person,
 )
 from util.time import get_today
-
-log = logging.getLogger(__name__)
 
 
 class PostTests(LocalTestCase):

@@ -2,15 +2,12 @@
 Functions for retrieving a specific type of data from data of some other type.
 """
 import datetime
-import logging
 from typing import Optional
 
 import dateutil
 from dateutil.parser import ParserError
 
 from util.time import year_only_date
-
-log = logging.getLogger(__name__)
 
 
 def coerce_to_list(obj) -> list:

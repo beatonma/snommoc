@@ -1,8 +1,3 @@
-"""
-
-"""
-
-import logging
 import os
 
 from basetest.testcase import LocalTestCase
@@ -20,8 +15,6 @@ from repository.tests.data.data_construct_constituency_boundaries import (
     EXPECTED_KML_ALDRIDGE,
     EXPECTED_KML_BERWICKUPONTWEED,
 )
-
-log = logging.getLogger(__name__)
 
 
 class ConstituencyBoundaryConstructionTests(LocalTestCase):

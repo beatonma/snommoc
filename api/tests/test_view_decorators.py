@@ -8,10 +8,6 @@ from api.models import (
 from basetest.test_util import create_test_user
 from basetest.testcase import LocalTestCase
 
-import logging
-
-log = logging.getLogger(__name__)
-
 
 class ApiKeyRequiredDecoratorTest(LocalTestCase):
     """Tests for @api_key_required View decorator."""

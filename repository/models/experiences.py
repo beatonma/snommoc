@@ -1,18 +1,10 @@
-"""
-
-"""
-
-import logging
-
 from django.db import models
 
 from repository.models.mixins import (
     BaseModel,
-    PersonMixin,
     PeriodMixin,
+    PersonMixin,
 )
-
-log = logging.getLogger(__name__)
 
 
 class ExperienceCategory(BaseModel):
@@ -22,12 +14,12 @@ class ExperienceCategory(BaseModel):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Experience categories'
+        verbose_name_plural = "Experience categories"
 
 
 class Experience(PersonMixin, PeriodMixin, BaseModel):
     category = models.ForeignKey(
-        'ExperienceCategory',
+        "ExperienceCategory",
         on_delete=models.CASCADE,
     )
 
@@ -35,4 +27,4 @@ class Experience(PersonMixin, PeriodMixin, BaseModel):
     title = models.CharField(max_length=512)
 
     def __str__(self):
-        return f'{self.category} {self.title}@{self.organisation}'
+        return f"{self.category} {self.title}@{self.organisation}"

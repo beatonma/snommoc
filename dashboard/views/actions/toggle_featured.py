@@ -5,13 +5,12 @@ from django.http import HttpResponse
 from dashboard.views.dashboard import StaffView
 from surface.models import (
     FeaturedBill,
-    FeaturedPerson,
     FeaturedCommonsDivision,
     FeaturedLordsDivision,
+    FeaturedPerson,
 )
 from surface.tasks import update_zeitgeist
 from util.time import get_today
-
 
 log = logging.getLogger(__name__)
 

@@ -1,9 +1,3 @@
-"""
-
-"""
-
-import logging
-
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
@@ -14,9 +8,6 @@ from crawlers.parliamentdotuk.models import (
     LordsDivisionUpdateError,
 )
 from crawlers.parliamentdotuk.tasks.lda import endpoints
-
-
-log = logging.getLogger(__name__)
 
 
 @admin.register(

@@ -6,23 +6,20 @@ Update Bills with:
 import logging
 from typing import Optional
 
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.models import BillUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
-from crawlers.parliamentdotuk.tasks.lda.bills import (
-    update_bills,
-    _update_bill,
-)
+from crawlers.parliamentdotuk.tasks.lda.bills import _update_bill, update_bills
 from crawlers.parliamentdotuk.tasks.lda.lda_client import get_item_data
 from repository.models import (
     Bill,
-    BillSponsor,
     BillPublication,
+    BillSponsor,
     BillStage,
     BillStageSitting,
     BillStageType,
     BillType,
 )
-from crawlers.network import json_cache
 from util.management.async_command import AsyncCommand
 
 log = logging.getLogger(__name__)

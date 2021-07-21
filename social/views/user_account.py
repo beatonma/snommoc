@@ -1,6 +1,3 @@
-"""
-
-"""
 import json
 import logging
 
@@ -34,7 +31,7 @@ class UserAccountView(View):
             token = params.get(contract.USER_TOKEN)
 
             if not token:
-                raise Exception('Missing required token')
+                raise Exception("Missing required token")
 
             user_token = UserToken.objects.get(token=token)
 
@@ -42,24 +39,23 @@ class UserAccountView(View):
                 {
                     contract.USER_NAME: user_token.username,
                 },
-                status=status.HTTP_200_OK
+                status=status.HTTP_200_OK,
             )
 
         except UserToken.DoesNotExist as e:
-            log.warning(f'No account found for received token: {e}')
+            log.warning(f"No account found for received token: {e}")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            log.warning(f'Failed to retrieve username: {e}')
+            log.warning(f"Failed to retrieve username: {e}")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-
 
     def post(self, request, *args, **kwargs):
         try:
             body = json.loads(request.body)
             action = body.get(contract.ACCOUNT_ACTION)
             if not action:
-                raise Exception('Missing required action')
+                raise Exception("Missing required action")
 
             if action == contract.ACCOUNT_CHANGE_USERNAME:
                 return self._rename_account(body)
@@ -76,7 +72,7 @@ class UserAccountView(View):
             gtoken = body.get(contract.GOOGLE_TOKEN)
 
             if not token or not gtoken:
-                raise Exception('Missing required token(s)')
+                raise Exception("Missing required token(s)")
 
             usertoken = UserToken.objects.get(
                 token=token,
@@ -84,18 +80,18 @@ class UserAccountView(View):
             )
             usertoken.mark_pending_deletion()
             usertoken.save()
-            log.info(f'Account marked for deletion: {token}')
+            log.info(f"Account marked for deletion: {token}")
 
         except json.JSONDecodeError as e:
-            log.warning(f'Failed to delete usertoken: {e}')
+            log.warning(f"Failed to delete usertoken: {e}")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         except UserToken.DoesNotExist as e:
-            log.warning(f'No account found for received tokens: {e}')
+            log.warning(f"No account found for received tokens: {e}")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            log.warning(f'Failed to delete usertoken: {e}')
+            log.warning(f"Failed to delete usertoken: {e}")
             return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
 
         return HttpResponse(status=status.HTTP_202_ACCEPTED)
@@ -105,7 +101,7 @@ class UserAccountView(View):
             token = body.get(contract.USER_TOKEN)
 
             if not token:
-                raise Exception('Missing required token')
+                raise Exception("Missing required token")
 
             existing_username = body.get(contract.USER_NAME)
             new_username = body.get(contract.ACCOUNT_NEW_USERNAME)
@@ -113,29 +109,26 @@ class UserAccountView(View):
             if is_username_blocked(new_username):
                 raise BlockedUsername(new_username)
 
-            usertoken = UserToken.objects.get(
-                token=token,
-                username=existing_username
-            )
+            usertoken = UserToken.objects.get(token=token, username=existing_username)
             usertoken.username = new_username
             usertoken.full_clean()
             usertoken.save()
-            log.info(f'Account renamed: {existing_username} -> {new_username}')
+            log.info(f"Account renamed: {existing_username} -> {new_username}")
 
         except json.JSONDecodeError as e:
-            log.warning(f'Failed to change username: {e}')
+            log.warning(f"Failed to change username: {e}")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         except UserToken.DoesNotExist as e:
-            log.warning(f'Cannot find account to rename: {e}')
+            log.warning(f"Cannot find account to rename: {e}")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         except (BlockedUsername, ValidationError) as e:
-            log.warning(f'Prevented user rename: {e}')
+            log.warning(f"Prevented user rename: {e}")
             return HttpResponse(status=status.HTTP_403_FORBIDDEN)
 
         except Exception as e:
-            log.warning(f'Failed to rename account: {e}')
+            log.warning(f"Failed to rename account: {e}")
             return HttpResponse(status=status.HTTP_401_UNAUTHORIZED)
 
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)

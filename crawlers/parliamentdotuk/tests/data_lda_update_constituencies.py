@@ -1,7 +1,3 @@
-"""
-
-"""
-
 EXAMPLE_RESPONSE = {
     "format": "linked-data-api",
     "version": "0.2",

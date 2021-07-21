@@ -1,16 +1,15 @@
+import logging
 from typing import Optional
 
 from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 from django.db.models import DO_NOTHING
 
-import logging
-
 from repository.models.mixins import (
-    WikipediaMixin,
     BaseModel,
-    PeriodMixin,
     ParliamentDotUkMixin,
+    PeriodMixin,
+    WikipediaMixin,
 )
 
 log = logging.getLogger(__name__)

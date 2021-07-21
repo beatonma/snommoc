@@ -1,30 +1,20 @@
-"""
-
-"""
 import datetime
-import logging
 from unittest import mock
 
 import requests
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
-    MemberResponseData,
-    ResponseData,
-)
 from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import (
     _update_member_basic_info,
     update_all_mps_basic_info,
 )
-from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
-from repository.models import (
-    Constituency,
-    Party,
-    House,
+from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
+    MemberResponseData,
+    ResponseData,
 )
+from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
+from repository.models import Constituency, House, Party
 from repository.models.person import Person
-
-log = logging.getLogger(__name__)
 
 EXAMPLE_JSON_SINGLE_MP = {
     "@Member_Id": "172",

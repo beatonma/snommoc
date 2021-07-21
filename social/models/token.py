@@ -1,8 +1,3 @@
-"""
-
-"""
-
-import logging
 import uuid
 
 from django.core.validators import RegexValidator
@@ -10,8 +5,6 @@ from django.db import models
 
 from repository.models.mixins import BaseModel
 from social.models.mixins import DeletionPendingMixin
-
-log = logging.getLogger(__name__)
 
 
 def _create_default_username() -> str:
@@ -27,7 +20,7 @@ class SignInServiceProvider(BaseModel):
 
 class UserToken(DeletionPendingMixin, BaseModel):
     provider = models.ForeignKey(
-        'SignInServiceProvider',
+        "SignInServiceProvider",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -44,12 +37,12 @@ class UserToken(DeletionPendingMixin, BaseModel):
         unique=True,
         validators=[
             RegexValidator(
-                regex=r'^[0-9a-zA-Z][0-9a-zA-Z-_.]{2,}[0-9a-zA-Z]$',
-                message='Must start and end with alphanumerics. '
-                        'Otherwise also allow dash, underscore, dot. '
-                        'Minimum 4 characters.',
+                regex=r"^[0-9a-zA-Z][0-9a-zA-Z-_.]{2,}[0-9a-zA-Z]$",
+                message="Must start and end with alphanumerics. "
+                "Otherwise also allow dash, underscore, dot. "
+                "Minimum 4 characters.",
             )
-        ]
+        ],
     )
     enabled = models.BooleanField(default=True)
 
@@ -58,17 +51,18 @@ class UserToken(DeletionPendingMixin, BaseModel):
         self.enabled = False
 
     def __str__(self):
-        return f'{self.provider}: {self.token}'
+        return f"{self.provider}: {self.token}"
 
 
 class UsernameChanged(BaseModel):
     """Created when a UserToken username is changed"""
+
     token = models.ForeignKey(
-        'UserToken',
+        "UserToken",
         on_delete=models.CASCADE,
     )
     new_name = models.CharField(max_length=16)
     previous_name = models.CharField(max_length=16)
 
     def __str__(self):
-        return f'{self.created_on}: {self.previous_name} -> {self.new_name}'
+        return f"{self.created_on}: {self.previous_name} -> {self.new_name}"

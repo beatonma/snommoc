@@ -1,34 +1,20 @@
-import logging
-
-from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
-from api.serializers.address import AddressSerializer
-from api.serializers.posts import AllPostSerializer
-from api.serializers.committees import CommitteeMemberSerializer
-from api.serializers.constituencies import HistoricalConstituencySerializer
-from api.serializers.house_memberships import HouseMembershipSerializer
-from api.serializers.inline import InlineConstituencySerializer
-from api.serializers.experiences import ExperienceSerializer
-from api.serializers.declared_interests import DeclaredInterestSerializer
-from api.serializers.maiden_speeches import MaidenSpeechSerializer
-from api.serializers.parties import HistoricalPartySerializer, InlinePartySerializer
-from api.serializers.subjects_of_interest import SubjectOfInterestSerializer
-from repository.models import Person, Town
-
 from rest_framework import serializers
 
-log = logging.getLogger(__name__)
-
-
-class InlineTownSerializer(InlineModelSerializer):
-    town = serializers.CharField(source="name")
-    country = serializers.StringRelatedField(many=False, read_only=True)
-
-    class Meta:
-        model = Town
-        fields = [
-            "town",
-            "country",
-        ]
+from api.serializers.base import DetailedModelSerializer
+from api.serializers.inline import InlineConstituencySerializer
+from api.serializers.parties import InlinePartySerializer
+from api.serializers.member.address import AddressSerializer
+from api.serializers.member.committees import CommitteeMemberSerializer
+from api.serializers.member.constituencies import HistoricalConstituencySerializer
+from api.serializers.member.declared_interests import DeclaredInterestSerializer
+from api.serializers.member.experiences import ExperienceSerializer
+from api.serializers.member.house_memberships import HouseMembershipSerializer
+from api.serializers.member.maiden_speeches import MaidenSpeechSerializer
+from api.serializers.member.party_associations import HistoricalPartySerializer
+from api.serializers.member.posts import AllPostSerializer
+from api.serializers.member.subjects_of_interest import SubjectOfInterestSerializer
+from api.serializers.member.town import TownSerializer
+from repository.models import Person
 
 
 class SimpleProfileSerializer(DetailedModelSerializer):
@@ -36,7 +22,7 @@ class SimpleProfileSerializer(DetailedModelSerializer):
 
     party = InlinePartySerializer()
     constituency = InlineConstituencySerializer()
-    place_of_birth = InlineTownSerializer(source="town_of_birth")
+    place_of_birth = TownSerializer(source="town_of_birth")
     portrait = serializers.URLField(source="memberportrait.wide_url")
 
     class Meta:

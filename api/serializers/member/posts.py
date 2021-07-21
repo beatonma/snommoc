@@ -1,5 +1,3 @@
-import logging
-
 from rest_framework import serializers
 
 from api.serializers.base import DetailedModelSerializer
@@ -10,17 +8,13 @@ from repository.models import (
     Person,
 )
 
-log = logging.getLogger(__name__)
 
-
-class PostMemberSerializer(DetailedModelSerializer):
+class _PostMemberSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.IntegerField(source="post.parliamentdotuk")
     name = serializers.CharField(source="post.name")
     hansard = serializers.CharField(source="post.hansard_name")
 
-
-class PostMetaClass:
-    fields = [
+    _fields = [
         "parliamentdotuk",
         "name",
         "hansard",
@@ -29,31 +23,34 @@ class PostMetaClass:
     ]
 
 
-class GovernmentPostMemberSerializer(PostMemberSerializer):
-    class Meta(PostMetaClass):
+class _GovernmentPostMemberSerializer(_PostMemberSerializer):
+    class Meta:
         model = GovernmentPostMember
+        fields = _PostMemberSerializer._fields
 
 
-class ParliamentaryPostMemberSerializer(PostMemberSerializer):
-    class Meta(PostMetaClass):
+class _ParliamentaryPostMemberSerializer(_PostMemberSerializer):
+    class Meta:
         model = ParliamentaryPostMember
+        fields = _PostMemberSerializer._fields
 
 
-class OppositionPostMemberSerializer(PostMemberSerializer):
-    class Meta(PostMetaClass):
+class _OppositionPostMemberSerializer(_PostMemberSerializer):
+    class Meta:
         model = OppositionPostMember
+        fields = _PostMemberSerializer._fields
 
 
 class AllPostSerializer(DetailedModelSerializer):
-    governmental = GovernmentPostMemberSerializer(
+    governmental = _GovernmentPostMemberSerializer(
         many=True,
         source="governmentpostmember_set",
     )
-    parliamentary = ParliamentaryPostMemberSerializer(
+    parliamentary = _ParliamentaryPostMemberSerializer(
         many=True,
         source="parliamentarypostmember_set",
     )
-    opposition = OppositionPostMemberSerializer(
+    opposition = _OppositionPostMemberSerializer(
         many=True,
         source="oppositionpostmember_set",
     )

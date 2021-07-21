@@ -1,11 +1,7 @@
-import logging
-
 from rest_framework import serializers
 
 from api.serializers.base import DetailedModelSerializer
 from repository.models import Election
-
-log = logging.getLogger(__name__)
 
 
 class ElectionSerializer(DetailedModelSerializer):

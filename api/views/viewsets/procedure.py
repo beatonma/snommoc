@@ -5,17 +5,21 @@ import logging
 
 from django.db.models import Q
 
-from api.serializers.votes import (
-    GenericInlineDivisionSerializer,
-)
+from api.serializers.divisions.votes import GenericInlineDivisionSerializer
 from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Bill,
     CommonsDivision,
     LordsDivision,
 )
-from api.serializers.bills import BillSerializer, InlineBillSerializer
-from api.serializers.divisions import CommonsDivisionSerializer, LordsDivisionSerializer
+from api.serializers.bills import (
+    BillSerializer,
+    InlineBillSerializer,
+)
+from api.serializers.divisions import (
+    CommonsDivisionSerializer,
+    LordsDivisionSerializer,
+)
 from surface.models import (
     FeaturedBill,
     FeaturedCommonsDivision,

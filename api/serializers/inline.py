@@ -1,5 +1,3 @@
-import logging
-
 from rest_framework import serializers
 
 from api.serializers.base import InlineModelSerializer
@@ -8,8 +6,6 @@ from repository.models import (
     Person,
 )
 from api.serializers.parties import InlinePartySerializer
-
-log = logging.getLogger(__name__)
 
 
 class InlineConstituencySerializer(InlineModelSerializer):

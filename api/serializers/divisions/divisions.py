@@ -1,5 +1,3 @@
-import logging
-
 from rest_framework import serializers
 
 from api.serializers.base import (
@@ -13,28 +11,36 @@ from repository.models import (
 )
 from api.serializers.parties import InlinePartySerializer
 
-log = logging.getLogger(__name__)
 
-
-class CommonsDivisionVoteSerializer(DetailedModelSerializer):
+class _BaseVotesSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.IntegerField(source="person.parliamentdotuk")
     name = serializers.CharField(source="person.name")
     vote = serializers.CharField(source="vote_type")
     party = InlinePartySerializer(source="person.party")
 
+    _fields = [
+        "parliamentdotuk",
+        "name",
+        "vote",
+        "party",
+    ]
+
+
+class _CommonsDivisionVoteSerializer(_BaseVotesSerializer):
     class Meta:
         model = CommonsDivisionVote
-        fields = [
-            "parliamentdotuk",
-            "name",
-            "vote",
-            "party",
-        ]
+        fields = _BaseVotesSerializer._fields
+
+
+class _LordsDivisionVoteSerializer(_BaseVotesSerializer):
+    class Meta:
+        model = LordsDivisionVote
+        fields = _BaseVotesSerializer._fields
 
 
 class CommonsDivisionSerializer(DetailedModelSerializer):
     house = serializers.CharField()
-    votes = CommonsDivisionVoteSerializer(many=True)
+    votes = _CommonsDivisionVoteSerializer(many=True)
 
     class Meta:
         model = CommonsDivision
@@ -56,25 +62,9 @@ class CommonsDivisionSerializer(DetailedModelSerializer):
         ]
 
 
-class LordsDivisionVoteSerializer(DetailedModelSerializer):
-    parliamentdotuk = serializers.IntegerField(source="person.parliamentdotuk")
-    name = serializers.CharField(source="person.name")
-    vote = serializers.CharField(source="vote_type")
-    party = InlinePartySerializer(source="person.party")
-
-    class Meta:
-        model = LordsDivisionVote
-        fields = [
-            "parliamentdotuk",
-            "name",
-            "vote",
-            "party",
-        ]
-
-
 class LordsDivisionSerializer(DetailedModelSerializer):
     house = serializers.CharField()
-    votes = LordsDivisionVoteSerializer(many=True)
+    votes = _LordsDivisionVoteSerializer(many=True)
 
     class Meta:
         model = LordsDivision

@@ -1,5 +1,3 @@
-import logging
-
 from rest_framework.fields import SerializerMethodField
 
 from api.serializers.base import DetailedModelSerializer
@@ -9,10 +7,8 @@ from repository.models import (
     Person,
 )
 
-log = logging.getLogger(__name__)
 
-
-class PhysicalAddressSerializer(DetailedModelSerializer):
+class _PhysicalAddressSerializer(DetailedModelSerializer):
     class Meta:
         model = PhysicalAddress
         fields = [
@@ -25,7 +21,7 @@ class PhysicalAddressSerializer(DetailedModelSerializer):
         ]
 
 
-class WebAddressSerializer(DetailedModelSerializer):
+class _WebAddressSerializer(DetailedModelSerializer):
     class Meta:
         model = WebAddress
         fields = [
@@ -35,7 +31,7 @@ class WebAddressSerializer(DetailedModelSerializer):
 
 
 class AddressSerializer(DetailedModelSerializer):
-    physical = PhysicalAddressSerializer(many=True, source="physicaladdress_set")
+    physical = _PhysicalAddressSerializer(many=True, source="physicaladdress_set")
     web = SerializerMethodField()
 
     class Meta:
@@ -61,4 +57,4 @@ class AddressSerializer(DetailedModelSerializer):
                 }
             ]
 
-        return WebAddressSerializer(links, many=True).data
+        return _WebAddressSerializer(links, many=True).data

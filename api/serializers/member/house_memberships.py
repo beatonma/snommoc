@@ -1,11 +1,7 @@
-import logging
-
 from rest_framework import serializers
 
 from api.serializers.base import DetailedModelSerializer
 from repository.models import HouseMembership
-
-log = logging.getLogger(__name__)
 
 
 class HouseMembershipSerializer(DetailedModelSerializer):

@@ -5,7 +5,7 @@ import logging
 
 from django.db.models import Q
 
-from api.serializers.motd import MessageOfTheDaySerializer
+from api.serializers.zeitgeist import MessageOfTheDaySerializer
 from api.views.viewsets import KeyRequiredViewSet
 from surface.models import MessageOfTheDay
 from util.time import get_today

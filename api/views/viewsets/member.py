@@ -7,15 +7,15 @@ import logging
 from django.db.models import Q
 
 from api.serializers.inline import InlineMemberSerializer
-from api.serializers.profile import (
+from api.serializers.member import (
     SimpleProfileSerializer,
     FullProfileSerializer,
 )
-from api.serializers.votes import (
-    MemberVotesSerializer,
+from api.serializers.divisions.votes import (
     CommonsVotesSerializer,
     LordsVotesSerializer,
 )
+from api.serializers.member.votes import MemberVotesSerializer
 from api.views.viewsets import (
     KeyRequiredViewSet,
     Searchable,

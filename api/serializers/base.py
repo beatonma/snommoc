@@ -1,12 +1,8 @@
-import logging
-
 from django.http import HttpResponse
 from rest_framework import (
     serializers,
     status,
 )
-
-log = logging.getLogger(__name__)
 
 
 class InlineModelSerializer(serializers.ModelSerializer):

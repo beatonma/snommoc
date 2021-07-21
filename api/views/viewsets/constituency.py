@@ -1,12 +1,8 @@
-"""
-
-"""
-
-import logging
-
 from api.serializers.constituencies import ConstituencySerializer
 from api.serializers.inline import InlineConstituencySerializer
-from api.serializers.election_results import ConstituencyResultDetailsSerializer
+from api.serializers.constituencies.election_results import (
+    ConstituencyResultDetailsSerializer,
+)
 from api.views.viewsets import (
     KeyRequiredViewSet,
     Searchable,
@@ -15,8 +11,6 @@ from repository.models import (
     Constituency,
     ConstituencyResultDetail,
 )
-
-log = logging.getLogger(__name__)
 
 
 class ConstituencyViewSet(Searchable, KeyRequiredViewSet):

@@ -19,10 +19,9 @@ from api.views.viewsets.member import (
     MemberLordsVotesViewSet,
 )
 from api.views.viewsets.party import PartyViewSet
-from api.views.views import PingView
+from api.views import PingView
 
 # Views which can return a list of inline viewsets, or a single detailed viewset.
-from api.views.viewsets.motd import MessageOfTheDayViewSet
 from api.views.viewsets.procedure import (
     BillViewSet,
     CommonsDivisionViewSet,
@@ -47,7 +46,6 @@ list_only_views = (
     (endpoints.FEATURED_MEMBERS, FeaturedMembersViewSet),
     (endpoints.FEATURED_BILLS, RecentlyUpdatedBillsViewSet),
     (endpoints.FEATURED_DIVISIONS, RecentlyUpdatedDivisionsViewSet),
-    (endpoints.MOTD, MessageOfTheDayViewSet),
 )
 
 # Views which may return an overview of a list or detail for a single item

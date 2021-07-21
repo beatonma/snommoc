@@ -1,5 +1,3 @@
-import logging
-
 from rest_framework import serializers
 
 from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
@@ -14,8 +12,6 @@ from repository.models import (
     BillStageSitting,
 )
 
-log = logging.getLogger(__name__)
-
 
 class InlineBillSerializer(InlineModelSerializer):
     class Meta:
@@ -28,7 +24,7 @@ class InlineBillSerializer(InlineModelSerializer):
         ]
 
 
-class BillSponsorSerializer(DetailedModelSerializer):
+class _BillSponsorSerializer(DetailedModelSerializer):
     parliamentdotuk = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     party = serializers.SerializerMethodField()
@@ -53,7 +49,7 @@ class BillSponsorSerializer(DetailedModelSerializer):
         ]
 
 
-class BillPublicationSerializer(DetailedModelSerializer):
+class _BillPublicationSerializer(DetailedModelSerializer):
     class Meta:
         model = BillPublication
         fields = [
@@ -62,7 +58,7 @@ class BillPublicationSerializer(DetailedModelSerializer):
         ]
 
 
-class BillTypeSerializer(DetailedModelSerializer):
+class _BillTypeSerializer(DetailedModelSerializer):
     class Meta:
         model = BillType
         fields = [
@@ -71,7 +67,7 @@ class BillTypeSerializer(DetailedModelSerializer):
         ]
 
 
-class BillStageSittingSerializer(DetailedModelSerializer):
+class _BillStageSittingSerializer(DetailedModelSerializer):
     class Meta:
         model = BillStageSitting
         fields = [
@@ -82,9 +78,9 @@ class BillStageSittingSerializer(DetailedModelSerializer):
         ]
 
 
-class BillStageSerializer(DetailedModelSerializer):
+class _BillStageSerializer(DetailedModelSerializer):
     type = serializers.CharField(source="bill_stage_type.name")
-    sittings = BillStageSittingSerializer(many=True)
+    sittings = _BillStageSittingSerializer(many=True)
 
     class Meta:
         model = BillStage
@@ -95,7 +91,7 @@ class BillStageSerializer(DetailedModelSerializer):
         ]
 
 
-class SessionSerializer(DetailedModelSerializer):
+class _SessionSerializer(DetailedModelSerializer):
     class Meta:
         model = ParliamentarySession
         fields = [
@@ -105,11 +101,11 @@ class SessionSerializer(DetailedModelSerializer):
 
 
 class BillSerializer(DetailedModelSerializer):
-    sponsors = BillSponsorSerializer(many=True, source="billsponsor_set")
-    publications = BillPublicationSerializer(many=True, source="billpublication_set")
-    type = BillTypeSerializer(source="bill_type")
-    session = SessionSerializer()
-    stages = BillStageSerializer(many=True, source="billstage_set")
+    sponsors = _BillSponsorSerializer(many=True, source="billsponsor_set")
+    publications = _BillPublicationSerializer(many=True, source="billpublication_set")
+    type = _BillTypeSerializer(source="bill_type")
+    session = _SessionSerializer()
+    stages = _BillStageSerializer(many=True, source="billstage_set")
 
     class Meta:
         model = Bill

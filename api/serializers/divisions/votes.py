@@ -1,20 +1,11 @@
-import logging
-
 from rest_framework import serializers
 
-from api.serializers.base import (
-    DetailedModelSerializer,
-    InlineModelSerializer,
-)
+from api.serializers.base import InlineModelSerializer
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
     LordsDivision,
-    LordsDivisionVote,
-    Person,
 )
-
-log = logging.getLogger(__name__)
 
 
 class GenericInlineDivisionSerializer(serializers.Serializer):
@@ -31,7 +22,7 @@ class GenericInlineDivisionSerializer(serializers.Serializer):
         pass
 
 
-class InlineCommonsDivisionSerializer(InlineModelSerializer):
+class _InlineCommonsDivisionSerializer(InlineModelSerializer):
     class Meta:
         model = CommonsDivision
         fields = [
@@ -42,7 +33,7 @@ class InlineCommonsDivisionSerializer(InlineModelSerializer):
         ]
 
 
-class InlineLordsDivisionSerializer(InlineModelSerializer):
+class _InlineLordsDivisionSerializer(InlineModelSerializer):
     class Meta:
         model = LordsDivision
         fields = [
@@ -54,7 +45,7 @@ class InlineLordsDivisionSerializer(InlineModelSerializer):
 
 
 class CommonsVotesSerializer(InlineModelSerializer):
-    division = InlineCommonsDivisionSerializer()
+    division = _InlineCommonsDivisionSerializer()
 
     class Meta:
         model = CommonsDivisionVote
@@ -65,39 +56,11 @@ class CommonsVotesSerializer(InlineModelSerializer):
 
 
 class LordsVotesSerializer(InlineModelSerializer):
-    division = InlineLordsDivisionSerializer()
+    division = _InlineLordsDivisionSerializer()
 
     class Meta:
         model = CommonsDivisionVote
         fields = [
             "division",
             "vote_type",
-        ]
-
-
-class MemberVotesSerializer(DetailedModelSerializer):
-    """Votes by a Person, ordered with most recent first."""
-
-    commons = serializers.SerializerMethodField()
-    lords = serializers.SerializerMethodField()
-
-    def get_commons(self, person):
-        return self._get(person, CommonsDivisionVote, CommonsVotesSerializer)
-
-    def get_lords(self, person):
-        return self._get(person, LordsDivisionVote, LordsVotesSerializer)
-
-    def _get(self, person, model, serializer_model):
-        qset = (
-            model.objects.filter(person=person)
-            .prefetch_related("division")
-            .order_by("-division__date")
-        )
-        return serializer_model(qset, many=True).data
-
-    class Meta:
-        model = Person
-        fields = [
-            "commons",
-            "lords",
         ]

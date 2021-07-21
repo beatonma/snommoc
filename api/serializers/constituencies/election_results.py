@@ -1,19 +1,31 @@
-import logging
-
 from rest_framework import serializers
 
-from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
+from api.serializers.base import (
+    DetailedModelSerializer,
+    InlineModelSerializer,
+)
 from repository.models import (
     ConstituencyCandidate,
+    ConstituencyResult,
     ConstituencyResultDetail,
 )
-from api.serializers.inline import InlineConstituencySerializer
+from api.serializers.inline import InlineConstituencySerializer, InlineMemberSerializer
 from api.serializers.election import ElectionSerializer
 
-log = logging.getLogger(__name__)
+
+class ElectionResultSerializer(DetailedModelSerializer):
+    election = ElectionSerializer()
+    mp = InlineMemberSerializer()
+
+    class Meta:
+        model = ConstituencyResult
+        fields = [
+            "election",
+            "mp",
+        ]
 
 
-class ConstituencyCandidateSerializer(InlineModelSerializer):
+class _ConstituencyCandidateSerializer(InlineModelSerializer):
     party_name = serializers.CharField(source="party")
 
     class Meta:
@@ -27,7 +39,7 @@ class ConstituencyCandidateSerializer(InlineModelSerializer):
 
 
 class ConstituencyResultDetailsSerializer(DetailedModelSerializer):
-    candidates = ConstituencyCandidateSerializer(many=True)
+    candidates = _ConstituencyCandidateSerializer(many=True)
     constituency = InlineConstituencySerializer(
         source="constituency_result.constituency"
     )

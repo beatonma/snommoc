@@ -1,3 +1,4 @@
+from api import contract
 from api.serializers.base import (
     DetailedModelSerializer,
     InlineModelSerializer,
@@ -10,8 +11,8 @@ class InlinePartySerializer(InlineModelSerializer):
     class Meta:
         model = Party
         fields = [
-            "parliamentdotuk",
-            "name",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
         ]
 
 
@@ -19,10 +20,10 @@ class PartySerializer(DetailedModelSerializer):
     class Meta:
         model = Party
         fields = [
-            "name",
-            "short_name",
-            "long_name",
-            "homepage",
-            "year_founded",
-            "wikipedia",
+            contract.NAME,
+            contract.PARTY_SHORT_NAME,
+            contract.PARTY_LONG_NAME,
+            contract.PARTY_HOMEPAGE,
+            contract.PARTY_YEAR_FOUNDED,
+            contract.PARTY_WIKIPEDIA,
         ]

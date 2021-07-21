@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import HouseMembership
 
@@ -10,7 +11,7 @@ class HouseMembershipSerializer(DetailedModelSerializer):
     class Meta:
         model = HouseMembership
         fields = [
-            "house",
-            "start",
-            "end",
+            contract.HOUSE,
+            contract.START,
+            contract.END,
         ]

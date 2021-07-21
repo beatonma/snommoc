@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import CommitteeMember
 from repository.models.committees import CommitteeChair
@@ -9,8 +10,8 @@ class _CommitteeChairSerializer(DetailedModelSerializer):
     class Meta:
         model = CommitteeChair
         fields = [
-            "start",
-            "end",
+            contract.START,
+            contract.END,
         ]
 
 
@@ -22,9 +23,9 @@ class CommitteeMemberSerializer(DetailedModelSerializer):
     class Meta:
         model = CommitteeMember
         fields = [
-            "parliamentdotuk",
-            "name",
-            "start",
-            "end",
-            "chair",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
+            contract.START,
+            contract.END,
+            contract.COMMITTEE_CHAIR,
         ]

@@ -1,3 +1,4 @@
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from api.serializers.constituencies.boundary import ConstituencyBoundarySerializer
 from api.serializers.constituencies.election_results import ElectionResultSerializer
@@ -13,11 +14,11 @@ class ConstituencySerializer(DetailedModelSerializer):
     class Meta:
         model = Constituency
         fields = [
-            "parliamentdotuk",
-            "name",
-            "mp",
-            "start",
-            "end",
-            "boundary",
-            "results",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
+            contract.MP,
+            contract.START,
+            contract.END,
+            contract.CONSTITUENCY_BOUNDARY,
+            contract.CONSTITUENCY_RESULTS,
         ]

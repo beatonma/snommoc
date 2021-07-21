@@ -1,0 +1,5 @@
+PARTY_SHORT_NAME = "short_name"
+PARTY_LONG_NAME = "long_name"
+PARTY_HOMEPAGE = "homepage"
+PARTY_YEAR_FOUNDED = "year_founded"
+PARTY_WIKIPEDIA = "wikipedia"

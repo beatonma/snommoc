@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import (
     DetailedModelSerializer,
     InlineModelSerializer,
@@ -20,8 +21,8 @@ class ElectionResultSerializer(DetailedModelSerializer):
     class Meta:
         model = ConstituencyResult
         fields = [
-            "election",
-            "mp",
+            contract.ELECTION,
+            contract.MP,
         ]
 
 
@@ -31,10 +32,10 @@ class _ConstituencyCandidateSerializer(InlineModelSerializer):
     class Meta:
         model = ConstituencyCandidate
         fields = [
-            "name",
-            "party_name",
-            "order",
-            "votes",
+            contract.NAME,
+            contract.ELECTION_CANDIDATE_PARTY_NAME,
+            contract.ELECTION_CANDIDATE_ORDER,
+            contract.ELECTION_CANDIDATE_VOTES,
         ]
 
 
@@ -48,13 +49,13 @@ class ConstituencyResultDetailsSerializer(DetailedModelSerializer):
     class Meta:
         model = ConstituencyResultDetail
         fields = [
-            "parliamentdotuk",
-            "electorate",
-            "turnout",
-            "turnout_fraction",
-            "result",
-            "majority",
-            "constituency",
-            "election",
-            "candidates",
+            contract.PARLIAMENTDOTUK,
+            contract.ELECTION_ELECTORATE,
+            contract.ELECTION_TURNOUT,
+            contract.ELECTION_TURNOUT_FRACTION,
+            contract.ELECTION_RESULT,
+            contract.ELECTION_MAJORITY,
+            contract.CONSTITUENCY,
+            contract.ELECTION,
+            contract.ELECTION_CANDIDATES,
         ]

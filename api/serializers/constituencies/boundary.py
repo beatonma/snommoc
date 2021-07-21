@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 
 from repository.models import ConstituencyBoundary
@@ -11,9 +12,9 @@ class ConstituencyBoundarySerializer(DetailedModelSerializer):
     class Meta:
         model = ConstituencyBoundary
         fields = [
-            "kml",
-            "center_latitude",
-            "center_longitude",
-            "area",
-            "boundary_length",
+            contract.CONSTITUENCY_BOUNDARY_KML,
+            contract.CONSTITUENCY_BOUNDARY_CENTER_LATITUDE,
+            contract.CONSTITUENCY_BOUNDARY_CENTER_LONGITUDE,
+            contract.CONSTITUENCY_BOUNDARY_AREA,
+            contract.CONSTITUENCY_BOUNDARY_LENGTH,
         ]

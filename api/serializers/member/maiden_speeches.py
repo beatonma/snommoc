@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import MaidenSpeech
 
@@ -10,8 +11,8 @@ class MaidenSpeechSerializer(DetailedModelSerializer):
     class Meta:
         model = MaidenSpeech
         fields = [
-            "house",
-            "date",
-            "subject",
-            "hansard",
+            contract.HOUSE,
+            contract.DATE,
+            contract.SUBJECT,
+            contract.HANSARD,
         ]

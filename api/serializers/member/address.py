@@ -1,5 +1,6 @@
 from rest_framework.fields import SerializerMethodField
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import (
     PhysicalAddress,
@@ -12,12 +13,12 @@ class _PhysicalAddressSerializer(DetailedModelSerializer):
     class Meta:
         model = PhysicalAddress
         fields = [
-            "description",
-            "address",
-            "postcode",
-            "phone",
-            "fax",
-            "email",
+            contract.DESCRIPTION,
+            contract.ADDRESS,
+            contract.POSTCODE,
+            contract.PHONE,
+            contract.FAX,
+            contract.EMAIL,
         ]
 
 
@@ -25,8 +26,8 @@ class _WebAddressSerializer(DetailedModelSerializer):
     class Meta:
         model = WebAddress
         fields = [
-            "description",
-            "url",
+            contract.DESCRIPTION,
+            contract.URL,
         ]
 
 
@@ -38,8 +39,8 @@ class AddressSerializer(DetailedModelSerializer):
         model = Person
 
         fields = [
-            "physical",
-            "web",
+            contract.ADDRESS_PHYSICAL,
+            contract.ADDRESS_WEB,
         ]
 
     def get_web(self, obj):
@@ -52,8 +53,8 @@ class AddressSerializer(DetailedModelSerializer):
         if wiki:
             links = list(links.values()) + [
                 {
-                    "description": "wikipedia_path",
-                    "url": wiki,
+                    contract.DESCRIPTION: contract.WIKIPEDIA_PATH,
+                    contract.URL: wiki,
                 }
             ]
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import (
     GovernmentPostMember,
@@ -15,11 +16,11 @@ class _PostMemberSerializer(DetailedModelSerializer):
     hansard = serializers.CharField(source="post.hansard_name")
 
     _fields = [
-        "parliamentdotuk",
-        "name",
-        "hansard",
-        "start",
-        "end",
+        contract.PARLIAMENTDOTUK,
+        contract.NAME,
+        contract.HANSARD,
+        contract.START,
+        contract.END,
     ]
 
 
@@ -58,7 +59,7 @@ class AllPostSerializer(DetailedModelSerializer):
     class Meta:
         model = Person
         fields = [
-            "governmental",
-            "parliamentary",
-            "opposition",
+            contract.POST_GOVERNMENTAL,
+            contract.POST_PARLIAMENTARY,
+            contract.POST_OPPOSITION,
         ]

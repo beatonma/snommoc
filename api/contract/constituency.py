@@ -1,0 +1,2 @@
+CONSTITUENCY_BOUNDARY = "boundary"
+CONSTITUENCY_RESULTS = "results"

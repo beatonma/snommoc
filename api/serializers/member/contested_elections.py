@@ -1,3 +1,4 @@
+from api import contract
 from api.serializers.election import ElectionSerializer
 from repository.models import Person, ContestedElection
 from api.serializers.base import DetailedModelSerializer
@@ -12,8 +13,8 @@ class _ContestedElectionSerializer(DetailedModelSerializer):
     class Meta:
         model = ContestedElection
         fields = [
-            "election",
-            "constituency",
+            contract.ELECTION,
+            contract.CONSTITUENCY,
         ]
 
 
@@ -23,5 +24,5 @@ class ContestedElectionCollectionSerializer(UnusedClass, DetailedModelSerializer
     class Meta:
         model = Person
         fields = [
-            "contested",
+            contract.CONTESTED_ELECTION,
         ]

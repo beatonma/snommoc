@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from api import contract
 from api.serializers.base import InlineModelSerializer
 
 from repository.models import Town
@@ -11,6 +13,6 @@ class TownSerializer(InlineModelSerializer):
     class Meta:
         model = Town
         fields = [
-            "town",
-            "country",
+            contract.TOWN,
+            contract.COUNTRY,
         ]

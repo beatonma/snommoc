@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import InlineModelSerializer
 from repository.models import (
     CommonsDivision,
@@ -22,45 +23,45 @@ class GenericInlineDivisionSerializer(serializers.Serializer):
         pass
 
 
-class _InlineCommonsDivisionSerializer(InlineModelSerializer):
+class _BaseInlineDivisionSerializer(InlineModelSerializer):
+    _fields = [
+        contract.PARLIAMENTDOTUK,
+        contract.TITLE,
+        contract.DATE,
+        contract.DIVISION_PASSED,
+    ]
+
+
+class _InlineCommonsDivisionSerializer(_BaseInlineDivisionSerializer):
     class Meta:
         model = CommonsDivision
-        fields = [
-            "parliamentdotuk",
-            "title",
-            "date",
-            "passed",
-        ]
+        fields = _BaseInlineDivisionSerializer._fields
 
 
-class _InlineLordsDivisionSerializer(InlineModelSerializer):
+class _InlineLordsDivisionSerializer(_BaseInlineDivisionSerializer):
     class Meta:
         model = LordsDivision
-        fields = [
-            "parliamentdotuk",
-            "title",
-            "date",
-            "passed",
-        ]
+        fields = _BaseInlineDivisionSerializer._fields
 
 
-class CommonsVotesSerializer(InlineModelSerializer):
+class _BaseVoteSerializer(InlineModelSerializer):
+    _fields = [
+        contract.DIVISION,
+        contract.DIVISION_VOTE_TYPE,
+    ]
+
+
+class CommonsVotesSerializer(_BaseVoteSerializer):
     division = _InlineCommonsDivisionSerializer()
 
     class Meta:
         model = CommonsDivisionVote
-        fields = [
-            "division",
-            "vote_type",
-        ]
+        fields = _BaseVoteSerializer._fields
 
 
-class LordsVotesSerializer(InlineModelSerializer):
+class LordsVotesSerializer(_BaseVoteSerializer):
     division = _InlineLordsDivisionSerializer()
 
     class Meta:
         model = CommonsDivisionVote
-        fields = [
-            "division",
-            "vote_type",
-        ]
+        fields = _BaseVoteSerializer._fields

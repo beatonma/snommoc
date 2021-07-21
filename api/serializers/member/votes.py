@@ -1,8 +1,16 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
-from api.serializers.divisions.votes import CommonsVotesSerializer, LordsVotesSerializer
-from repository.models import CommonsDivisionVote, LordsDivisionVote, Person
+from api.serializers.divisions.votes import (
+    CommonsVotesSerializer,
+    LordsVotesSerializer,
+)
+from repository.models import (
+    CommonsDivisionVote,
+    LordsDivisionVote,
+    Person,
+)
 
 
 class MemberVotesSerializer(DetailedModelSerializer):
@@ -28,6 +36,6 @@ class MemberVotesSerializer(DetailedModelSerializer):
     class Meta:
         model = Person
         fields = [
-            "commons",
-            "lords",
+            contract.HOUSE_COMMONS,
+            contract.HOUSE_LORDS,
         ]

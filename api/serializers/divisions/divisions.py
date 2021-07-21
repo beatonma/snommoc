@@ -1,15 +1,14 @@
 from rest_framework import serializers
 
-from api.serializers.base import (
-    DetailedModelSerializer,
-)
+from api import contract
+from api.serializers.base import DetailedModelSerializer
+from api.serializers.parties import InlinePartySerializer
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivisionVote,
     LordsDivision,
+    LordsDivisionVote,
 )
-from api.serializers.parties import InlinePartySerializer
 
 
 class _BaseVotesSerializer(DetailedModelSerializer):
@@ -19,10 +18,10 @@ class _BaseVotesSerializer(DetailedModelSerializer):
     party = InlinePartySerializer(source="person.party")
 
     _fields = [
-        "parliamentdotuk",
-        "name",
-        "vote",
-        "party",
+        contract.PARLIAMENTDOTUK,
+        contract.NAME,
+        contract.DIVISION_VOTE,
+        contract.PARTY,
     ]
 
 
@@ -38,45 +37,42 @@ class _LordsDivisionVoteSerializer(_BaseVotesSerializer):
         fields = _BaseVotesSerializer._fields
 
 
-class CommonsDivisionSerializer(DetailedModelSerializer):
+class _BaseDivisionSerializer(DetailedModelSerializer):
     house = serializers.CharField()
+
+    _fields = [
+        contract.PARLIAMENTDOTUK,
+        contract.TITLE,
+        contract.DATE,
+        contract.HOUSE,
+        contract.DIVISION_PASSED,
+        contract.DIVISION_VOTE_AYES,
+        contract.DIVISION_VOTE_NOES,
+        contract.DIVISION_VOTES,
+    ]
+
+
+class CommonsDivisionSerializer(_BaseDivisionSerializer):
     votes = _CommonsDivisionVoteSerializer(many=True)
 
     class Meta:
         model = CommonsDivision
-        fields = [
-            "parliamentdotuk",
-            "title",
-            "date",
-            "house",
-            "passed",
-            "ayes",
-            "noes",
-            "did_not_vote",
-            "abstentions",
-            "deferred_vote",
-            "errors",
-            "non_eligible",
-            "suspended_or_expelled",
-            "votes",
+        fields = _BaseDivisionSerializer._fields + [
+            contract.DIVISION_VOTE_DID_NOT_VOTE,
+            contract.DIVISION_VOTE_ABSTENTIONS,
+            contract.DIVISION_VOTE_DEFERRED,
+            contract.DIVISION_VOTE_ERRORS,
+            contract.DIVISION_VOTE_NON_ELIGIBLE,
+            contract.DIVISION_VOTE_SUSPENDED_EXPELLED,
         ]
 
 
-class LordsDivisionSerializer(DetailedModelSerializer):
-    house = serializers.CharField()
+class LordsDivisionSerializer(_BaseDivisionSerializer):
     votes = _LordsDivisionVoteSerializer(many=True)
 
     class Meta:
         model = LordsDivision
-        fields = [
-            "parliamentdotuk",
-            "title",
-            "description",
-            "date",
-            "house",
-            "passed",
-            "ayes",
-            "noes",
-            "whipped_vote",
-            "votes",
+        fields = _BaseDivisionSerializer._fields + [
+            contract.DESCRIPTION,
+            contract.DIVISION_VOTE_WHIPPED,
         ]

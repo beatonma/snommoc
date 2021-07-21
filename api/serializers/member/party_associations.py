@@ -1,3 +1,4 @@
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from api.serializers.parties import InlinePartySerializer
 from repository.models import PartyAssociation
@@ -9,7 +10,7 @@ class HistoricalPartySerializer(DetailedModelSerializer):
     class Meta:
         model = PartyAssociation
         fields = [
-            "party",
-            "start",
-            "end",
+            contract.PARTY,
+            contract.START,
+            contract.END,
         ]

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import DeclaredInterest
 
@@ -10,11 +11,11 @@ class DeclaredInterestSerializer(DetailedModelSerializer):
     class Meta:
         model = DeclaredInterest
         fields = [
-            "parliamentdotuk",
-            "category",
-            "description",
-            "created",
-            "amended",
-            "deleted",
-            "registered_late",
+            contract.PARLIAMENTDOTUK,
+            contract.CATEGORY,
+            contract.DESCRIPTION,
+            contract.INTEREST_CREATED,
+            contract.INTEREST_AMENDED,
+            contract.INTEREST_DELETED,
+            contract.INTEREST_LATE,
         ]

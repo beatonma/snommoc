@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
 from api.serializers.inline import InlinePartySerializer
 from repository.models import (
@@ -17,10 +18,10 @@ class InlineBillSerializer(InlineModelSerializer):
     class Meta:
         model = Bill
         fields = [
-            "parliamentdotuk",
-            "title",
-            "description",
-            "date",
+            contract.PARLIAMENTDOTUK,
+            contract.TITLE,
+            contract.DESCRIPTION,
+            contract.DATE,
         ]
 
 
@@ -43,9 +44,9 @@ class _BillSponsorSerializer(DetailedModelSerializer):
     class Meta:
         model = BillSponsor
         fields = [
-            "parliamentdotuk",
-            "name",
-            "party",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
+            contract.PARTY,
         ]
 
 
@@ -53,8 +54,8 @@ class _BillPublicationSerializer(DetailedModelSerializer):
     class Meta:
         model = BillPublication
         fields = [
-            "parliamentdotuk",
-            "title",
+            contract.PARLIAMENTDOTUK,
+            contract.TITLE,
         ]
 
 
@@ -62,8 +63,8 @@ class _BillTypeSerializer(DetailedModelSerializer):
     class Meta:
         model = BillType
         fields = [
-            "name",
-            "description",
+            contract.NAME,
+            contract.DESCRIPTION,
         ]
 
 
@@ -71,10 +72,10 @@ class _BillStageSittingSerializer(DetailedModelSerializer):
     class Meta:
         model = BillStageSitting
         fields = [
-            "parliamentdotuk",
-            "date",
-            "formal",
-            "provisional",
+            contract.PARLIAMENTDOTUK,
+            contract.DATE,
+            contract.BILL_SITTING_FORMAL,
+            contract.BILL_SITTING_PROVISIONAL,
         ]
 
 
@@ -85,9 +86,9 @@ class _BillStageSerializer(DetailedModelSerializer):
     class Meta:
         model = BillStage
         fields = [
-            "parliamentdotuk",
-            "sittings",
-            "type",
+            contract.PARLIAMENTDOTUK,
+            contract.BILL_SITTINGS,
+            contract.BILL_TYPE,
         ]
 
 
@@ -95,8 +96,8 @@ class _SessionSerializer(DetailedModelSerializer):
     class Meta:
         model = ParliamentarySession
         fields = [
-            "parliamentdotuk",
-            "name",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
         ]
 
 
@@ -110,21 +111,21 @@ class BillSerializer(DetailedModelSerializer):
     class Meta:
         model = Bill
         fields = [
-            "parliamentdotuk",
-            "title",
-            "description",
-            "act_name",
-            "label",
-            "homepage",
-            "date",
-            "ballot_number",
-            "bill_chapter",
-            "is_private",
-            "is_money_bill",
-            "public_involvement_allowed",
-            "publications",
-            "session",
-            "sponsors",
-            "stages",
-            "type",
+            contract.PARLIAMENTDOTUK,
+            contract.DATE,
+            contract.TITLE,
+            contract.DESCRIPTION,
+            contract.BILL_ACT_NAME,
+            contract.BILL_LABEL,
+            contract.BILL_HOMEPAGE,
+            contract.BILL_BALLOT_NUMBER,
+            contract.BILL_CHAPTER,
+            contract.BILL_IS_PRIVATE,
+            contract.BILL_IS_MONEY_BILL,
+            contract.BILL_PUBLIC_INVOLVEMENT_ALLOWED,
+            contract.BILL_PUBLICATIONS,
+            contract.SESSION,
+            contract.BILL_SPONSORS,
+            contract.BILL_STAGES,
+            contract.BILL_TYPE,
         ]

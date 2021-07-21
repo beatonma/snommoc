@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import ReadOnlySerializer, DetailedModelSerializer
 from api.serializers.bills import InlineBillSerializer
 from api.serializers.inline import InlineMemberSerializer
@@ -11,9 +12,9 @@ class MessageOfTheDaySerializer(DetailedModelSerializer):
     class Meta:
         model = MessageOfTheDay
         fields = [
-            "title",
-            "description",
-            "action_url",
+            contract.TITLE,
+            contract.DESCRIPTION,
+            contract.MOTD_ACTION_URL,
         ]
 
 

@@ -1,19 +1,20 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import InlineModelSerializer
+from api.serializers.parties import InlinePartySerializer
 from repository.models import (
     Constituency,
     Person,
 )
-from api.serializers.parties import InlinePartySerializer
 
 
 class InlineConstituencySerializer(InlineModelSerializer):
     class Meta:
         model = Constituency
         fields = [
-            "parliamentdotuk",
-            "name",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
         ]
 
 
@@ -25,10 +26,10 @@ class InlineMemberSerializer(InlineModelSerializer):
     class Meta:
         model = Person
         fields = [
-            "parliamentdotuk",
-            "name",
-            "portrait",
-            "party",
-            "constituency",
-            "current_post",
+            contract.PARLIAMENTDOTUK,
+            contract.MEMBER_NAME,
+            contract.PORTRAIT,
+            contract.PARTY,
+            contract.CONSTITUENCY,
+            contract.CURRENT_POST,
         ]

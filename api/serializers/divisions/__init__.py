@@ -1,1 +1,4 @@
-from .divisions import CommonsDivisionSerializer, LordsDivisionSerializer
+from .divisions import (
+    CommonsDivisionSerializer,
+    LordsDivisionSerializer,
+)

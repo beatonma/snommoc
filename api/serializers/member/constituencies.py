@@ -1,3 +1,4 @@
+from api import contract
 from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
 from api.serializers.election import ElectionSerializer
 from repository.models import Constituency
@@ -8,8 +9,8 @@ class _MinimalConstituencySerializer(InlineModelSerializer):
     class Meta:
         model = Constituency
         fields = [
-            "parliamentdotuk",
-            "name",
+            contract.PARLIAMENTDOTUK,
+            contract.NAME,
         ]
 
 
@@ -20,8 +21,8 @@ class HistoricalConstituencySerializer(DetailedModelSerializer):
     class Meta:
         model = ConstituencyResult
         fields = [
-            "constituency",
-            "start",
-            "end",
-            "election",
+            contract.CONSTITUENCY,
+            contract.START,
+            contract.END,
+            contract.ELECTION,
         ]

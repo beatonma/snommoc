@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from repository.models import SubjectOfInterest
 
@@ -10,6 +11,6 @@ class SubjectOfInterestSerializer(DetailedModelSerializer):
     class Meta:
         model = SubjectOfInterest
         fields = [
-            "category",
-            "subject",
+            contract.CATEGORY,
+            contract.SUBJECT,
         ]

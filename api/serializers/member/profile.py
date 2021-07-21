@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api import contract
 from api.serializers.base import DetailedModelSerializer
 from api.serializers.inline import InlineConstituencySerializer
 from api.serializers.parties import InlinePartySerializer
@@ -28,24 +29,24 @@ class SimpleProfileSerializer(DetailedModelSerializer):
     class Meta:
         model = Person
         fields = [
-            "parliamentdotuk",
-            "name",
-            "full_title",
-            "given_name",
-            "family_name",
-            "active",
-            "theyworkforyou",
-            "party",
-            "constituency",
-            "is_mp",
-            "is_lord",
-            "date_of_birth",
-            "date_of_death",
-            "age",
-            "gender",
-            "place_of_birth",
-            "portrait",
-            "current_post",
+            contract.PARLIAMENTDOTUK,
+            contract.MEMBER_NAME,
+            contract.MEMBER_TITLE,
+            contract.GIVEN_NAME,
+            contract.FAMILY_NAME,
+            contract.ACTIVE,
+            contract.THEYWORKFORYOU,
+            contract.PARTY,
+            contract.CONSTITUENCY,
+            contract.IS_MP,
+            contract.IS_LORD,
+            contract.DATE_OF_BIRTH,
+            contract.DATE_OF_DEATH,
+            contract.AGE,
+            contract.GENDER,
+            contract.PLACE_OF_BIRTH,
+            contract.PORTRAIT,
+            contract.CURRENT_POST,
         ]
 
 
@@ -69,15 +70,15 @@ class FullProfileSerializer(DetailedModelSerializer):
     class Meta:
         model = Person
         fields = [
-            "profile",
-            "address",
-            "committees",
-            "constituencies",
-            "experiences",
-            "houses",
-            "interests",
-            "speeches",
-            "parties",
-            "posts",
-            "subjects",
+            contract.PROFILE,
+            contract.ADDRESS,
+            contract.COMMITTEES,
+            contract.HISTORICAL_CONSTITUENCIES,
+            contract.EXPERIENCES,
+            contract.HOUSES,
+            contract.FINANCIAL_INTERESTS,
+            contract.MAIDEN_SPEECHES,
+            contract.PARTY_ASSOCIATIONS,
+            contract.POSTS,
+            contract.SUBJECTS_OF_INTEREST,
         ]

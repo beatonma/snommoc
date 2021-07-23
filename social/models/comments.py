@@ -6,14 +6,6 @@ from social.models.mixins import (
     GenericTargetMixin,
     UserMixin,
 )
-from django.db import models
-
-from repository.models.mixins import BaseModel
-from social.models.mixins import (
-    DeletionPendingMixin,
-    GenericTargetMixin,
-    UserMixin,
-)
 
 
 class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):

@@ -19,9 +19,16 @@ class Election(ParliamentDotUkMixin, BaseModel):
         max_length=128,
         unique=True,
     )
-    date = models.DateField(blank=True, null=True, default=None)
+    date = models.DateField(
+        blank=True,
+        null=True,
+        default=None,
+    )
     election_type = models.ForeignKey(
-        "ElectionType", on_delete=models.CASCADE, null=True, blank=True
+        "ElectionType",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):

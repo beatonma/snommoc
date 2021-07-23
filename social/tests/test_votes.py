@@ -41,7 +41,9 @@ class VoteTests(LocalTestCase):
 
         Person.objects.create(parliamentdotuk=1423, name="Boris Johnson", active=True)
 
-        self.valid_user = create_sample_usertoken("testuser", self.valid_token)
+        self.valid_user = create_sample_usertoken(
+            "VoteTests-username", self.valid_token
+        )
 
     def test_post_vote_with_valid_user(self):
         response = self.client.post(

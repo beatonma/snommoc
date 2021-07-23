@@ -16,6 +16,7 @@ from social.tests.util import create_sample_usertoken
 from social.views import contract
 
 _COMMENT = "This is a simple comment"
+_TEST_USERNAME = "testuser-comments"
 
 
 class CommentTests(LocalTestCase):
@@ -28,7 +29,7 @@ class CommentTests(LocalTestCase):
 
         Person.objects.create(parliamentdotuk=4837, name="Aaron Bell", active=True)
 
-        create_sample_usertoken("testuser", token=self.valid_token)
+        create_sample_usertoken(_TEST_USERNAME, token=self.valid_token)
 
     def test_post_comment_with_valid_user(self):
         response = self.client.post(
@@ -44,7 +45,7 @@ class CommentTests(LocalTestCase):
         self.assertLengthEquals(comments, 1)
 
         comment: Comment = comments.first()
-        self.assertEqual(comment.user.username, "testuser")
+        self.assertEqual(comment.user.username, _TEST_USERNAME)
         self.assertEqual(comment.text, _COMMENT)
 
         # Ensure comment points to the correct target
@@ -101,7 +102,7 @@ class CommentTests(LocalTestCase):
         self.assertNoneCreated(Comment)
 
     def test_get_comments(self):
-        user = UserToken.objects.get(username="testuser")
+        user = UserToken.objects.get(username=_TEST_USERNAME)
         Comment.objects.create(
             user=user,
             text=_COMMENT,
@@ -128,10 +129,10 @@ class CommentTests(LocalTestCase):
 
         comment = data[0]
         self.assertEqual(comment.get(contract.COMMENT_TEXT), _COMMENT)
-        self.assertEqual(comment.get(contract.USER_NAME), "testuser")
+        self.assertEqual(comment.get(contract.USER_NAME), _TEST_USERNAME)
 
     def test_comment_unique_per_user_per_object(self):
-        user = UserToken.objects.get(username="testuser")
+        user = UserToken.objects.get(username=_TEST_USERNAME)
         Comment.objects.create(
             user=user,
             text=_COMMENT,

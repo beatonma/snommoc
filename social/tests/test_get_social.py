@@ -22,6 +22,8 @@ from social.tests.util import (
 )
 from social.views import contract
 
+_VALID_USER = "get-social-valid-user"
+
 
 class GetSocialAllTests(LocalTestCase):
     """Tests for social content endpoint /all/"""
@@ -41,7 +43,7 @@ class GetSocialAllTests(LocalTestCase):
 
         self.valid_user, _ = UserToken.objects.get_or_create(
             token=self.valid_token,
-            username="testuser",
+            username=_VALID_USER,
         )
 
     def test_get_all_empty(self):
@@ -113,8 +115,8 @@ class GetSocialAllTests(LocalTestCase):
                     "no": 1,
                 },
                 contract.COMMENTS: [
-                    ["first comment", "testuser"],
-                    ["second comment", "testuser"],
+                    ["first comment", _VALID_USER],
+                    ["second comment", _VALID_USER],
                     ["third comment", "another_user"],
                 ],
                 contract.VOTE_TYPE: None,
@@ -170,8 +172,8 @@ class GetSocialAllTests(LocalTestCase):
                     "no": 1,
                 },
                 contract.COMMENTS: [
-                    ["first comment", "testuser"],
-                    ["second comment", "testuser"],
+                    ["first comment", _VALID_USER],
+                    ["second comment", _VALID_USER],
                     ["third comment", "another_user"],
                 ],
                 contract.VOTE_TYPE: "aye",

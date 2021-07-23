@@ -26,7 +26,7 @@ class UserAccountViewTests(LocalTestCase):
         valid_user_token = uuid.uuid4()
         self.valid_user_token = str(valid_user_token)
         self.valid_google_id = str(uuid.uuid4().hex)
-        self.original_username = "TestUser"
+        self.original_username = "useraccount-username"
 
         self.provider = SignInServiceProvider.objects.create(
             name="fake-provider",

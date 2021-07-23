@@ -1,6 +1,4 @@
 # Generic
-from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-
 NAME = "name"
 TITLE = "title"
 DESCRIPTION = "description"
@@ -16,8 +14,8 @@ CONSTITUENCY = "constituency"
 MP = "mp"
 HANSARD = "hansard"
 HOUSE = "house"
-HOUSE_COMMONS = HOUSE_OF_COMMONS
-HOUSE_LORDS = HOUSE_OF_LORDS
+HOUSE_COMMONS = "commons"
+HOUSE_LORDS = "lords"
 SESSION = "session"
 
 # Date and time

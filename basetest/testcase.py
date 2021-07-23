@@ -1,14 +1,10 @@
-import logging
-from unittest import (
-    skipUnless,
-)
+from unittest import skipUnless
 
+from django.http import HttpResponse
 from django.test import TestCase
+from rest_framework import status
 
 from basetest.args import RUNTESTS_CLARGS
-
-
-log = logging.getLogger(__name__)
 
 
 class BaseTestCase(TestCase):
@@ -21,7 +17,7 @@ class BaseTestCase(TestCase):
             try:
                 cls.objects.all().delete()
             except Exception as e:
-                log.warning(e)
+                print(f"Failed to delete instances of model {cls}: {e}")
 
     def assertEqualIgnoreCase(self, first: str, second: str, msg=None):
         self.assertEqual(first.lower(), second.lower(), msg=msg)
@@ -73,6 +69,24 @@ class LocalTestCase(BaseTestCase):
     """
 
     pass
+
+
+class LocalApiTestCase(LocalTestCase):
+    def assertResponseOK(self, response: HttpResponse):
+        self.assertResponseCode(response, status.HTTP_200_OK)
+
+    def assertResponseNotFound(self, response: HttpResponse):
+        self.assertResponseCode(response, status.HTTP_404_NOT_FOUND, msg=f"{response}")
+
+    def assertResponseCode(self, response: HttpResponse, expected_code: int, msg=""):
+        self.assertEqual(
+            response.status_code,
+            expected_code,
+            msg=f"Expected status={expected_code} {msg}",
+        )
+
+    def assertIsJsonResponse(self, response: HttpResponse):
+        self.assertEqual(response["Content-Type"], "application/json")
 
 
 @skipUnless(RUNTESTS_CLARGS.network, reason="Network calls disabled by default")

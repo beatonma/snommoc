@@ -1,3 +1,5 @@
+from django.http import Http404
+
 from api.serializers.constituencies import ConstituencySerializer
 from api.serializers.constituencies.election_results import (
     ConstituencyResultDetailsSerializer,
@@ -33,7 +35,13 @@ class ConstituencyResultDetailViewSet(KeyRequiredViewSet):
         constituency_id = self.kwargs.get("pk")
         election_id = self.kwargs.get("election_id")
 
-        return ConstituencyResultDetail.objects.filter(
+        obj = ConstituencyResultDetail.objects.filter(
             constituency_result__constituency__parliamentdotuk=constituency_id,
             constituency_result__election__parliamentdotuk=election_id,
         ).first()
+
+        if obj:
+            return obj
+
+        else:
+            raise Http404

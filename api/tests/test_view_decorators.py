@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 from api.models import (
@@ -5,19 +6,20 @@ from api.models import (
     uuid,
     grant_read_snommoc_api,
 )
-from basetest.test_util import create_test_user
+from basetest.test_util import create_sample_user
 from basetest.testcase import LocalTestCase
 
 
 class ApiKeyRequiredDecoratorTest(LocalTestCase):
     """Tests for @api_key_required View decorator."""
 
-    def setUp(self):
-        testuser = create_test_user()
+    def setUp(self) -> None:
+        self.delete_instances_of(User)
+        testuser = create_sample_user(username="aaaaaaaaa")
         self.enabled_api_key = ApiKey.objects.create(user=testuser, enabled=True)
         self.disabled_api_key = ApiKey.objects.create(user=testuser, enabled=False)
 
-        user_with_permission = create_test_user(
+        user_with_permission = create_sample_user(
             username="user_with_permission",
             password="123456@abcdef",
             email="testuser2@snommoc.org",
@@ -58,3 +60,9 @@ class ApiKeyRequiredDecoratorTest(LocalTestCase):
         self.client.login(username="user_with_permission", password="123456@abcdef")
         response = self.client.get(reverse("decorator_test_view"), data={})
         self.assertEqual(response.status_code, 200)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            ApiKey,
+            User,
+        )

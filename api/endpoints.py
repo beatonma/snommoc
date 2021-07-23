@@ -1,9 +1,9 @@
 """
 Endpoints exposed by our server api
 """
+from api import contract
 
-_HOUSE_COMMONS = "commons"
-_HOUSE_LORDS = "lords"
+PING = "ping/"
 
 # Top level
 CONSTITUENCY = "constituency"
@@ -13,26 +13,18 @@ DIVISIONS = "division"
 
 # Constituency
 MEMBER_FOR_CONSTITUENCY = f"{CONSTITUENCY}/member"
-CONSTITUENCY_RESULTS = f"{CONSTITUENCY}/results"
+CONSTITUENCY_RESULTS = f"{CONSTITUENCY}/<int:pk>/election/<int:election_id>/"
 
 # Member details
-MEMBER_FULL_PROFILE = f"{MEMBER}/profile"
+MEMBER_FULL_PROFILE = MEMBER
 MEMBER_VOTES = f"{MEMBER}/votes"
-MEMBER_VOTES_COMMONS = f"{MEMBER}/votes/commons"
-MEMBER_VOTES_LORDS = f"{MEMBER}/votes/lords"
 
 # Divisions
-DIVISION_COMMONS = f"{DIVISIONS}/{_HOUSE_COMMONS}"
-DIVISION_LORDS = f"{DIVISIONS}/{_HOUSE_LORDS}"
+DIVISION_COMMONS = f"{DIVISIONS}/{contract.HOUSE_COMMONS}"
+DIVISION_LORDS = f"{DIVISIONS}/{contract.HOUSE_LORDS}"
 
 # Bills
 BILL = "bill"
-
-# Featured
-FEATURED = "featured"
-FEATURED_MEMBERS = f"{FEATURED}/members"
-FEATURED_BILLS = f"{FEATURED}/bills"
-FEATURED_DIVISIONS = f"{FEATURED}/divisions"
 
 # Timely stuff e.g. trending people
 ZEITGEIST = "zeitgeist"
@@ -47,3 +39,8 @@ def endpoint_list(endpoint_name):
 
 def endpoint_detail(endpoint_name):
     return f"{endpoint_name}-detail"
+
+
+def endpoint_name(endpoint_name):
+    """Sanitize name for use as view name for reverse lookup via urlpatterns."""
+    return endpoint_name.replace(":", "-")

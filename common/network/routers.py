@@ -57,7 +57,7 @@ class SingletonRouter(SimpleRouter):
         Route(
             url=r"^{prefix}{trailing_slash}$",
             mapping={"get": "retrieve"},
-            name="{basename}-detail",
+            name="{basename}",
             detail=True,
             initkwargs={"suffix": "Singleton"},
         )

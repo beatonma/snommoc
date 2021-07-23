@@ -6,7 +6,7 @@ from repository.models import (
     LordsDivision,
     Person,
 )
-from repository.tests.util import create_sample_person
+from repository.tests.data.create import create_sample_person
 from social.models import (
     Comment,
     Vote,

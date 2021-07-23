@@ -12,21 +12,12 @@ from django.utils import timezone
 from util.time import coerce_timezone
 
 
-def inject_context_manager(cls):
-    """
-    Add simple __enter__, __exit__ methods to the given class so that we
-    can use the class in a `with` statement for VISUALLY block-scoped tests.
-
-    WARNING: Stuff inside the block can still affect stuff outside,
-    it's just indented to make tests easier to read.
-    """
-    cls.__enter__ = lambda x: x
-    cls.__exit__ = lambda x, a, b, c: None
-
-
-def create_test_user(
-    username="testuser", password=uuid.uuid4().hex, email="testuser@snommoc.org"
+def create_sample_user(
+    username: str = "default-test-user",
+    password: str = uuid.uuid4().hex,
+    email: str = "testuser@snommoc.org",
 ) -> User:
+    print(f"create_sample_user: [{username}|{password}|{email}]")
     user = User.objects.create(username=username, password=password, email=email)
     user.set_password(password)
     user.save()
@@ -70,3 +61,18 @@ def create_sample_dates(
         dates.append(coerce_timezone(previous))
 
     return dates
+
+
+def dump_urlpatterns(urlpatterns, level: int = 0):
+    if level == 0:
+        print("urlpatterns: [")
+    else:
+        print(f'{" "*level}[')
+
+    for u in urlpatterns:
+        if hasattr(u, "url_patterns"):
+            dump_urlpatterns(u.url_patterns, level + 2)
+        else:
+            print(f'{" "*(level + 2)}{u.name}: {u.pattern}')
+
+    print(f'{" "*level}]')

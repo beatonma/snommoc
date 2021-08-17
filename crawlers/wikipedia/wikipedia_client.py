@@ -1,4 +1,4 @@
-from typing import Callable, List, TypeVar, Iterable
+from typing import Callable, List, Tuple, TypeVar, Iterable
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -31,6 +31,9 @@ def for_pages(
     batch_size: int = BATCH_SIZE,
     **params,
 ):
+    """
+    Run the given [block] on the API response retrieved for the given page titles.
+    """
     for batch in _chunks(page_titles, batch_size):
         normalized, pages = _get_batch_pages(batch, **params)
 
@@ -47,6 +50,9 @@ def get_for_pages(
     batch_size: int = BATCH_SIZE,
     **params,
 ) -> Iterable[T]:
+    """
+    Yield the results of running the given [block] on the API response retrieved for the given page titles.
+    """
     for batch in _chunks(page_titles, batch_size):
         normalized, pages = _get_batch_pages(batch, **params)
 
@@ -69,6 +75,7 @@ def _get_wikipedia_api(
     dangerous_encoded_params: bool = False,
     **kwargs,
 ) -> dict:
+    """Return JSON data from the requested Wikipedia API page."""
     return get_json(
         endpoints.WIKIPEDIA_API,
         params=params,
@@ -77,7 +84,11 @@ def _get_wikipedia_api(
     )
 
 
-def _get_batch_pages(batch, **params):
+def _get_batch_pages(batch, **params) -> Tuple[dict, list]:
+    """
+    Get data for a batch of page titles.
+    Returns a dictionary with corrected page titles, and the list of page data.
+    """
     batch_pages = "|".join(batch)
 
     encoded_params = urlencode(

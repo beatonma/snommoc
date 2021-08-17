@@ -17,7 +17,6 @@ def get_json(
     params: Optional[dict] = None,
     cache: Optional[JsonResponseCache] = None,
     dangerous_encoded_params: bool = False,
-    **kwargs,
 ) -> dict:
     """
     If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().
@@ -35,11 +34,9 @@ def get_json(
         r.url = encoded_url.geturl().replace(encoded_url.query, params)
 
     encoded_url = r.url
-    print(f"URL {encoded_url}")
 
     if cache:
         cached = cache.get_json(encoded_url)
-        print("CACHED", cached)
         if cached:
             log.info(f"[cached] {encoded_url}")
             return cached

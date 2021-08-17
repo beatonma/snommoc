@@ -3,6 +3,8 @@ import uuid
 
 from datetime import timedelta
 
+import util.settings_contract as contract
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
@@ -46,20 +48,22 @@ HTTP_REQUEST_HEADERS_JSON = {}
 
 
 CRAWLER_CACHE_ROOT = os.path.join(BASE_DIR, "cache/")
-CRAWLER_CACHE_TTL = int(timedelta(days=10_000).total_seconds())
-WIKI_CACHE_TTL = int(timedelta(days=5).total_seconds())
 
 SNOMMOC = {
-    "SOCIAL": {
+    contract.SOCIAL: {
         # Account name will be denied if it contains any of these substrings.
-        "USERNAME_BLOCKED_SUBSTRINGS": [
+        contract.SOCIAL_USERNAME_BLOCKED_SUBSTRINGS: [
             "fallofmath",
             "admin",
         ],
         # Account name will be denied if it equals one of these strings.
-        "USERNAME_BLOCKED_EXACT": [
+        contract.SOCIAL_USERNAME_BLOCKED_EXACT: [
             "help",
             "info",
         ],
-    }
+    },
+    contract.CACHE: {
+        contract.CACHE_CRAWLER_TTL: int(timedelta(days=10_000).total_seconds()),
+        contract.CACHE_WIKI_TTL: int(timedelta(days=5).total_seconds()),
+    },
 }

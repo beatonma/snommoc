@@ -1,13 +1,12 @@
 from typing import Callable, List, Tuple, TypeVar, Iterable
 from urllib.parse import urlencode
 
-from django.conf import settings
-
 from crawlers.network import get_json
 
 from crawlers.wikipedia import endpoints
 from crawlers.network import json_cache
-
+from util import settings_contract
+from util.settings import get_cache_settings
 
 """
 When making many queries, create batches to reduce number of requests:
@@ -69,7 +68,10 @@ def _chunks(lst: list, size: int):
         yield lst[i : i + size]
 
 
-@json_cache(name="wikipedia", ttl_seconds=settings.WIKI_CACHE_TTL)
+@json_cache(
+    name="wikipedia",
+    ttl_seconds=get_cache_settings().get(settings_contract.CACHE_WIKI_TTL),
+)
 def _get_wikipedia_api(
     params,
     dangerous_encoded_params: bool = False,

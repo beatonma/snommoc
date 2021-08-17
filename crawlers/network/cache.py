@@ -9,14 +9,16 @@ from typing import Optional
 from django.conf import settings
 from django.utils import timezone
 
+from util import settings_contract
+from util.settings import get_cache_settings
 from util.time import get_now, coerce_timezone
 
 log = logging.getLogger(__name__)
 
-if hasattr(settings, "CRAWLER_CACHE_TTL"):
-    TIME_TO_LIVE_DEFAULT = settings.CRAWLER_CACHE_TTL
-else:
-    TIME_TO_LIVE_DEFAULT = datetime.timedelta(days=4).total_seconds()
+TIME_TO_LIVE_DEFAULT = get_cache_settings().get(
+    settings_contract.CACHE_CRAWLER_TTL,
+    datetime.timedelta(days=4).total_seconds(),
+)
 
 
 def _url_to_filename(url: str) -> str:

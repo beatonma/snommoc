@@ -1,14 +1,13 @@
-from datetime import timedelta
 from typing import Callable, List, TypeVar, Iterable
 from urllib.parse import urlencode
+
+from django.conf import settings
 
 from crawlers.network import get_json
 
 from crawlers.wikipedia import endpoints
 from crawlers.network import json_cache
 
-
-CACHE_TTL = int(timedelta(days=7).total_seconds())
 
 """
 When making many queries, create batches to reduce number of requests:
@@ -64,7 +63,7 @@ def _chunks(lst: list, size: int):
         yield lst[i : i + size]
 
 
-@json_cache(name="wikipedia", ttl_seconds=CACHE_TTL)
+@json_cache(name="wikipedia", ttl_seconds=settings.WIKI_CACHE_TTL)
 def _get_wikipedia_api(
     params,
     dangerous_encoded_params: bool = False,

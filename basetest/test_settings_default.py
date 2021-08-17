@@ -46,7 +46,8 @@ HTTP_REQUEST_HEADERS_JSON = {}
 
 
 CRAWLER_CACHE_ROOT = os.path.join(BASE_DIR, "cache/")
-CRAWLER_CACHE_TTL = timedelta(days=10_000).total_seconds()
+CRAWLER_CACHE_TTL = int(timedelta(days=10_000).total_seconds())
+WIKI_CACHE_TTL = int(timedelta(days=5).total_seconds())
 
 SNOMMOC = {
     "SOCIAL": {

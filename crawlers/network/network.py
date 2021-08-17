@@ -23,6 +23,7 @@ def get_json(
     params: Optional[dict] = None,
     cache: Optional[JsonResponseCache] = None,
     dangerous_encoded_params: bool = False,
+    **kwargs,
 ) -> dict:
     """
     If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().

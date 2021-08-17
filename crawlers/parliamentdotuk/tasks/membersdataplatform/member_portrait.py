@@ -12,7 +12,7 @@ from notifications.models.task_notification import task_notification
 from repository.models import Person
 from repository.models.portrait import MemberPortrait
 from repository.resolution import get_active_members
-from crawlers.network import get_json, json_cache
+from crawlers.network import HttpNoContent, get_json, json_cache
 from crawlers.wikipedia import wikipedia_client
 
 log = logging.getLogger(__name__)
@@ -57,6 +57,8 @@ def _update_official_member_portraits(members: QuerySet[Person], **kwargs):
                 endpoints.MEMBER_PORTRAIT_URL.format(id=member_id), **kwargs
             )
             return data.get("value")
+        except HttpNoContent:
+            pass
         except Exception as e:
             log.warning(f"Could not get portrait url [{member_id}]: {e}")
 

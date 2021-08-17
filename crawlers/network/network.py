@@ -5,9 +5,15 @@ from urllib.parse import urlparse
 import requests
 from django.conf import settings
 from requests import sessions
+from rest_framework import status
 
 from common.network.rate_limit import rate_limit
 from crawlers.network import JsonResponseCache
+from crawlers.network.exceptions import (
+    HttpClientError,
+    HttpNoContent,
+    HttpServerError,
+)
 
 log = logging.getLogger(__name__)
 
@@ -47,8 +53,16 @@ def get_json(
     with sessions.Session() as session:
         response = session.send(r)
 
-    response.encoding = "utf-8-sig"
     rate_limit()
+
+    if response.status_code == status.HTTP_204_NO_CONTENT:
+        raise HttpNoContent
+    elif response.status_code >= 500:
+        raise HttpServerError
+    elif response.status_code >= 400:
+        raise HttpClientError
+
+    response.encoding = "utf-8-sig"
 
     data = response.json()
     if cache:

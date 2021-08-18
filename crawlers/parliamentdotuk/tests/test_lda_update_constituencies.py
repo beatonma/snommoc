@@ -1,36 +1,30 @@
 import datetime
-from unittest import mock
-
-import requests
+from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.lda import lda_client
 from crawlers.parliamentdotuk.tasks.lda.update_constituencies import (
     update_constituencies,
 )
 from repository.models import Constituency
 from .data_lda_update_constituencies import EXAMPLE_RESPONSE
-from .mock import MockJsonResponse
-
-
-def get_mock_json_response(*args, **kwargs):
-    return MockJsonResponse(args[0].url, EXAMPLE_RESPONSE, 200)
 
 
 class UpdateConstituenciesTest(LocalTestCase):
     """ """
 
-    @mock.patch.object(
-        requests.Session,
-        "send",
-        mock.Mock(side_effect=get_mock_json_response),
+    @patch(
+        "crawlers.parliamentdotuk.tasks.lda.lda_client.get_json",
+        side_effect=lambda *args, **kwargs: EXAMPLE_RESPONSE,
     )
-    @mock.patch.object(
-        lda_client, "_get_next_page_url", mock.Mock(side_effect=lambda x: None)
+    @patch(
+        "crawlers.parliamentdotuk.tasks.lda.lda_client._get_next_page_url",
+        side_effect=lambda x: None,
     )
-    def test_update_constituencies(self):
+    def test_update_constituencies(self, *args, **kwargs):
         self.assertEqual(len(Constituency.objects.all()), 0)
+
         update_constituencies(cache=None)
+
         new_constituencies = Constituency.objects.all()
         self.assertEqual(len(new_constituencies), 10)
 
@@ -62,4 +56,6 @@ class UpdateConstituenciesTest(LocalTestCase):
         self.assertEqual(aberdare.parliamentdotuk, 143467)
 
     def tearDown(self) -> None:
-        Constituency.objects.all().delete()
+        self.delete_instances_of(
+            Constituency,
+        )

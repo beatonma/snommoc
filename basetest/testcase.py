@@ -8,9 +8,10 @@ from basetest.args import RUNTESTS_CLARGS
 
 
 class BaseTestCase(TestCase):
+    maxDiff = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.maxDiff = None
 
     def delete_instances_of(self, *classList):
         for cls in classList:
@@ -62,13 +63,31 @@ class BaseTestCase(TestCase):
             print(f"Lists have same items {first}, {second}")
 
 
+class LocalTestCalledNetwork(Exception):
+    """
+    LocalTestCase implementations should never make network calls!
+    """
+
+    pass
+
+
 class LocalTestCase(BaseTestCase):
     """Tests that use only local data - no external network calls!
 
     Always run when runtests.py is run.
     """
 
-    pass
+    def _catch_network_call(self, *args, **kwargs):
+        raise LocalTestCalledNetwork(f"Illegal network call: {args} [{kwargs}]")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        import crawlers.network
+
+        crawlers.network.get_json = lambda *args, **kwargs: self._catch_network_call(
+            *args, **kwargs
+        )
 
 
 class LocalApiTestCase(LocalTestCase):

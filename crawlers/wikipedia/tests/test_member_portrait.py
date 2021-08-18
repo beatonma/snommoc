@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
@@ -72,7 +73,7 @@ _SAMPLE_MAIN = {
                 "ns": 0,
                 "title": "Christopher Fox, Baron Fox",
                 "original": {
-                    "source": "https://upload.wikimedia.org/wikipedia/commons/6/60/Chris_Fox_Bournemouth_1.jpg",
+                    "source": "https://upload.wikimedia.org/wikipedia/commons/6/60/Patched__Chris_Fox_Bournemouth_1.jpg",
                     "width": 2000,
                     "height": 2000,
                 },
@@ -148,7 +149,7 @@ _SAMPLE_THUMBNAILS = {
                 "ns": 0,
                 "title": "Christopher Fox, Baron Fox",
                 "thumbnail": {
-                    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chris_Fox_Bournemouth_1.jpg/1000px-Chris_Fox_Bournemouth_1.jpg",
+                    "source": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chris_Fox_Bournemouth_1.jpg/1000px-Chris_Fox_Bournemouth_1__patched.jpg",
                     "width": 1000,
                     "height": 1000,
                 },
@@ -157,6 +158,19 @@ _SAMPLE_THUMBNAILS = {
         },
     },
 }
+
+
+def _get_sample(*args, **kwargs) -> dict:
+    if "piprop=original" in kwargs.get("params", ""):
+        return _SAMPLE_MAIN
+    else:
+        return _SAMPLE_THUMBNAILS
+
+
+_network_patch = patch(
+    "crawlers.wikipedia.wikipedia_client.get_json",
+    side_effect=_get_sample,
+)
 
 
 class WikiMemberPortraitTests(LocalTestCase):
@@ -168,12 +182,7 @@ class WikiMemberPortraitTests(LocalTestCase):
         create_sample_person(wikipedia="Christopher_Fox,_Baron_Fox")
 
     def test_get_wikipedia_images(self):
-        with patch(
-            "crawlers.wikipedia.wikipedia_client._get_wikipedia_api",
-            side_effect=lambda *args, **kw: _SAMPLE_MAIN
-            if "piprop=original" in args[0]
-            else _SAMPLE_THUMBNAILS,
-        ):
+        with _network_patch:
             members = Person.objects.all()
             images = _get_wikipedia_images(members)
 
@@ -196,8 +205,8 @@ class WikiMemberPortraitTests(LocalTestCase):
         self.assertDictEqual(
             images["Christopher_Fox,_Baron_Fox"],
             {
-                "main": "https://upload.wikimedia.org/wikipedia/commons/6/60/Chris_Fox_Bournemouth_1.jpg",
-                "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chris_Fox_Bournemouth_1.jpg/1000px-Chris_Fox_Bournemouth_1.jpg",
+                "main": "https://upload.wikimedia.org/wikipedia/commons/6/60/Patched__Chris_Fox_Bournemouth_1.jpg",
+                "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chris_Fox_Bournemouth_1.jpg/1000px-Chris_Fox_Bournemouth_1__patched.jpg",
             },
         )
         self.assertDictEqual(
@@ -209,12 +218,7 @@ class WikiMemberPortraitTests(LocalTestCase):
         )
 
     def test_update_wikipedia_member_portraits(self):
-        with patch(
-            "crawlers.wikipedia.wikipedia_client._get_wikipedia_api",
-            side_effect=lambda *args, **kw: _SAMPLE_MAIN
-            if "piprop=original" in args[0]
-            else _SAMPLE_THUMBNAILS,
-        ):
+        with _network_patch:
             members = Person.objects.all()
             update_wikipedia_member_portraits(members)
 
@@ -223,9 +227,9 @@ class WikiMemberPortraitTests(LocalTestCase):
         )
         self.assertEqual(
             cfox.fullsize_url,
-            "https://upload.wikimedia.org/wikipedia/commons/6/60/Chris_Fox_Bournemouth_1.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/6/60/Patched__Chris_Fox_Bournemouth_1.jpg",
         )
-        cfox_thumb = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chris_Fox_Bournemouth_1.jpg/1000px-Chris_Fox_Bournemouth_1.jpg"
+        cfox_thumb = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Chris_Fox_Bournemouth_1.jpg/1000px-Chris_Fox_Bournemouth_1__patched.jpg"
         self.assertEqual(cfox.square_url, cfox_thumb)
         self.assertEqual(cfox.tall_url, cfox_thumb)
         self.assertEqual(cfox.wide_url, cfox_thumb)

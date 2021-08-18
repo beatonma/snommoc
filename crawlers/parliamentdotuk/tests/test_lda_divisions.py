@@ -1,10 +1,8 @@
 import datetime
-from unittest import mock
-
-import requests
+from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.lda import endpoints, lda_client
+from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.divisions import (
     _create_commons_division,
     _create_commons_vote,
@@ -21,7 +19,6 @@ from crawlers.parliamentdotuk.tests.data_lda_divisions import (
     EXAMPLE_COMMONS_VOTE_NO,
     EXAMPLE_LORDS_VOTE,
 )
-from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
@@ -100,27 +97,27 @@ class CommonsDivisionsTestCase(LocalTestCase):
 
 
 def get_mock_divisions(*args, **kwargs):
-    url = args[0].url
-    if url.startswith(endpoints.COMMONS_DIVISIONS + "?"):
+    url = args[0]
+    if url.startswith(endpoints.COMMONS_DIVISIONS):
         response = EXAMPLE_COMMONS_DIVISIONS_LIST
     else:
         response = EXAMPLE_COMMONS_DIVISION_COMPLETE
-    return MockJsonResponse(url, response, 200)
+    return response
 
 
 class MockCommonsDivisionTestCase(LocalTestCase):
     """ """
 
-    @mock.patch.object(
-        requests.Session,
-        "send",
-        mock.Mock(side_effect=get_mock_divisions),
+    @patch(
+        "crawlers.parliamentdotuk.tasks.lda.lda_client.get_json",
+        side_effect=get_mock_divisions,
     )
-    @mock.patch.object(
-        lda_client, "_get_next_page_url", mock.Mock(side_effect=lambda x: None)
+    @patch(
+        "crawlers.parliamentdotuk.tasks.lda.lda_client._get_next_page_url",
+        side_effect=lambda x: None,
     )
-    def test_update_commons_divisions(self):
-        update_commons_divisions(follow_pagination=False, cache=None)
+    def test_update_commons_divisions(self, *args, **kwargs):
+        update_commons_divisions(cache=None)
         division = CommonsDivision.objects.first()
 
         self.assertEqual(

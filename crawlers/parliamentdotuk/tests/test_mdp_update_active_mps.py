@@ -1,7 +1,5 @@
 import datetime
-from unittest import mock
-
-import requests
+from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.membersdataplatform import active_members
@@ -57,11 +55,6 @@ from repository.models.houses import (
 )
 from repository.tests import values
 from .data_mdp_update_active_mps import *
-from .mock import MockJsonResponse
-
-
-def get_mock_biography_response(*args, **kwargs):
-    return MockJsonResponse(args[0].url, SAMPLE_BIOGRAPHY_RESPONSE, 200)
 
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
@@ -401,12 +394,11 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             world_areas_subject.subject, "India; Poland; South East Asia; Turkey; USA"
         )
 
-    @mock.patch.object(
-        requests.Session,
-        "send",
-        mock.Mock(side_effect=get_mock_biography_response),
+    @patch(
+        "crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client.get_json",
+        side_effect=lambda *args, **kwargs: SAMPLE_BIOGRAPHY_RESPONSE,
     )
-    def test_update_active_member_details(self):
+    def test_update_active_member_details(self, *args, **kwargs):
         """
         Check that all of the update methods have been called.
 

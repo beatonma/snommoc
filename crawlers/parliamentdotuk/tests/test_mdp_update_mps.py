@@ -1,7 +1,5 @@
 import datetime
-from unittest import mock
-
-import requests
+from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import (
@@ -12,7 +10,6 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     MemberResponseData,
     ResponseData,
 )
-from crawlers.parliamentdotuk.tests.mock import MockJsonResponse
 from repository.models import Constituency, House, Party
 from repository.models.person import Person
 
@@ -181,14 +178,6 @@ EXAMPLE_RESPONSE_MANY_MPS = {
 }
 
 
-def get_mock_json_response_single_mp(*args, **kwargs):
-    return MockJsonResponse(args[0].url, EXAMPLE_RESPONSE_SINGLE_MP, 200)
-
-
-def get_mock_json_response_many_mps(*args, **kwargs):
-    return MockJsonResponse(args[0].url, EXAMPLE_RESPONSE_MANY_MPS, 200)
-
-
 class ResponseDataTest(LocalTestCase):
     """Ensure that the ResponseData class exposes json properties correctly."""
 
@@ -250,12 +239,13 @@ class MdpUpdateMpsTest(LocalTestCase):
         self.assertIsNone(ms_abbott.date_of_death)
         self.assertIsNone(ms_abbott.date_left_house)
 
-    @mock.patch.object(
-        requests.Session,
-        "send",
-        mock.Mock(side_effect=get_mock_json_response_single_mp),
+    @patch(
+        "crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client.get_json",
+        side_effect=lambda *args, **kwargs: EXAMPLE_RESPONSE_SINGLE_MP,
     )
-    def test_mdp_client_update_members__wraps_individual_result_in_list(self):
+    def test_mdp_client_update_members__wraps_individual_result_in_list(
+        self, *args, **kwargs
+    ):
         """The MDP API returns single values as an object,
         not a single-item list, so we wrap it ourselves.
         This test makes sure that that works correctly.
@@ -268,12 +258,11 @@ class MdpUpdateMpsTest(LocalTestCase):
         self.assertEqual(len(people), 1)
         self._assert_values_for_diane_abbott(people.first())
 
-    @mock.patch.object(
-        requests.Session,
-        "send",
-        mock.Mock(side_effect=get_mock_json_response_many_mps),
+    @patch(
+        "crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client.get_json",
+        side_effect=lambda *args, **kwargs: EXAMPLE_RESPONSE_MANY_MPS,
     )
-    def test_update_all_mps_basic_info(self):
+    def test_update_all_mps_basic_info(self, *args, **kwargs):
         self.assertEqual(len(Person.objects.all()), 0)
 
         update_all_mps_basic_info(cache=None)

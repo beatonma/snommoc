@@ -1,5 +1,4 @@
 import logging
-from collections import namedtuple
 
 from django.db.models import QuerySet
 
@@ -57,8 +56,8 @@ def _update_member_portrait(member: Person, images: dict):
         log.warning(f"No Wikipedia images for member {member}")
         return
 
-    main = images["main"]
-    thumbnail = images["thumbnail"]
+    main = images.get("main")
+    thumbnail = images.get("thumbnail")
 
     try:
         MemberPortrait.objects.update_or_create(

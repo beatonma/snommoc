@@ -24,7 +24,7 @@ default_params = {
 T = TypeVar("T")
 
 
-def for_pages(
+def for_each_page(
     page_titles: List[str],
     block: Callable[[str, dict], None],
     batch_size: int = BATCH_SIZE,
@@ -43,7 +43,7 @@ def for_pages(
             block(title, page)
 
 
-def get_for_pages(
+def map_pages(
     page_titles: List[str],
     block: Callable[[str, dict], T],
     batch_size: int = BATCH_SIZE,

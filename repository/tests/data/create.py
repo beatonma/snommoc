@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from repository.models import (
     Bill,
@@ -16,14 +17,20 @@ from repository.models import (
 )
 
 
+def _any_id() -> int:
+    return random.randint(1, 9999)
+
+
 def create_sample_person(
-    parliamentdotuk: int = 1423,
+    parliamentdotuk: int = _any_id,
     name: str = "Boris Johnson",
     active: bool = True,
     **kwargs,
 ) -> Person:
     return Person.objects.create(
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         name=name,
         active=active,
         **kwargs,
@@ -32,13 +39,15 @@ def create_sample_person(
 
 def create_sample_constituency(
     name: str = "Aberdeen North",
-    parliamentdotuk: int = 143469,
+    parliamentdotuk: int = _any_id,
     start: datetime.date = datetime.date(1918, 12, 14),
     end: datetime.date = datetime.date(1950, 2, 23),
 ) -> Constituency:
     return Constituency.objects.create(
         name=name,
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         start=start,
         end=end,
     )
@@ -46,7 +55,7 @@ def create_sample_constituency(
 
 def create_sample_election(
     name: str = "3001 General Election",
-    parliamentdotuk: int = 2154,
+    parliamentdotuk: int = _any_id,
     date: datetime.date = datetime.date(3001, 5, 15),
     type: str = "General Election",
 ) -> Election:
@@ -54,7 +63,9 @@ def create_sample_election(
 
     return Election.objects.create(
         name=name,
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         election_type=election_type,
         date=date,
     )
@@ -76,7 +87,7 @@ def create_constituency_result_detail(
     constituency: Constituency,
     election: Election,
     mp: Person,
-    parliamentdotuk: int = 4385,
+    parliamentdotuk: int = _any_id,
     electorate: int = 1009,
     turnout: int = 600,
     majority: int = 199,
@@ -85,7 +96,9 @@ def create_constituency_result_detail(
     constituency_result = create_constituency_result(constituency, election, mp)
 
     return ConstituencyResultDetail.objects.create(
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         constituency_result=constituency_result,
         electorate=electorate,
         turnout=turnout,
@@ -97,7 +110,7 @@ def create_constituency_result_detail(
 
 def create_sample_party(
     name: str = "Labour",
-    parliamentdotuk: int = 15,
+    parliamentdotuk: int = _any_id,
     homepage: str = "https://labour.org.uk/",
     wikipedia: str = "Labour_Party_(UK)",
     short_name: str = "Lab",
@@ -106,7 +119,9 @@ def create_sample_party(
 ) -> Party:
     return Party.objects.create(
         name=name,
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         homepage=homepage,
         wikipedia=wikipedia,
         long_name=long_name,
@@ -117,20 +132,22 @@ def create_sample_party(
 
 def create_sample_session(
     name: str = "2017-2019",
-    parliamentdotuk: int = 730830,
+    parliamentdotuk: int = _any_id,
     start: datetime.date = None,
     end: datetime.date = None,
 ) -> ParliamentarySession:
     return ParliamentarySession.objects.create(
         name=name,
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         start=start,
         end=end,
     )
 
 
 def create_sample_commons_division(
-    parliamentdotuk: int = 229684,
+    parliamentdotuk: int = _any_id,
     title: str = "Statutory Instruments: Motion for Approval. That the draft Infrastructure Planning (Radioactive Waste Geological Disposal Facilities) Order 2015, which was laid before this House on 12 January, be approved. Q acc agreed to.",
     abstentions: int = 1,
     ayes: int = 202,
@@ -149,7 +166,9 @@ def create_sample_commons_division(
         session = session()
 
     return CommonsDivision.objects.create(
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         title=title,
         abstentions=abstentions,
         ayes=ayes,
@@ -167,7 +186,7 @@ def create_sample_commons_division(
 
 
 def create_sample_lords_division(
-    parliamentdotuk: int = 724691,
+    parliamentdotuk: int = _any_id,
     title: str = "Education (Student Fees, Awards and Support) (Amendment) Regulations 2017",
     date: datetime.date = datetime.date.fromisoformat("2017-04-27"),
     ayes: int = 121,
@@ -177,18 +196,17 @@ def create_sample_lords_division(
     division_number: int = 1,
     session: ParliamentarySession = create_sample_session,
 ) -> LordsDivision:
-    if callable(session):
-        session = session()
-
     return LordsDivision.objects.create(
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         title=title,
         date=date,
         ayes=ayes,
         noes=noes,
         description=description,
         whipped_vote=whipped_vote,
-        session=session,
+        session=session() if callable(session) else session,
         division_number=division_number,
     )
 
@@ -205,7 +223,7 @@ def create_sample_bill_type(
 
 def create_sample_bill(
     title: str = "Defibrillators (Availability) Bill",
-    parliamentdotuk: int = 1030151,
+    parliamentdotuk: int = _any_id,
     description: str = "A Bill to require the provision of defibrillators in education establishments, and in leisure, sports and certain other public facilities; to make provision for training persons to operate defibrillators; to make provision for funding the acquisition, installation, use and maintenance of defibrillators; and for connected purposes.",
     act_name: str = "",
     label: str = "Defibrillators (Availability)",
@@ -219,12 +237,11 @@ def create_sample_bill(
     bill_type: BillType = create_sample_bill_type,
     session: ParliamentarySession = None,
 ) -> Bill:
-    if callable(bill_type):
-        bill_type = bill_type()
-
     return Bill.objects.create(
         title=title,
-        parliamentdotuk=parliamentdotuk,
+        parliamentdotuk=parliamentdotuk()
+        if callable(parliamentdotuk)
+        else parliamentdotuk,
         description=description,
         act_name=act_name,
         label=label,
@@ -235,6 +252,6 @@ def create_sample_bill(
         is_private=is_private,
         is_money_bill=is_money_bill,
         public_involvement_allowed=public_involvement_allowed,
-        bill_type=bill_type,
+        bill_type=bill_type() if callable(bill_type) else bill_type,
         session=session,
     )

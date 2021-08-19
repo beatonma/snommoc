@@ -47,7 +47,7 @@ class JsonResponseCache:
 
         root = settings.CRAWLER_CACHE_ROOT
         self.cache_dir = os.path.join(root, name)
-        self.time_to_live = time_to_live_seconds
+        self.time_to_live = time_to_live_seconds or TIME_TO_LIVE_DEFAULT
 
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
@@ -123,8 +123,10 @@ def json_cache(
     ttl_seconds: int = TIME_TO_LIVE_DEFAULT,
     now=get_now,
 ):
-    if callable(now):
-        now = now()
+    """
+    Apply the @json_cache decoration to a function to define the name of the cache used by
+    any network calls spawned from it.
+    """
 
     def cached_call(func):
         @wraps(func)
@@ -135,7 +137,9 @@ def json_cache(
 
             if is_root:
                 cache = JsonResponseCache(
-                    name=name, time_to_live_seconds=ttl_seconds, now=now
+                    name=name,
+                    time_to_live_seconds=ttl_seconds,
+                    now=now() if callable(now) else now,
                 )
                 kwargs["cache"] = cache
 

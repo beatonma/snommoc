@@ -5,6 +5,10 @@ from crawlers.parliamentdotuk.tasks import (
     update_member_portraits,
     update_missing_member_portraits_wikipedia,
 )
+from crawlers.parliamentdotuk.tasks.membersdataplatform.member_portrait import (
+    update_member_portrait,
+)
+from repository.models import MemberPortrait, Person
 from util.management.async_command import AsyncCommand
 
 
@@ -19,10 +23,46 @@ class Command(AsyncCommand):
             help="Use confirmed wikipedia pages to find missing portraits.",
         )
 
+        parser.add_argument(
+            "--id",
+            type=int,
+            default=None,
+            help="Update the portrait for a single member by parliamentdotuk ID.",
+        )
+
+        parser.add_argument(
+            "--name",
+            type=str,
+            default=None,
+            help="Update the portrait for a single member by name.",
+        )
+
     def handle(self, *args, **options):
+        if "id" in options or "name" in options:
+            _update_single_member(
+                id=options.get("id"),
+                name=options.get("name"),
+            )
+            return
+
         if options.get("wiki"):
             func = update_missing_member_portraits_wikipedia
         else:
             func = update_member_portraits
 
         self.handle_async(func, *args, **options)
+
+
+def _update_single_member(id: int = None, name: str = None):
+    if id:
+        member = Person.objects.get(pk=id)
+    else:
+        member = Person.objects.get(name=name)
+
+    print(f"Trying to update portrait for member {member}")
+    update_member_portrait(member)
+
+    try:
+        print(f"Portrait: {MemberPortrait.objects.get(person=member)}")
+    except MemberPortrait.DoesNotExist:
+        print(f"Unable to find portrait for member {member}")

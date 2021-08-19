@@ -102,3 +102,15 @@ def update_missing_member_portraits_wikipedia(**kwargs):
 def update_member_portraits_wikipedia(**kwargs):
     members = get_active_members(wikipedia__isnull=False)
     update_wikipedia_member_portraits(members)
+
+
+def update_member_portrait(member: Person):
+    """Update an individual portrait"""
+
+    as_queryset = Person.objects.filter(pk=member.pk)
+    _update_official_member_portraits(as_queryset)
+
+    try:
+        MemberPortrait.objects.get(person=member)
+    except MemberPortrait.DoesNotExist:
+        update_wikipedia_member_portraits(as_queryset)

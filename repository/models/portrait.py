@@ -18,4 +18,4 @@ class MemberPortrait(BaseModel):
         verbose_name = "Member Portrait"
 
     def __str__(self):
-        return f"{self.person}"
+        return f"{self.person}: {self.fullsize_url}"

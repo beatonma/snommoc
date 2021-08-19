@@ -69,7 +69,7 @@ def _update_member_portrait(member: Person, images: dict):
                 "wide_url": thumbnail,
             },
         )
-    except Exception as e:
+    except Exception:
         log.warning(
             f"Failed to update MemberPortrait for member={member} with images={images}"
         )

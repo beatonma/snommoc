@@ -38,10 +38,13 @@ class Command(AsyncCommand):
         )
 
     def handle(self, *args, **options):
-        if "id" in options or "name" in options:
+        id = options.get("id")
+        name = options.get("name")
+
+        if id or name:
             _update_single_member(
-                id=options.get("id"),
-                name=options.get("name"),
+                id=id,
+                name=name,
             )
             return
 

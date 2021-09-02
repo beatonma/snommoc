@@ -27,8 +27,7 @@ class ZeitgeistViewSet(KeyRequiredViewSet):
 
     def get_object(self):
         today = get_today()
-        queryset = self.filter_queryset(self.get_queryset())
-        items = queryset
+        items = self.filter_queryset(self.get_queryset())
 
         people = items.filter(target_type=ContentType.objects.get_for_model(Person))
         commons_divisions = items.filter(

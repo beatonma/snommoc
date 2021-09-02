@@ -20,6 +20,12 @@ class ZeitgeistItem(GenericTargetMixin, BaseModel):
         ],
     )
 
+    """
+    Optional value to make an item more or less prominent in UIs. Higher value indicate higher importance.
+    Items with equal priority may be displayed in any order.
+    """
+    priority = models.PositiveSmallIntegerField(default=50)
+
     class Meta:
         verbose_name_plural = "Zeitgeist items"
         verbose_name = "Zeitgeist item"

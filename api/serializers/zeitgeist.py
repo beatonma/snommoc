@@ -19,16 +19,19 @@ class MessageOfTheDaySerializer(DetailedModelSerializer):
 
 
 class _ZeitgeistPeopleSerializer(ReadOnlySerializer):
+    priority = serializers.IntegerField()
     reason = serializers.CharField()
     target = InlineMemberSerializer()
 
 
 class _ZeitgeistBillsSerializer(ReadOnlySerializer):
+    priority = serializers.IntegerField()
     reason = serializers.CharField()
     target = InlineBillSerializer()
 
 
 class _ZeitgeistDivisionsSerializer(ReadOnlySerializer):
+    priority = serializers.IntegerField()
     reason = serializers.CharField()
     target = GenericInlineDivisionSerializer()
 

@@ -44,13 +44,13 @@ list_only_views = ((endpoints.MEMBER, MemberViewSet),)
 list_or_detail_views = (
     (endpoints.PARTY, PartyViewSet),
     (endpoints.CONSTITUENCY, ConstituencyViewSet),
-    (endpoints.DIVISION_COMMONS, CommonsDivisionViewSet),
-    (endpoints.DIVISION_LORDS, LordsDivisionViewSet),
 )
 
 """Views which can only return a single detailed view."""
 detail_only_views = (
     (endpoints.BILL, BillViewSet),
+    (endpoints.DIVISION_COMMONS, CommonsDivisionViewSet),
+    (endpoints.DIVISION_LORDS, LordsDivisionViewSet),
     (endpoints.MEMBER_FULL_PROFILE, ProfileViewSet),
     (endpoints.MEMBER_VOTES, MemberVotesViewSet),
 )

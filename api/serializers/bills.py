@@ -2,15 +2,15 @@ from rest_framework import serializers
 
 from api import contract
 from api.serializers.base import DetailedModelSerializer, InlineModelSerializer
-from api.serializers.inline import InlinePartySerializer
+from api.serializers.member import SimpleProfileSerializer
 from repository.models import (
     Bill,
-    BillSponsor,
     BillPublication,
-    BillType,
+    BillSponsor,
     BillStage,
-    ParliamentarySession,
     BillStageSitting,
+    BillType,
+    ParliamentarySession,
 )
 
 
@@ -26,27 +26,20 @@ class InlineBillSerializer(InlineModelSerializer):
 
 
 class _BillSponsorSerializer(DetailedModelSerializer):
-    parliamentdotuk = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
-    party = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
 
     def get_name(self, obj):
         return obj.name if obj.person is None else obj.person.name
 
-    def get_parliamentdotuk(self, obj):
-        return None if obj.person is None else obj.person.parliamentdotuk
-
-    def get_party(self, obj):
-        return (
-            None if obj.person is None else InlinePartySerializer(obj.person.party).data
-        )
+    def get_profile(self, obj):
+        return None if obj.person is None else SimpleProfileSerializer(obj.person).data
 
     class Meta:
         model = BillSponsor
         fields = [
-            contract.PARLIAMENTDOTUK,
             contract.NAME,
-            contract.PARTY,
+            contract.PROFILE,
         ]
 
 

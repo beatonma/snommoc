@@ -20,6 +20,10 @@ from util.time import get_today
 log = logging.getLogger(__name__)
 
 
+def get_active_constituencies(**kwargs):
+    return Constituency.objects.filter(end__isnull=True, **kwargs)
+
+
 def get_constituency_for_date(
     name: str,
     date: Optional[_date],

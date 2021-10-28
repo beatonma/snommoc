@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('family_name', models.CharField(help_text='Last name', max_length=72, null=True)),
                 ('additional_name', models.CharField(blank=True, help_text='Middle name(s)', max_length=72, null=True)),
                 ('gender', models.CharField(blank=True, default=None, max_length=16, null=True)),
-                ('active', models.BooleanField(default=None, help_text='Whether this person currently has a seat in parliament.')),
+                ('active', models.BooleanField(help_text='Whether this person currently has a seat in parliament.')),
             ],
             options={
                 'verbose_name_plural': 'People',
@@ -93,11 +93,10 @@ class Migration(migrations.Migration):
                 ('ordinance_survey_name', models.CharField(blank=True, max_length=64, null=True)),
                 ('gss_code', models.CharField(blank=True, help_text='Government Statistical Service ID', max_length=12, null=True)),
                 ('constituency_type', models.CharField(choices=[('county', 'County'), ('borough', 'Borough')], help_text='Borough, county...', max_length=10, null=True)),
-                ('mp', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='constituency', to='repository.mp')),
+                ('mp', models.OneToOneField(null=True, help_text='Current representative', on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='repository.person')),
                 ('created_on', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
                 ('end', models.DateField(blank=True, null=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
-                ('parliamentdotuk', models.PositiveIntegerField(help_text='ID used on parliament.uk website', null=True, unique=True)),
                 ('start', models.DateField(null=True)),
             ],
             options={
@@ -182,7 +181,6 @@ class Migration(migrations.Migration):
                 ('parliamentdotuk', models.PositiveIntegerField(help_text='ID used on parliament.uk website', primary_key=True, serialize=False, unique=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
-                ('parliamentdotuk', models.PositiveIntegerField(help_text='ID used on parliament.uk website', null=True, unique=True)),
                 ('description', models.CharField(max_length=160)),
                 ('created', models.DateField(blank=True, null=True)),
                 ('amended', models.DateField(blank=True, null=True)),
@@ -538,11 +536,11 @@ class Migration(migrations.Migration):
             name='theyworkforyou',
             field=models.PositiveIntegerField(help_text='ID used on theyworkforyou.com', null=True, unique=True),
         ),
-        migrations.AlterField(
-            model_name='constituency',
-            name='mp',
-            field=models.OneToOneField(help_text='Current representative', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='repository.person'),
-        ),
+        # migrations.AlterField(
+        #     model_name='constituency',
+        #     name='mp',
+        #     field=models.OneToOneField(help_text='Current representative', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='repository.person'),
+        # ),
         migrations.CreateModel(
             name='ConstituencyBoundary',
             fields=[
@@ -551,10 +549,10 @@ class Migration(migrations.Migration):
                 ('constituency', models.OneToOneField(on_delete=django.db.models.deletion.DO_NOTHING, to='repository.constituency')),
                 ('created_on', models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
-                ('area', models.CharField(default='', max_length=24)),
-                ('boundary_length', models.CharField(default='', max_length=24)),
-                ('center_latitude', models.CharField(default='', max_length=24)),
-                ('center_longitude', models.CharField(default='', max_length=24)),
+                ('area', models.CharField(max_length=24)),
+                ('boundary_length', models.CharField(max_length=24)),
+                ('center_latitude', models.CharField(max_length=24)),
+                ('center_longitude', models.CharField(max_length=24)),
             ],
             options={
                 'verbose_name_plural': 'Constituency Boundaries',
@@ -570,9 +568,9 @@ class Migration(migrations.Migration):
             name='given_name',
             field=models.CharField(blank=True, help_text='First name', max_length=72, null=True),
         ),
-        migrations.DeleteModel(
-            name='Mp',
-        ),
+        # migrations.DeleteModel(
+        #     name='Mp',
+        # ),
         migrations.AddField(
             model_name='webaddress',
             name='person',

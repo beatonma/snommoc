@@ -50,41 +50,6 @@ class Migration(migrations.Migration):
                 'ordering': ['name'],
             },
         ),
-        # migrations.CreateModel(
-        #     name='WebLink',
-        #     fields=[
-        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-        #         ('url', models.URLField(unique=True)),
-        #     ],
-        # ),
-        # migrations.CreateModel(
-        #     name='Mp',
-        #     fields=[
-        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-        #         ('start', models.DateField(null=True)),
-        #         ('end', models.DateField(blank=True, null=True)),
-        #         ('parliamentdotuk', models.PositiveIntegerField(help_text='ID used on parliament.uk website', null=True, unique=True)),
-        #         ('theyworkforyou', models.PositiveIntegerField(help_text='ID used on theyworkforyou.com', null=True, unique=True)),
-        #     ],
-        #     options={
-        #         'verbose_name': 'MP',
-        #         'verbose_name_plural': 'MPs',
-        #     },
-        # ),
-        # migrations.CreateModel(
-        #     name='Links',
-        #     fields=[
-        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-        #         ('wikipedia', models.CharField(blank=True, help_text="Path section of a wikipedia url (e.g. 'John_Baron_(politician)')", max_length=64, null=True)),
-        #         ('phone_parliament', phonenumber_field.modelfields.PhoneNumberField(blank=True, help_text='National office phone number', max_length=128, null=True, region=None)),
-        #         ('phone_constituency', phonenumber_field.modelfields.PhoneNumberField(blank=True, help_text='Local office phone number', max_length=128, null=True, region=None)),
-        #         ('email', models.EmailField(blank=True, max_length=254, null=True)),
-        #         ('person', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='links', related_query_name='links', to='repository.person')),
-        #     ],
-        #     options={
-        #         'verbose_name_plural': 'Personal links',
-        #     },
-        # ),
         migrations.CreateModel(
             name='Constituency',
             fields=[
@@ -521,11 +486,6 @@ class Migration(migrations.Migration):
             name='modified_on',
             field=models.DateTimeField(auto_now=True),
         ),
-        # migrations.AddField(
-        #     model_name='person',
-        #     name='parliamentdotuk',
-        #     field=models.PositiveIntegerField(help_text='ID used on parliament.uk website', primary_key=True, serialize=False, unique=True),
-        # ),
         migrations.AddField(
             model_name='person',
             name='party',
@@ -536,11 +496,6 @@ class Migration(migrations.Migration):
             name='theyworkforyou',
             field=models.PositiveIntegerField(help_text='ID used on theyworkforyou.com', null=True, unique=True),
         ),
-        # migrations.AlterField(
-        #     model_name='constituency',
-        #     name='mp',
-        #     field=models.OneToOneField(help_text='Current representative', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='repository.person'),
-        # ),
         migrations.CreateModel(
             name='ConstituencyBoundary',
             fields=[
@@ -568,9 +523,6 @@ class Migration(migrations.Migration):
             name='given_name',
             field=models.CharField(blank=True, help_text='First name', max_length=72, null=True),
         ),
-        # migrations.DeleteModel(
-        #     name='Mp',
-        # ),
         migrations.AddField(
             model_name='webaddress',
             name='person',
@@ -728,12 +680,6 @@ class Migration(migrations.Migration):
             name='constituencyresult',
             unique_together={('election', 'constituency'), ('election', 'mp')},
         ),
-        # migrations.DeleteModel(
-        #     name='Links',
-        # ),
-        # migrations.DeleteModel(
-        #     name='WebLink',
-        # ),
         migrations.AlterField(
             model_name='declaredinterest',
             name='description',
@@ -829,37 +775,6 @@ class Migration(migrations.Migration):
             name='organisation',
             field=models.CharField(blank=True, max_length=512, null=True),
         ),
-        # migrations.RemoveField(
-        #     model_name='constituency',
-        #     name='id',
-        # ),
-        # migrations.RemoveField(
-        #     model_name='declaredinterest',
-        #     name='id',
-        # ),
-        # migrations.RemoveField(
-        #     model_name='election',
-        #     name='id',
-        # ),
-        # migrations.RemoveField(
-        #     model_name='person',
-        #     name='id',
-        # ),
-        # migrations.AlterField(
-        #     model_name='constituency',
-        #     name='parliamentdotuk',
-        #     field=models.PositiveIntegerField(help_text='ID used on parliament.uk website', primary_key=True, serialize=False, unique=True),
-        # ),
-        # migrations.AlterField(
-        #     model_name='declaredinterest',
-        #     name='parliamentdotuk',
-        #     field=models.PositiveIntegerField(help_text='ID used on parliament.uk website', primary_key=True, serialize=False, unique=True),
-        # ),
-        # migrations.AlterField(
-        #     model_name='election',
-        #     name='parliamentdotuk',
-        #     field=models.PositiveIntegerField(help_text='ID used on parliament.uk website', primary_key=True, serialize=False, unique=True),
-        # ),
         migrations.CreateModel(
             name='Bill',
             fields=[

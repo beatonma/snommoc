@@ -1,7 +1,6 @@
 import logging
 from typing import Optional
 
-from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 from django.db.models import DO_NOTHING
 
@@ -39,18 +38,6 @@ class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
     homepage = models.URLField(null=True, blank=True)
     year_founded = models.PositiveSmallIntegerField(default=0)
 
-    @property
-    def mp_population(self) -> int:
-        """Returns number of MPs associated with this party"""
-        return self.objects.count()
-
-    def canonical(self) -> "Party":
-        try:
-            aka = PartyAlsoKnownAs.objects.get(alias=self)
-            return aka.canonical
-        except (PartyAlsoKnownAs.DoesNotExist, MultipleObjectsReturned):
-            return self
-
     class Meta:
         verbose_name_plural = "Parties"
 
@@ -63,14 +50,9 @@ class PartyAlsoKnownAs(BaseModel):
         "Party",
         on_delete=models.CASCADE,
         help_text="Preferred party instance",
-        related_name="canonical",
+        related_name="aliases",
     )
-    alias = models.OneToOneField(
-        "Party",
-        on_delete=models.CASCADE,
-        help_text="An alternative instance, probably with a differently formatted name",
-        related_name="alias",
-    )
+    alias = models.CharField(max_length=64, unique=True)
 
     class Meta:
         verbose_name_plural = "Parties also known as"
@@ -135,7 +117,8 @@ class PartyTheme(BaseModel):
 
 
 def get_or_create_party(
-    parliamentdotuk: Optional[int], name: Optional[str]
+    parliamentdotuk: Optional[int],
+    name: Optional[str],
 ) -> Optional["Party"]:
     if not parliamentdotuk:
         return None

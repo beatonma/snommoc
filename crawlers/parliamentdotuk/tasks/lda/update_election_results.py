@@ -28,6 +28,7 @@ from repository.models import (
     Election,
 )
 from repository.models.util.queryset import get_or_none
+from repository.resolution.members import get_member_for_election_result
 
 log = logging.getLogger(__name__)
 
@@ -85,10 +86,15 @@ def _create_election_result(parliamentdotuk, data):
 
     candidates = get_list(data, contract.CANDIDATES)
     for candidate in candidates:
-        _create_candidate(result, candidate)
+        _create_candidate(result, candidate, constituency, election)
 
 
-def _create_candidate(election_result, candidate):
+def _create_candidate(
+    election_result: ConstituencyResultDetail,
+    candidate,
+    constituency: Constituency,
+    election: Election,
+):
     check_required_fields(
         candidate,
         contract.CANDIDATE_NAME,
@@ -96,14 +102,16 @@ def _create_candidate(election_result, candidate):
     )
 
     name = get_str(candidate, contract.CANDIDATE_NAME)
+    person = get_member_for_election_result(name, constituency, election)
 
     ConstituencyCandidate.objects.update_or_create(
         election_result=election_result,
         name=name,
         defaults={
+            "person": person,
             "votes": get_int(candidate, contract.CANDIDATE_VOTES),
             "order": get_int(candidate, contract.CANDIDATE_ORDINAL),
-            "party": get_str(candidate, contract.CANDIDATE_PARTY),
+            "party_name": get_str(candidate, contract.CANDIDATE_PARTY),
         },
     )
 

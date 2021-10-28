@@ -3,6 +3,7 @@
 *.sqlite
 *.sqlite3
 .*.json
+*.tar.gz
 .coverage
 .idea/
 .sass-cache/
@@ -10,7 +11,6 @@
 __pycache__/
 dashboard/webapp/
 env/
-migrations/
 raw_data/
 snommoc/local_*
 uwsgi.ini

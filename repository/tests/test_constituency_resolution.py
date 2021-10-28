@@ -10,7 +10,7 @@ from repository.resolution.constituency import (
 from repository.tests.data.create import create_sample_constituencies
 
 
-class ConstituencySampleResolutionTests(LocalTestCase):
+class ConstituencySampleResolutionTest(LocalTestCase):
     def setUp(self) -> None:
         create_sample_constituencies()
 
@@ -67,8 +67,6 @@ class ConstituencySampleResolutionTests(LocalTestCase):
 
 
 class ConstituencyResolutionTests(LocalTestCase):
-    """ """
-
     def setUp(self) -> None:
         Constituency.objects.create(
             parliamentdotuk=1,

@@ -34,9 +34,16 @@ class ConstituencyCandidate(BaseModel):
         related_name="candidates",
     )
     name = models.CharField(max_length=NAME_MAX_LENGTH)
+    person = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
+    )
     votes = models.PositiveIntegerField(default=0)
     order = models.PositiveSmallIntegerField(default=100)
-    party = models.CharField(max_length=128)  # LDA API represents this with TLA
+    party_name = models.CharField(max_length=128)  # LDA API represents this with TLA
 
     class Meta:
         unique_together = [

@@ -21,6 +21,7 @@ from repository.tests.data.sample_constituencies import (
 )
 from repository.tests.data.sample_election import SAMPLE_ELECTIONS, any_sample_election
 from repository.tests.data.sample_members import any_sample_member
+from repository.tests.data.sample_parties import SAMPLE_PARTIES, any_sample_party
 
 
 def _any_id() -> int:
@@ -176,26 +177,36 @@ def create_constituency_result_detail(
 
 
 def create_sample_party(
-    name: str = "Labour",
-    parliamentdotuk: int = _any_id,
-    homepage: str = "https://labour.org.uk/",
-    wikipedia: str = "Labour_Party_(UK)",
-    short_name: str = "Lab",
-    long_name: str = "Labour Party",
-    year_founded: int = 1900,
+    name: str = None,
+    parliamentdotuk: int = None,
+    homepage: str = None,
+    wikipedia: str = None,
+    year_founded: int = 0,
+    randomise: bool = True,
 ) -> Party:
     """Create a Party with custom data."""
+    party = any_sample_party()
+
+    if name:
+        party.name = name
+
+    if parliamentdotuk:
+        party.pk = parliamentdotuk
+    elif randomise:
+        party.pk = _any_id()
+
     return Party.objects.create(
-        name=name,
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        name=party.name,
+        parliamentdotuk=party.pk,
         homepage=homepage,
         wikipedia=wikipedia,
-        long_name=long_name,
-        short_name=short_name,
         year_founded=year_founded,
     )
+
+
+def create_sample_parties():
+    for x in SAMPLE_PARTIES:
+        Party.objects.create(parliamentdotuk=x.pk, name=x.name)
 
 
 def create_sample_session(

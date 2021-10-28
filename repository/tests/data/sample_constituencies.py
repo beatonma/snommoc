@@ -1,8 +1,8 @@
-import dataclasses
-import random
 from dataclasses import dataclass
 from datetime import date
 from typing import Optional
+
+from repository.tests.data.sample import any_sample_of
 
 
 @dataclass
@@ -15,7 +15,7 @@ class SampleConstituency:
 
 def any_sample_constituency():
     """Return a copy of a random SampleConstituency."""
-    return dataclasses.replace(random.choice(SAMPLE_CONSTITUENCIES))
+    return any_sample_of(SAMPLE_CONSTITUENCIES)
 
 
 SAMPLE_CONSTITUENCIES = [

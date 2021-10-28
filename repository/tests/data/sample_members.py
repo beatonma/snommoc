@@ -1,12 +1,7 @@
-import dataclasses
 from dataclasses import dataclass
-import random
 
-
-@dataclass
-class SampleParty:
-    pk: int
-    name: str
+from repository.tests.data.sample import any_sample_of
+from repository.tests.data.sample_parties import SampleParty
 
 
 @dataclass
@@ -18,17 +13,17 @@ class SampleMember:
 
 def any_sample_mp() -> SampleMember:
     """Return a copy of a random SampleMember MP."""
-    return dataclasses.replace(random.choice(SAMPLE_MPS))
+    return any_sample_of(SAMPLE_MPS)
 
 
 def any_sample_lord() -> SampleMember:
     """Return a copy of a random SampleMember Lord."""
-    return dataclasses.replace(random.choice(SAMPLE_LORDS))
+    return any_sample_of(SAMPLE_LORDS)
 
 
 def any_sample_member() -> SampleMember:
     """Return a copy of a random SampleMember."""
-    return dataclasses.replace(random.choice(SAMPLE_MEMBERS))
+    return any_sample_of(SAMPLE_MEMBERS)
 
 
 SAMPLE_MPS = [

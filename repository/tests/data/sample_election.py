@@ -1,7 +1,7 @@
-import dataclasses
 import datetime
-import random
 from dataclasses import dataclass
+
+from repository.tests.data.sample import any_sample_of
 
 
 @dataclass
@@ -13,7 +13,7 @@ class SampleElection:
 
 def any_sample_election():
     """Return a copy of a random SampleElection."""
-    return dataclasses.replace(random.choice(SAMPLE_ELECTIONS))
+    return any_sample_of(SAMPLE_ELECTIONS)
 
 
 SAMPLE_ELECTIONS = [

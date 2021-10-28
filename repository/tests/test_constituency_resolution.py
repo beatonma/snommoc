@@ -7,10 +7,66 @@ from repository.resolution.constituency import (
     get_current_constituency,
     get_suggested_constituencies,
 )
-from repository.tests.data.sample_constituencies import create_sample_constituencies
+from repository.tests.data.create import create_sample_constituencies
 
 
-class ConstituencyTests(LocalTestCase):
+class ConstituencySampleResolutionTests(LocalTestCase):
+    def setUp(self) -> None:
+        create_sample_constituencies()
+
+    def test_get_constituency_for_date_with_complex_names(self):
+        """Ensure punctuation, &/and equivalency, etc."""
+
+        c = get_constituency_for_date("Barnsley East & Mexborough", date(2001, 6, 1))
+        self.assertEqual(c.parliamentdotuk, 143590, msg=f"{c.pk} {c.name}")
+
+        c = get_constituency_for_date("Barnsley East and Mexborough", date(2001, 6, 1))
+        self.assertEqual(c.parliamentdotuk, 143590)
+
+        c = get_constituency_for_date(
+            "Tweeddale, Ettrick and Lauderdale", date(1995, 5, 16)
+        )
+        self.assertEqual(c.parliamentdotuk, 146426)
+
+        c = get_constituency_for_date(
+            "Tweeddale, Ettrick & Lauderdale", date(1995, 5, 16)
+        )
+        self.assertEqual(c.parliamentdotuk, 146426)
+
+        c = get_constituency_for_date(
+            "Ealing, Acton & Shepherd's Bush", date(2009, 5, 6)
+        )
+        self.assertEqual(c.parliamentdotuk, 144408)
+
+        c = get_constituency_for_date(
+            "Ealing, Acton and Shepherd's Bush", date(2009, 5, 6)
+        )
+        self.assertEqual(c.parliamentdotuk, 144408)
+
+    def test_get_suggested_constituencies(self):
+
+        suggestions = get_suggested_constituencies("aberdeen", date(1982, 3, 15))
+
+        self.assertLengthEquals(suggestions, 2)
+        suggestion_tuples = [(x.pk, x.name) for x in suggestions]
+
+        self.assertTrue(
+            (143471, "Aberdeen North") in suggestion_tuples,
+            msg=f"((143471, 'Aberdeen North')) not found in {suggestion_tuples}",
+        )
+        self.assertTrue(
+            (143477, "Aberdeen South") in suggestion_tuples,
+            msg=f"((143477, 'Aberdeen South')) not found in {suggestion_tuples}",
+        )
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            Constituency,
+            ConstituencyAlsoKnownAs,
+        )
+
+
+class ConstituencyResolutionTests(LocalTestCase):
     """ """
 
     def setUp(self) -> None:
@@ -136,38 +192,6 @@ class ConstituencyTests(LocalTestCase):
         c = get_constituency_for_date("D", date=date(year=2101, month=1, day=1))
         self.assertEqual(c.parliamentdotuk, 11)
 
-    def test_get_constituency_for_date_with_complex_names(self):
-        """
-        Ensure punctuation, &/and equivalency, etc.
-        """
-        create_sample_constituencies()
-
-        c = get_constituency_for_date("Barnsley East & Mexborough", date(2001, 6, 1))
-        self.assertEqual(c.parliamentdotuk, 143590)
-
-        c = get_constituency_for_date("Barnsley East and Mexborough", date(2001, 6, 1))
-        self.assertEqual(c.parliamentdotuk, 143590)
-
-        c = get_constituency_for_date(
-            "Tweeddale, Ettrick and Lauderdale", date(1995, 5, 16)
-        )
-        self.assertEqual(c.parliamentdotuk, 146426)
-
-        c = get_constituency_for_date(
-            "Tweeddale, Ettrick & Lauderdale", date(1995, 5, 16)
-        )
-        self.assertEqual(c.parliamentdotuk, 146426)
-
-        c = get_constituency_for_date(
-            "Ealing, Acton & Shepherd's Bush", date(2009, 5, 6)
-        )
-        self.assertEqual(c.parliamentdotuk, 144408)
-
-        c = get_constituency_for_date(
-            "Ealing, Acton and Shepherd's Bush", date(2009, 5, 6)
-        )
-        self.assertEqual(c.parliamentdotuk, 144408)
-
     def test_get_constituency_for_date_via_constituency_aka(self):
         c = get_constituency_for_date("Alias of A", date(1987, 5, 16))
         self.assertEqual(c.parliamentdotuk, 3)
@@ -185,15 +209,6 @@ class ConstituencyTests(LocalTestCase):
         # Date is after our latest end date. Should return latest available.
         c = get_current_constituency("B")
         self.assertEqual(c.parliamentdotuk, 9)
-
-    def test_get_suggested_constituencies(self):
-        create_sample_constituencies()
-
-        suggestions = get_suggested_constituencies("aberdeen", date(1982, 3, 15))
-
-        self.assertLengthEquals(suggestions, 2)
-        self.assertTrue(Constituency(pk=143471, name="Aberdeen North") in suggestions)
-        self.assertTrue(Constituency(pk=143477, name="Aberdeen South") in suggestions)
 
     def tearDown(self) -> None:
         self.delete_instances_of(

@@ -7,14 +7,9 @@ import uuid
 from django.conf import settings
 from django.urls import reverse
 
-from basetest.testcase import LocalTestCase
 from repository.models import Person
-from social.models import (
-    Comment,
-    Vote,
-    VoteType,
-)
 from social.models.token import UserToken
+from social.tests.testcase import SocialTestCase
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -25,7 +20,7 @@ from social.views import contract
 _VALID_USER = "get-social-valid-user"
 
 
-class GetSocialAllTests(LocalTestCase):
+class GetSocialAllTests(SocialTestCase):
     """Tests for social content endpoint /all/"""
 
     VIEW_NAME = "social-member-all"
@@ -182,12 +177,18 @@ class GetSocialAllTests(LocalTestCase):
 
     def tearDown(self) -> None:
         self.delete_instances_of(
-            Comment,
             Person,
-            UserToken,
-            Vote,
-            VoteType,
+            *SocialTestCase.social_models,
+            # check_instances=False,
         )
+        # super().tearDown()
+        # self.delete_instances_of(
+        #     Comment,
+        #     Person,
+        #     UserToken,
+        #     Vote,
+        #     VoteType,
+        # )
 
     def assertSocialDataEqual(self, response, expected):
         """

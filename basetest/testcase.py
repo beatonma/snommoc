@@ -1,10 +1,18 @@
 from unittest import skipUnless
 
+from django.db import OperationalError
 from django.http import HttpResponse
 from django.test import TestCase
 from rest_framework import status
 
 from basetest.args import RUNTESTS_CLARGS
+from util.models.generics import BaseModelMixin, get_concrete_models
+
+
+class DirtyTestException(Exception):
+    """Raised when a testcase fails to tidy up after itself."""
+
+    pass
 
 
 class BaseTestCase(TestCase):
@@ -13,12 +21,37 @@ class BaseTestCase(TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def delete_instances_of(self, *classList):
+    def delete_instances_of(
+        self,
+        *classList,
+        check_instances: bool = RUNTESTS_CLARGS.fragile,
+    ):
+        """
+        Delete any instances of the given model classes.
+        :param check_instances: If true, check for any persisting model instances that should have been deleted.
+        """
         for cls in classList:
+            cls.objects.all().delete()
+
+        if check_instances:
+            self._check_cleanup()
+
+    def _check_cleanup(self):
+        """Check for any persisting instances of project database models.
+
+        Throws DirtyTestException if any instances are found."""
+
+        all_models = get_concrete_models(BaseModelMixin)
+        for M in all_models:
             try:
-                cls.objects.all().delete()
-            except Exception as e:
-                print(f"Failed to delete instances of model {cls}: {e}")
+                instances = M.objects.all()
+                if instances.count() > 0:
+                    raise DirtyTestException(
+                        f"Instance(s) of model {M} still exists! {instances}"
+                    )
+            except OperationalError:
+                # Model does not exist in the module under test
+                pass
 
     def assertEqualIgnoreCase(self, first: str, second: str, msg=None):
         self.assertEqual(first.lower(), second.lower(), msg=msg)

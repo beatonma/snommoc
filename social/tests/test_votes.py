@@ -3,17 +3,16 @@ import uuid
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.urls import reverse
 from rest_framework import status
 
-from basetest.testcase import LocalTestCase
 from repository.models import Person
-from social.models.token import UserToken
 from social.models.votes import (
     Vote,
     VoteType,
 )
+from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
 from social.views import contract
 
@@ -27,7 +26,7 @@ def _create_person_vote(user, vote_type, target_id=4837):
     )
 
 
-class VoteTests(LocalTestCase):
+class VoteTests(SocialTestCase):
     """Social votes tests."""
 
     VIEW_NAME = "social-member-votes"
@@ -125,15 +124,16 @@ class VoteTests(LocalTestCase):
         )
 
         # User duplicate same target
-        self.assertRaises(
-            IntegrityError,
-            lambda: Vote.objects.create(
-                user=self.valid_user,
-                target_type=ContentType.objects.get_for_model(Person),
-                target_id=4837,
-                vote_type=vote_type_no,
-            ),
-        )
+        with transaction.atomic():
+            self.assertRaises(
+                IntegrityError,
+                lambda: Vote.objects.create(
+                    user=self.valid_user,
+                    target_type=ContentType.objects.get_for_model(Person),
+                    target_id=4837,
+                    vote_type=vote_type_no,
+                ),
+            )
 
     def test_get_votes(self):
         vote_type_aye = VoteType.objects.create(name="aye")
@@ -198,8 +198,15 @@ class VoteTests(LocalTestCase):
         settings.DEBUG = False
         self.delete_instances_of(
             Person,
-            Vote,
-            VoteType,
             ContentType,
-            UserToken,
+            *SocialTestCase.social_models,
+            # check_instances=False,
         )
+        # super().tearDown()
+        # self.delete_instances_of(
+        #     Person,
+        #     Vote,
+        #     VoteType,
+        #     ContentType,
+        #     UserToken,
+        # )

@@ -26,6 +26,7 @@ from repository.models import (
     DeclaredInterestCategory,
     Election,
     Experience,
+    ExperienceCategory,
     GovernmentPost,
     GovernmentPostMember,
     House,
@@ -35,6 +36,8 @@ from repository.models import (
     OppositionPostMember,
     ParliamentaryPost,
     ParliamentaryPostMember,
+    ParliamentarySession,
+    Party,
     PartyAssociation,
     Person,
     PhysicalAddress,
@@ -47,7 +50,7 @@ from repository.models.committees import (
     CommitteeMember,
 )
 from repository.models.constituency import UnlinkedConstituency
-from repository.models.election import ContestedElection
+from repository.models.election import ContestedElection, ElectionType
 from repository.models.geography import Town
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
@@ -460,17 +463,26 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
     def tearDown(self) -> None:
         self.delete_instances_of(
-            Person,
-            House,
-            HouseMembership,
-            Town,
-            Country,
-            MaidenSpeech,
             Committee,
             CommitteeChair,
             CommitteeMember,
             Constituency,
             ConstituencyResult,
-            Election,
             ContestedElection,
+            Country,
+            DeclaredInterestCategory,
+            Election,
+            ElectionType,
+            ExperienceCategory,
+            GovernmentPost,
+            House,
+            HouseMembership,
+            MaidenSpeech,
+            OppositionPost,
+            ParliamentaryPost,
+            ParliamentarySession,
+            Party,
+            Person,
+            SubjectOfInterestCategory,
+            Town,
         )

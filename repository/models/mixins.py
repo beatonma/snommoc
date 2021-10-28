@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from django.db.models import Q
 
+from util.models.generics import BaseModelMixin
 from util.time import (
     get_now,
     in_range,
@@ -10,7 +11,7 @@ from util.time import (
 )
 
 
-class BaseModel(models.Model):
+class BaseModel(models.Model, BaseModelMixin):
     """
     Not a mixin as such. All concrete model implementations should extend from this.
     """

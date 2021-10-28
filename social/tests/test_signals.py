@@ -1,12 +1,10 @@
-from django.contrib.auth.models import User
-
 from basetest.test_util import create_sample_user
-from basetest.testcase import LocalTestCase
 from social.models import Comment
 from social.models.token import (
     SignInServiceProvider,
     UserToken,
 )
+from social.tests.testcase import SocialTestCase
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -14,7 +12,7 @@ from social.tests.util import (
 from util.time import get_now
 
 
-class SocialSignalTest(LocalTestCase):
+class SocialSignalTest(SocialTestCase):
     """Social signals tests."""
 
     def test_create_usertoken_on_user_created_is_correct(self):
@@ -53,10 +51,11 @@ class SocialSignalTest(LocalTestCase):
         self.assertEqual(placeholder_comment.created_on, created_on)
         self.assertEqual(placeholder_comment.modified_on.date(), now.date())
 
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Comment,
-            SignInServiceProvider,
-            User,
-            UserToken,
-        )
+    # def tearDown(self) -> None:
+    #     self.delete_instances_of(
+    #         ApiKey,
+    #         Comment,
+    #         SignInServiceProvider,
+    #         User,
+    #         UserToken,
+    #     )

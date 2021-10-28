@@ -1,9 +1,8 @@
-from basetest.testcase import LocalTestCase
 from social.models import (
     Comment,
     Vote,
 )
-from social.models.token import UserToken
+from social.tests.testcase import SocialTestCase
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -13,7 +12,7 @@ from social.tests.util import (
 SAMPLE_COMMENT_TEXT = ["This is an insightful comment.", "Very nuanced input."]
 
 
-class AccountDeletionTest(LocalTestCase):
+class AccountDeletionTest(SocialTestCase):
     """Tests for affected data when a UserToken is deleted."""
 
     def test_account_deletion_replaces_comments_with_empty_placeholders(self):
@@ -52,9 +51,11 @@ class AccountDeletionTest(LocalTestCase):
 
         self.assertLengthEquals(Vote.objects.all(), 1)
 
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Comment,
-            UserToken,
-            Vote,
-        )
+    # def tearDown(self) -> None:
+    #     self.delete_instances_of(
+    #         Comment,
+    #         Comment,
+    #         UserToken,
+    #         Vote,
+    #         VoteType,
+    #     )

@@ -33,11 +33,11 @@ def get_concrete_models(base_model):
     found = get_all_subclasses(base_model)
 
     def filter_func(model):
-        meta = getattr(model, '_meta', '')
-        if getattr(meta, 'abstract', True):
+        meta = getattr(model, "_meta", "")
+        if getattr(meta, "abstract", True):
             # Skip meta classes
             return False
-        if '_Deferred_' in model.__name__:
+        if "_Deferred_" in model.__name__:
             # See deferred_class_factory() in django.db.models.query_utils
             # Catches when you do .only('attr') on a queryset
             return False
@@ -45,3 +45,7 @@ def get_concrete_models(base_model):
 
     subclasses = list(filter(filter_func, found))
     return sorted(subclasses, key=lambda x: x.__name__)
+
+
+class BaseModelMixin:
+    pass

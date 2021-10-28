@@ -12,9 +12,10 @@ import importlib
 import json
 import re
 import sys
+import random
 from typing import Dict
 
-from unittest import TextTestResult
+from unittest import TestCase, TextTestResult
 
 import colorama
 import django
@@ -49,6 +50,7 @@ TEST_APPS = [
     "surface",
     "util",
 ]
+random.shuffle(TEST_APPS)
 
 
 def _highlight_foreground(text, color):
@@ -67,11 +69,20 @@ def _highlight_warning(text):
     return _highlight_foreground(text, colorama.Fore.CYAN)
 
 
-def _get_test_method_name(test):
+def _print_good(text):
+    print(_highlight_good(text))
+
+
+def _print_warning(text):
+    print(_highlight_warning(text))
+
+
+def _get_test_method_name(test: TestCase):
     try:
         return re.match(TEST_METHOD_REGEX, test.__str__()).group(1)
-    except Exception:
-        return "runTest"
+    except Exception as e:
+        _print_warning(f"Cannot parse method name: test={test} ({e})")
+        return f"{test}"
 
 
 class VerboseResult:
@@ -246,33 +257,41 @@ def _compare_tests_with_previous(tests_run: int):
 
     previous_tests_run = _load_previous()
     if previous_tests_run > tests_run:
-        print(
-            _highlight_warning(
-                f"Previous run had {previous_tests_run} tests (vs {tests_run} now). Is everything okay?"
-            )
+        _print_warning(
+            f"Previous run had {previous_tests_run} tests (vs {tests_run} now). Is everything okay?"
         )
     else:
         _save_current()
 
 
 def _print_results(
-    test_results: Dict[str, VerboseResult], tests_passed: int, tests_run: int
+    test_results: Dict[str, VerboseResult],
+    all_passed: bool,
+    tests_passed: int,
+    tests_run: int,
+    repetitions: int,
 ):
     print()
     print(f"Django version: {django.get_version()}")
+    print(f"Modules tested: {TEST_APPS}")
+    print()
     print("Results:")
     colorama.init()
     ordered_apps = sorted(
         test_results.keys(), key=lambda x: not test_results[x].passed()
     )
+
     for app in ordered_apps:
         result = test_results.get(app)
         print(result.report(app_name=app))
+
     print()
-    if tests_passed == tests_run:
-        print(_highlight_good(f"All {tests_run} tests passed"))
+    repetitions_text = "" if repetitions <= 1 else f" [{repetitions} repeats]"
+
+    if all_passed:
+        _print_good(f"All {tests_run} tests passed{repetitions_text}")
     else:
-        print(_highlight_warning(f"{tests_passed}/{tests_run} tests passed"))
+        _print_warning(f"{tests_passed}/{tests_run} tests passed{repetitions_text}")
 
     _compare_tests_with_previous(tests_run)
 
@@ -281,7 +300,7 @@ def _main():
     global TEST_APPS
 
     if RUNTESTS_CLARGS.app is not None and RUNTESTS_CLARGS.app in TEST_APPS:
-        print(_highlight_warning(f"Only running tests for app={RUNTESTS_CLARGS.app}"))
+        _print_warning(f"Only running tests for app={RUNTESTS_CLARGS.app}")
         TEST_APPS = [RUNTESTS_CLARGS.app]
 
     os.environ["DJANGO_SETTINGS_MODULE"] = "basetest.test_settings_default"
@@ -292,26 +311,51 @@ def _main():
     tests_run = 0
     tests_passed = 0
     app_results = {}
-    for module in TEST_APPS:
-        results = run_app_tests(module)
-        app_results[module] = results
-        all_passed = all_passed and results.passed()
-        tests_run += results.tests_run
-        tests_passed += results.successful
 
-    _print_results(app_results, tests_passed=tests_passed, tests_run=tests_run)
+    for module in TEST_APPS:
+        fragile_broken = False
+        for n in range(RUNTESTS_CLARGS.repeat):
+            results = run_app_tests(module)
+            passed = results.passed()
+            failed = not passed
+
+            if n == 0 or failed:
+                app_results[module] = results
+                all_passed = all_passed and passed
+                tests_run += results.tests_run
+                tests_passed += results.successful
+
+            if failed:
+                if RUNTESTS_CLARGS.repeat > 1:
+                    _print_warning(f"FAILED on repetition {n}")
+
+                if RUNTESTS_CLARGS.fragile:
+                    _print_warning(
+                        f"[FRAGILE] Module '{module}' has errors - exiting early!"
+                    )
+                    fragile_broken = True
+                    break
+
+        if fragile_broken:
+            break
+
+    _print_results(
+        app_results,
+        all_passed=all_passed,
+        tests_passed=tests_passed,
+        tests_run=tests_run,
+        repetitions=RUNTESTS_CLARGS.repeat,
+    )
 
     if not RUNTESTS_CLARGS.network:
-        print(
-            _highlight_warning(
-                "\n"
-                "WARNING:\n  NetworkTestCase implementations were not executed!\n"
-                "  Add `-network` flag to command line arguments when you want "
-                "to run network tests."
-            )
+        _print_warning(
+            "\n"
+            "WARNING:\n  NetworkTestCase implementations were not executed!\n"
+            "  Add `-network` flag to command line arguments when you want "
+            "to run network tests."
         )
     if RUNTESTS_CLARGS.app is not None:
-        print(_highlight_warning(f"Only ran tests for app={RUNTESTS_CLARGS.app}"))
+        _print_warning(f"Only ran tests for app={RUNTESTS_CLARGS.app}")
 
     sys.exit(not all_passed)  # Return 0 if everything okay, 1 if failures
 

@@ -7,9 +7,11 @@ from basetest.test_util import create_sample_user
 from basetest.testcase import LocalApiTestCase
 from repository.models import (
     Bill,
+    BillType,
     CommonsDivision,
     Constituency,
     Election,
+    ElectionType,
     LordsDivision,
     ParliamentarySession,
     Party,
@@ -25,6 +27,7 @@ from repository.tests.data.create import (
     create_sample_party,
     create_sample_person,
 )
+from social.models.token import SignInServiceProvider, UserToken
 
 
 class EndpointTests(LocalApiTestCase):
@@ -49,6 +52,8 @@ class EndpointTests(LocalApiTestCase):
         self.delete_instances_of(
             ApiKey,
             User,
+            SignInServiceProvider,
+            UserToken,
         )
 
 
@@ -98,24 +103,24 @@ class QueryEndpointTests(LocalApiTestCase):
     def test_endpoint_constituency(self):
         url = reverse(
             endpoints.endpoint_detail(endpoints.CONSTITUENCY),
-            kwargs={"pk": 1234},
+            kwargs={"pk": 146380},
         )
 
         self._assert_response_not_found(url)
 
-        create_sample_constituency(parliamentdotuk=1234)
+        create_sample_constituency(parliamentdotuk=146380)
         self._assert_response_json_ok(url)
 
     def test_endpoint_constituency_results(self):
         url = reverse(
             endpoints.endpoint_name(endpoints.CONSTITUENCY_RESULTS),
-            kwargs={"pk": 4321, "election_id": 851},
+            kwargs={"pk": 16892, "election_id": 851},
         )
 
         self._assert_response_not_found(url)
 
         create_constituency_result_detail(
-            constituency=create_sample_constituency(parliamentdotuk=4321),
+            constituency=create_sample_constituency(parliamentdotuk=16892),
             election=create_sample_election(parliamentdotuk=851),
             mp=create_sample_person(parliamentdotuk=1423),
             parliamentdotuk=5231,
@@ -171,12 +176,16 @@ class QueryEndpointTests(LocalApiTestCase):
         self.delete_instances_of(
             ApiKey,
             Bill,
+            BillType,
             CommonsDivision,
             Constituency,
             Election,
+            ElectionType,
             LordsDivision,
             ParliamentarySession,
             Party,
             Person,
             User,
+            UserToken,
+            SignInServiceProvider,
         )

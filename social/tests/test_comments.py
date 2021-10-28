@@ -3,15 +3,14 @@ import uuid
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.urls import reverse
 from rest_framework import status
 
-from api.models import ApiKey
-from basetest.testcase import LocalTestCase
 from repository.models import Person
 from social.models import Comment
 from social.models.token import UserToken
+from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
 from social.views import contract
 
@@ -19,7 +18,7 @@ _COMMENT = "This is a simple comment"
 _TEST_USERNAME = "testuser-comments"
 
 
-class CommentTests(LocalTestCase):
+class CommentTests(SocialTestCase):
     """Social comments tests."""
 
     VIEW_NAME = "social-member-comments"
@@ -156,15 +155,16 @@ class CommentTests(LocalTestCase):
         )
 
         # Duplicate of first comment
-        self.assertRaises(
-            IntegrityError,
-            lambda: Comment.objects.create(
-                user=user,
-                text=_COMMENT,
-                target_type=ContentType.objects.get_for_model(Person),
-                target_id=4837,
-            ),
-        )
+        with transaction.atomic():
+            self.assertRaises(
+                IntegrityError,
+                lambda: Comment.objects.create(
+                    user=user,
+                    text=_COMMENT,
+                    target_type=ContentType.objects.get_for_model(Person),
+                    target_id=4837,
+                ),
+            )
 
     def test_post_comment_with_html_is_stripped(self):
         response = self.client.post(
@@ -211,8 +211,12 @@ class CommentTests(LocalTestCase):
 
     def tearDown(self) -> None:
         self.delete_instances_of(
-            ApiKey,
-            Comment,
+            # ApiKey,
+            # Comment,
+            # Comment,
             Person,
-            UserToken,
+            *SocialTestCase.social_models,
+            # UserToken,
+            # check_instances=False,
         )
+        # super().tearDown()

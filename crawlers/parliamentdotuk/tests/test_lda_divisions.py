@@ -24,6 +24,7 @@ from repository.models import (
     CommonsDivisionVote,
     LordsDivision,
     LordsDivisionVote,
+    ParliamentarySession,
 )
 
 
@@ -93,6 +94,7 @@ class CommonsDivisionsTestCase(LocalTestCase):
             CommonsDivisionVote,
             LordsDivision,
             LordsDivisionVote,
+            ParliamentarySession,
         )
 
 
@@ -137,4 +139,5 @@ class MockCommonsDivisionTestCase(LocalTestCase):
             CommonsDivisionVote,
             LordsDivision,
             LordsDivisionVote,
+            ParliamentarySession,
         )

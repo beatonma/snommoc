@@ -10,7 +10,9 @@ from repository.tests.data.create import create_sample_person
 from social.models import (
     Comment,
     Vote,
+    VoteType,
 )
+from social.models.token import UserToken
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -70,15 +72,18 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
 
     def tearDown(self) -> None:
         self.delete_instances_of(
-            Vote,
-            Comment,
-            Person,
-            CommonsDivision,
-            LordsDivision,
             Bill,
-            FeaturedPerson,
+            Comment,
+            Comment,
+            CommonsDivision,
+            FeaturedBill,
             FeaturedCommonsDivision,
             FeaturedLordsDivision,
-            FeaturedBill,
+            FeaturedPerson,
+            LordsDivision,
+            Person,
+            UserToken,
+            Vote,
+            VoteType,
             ZeitgeistItem,
         )

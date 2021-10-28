@@ -25,6 +25,10 @@ class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
 
     def create_placeholder(self):
         """If this comment is deleted, replace it with an empty placeholder."""
+        if self.user is None and self.text == "":
+            # Comment is already a placeholder, don't create a replacement.
+            return
+
         Comment.objects.create(
             user=None,
             text="",
@@ -46,4 +50,4 @@ class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
         ]
 
     def __str__(self):
-        return f"{self.target_id} {self.text}"
+        return f"[{self.target}] '{self.text}'"

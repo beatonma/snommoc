@@ -8,6 +8,7 @@ from api.models import (
 )
 from basetest.test_util import create_sample_user
 from basetest.testcase import LocalTestCase
+from social.models.token import SignInServiceProvider, UserToken
 
 
 class ApiKeyRequiredDecoratorTest(LocalTestCase):
@@ -65,4 +66,6 @@ class ApiKeyRequiredDecoratorTest(LocalTestCase):
         self.delete_instances_of(
             ApiKey,
             User,
+            UserToken,
+            SignInServiceProvider,
         )

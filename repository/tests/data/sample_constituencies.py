@@ -1,202 +1,214 @@
+import dataclasses
+import random
+from dataclasses import dataclass
 from datetime import date
+from typing import Optional
 
-from repository.models import Constituency
+
+@dataclass
+class SampleConstituency:
+    name: str
+    pk: int
+    start: date
+    end: Optional[date]
 
 
-def create_sample_constituencies():
-    Constituency.objects.create(
-        name="Aberdeen Central",
-        pk=143468,
-        start=date(1997, 5, 1),
-        end=date(2005, 5, 5),
-    )
-    Constituency.objects.create(
-        name="Aberdeen North",
-        pk=143469,
-        start=date(1918, 12, 14),
-        end=date(1950, 2, 23),
-    )
-    Constituency.objects.create(
-        name="Aberdeen North",
-        pk=143470,
-        start=date(1950, 2, 23),
-        end=date(1974, 2, 28),
-    )
-    Constituency.objects.create(
-        name="Aberdeen North",
-        pk=143471,
-        start=date(1974, 2, 28),
-        end=date(1983, 6, 9),
-    )
-    Constituency.objects.create(
-        name="Aberdeen North",
-        pk=143472,
-        start=date(1983, 6, 9),
-        end=date(1997, 5, 1),
-    )
-    Constituency.objects.create(
-        name="Aberdeen North",
-        pk=143473,
-        start=date(1997, 5, 1),
-        end=date(2005, 5, 5),
-    )
-    Constituency.objects.create(
-        name="Aberdeen North",
-        pk=143474,
-        start=date(2005, 4, 5),
-        end=None,
-    )
-    Constituency.objects.create(
-        name="Aberdeen South",
-        pk=143475,
-        start=date(1918, 12, 14),
-        end=date(1950, 2, 23),
-    )
-    Constituency.objects.create(
-        name="Aberdeen South",
-        pk=143476,
-        start=date(1950, 2, 23),
-        end=date(1974, 2, 28),
-    )
-    Constituency.objects.create(
-        name="Aberdeen South",
-        pk=143477,
-        start=date(1974, 2, 28),
-        end=date(1983, 6, 9),
-    )
+def any_sample_constituency():
+    """Return a copy of a random SampleConstituency."""
+    return dataclasses.replace(random.choice(SAMPLE_CONSTITUENCIES))
 
-    Constituency.objects.create(
-        name="Inverness",
-        pk=145016,
-        start=date(1918, 12, 14),
-        end=date(1950, 2, 23),
-    )
-    Constituency.objects.create(
-        name="Inverness",
-        pk=145017,
-        start=date(1950, 2, 23),
-        end=date(1974, 2, 28),
-    )
-    Constituency.objects.create(
-        name="Inverness",
-        pk=145018,
-        start=date(1974, 2, 28),
-        end=date(1983, 6, 9),
-    )
-    Constituency.objects.create(
-        name="Inverness East, Nairn & Lochaber",
-        pk=145019,
-        start=date(1997, 5, 1),
-        end=date(2005, 5, 5),
-    )
-    Constituency.objects.create(
-        name="Inverness, Nairn & Lochaber",
-        pk=145020,
-        start=date(1983, 6, 9),
-        end=date(1997, 5, 1),
-    )
-    Constituency.objects.create(
-        name="Inverness, Nairn, Badenoch and Strathspey",
-        pk=145021,
-        start=date(2005, 4, 5),
-        end=None,
-    )
-    Constituency.objects.create(
-        name="Ross, Skye & Inverness West",
-        pk=145915,
-        start=date(1997, 5, 1),
-        end=date(2005, 5, 5),
+
+SAMPLE_CONSTITUENCIES = [
+    SampleConstituency(
+        "Aberdeen Central",
+        143468,
+        date(1997, 5, 1),
+        date(2005, 5, 5),
     ),
-
-    Constituency.objects.create(
-        name="Barnsley",
-        pk=143584,
-        start=date(1918, 12, 14),
-        end=date(1950, 2, 23),
-    )
-    Constituency.objects.create(
-        name="Barnsley",
-        pk=143585,
-        start=date(1950, 2, 23),
-        end=date(1974, 2, 28),
-    )
-    Constituency.objects.create(
-        name="Barnsley",
-        pk=143586,
-        start=date(1974, 2, 28),
-        end=date(1983, 6, 9),
-    )
-    Constituency.objects.create(
-        name="Barnsley Central",
-        pk=143587,
-        start=date(1983, 6, 9),
-        end=date(1997, 5, 1),
-    )
-    Constituency.objects.create(
-        name="Barnsley Central",
-        pk=143588,
-        start=date(1997, 5, 1),
-        end=date(2010, 5, 6),
-    )
-    Constituency.objects.create(
-        name="Barnsley Central",
-        pk=146762,
-        start=date(2010, 5, 6),
-        end=None,
-    )
-    Constituency.objects.create(
-        name="Barnsley East",
-        pk=143589,
-        start=date(1983, 6, 9),
-        end=date(1997, 5, 1),
-    )
-    Constituency.objects.create(
-        name="Barnsley East",
-        pk=146763,
-        start=date(2010, 5, 6),
-        end=None,
-    )
-    Constituency.objects.create(
-        name="Barnsley East & Mexborough",
-        pk=143590,
-        start=date(1997, 5, 1),
-        end=date(2010, 5, 6),
-    )
-    Constituency.objects.create(
-        name="Barnsley West & Penistone",
-        pk=143591,
-        start=date(1983, 6, 9),
-        end=date(1997, 5, 1),
-    )
-    Constituency.objects.create(
-        name="Barnsley West & Penistone",
-        pk=143592,
-        start=date(1997, 5, 1),
-        end=date(2010, 5, 6),
-    )
-
-    Constituency.objects.create(
-        name="Dumfriesshire, Clydesdale and Tweeddale",
-        pk=144374,
-        start=date(2005, 4, 5),
-        end=None,
-    )
-    Constituency.objects.create(
-        name="Tweeddale, Ettrick & Lauderdale",
-        pk=146426,
-        start=date(1983, 6, 9),
-        end=date(1997, 5, 1),
-    )
-    Constituency.objects.create(
-        name="Tweeddale, Ettrick & Lauderdale",
-        pk=146427,
-        start=date(1997, 5, 1),
-        end=date(2005, 5, 5),
-    )
-
-    Constituency.objects.create(
-        name="Ealing, Acton & Shepherd's Bush",
-        pk=144408,
-        start=date(1997, 5, 1),
-        end=date(2010, 5, 6),
-    )
+    SampleConstituency(
+        "Aberdeen North",
+        143469,
+        date(1918, 12, 14),
+        date(1950, 2, 23),
+    ),
+    SampleConstituency(
+        "Aberdeen North",
+        143470,
+        date(1950, 2, 23),
+        date(1974, 2, 28),
+    ),
+    SampleConstituency(
+        "Aberdeen North",
+        143471,
+        date(1974, 2, 28),
+        date(1983, 6, 9),
+    ),
+    SampleConstituency(
+        "Aberdeen North",
+        143472,
+        date(1983, 6, 9),
+        date(1997, 5, 1),
+    ),
+    SampleConstituency(
+        "Aberdeen North",
+        143473,
+        date(1997, 5, 1),
+        date(2005, 5, 5),
+    ),
+    SampleConstituency(
+        "Aberdeen North",
+        143474,
+        date(2005, 4, 5),
+        None,
+    ),
+    SampleConstituency(
+        "Aberdeen South",
+        143475,
+        date(1918, 12, 14),
+        date(1950, 2, 23),
+    ),
+    SampleConstituency(
+        "Aberdeen South",
+        143476,
+        date(1950, 2, 23),
+        date(1974, 2, 28),
+    ),
+    SampleConstituency(
+        "Aberdeen South",
+        143477,
+        date(1974, 2, 28),
+        date(1983, 6, 9),
+    ),
+    SampleConstituency(
+        "Inverness",
+        145016,
+        date(1918, 12, 14),
+        date(1950, 2, 23),
+    ),
+    SampleConstituency(
+        "Inverness",
+        145017,
+        date(1950, 2, 23),
+        date(1974, 2, 28),
+    ),
+    SampleConstituency(
+        "Inverness",
+        145018,
+        date(1974, 2, 28),
+        date(1983, 6, 9),
+    ),
+    SampleConstituency(
+        "Inverness East, Nairn & Lochaber",
+        145019,
+        date(1997, 5, 1),
+        date(2005, 5, 5),
+    ),
+    SampleConstituency(
+        "Inverness, Nairn & Lochaber",
+        145020,
+        date(1983, 6, 9),
+        date(1997, 5, 1),
+    ),
+    SampleConstituency(
+        "Inverness, Nairn, Badenoch and Strathspey",
+        145021,
+        date(2005, 4, 5),
+        None,
+    ),
+    SampleConstituency(
+        "Ross, Skye & Inverness West",
+        145915,
+        date(1997, 5, 1),
+        date(2005, 5, 5),
+    ),
+    SampleConstituency(
+        "Barnsley",
+        143584,
+        date(1918, 12, 14),
+        date(1950, 2, 23),
+    ),
+    SampleConstituency(
+        "Barnsley",
+        143585,
+        date(1950, 2, 23),
+        date(1974, 2, 28),
+    ),
+    SampleConstituency(
+        "Barnsley",
+        143586,
+        date(1974, 2, 28),
+        date(1983, 6, 9),
+    ),
+    SampleConstituency(
+        "Barnsley Central",
+        143587,
+        date(1983, 6, 9),
+        date(1997, 5, 1),
+    ),
+    SampleConstituency(
+        "Barnsley Central",
+        143588,
+        date(1997, 5, 1),
+        date(2010, 5, 6),
+    ),
+    SampleConstituency(
+        "Barnsley Central",
+        146762,
+        date(2010, 5, 6),
+        None,
+    ),
+    SampleConstituency(
+        "Barnsley East",
+        143589,
+        date(1983, 6, 9),
+        date(1997, 5, 1),
+    ),
+    SampleConstituency(
+        "Barnsley East",
+        146763,
+        date(2010, 5, 6),
+        None,
+    ),
+    SampleConstituency(
+        "Barnsley East & Mexborough",
+        143590,
+        date(1997, 5, 1),
+        date(2010, 5, 6),
+    ),
+    SampleConstituency(
+        "Barnsley West & Penistone",
+        143591,
+        date(1983, 6, 9),
+        date(1997, 5, 1),
+    ),
+    SampleConstituency(
+        "Barnsley West & Penistone",
+        143592,
+        date(1997, 5, 1),
+        date(2010, 5, 6),
+    ),
+    SampleConstituency(
+        "Dumfriesshire, Clydesdale and Tweeddale",
+        144374,
+        date(2005, 4, 5),
+        None,
+    ),
+    SampleConstituency(
+        "Tweeddale, Ettrick & Lauderdale",
+        146426,
+        date(1983, 6, 9),
+        date(1997, 5, 1),
+    ),
+    SampleConstituency(
+        "Tweeddale, Ettrick & Lauderdale",
+        146427,
+        date(1997, 5, 1),
+        date(2005, 5, 5),
+    ),
+    SampleConstituency(
+        "Ealing, Acton & Shepherd's Bush",
+        144408,
+        date(1997, 5, 1),
+        date(2010, 5, 6),
+    ),
+]

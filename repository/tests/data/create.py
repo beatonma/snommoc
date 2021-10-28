@@ -15,6 +15,12 @@ from repository.models import (
     Party,
     Person,
 )
+from repository.tests.data.sample_constituencies import (
+    SAMPLE_CONSTITUENCIES,
+    any_sample_constituency,
+)
+from repository.tests.data.sample_election import SAMPLE_ELECTIONS, any_sample_election
+from repository.tests.data.sample_members import any_sample_member
 
 
 def _any_id() -> int:
@@ -22,53 +28,112 @@ def _any_id() -> int:
 
 
 def create_sample_person(
-    parliamentdotuk: int = _any_id,
-    name: str = "Boris Johnson",
+    parliamentdotuk: int = None,
+    name: str = None,
     active: bool = True,
+    randomise: bool = True,
     **kwargs,
 ) -> Person:
+    m = any_sample_member()
+
+    if parliamentdotuk:
+        m.pk = parliamentdotuk
+    elif randomise:
+        m.pk = _any_id()
+
+    if name:
+        m.name = name
+
     return Person.objects.create(
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
-        name=name,
+        parliamentdotuk=m.pk,
+        name=m.name,
         active=active,
         **kwargs,
     )
 
 
 def create_sample_constituency(
-    name: str = "Aberdeen North",
-    parliamentdotuk: int = _any_id,
-    start: datetime.date = datetime.date(1918, 12, 14),
-    end: datetime.date = datetime.date(1950, 2, 23),
+    name: str = None,
+    parliamentdotuk: int = None,
+    start: datetime.date = None,
+    end: datetime.date = None,
+    randomise: bool = True,
 ) -> Constituency:
+    c = any_sample_constituency()
+
+    if name:
+        c.name = name
+
+    if parliamentdotuk:
+        c.pk = parliamentdotuk
+    elif randomise:
+        c.pk = _any_id()
+
+    if start:
+        c.start = start
+
+    if end:
+        c.end = end
+
     return Constituency.objects.create(
-        name=name,
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
-        start=start,
-        end=end,
+        name=c.name,
+        pk=c.pk,
+        start=c.start,
+        end=c.end,
     )
+
+
+def create_sample_constituencies():
+    """Create Constituencies from sample data."""
+    for constituency in SAMPLE_CONSTITUENCIES:
+        Constituency.objects.create(
+            name=constituency.name,
+            pk=constituency.pk,
+            start=constituency.start,
+            end=constituency.end,
+        )
 
 
 def create_sample_election(
-    name: str = "3001 General Election",
-    parliamentdotuk: int = _any_id,
-    date: datetime.date = datetime.date(3001, 5, 15),
+    name: str = None,
+    parliamentdotuk: int = None,
+    date: datetime.date = None,
     type: str = "General Election",
+    randomise: bool = True,
 ) -> Election:
+    """Create an Election with custom data."""
     election_type, _ = ElectionType.objects.get_or_create(name=type)
 
+    e = any_sample_election()
+
+    if name:
+        e.name = name
+
+    if parliamentdotuk:
+        e.pk = parliamentdotuk
+    elif randomise:
+        e.pk = _any_id()
+
+    if date:
+        e.date = date
+
     return Election.objects.create(
-        name=name,
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        name=e.name,
+        parliamentdotuk=e.pk,
+        date=e.date,
         election_type=election_type,
-        date=date,
     )
+
+
+def create_sample_elections():
+    election_type, _ = ElectionType.objects.get_or_create(name="General Election")
+    for election in SAMPLE_ELECTIONS:
+        Election.objects.create(
+            name=election.name,
+            parliamentdotuk=election.pk,
+            date=election.date,
+            election_type=election_type,
+        )
 
 
 def create_constituency_result(
@@ -76,6 +141,7 @@ def create_constituency_result(
     election: Election,
     mp: Person,
 ) -> ConstituencyResult:
+    """Create a ConstituencyResult with custom data."""
     return ConstituencyResult.objects.create(
         constituency=constituency,
         election=election,
@@ -93,6 +159,7 @@ def create_constituency_result_detail(
     majority: int = 199,
     result: str = "Party hold",
 ) -> ConstituencyResultDetail:
+    """Create a ConstituencyResultDetail with custom data."""
     constituency_result = create_constituency_result(constituency, election, mp)
 
     return ConstituencyResultDetail.objects.create(
@@ -117,6 +184,7 @@ def create_sample_party(
     long_name: str = "Labour Party",
     year_founded: int = 1900,
 ) -> Party:
+    """Create a Party with custom data."""
     return Party.objects.create(
         name=name,
         parliamentdotuk=parliamentdotuk()
@@ -136,6 +204,7 @@ def create_sample_session(
     start: datetime.date = None,
     end: datetime.date = None,
 ) -> ParliamentarySession:
+    """Create a ParliamentarySession with custom data."""
     return ParliamentarySession.objects.create(
         name=name,
         parliamentdotuk=parliamentdotuk()
@@ -162,6 +231,7 @@ def create_sample_commons_division(
     uin: str = "CD:2015-03-26:188",
     division_number: int = 188,
 ) -> CommonsDivision:
+    """Create a CommonsDivision with custom data."""
     if callable(session):
         session = session()
 
@@ -196,6 +266,7 @@ def create_sample_lords_division(
     division_number: int = 1,
     session: ParliamentarySession = create_sample_session,
 ) -> LordsDivision:
+    """Create a LordsDivision with custom data."""
     return LordsDivision.objects.create(
         parliamentdotuk=parliamentdotuk()
         if callable(parliamentdotuk)
@@ -215,6 +286,7 @@ def create_sample_bill_type(
     name: str = "Ten Minute Rule",
     description: str = "Private Members' Bill (under the Ten Minute Rule)",
 ) -> BillType:
+    """Create a BillType with custom data."""
     return BillType.objects.create(
         name=name,
         description=description,
@@ -237,6 +309,7 @@ def create_sample_bill(
     bill_type: BillType = create_sample_bill_type,
     session: ParliamentarySession = None,
 ) -> Bill:
+    """Create a Bill with custom data."""
     return Bill.objects.create(
         title=title,
         parliamentdotuk=parliamentdotuk()

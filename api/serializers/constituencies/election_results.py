@@ -27,7 +27,7 @@ class ElectionResultSerializer(DetailedModelSerializer):
 
 
 class _ConstituencyCandidateSerializer(InlineModelSerializer):
-    party_name = serializers.CharField(source="party")
+    party_name = serializers.CharField()
 
     class Meta:
         model = ConstituencyCandidate

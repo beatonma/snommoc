@@ -29,6 +29,7 @@ from repository.models import (
 )
 from repository.models.util.queryset import get_or_none
 from repository.resolution.members import get_member_for_election_result
+from repository.resolution.party import get_party_by_name
 
 log = logging.getLogger(__name__)
 
@@ -103,6 +104,8 @@ def _create_candidate(
 
     name = get_str(candidate, contract.CANDIDATE_NAME)
     person = get_member_for_election_result(name, constituency, election)
+    party_name = get_str(candidate, contract.CANDIDATE_PARTY)
+    party = get_party_by_name(party_name)
 
     ConstituencyCandidate.objects.update_or_create(
         election_result=election_result,
@@ -112,6 +115,7 @@ def _create_candidate(
             "votes": get_int(candidate, contract.CANDIDATE_VOTES),
             "order": get_int(candidate, contract.CANDIDATE_ORDINAL),
             "party_name": get_str(candidate, contract.CANDIDATE_PARTY),
+            "party": party,
         },
     )
 

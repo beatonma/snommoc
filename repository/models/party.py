@@ -51,6 +51,8 @@ class PartyAlsoKnownAs(BaseModel):
         on_delete=models.CASCADE,
         help_text="Preferred party instance",
         related_name="aliases",
+        null=True,
+        blank=True,
     )
     alias = models.CharField(max_length=64, unique=True)
 

@@ -14,3 +14,7 @@ def get_party_by_name(name_stub: str) -> Optional[Party]:
         return PartyAlsoKnownAs.objects.get(alias__iexact=name_stub).canonical
     except PartyAlsoKnownAs.DoesNotExist:
         pass
+
+    PartyAlsoKnownAs.objects.create(
+        alias=name_stub,
+    )

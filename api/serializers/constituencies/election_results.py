@@ -5,6 +5,7 @@ from api.serializers.base import (
     DetailedModelSerializer,
     InlineModelSerializer,
 )
+from api.serializers.parties import InlinePartySerializer
 from repository.models import (
     ConstituencyCandidate,
     ConstituencyResult,
@@ -28,12 +29,14 @@ class ElectionResultSerializer(DetailedModelSerializer):
 
 class _ConstituencyCandidateSerializer(InlineModelSerializer):
     party_name = serializers.CharField()
+    party = InlinePartySerializer()
 
     class Meta:
         model = ConstituencyCandidate
         fields = [
             contract.NAME,
             contract.ELECTION_CANDIDATE_PARTY_NAME,
+            contract.PARTY,
             contract.ELECTION_CANDIDATE_ORDER,
             contract.ELECTION_CANDIDATE_VOTES,
         ]

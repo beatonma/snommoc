@@ -40,6 +40,7 @@ class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
 
     class Meta:
         verbose_name_plural = "Parties"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -59,6 +60,7 @@ class PartyAlsoKnownAs(BaseModel):
     class Meta:
         verbose_name_plural = "Parties also known as"
         verbose_name = "PartyAlsoKnownAs"
+        ordering = ["canonical__name", "alias"]
 
     def __str__(self):
         return f"{self.alias} -> {self.canonical}"

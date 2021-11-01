@@ -120,8 +120,13 @@ def update_model(
     follow_pagination: bool = True,
     **kwargs,
 ) -> None:
+    """
+    Run [update_item_func] for every JSON item returned by [endpoint_url].
+
+    Depending on the endpoint response, [update_item_func] may make further API requests.
+    """
     page_number = 0
-    next_page = "nonnext-page-placeholder"
+    next_page = "no-next-page-placeholder"
 
     while next_page is not None:
         data = _get_list_page_json(
@@ -148,7 +153,7 @@ def update_model(
                 log.warning(f"Failed to update item: {e} {item}")
 
                 notification.append(
-                    f"Failed to read item for"
+                    f"Failed to read item for "
                     f"url={debug_url(endpoint_url, **{PARAM_PAGE:page_number, PARAM_PAGE_SIZE:page_size,})}"
                 )
                 notification.mark_as_failed(e)

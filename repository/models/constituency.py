@@ -55,6 +55,9 @@ class ConstituencyResult(PeriodMixin, BaseModel):
     mp = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
     )
 
     constituency = models.ForeignKey(

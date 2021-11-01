@@ -55,7 +55,7 @@ def _create_election_result(parliamentdotuk, data):
     )
 
     try:
-        constituency_result = ConstituencyResult.objects.get(
+        constituency_result, _ = ConstituencyResult.objects.get_or_create(
             election=election,
             constituency=constituency,
         )
@@ -124,25 +124,24 @@ def _create_candidate(
 @task_notification(label="Update constituency results")
 @json_cache(name="election-results")
 def update_election_results(follow_pagination=True, **kwargs) -> None:
-    def update_result_details(json_data) -> Optional[str]:
+    def update_result_details(json_data) -> None:
         """Data does not require updates so we only need to fetch it if we don't already have it."""
         puk = get_parliamentdotuk_id(json_data)
 
         try:
             ConstituencyResultDetail.objects.get(parliamentdotuk=puk)
         except ConstituencyResultDetail.DoesNotExist:
-            return fetch_and_create_election_result(puk)
+            fetch_and_create_election_result(puk)
 
-    def fetch_and_create_election_result(parliamentdotuk) -> Optional[str]:
+    def fetch_and_create_election_result(parliamentdotuk) -> None:
         try:
+            url = endpoints.url_for_election_result(parliamentdotuk)
             data = get_item_data(
-                endpoints.url_for_election_result(parliamentdotuk),
+                url,
                 cache=kwargs.get("cache"),
             )
-            if data is None:
-                return None
 
-            return _create_election_result(parliamentdotuk, data)
+            _create_election_result(parliamentdotuk, data)
 
         except MissingFieldException as e:
             raise e

@@ -3,7 +3,6 @@ from typing import Optional
 from celery import shared_task
 
 from crawlers.network import json_cache
-from crawlers.parliamentdotuk.models import BillUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import bills as contract
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
@@ -213,20 +212,13 @@ def _update_sponsor(bill, data):
 def update_bills(follow_pagination=True, **kwargs) -> None:
     def fetch_and_update_bill(json_data) -> Optional[str]:
         parliamentdotuk = get_parliamentdotuk_id(json_data)
-        try:
-            data = get_item_data(
-                endpoints.url_for_bill(parliamentdotuk),
-                cache=kwargs.get("cache"),
-            )
-            if data is not None:
-                return _update_bill(parliamentdotuk, data)
 
-        except MissingFieldException as e:
-            raise e
-
-        except Exception as e:
-            BillUpdateError.create(parliamentdotuk, e)
-            raise e
+        data = get_item_data(
+            endpoints.url_for_bill(parliamentdotuk),
+            cache=kwargs.get("cache"),
+        )
+        if data is not None:
+            return _update_bill(parliamentdotuk, data)
 
     update_model(
         endpoints.BILLS,

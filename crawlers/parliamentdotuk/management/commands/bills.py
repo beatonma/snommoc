@@ -7,7 +7,6 @@ import logging
 from typing import Optional
 
 from crawlers.network import json_cache
-from crawlers.parliamentdotuk.models import BillUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.bills import _update_bill, update_bills
 from crawlers.parliamentdotuk.tasks.lda.lda_client import get_item_data
@@ -38,11 +37,6 @@ class Command(AsyncCommand):
             type=int,
             help="Update a specific bill by parliamentdotuk ID",
         )
-        parser.add_argument(
-            "-fix",
-            action="store_true",
-            help="Try to fix bills that previously generated a BillUpdatedError",
-        )
 
     def handle(self, *args, **options):
         if options["clear"]:
@@ -55,9 +49,6 @@ class Command(AsyncCommand):
             func_kwargs = {
                 "parliamentdotuk": options["id"],
             }
-        elif options["fix"]:
-            options["instant"] = True
-            func = _fix_errored_bills
         else:
             func = update_bills
 
@@ -90,18 +81,4 @@ def __update_bill(parliamentdotuk: int, **kwargs) -> Optional[str]:
 
         return _update_bill(parliamentdotuk, data)
     except Exception as e:
-        BillUpdateError.create(parliamentdotuk, e)
         raise e
-
-
-def _fix_errored_bills():
-    parliamentdotuk_ids = BillUpdateError.objects.values_list(
-        "parliamentdotuk", flat=True
-    )
-
-    for parliamentdotuk in parliamentdotuk_ids:
-        value = __update_bill(parliamentdotuk)
-        if value is not None:
-            BillUpdateError.objects.filter(parliamentdotuk=parliamentdotuk).update(
-                handled=True
-            )

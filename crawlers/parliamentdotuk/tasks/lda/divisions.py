@@ -3,10 +3,6 @@ from typing import Optional
 from celery import shared_task
 
 from crawlers.network import json_cache
-from crawlers.parliamentdotuk.models import (
-    CommonsDivisionUpdateError,
-    LordsDivisionUpdateError,
-)
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import (
     divisions as contract,
@@ -23,10 +19,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     parse_parliamentdotuk_id,
     update_model,
 )
-from crawlers.parliamentdotuk.tasks.util.checks import (
-    MissingFieldException,
-    check_required_fields,
-)
+from crawlers.parliamentdotuk.tasks.util.checks import check_required_fields
 from notifications.models.task_notification import task_notification
 from repository.models import (
     CommonsDivision,
@@ -185,21 +178,14 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
             fetch_and_create_division(puk)
 
     def fetch_and_create_division(parliamentdotuk) -> None:
-        try:
-            data = get_item_data(
-                endpoints.url_for_commons_division(parliamentdotuk),
-                cache=kwargs.get("cache"),
-            )
-            if data is None:
-                return None
+        data = get_item_data(
+            endpoints.url_for_commons_division(parliamentdotuk),
+            cache=kwargs.get("cache"),
+        )
+        if data is None:
+            return None
 
-            _create_commons_division(parliamentdotuk, data)
-
-        except MissingFieldException as e:
-            raise e
-
-        except Exception as e:
-            CommonsDivisionUpdateError.create(parliamentdotuk, e)
+        _create_commons_division(parliamentdotuk, data)
 
     update_model(
         endpoints.COMMONS_DIVISIONS,
@@ -213,32 +199,24 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 @task_notification(label="Update Lords divisions")
 @json_cache("divisions")
 def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
-    def update_division(json_data) -> Optional[str]:
+    def update_division(json_data) -> None:
         puk = get_parliamentdotuk_id(json_data)
 
         try:
             LordsDivision.objects.get(parliamentdotuk=puk)
             # Already exists, no need to fetch further data
-            return None
         except LordsDivision.DoesNotExist:
-            return fetch_and_create_division(puk)
+            fetch_and_create_division(puk)
 
     def fetch_and_create_division(parliamentdotuk) -> None:
-        try:
-            data = get_item_data(
-                endpoints.url_for_lords_division(parliamentdotuk),
-                cache=kwargs.get("cache"),
-            )
-            if data is None:
-                return None
+        data = get_item_data(
+            endpoints.url_for_lords_division(parliamentdotuk),
+            cache=kwargs.get("cache"),
+        )
+        if data is None:
+            return
 
-            return _create_lords_division(parliamentdotuk, data)
-
-        except MissingFieldException as e:
-            raise e
-
-        except Exception as e:
-            LordsDivisionUpdateError.create(parliamentdotuk, e)
+        _create_lords_division(parliamentdotuk, data)
 
     update_model(
         endpoints.LORDS_DIVISIONS,

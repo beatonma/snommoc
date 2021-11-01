@@ -1,10 +1,8 @@
 import logging
-from typing import Optional
 
 from celery import shared_task
 
 from crawlers.network import json_cache
-from crawlers.parliamentdotuk.models import ElectionResultUpdateError
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
@@ -15,10 +13,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_str,
     update_model,
 )
-from crawlers.parliamentdotuk.tasks.util.checks import (
-    MissingFieldException,
-    check_required_fields,
-)
+from crawlers.parliamentdotuk.tasks.util.checks import check_required_fields
 from notifications.models.task_notification import task_notification
 from repository.models import (
     Constituency,
@@ -134,20 +129,13 @@ def update_election_results(follow_pagination=True, **kwargs) -> None:
             fetch_and_create_election_result(puk)
 
     def fetch_and_create_election_result(parliamentdotuk) -> None:
-        try:
-            url = endpoints.url_for_election_result(parliamentdotuk)
-            data = get_item_data(
-                url,
-                cache=kwargs.get("cache"),
-            )
+        url = endpoints.url_for_election_result(parliamentdotuk)
+        data = get_item_data(
+            url,
+            cache=kwargs.get("cache"),
+        )
 
-            _create_election_result(parliamentdotuk, data)
-
-        except MissingFieldException as e:
-            raise e
-
-        except Exception as e:
-            ElectionResultUpdateError.create(parliamentdotuk, e)
+        _create_election_result(parliamentdotuk, data)
 
     update_model(
         endpoints.ELECTION_RESULTS,

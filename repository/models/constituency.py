@@ -36,7 +36,7 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     )
 
     def __str__(self):
-        return f"{self.name} {self.parliamentdotuk} {self.start} - {self.end} {self.gss_code} {self.mp}"
+        return f"{self.name} [{self.parliamentdotuk}] {self.start} - {self.end}, mp={self.mp}"
 
     class Meta:
         verbose_name_plural = "Constituencies"
@@ -66,7 +66,7 @@ class ConstituencyResult(PeriodMixin, BaseModel):
     )
 
     def __str__(self):
-        return f"{self.election}: {self.constituency}"
+        return f"{self.election} | {self.constituency}"
 
     class Meta:
         constraints = [

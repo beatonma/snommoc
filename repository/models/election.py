@@ -32,7 +32,7 @@ class Election(ParliamentDotUkMixin, BaseModel):
     )
 
     def __str__(self):
-        return self.name
+        return f"{self.name} [{self.pk}]"
 
 
 class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):

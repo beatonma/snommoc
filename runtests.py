@@ -13,6 +13,7 @@ import json
 import re
 import sys
 import random
+import datetime
 from typing import Dict
 
 from unittest import TestCase, TextTestResult
@@ -270,6 +271,8 @@ def _print_results(
     tests_passed: int,
     tests_run: int,
     repetitions: int,
+    time_started: datetime.datetime,
+    time_finished: datetime.datetime,
 ):
     print()
     print(f"Django version: {django.get_version()}")
@@ -293,11 +296,17 @@ def _print_results(
     else:
         _print_warning(f"{tests_passed}/{tests_run} tests passed{repetitions_text}")
 
+    print(
+        f"Finished at {time_finished.strftime('%H:%M:%S')} [duration: {time_finished - time_started}]"
+    )
+
     _compare_tests_with_previous(tests_run)
 
 
 def _main():
     global TEST_APPS
+
+    time_started = datetime.datetime.now()
 
     if RUNTESTS_CLARGS.app is not None and RUNTESTS_CLARGS.app in TEST_APPS:
         _print_warning(f"Only running tests for app={RUNTESTS_CLARGS.app}")
@@ -339,12 +348,16 @@ def _main():
         if fragile_broken:
             break
 
+    time_finished = datetime.datetime.now()
+
     _print_results(
         app_results,
         all_passed=all_passed,
         tests_passed=tests_passed,
         tests_run=tests_run,
         repetitions=RUNTESTS_CLARGS.repeat,
+        time_started=time_started,
+        time_finished=time_finished,
     )
 
     if not RUNTESTS_CLARGS.network:

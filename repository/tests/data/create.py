@@ -115,6 +115,8 @@ def create_sample_election(
 
     if name:
         e.name = name
+    elif randomise:
+        e.name = f"{e.name}{_any_int(100)}"
 
     if parliamentdotuk:
         e.pk = parliamentdotuk

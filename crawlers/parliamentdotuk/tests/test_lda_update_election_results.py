@@ -9,6 +9,7 @@ from repository.models import (
     Constituency,
     ConstituencyResult,
     Election,
+    PartyAlsoKnownAs,
     Person,
 )
 from repository.models.election_result import (
@@ -51,6 +52,7 @@ class UpdateElectionResultsTests(LocalTestCase):
             ConstituencyCandidate,
             ConstituencyResult,
             Person,
+            PartyAlsoKnownAs,
         )
 
     def test_create_election_result(self):

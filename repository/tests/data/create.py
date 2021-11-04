@@ -1,11 +1,13 @@
 import datetime
 import random
+from typing import Optional
 
 from repository.models import (
     Bill,
     BillType,
     CommonsDivision,
     Constituency,
+    ConstituencyCandidate,
     ConstituencyResult,
     ConstituencyResultDetail,
     Election,
@@ -24,13 +26,17 @@ from repository.tests.data.sample_members import any_sample_member
 from repository.tests.data.sample_parties import SAMPLE_PARTIES, any_sample_party
 
 
+def _any_int(max: int = 100) -> int:
+    return random.randint(1, max)
+
+
 def _any_id() -> int:
-    return random.randint(1, 9999)
+    return _any_int(10_000)
 
 
 def create_sample_person(
-    parliamentdotuk: int = None,
-    name: str = None,
+    parliamentdotuk: Optional[int] = None,
+    name: Optional[str] = None,
     active: bool = True,
     randomise: bool = True,
     **kwargs,
@@ -54,10 +60,10 @@ def create_sample_person(
 
 
 def create_sample_constituency(
-    name: str = None,
-    parliamentdotuk: int = None,
-    start: datetime.date = None,
-    end: datetime.date = None,
+    name: Optional[str] = None,
+    parliamentdotuk: Optional[int] = None,
+    start: Optional[datetime.date] = None,
+    end: Optional[datetime.date] = None,
     randomise: bool = True,
 ) -> Constituency:
     c = any_sample_constituency()
@@ -96,9 +102,9 @@ def create_sample_constituencies():
 
 
 def create_sample_election(
-    name: str = None,
-    parliamentdotuk: int = None,
-    date: datetime.date = None,
+    name: Optional[str] = None,
+    parliamentdotuk: Optional[int] = None,
+    date: Optional[datetime.date] = None,
     type: str = "General Election",
     randomise: bool = True,
 ) -> Election:
@@ -154,19 +160,32 @@ def create_constituency_result_detail(
     constituency: Constituency,
     election: Election,
     mp: Person,
-    parliamentdotuk: int = _any_id,
-    electorate: int = 1009,
-    turnout: int = 600,
-    majority: int = 199,
+    parliamentdotuk: Optional[int] = None,
+    electorate: Optional[int] = None,
+    turnout: Optional[int] = None,
+    majority: Optional[int] = None,
     result: str = "Party hold",
 ) -> ConstituencyResultDetail:
     """Create a ConstituencyResultDetail with custom data."""
+    if not parliamentdotuk:
+        parliamentdotuk = _any_id()
+
+    if not electorate:
+        electorate = _any_int(10_000)
+
+    if not turnout:
+        turnout = _any_int(electorate)
+
+    if not majority:
+        majority = _any_int(turnout)
+
+    assert turnout <= electorate
+    assert majority <= turnout
+
     constituency_result = create_constituency_result(constituency, election, mp)
 
     return ConstituencyResultDetail.objects.create(
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        parliamentdotuk=parliamentdotuk,
         constituency_result=constituency_result,
         electorate=electorate,
         turnout=turnout,
@@ -177,10 +196,10 @@ def create_constituency_result_detail(
 
 
 def create_sample_party(
-    name: str = None,
-    parliamentdotuk: int = None,
-    homepage: str = None,
-    wikipedia: str = None,
+    name: Optional[str] = None,
+    parliamentdotuk: Optional[int] = None,
+    homepage: Optional[str] = None,
+    wikipedia: Optional[str] = None,
     year_founded: int = 0,
     randomise: bool = True,
 ) -> Party:
@@ -211,23 +230,24 @@ def create_sample_parties():
 
 def create_sample_session(
     name: str = "2017-2019",
-    parliamentdotuk: int = _any_id,
-    start: datetime.date = None,
-    end: datetime.date = None,
+    parliamentdotuk: Optional[int] = None,
+    start: Optional[datetime.date] = None,
+    end: Optional[datetime.date] = None,
 ) -> ParliamentarySession:
     """Create a ParliamentarySession with custom data."""
+    if not parliamentdotuk:
+        parliamentdotuk = _any_id()
+
     return ParliamentarySession.objects.create(
         name=name,
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        parliamentdotuk=parliamentdotuk,
         start=start,
         end=end,
     )
 
 
 def create_sample_commons_division(
-    parliamentdotuk: int = _any_id,
+    parliamentdotuk: Optional[int] = None,
     title: str = "Statutory Instruments: Motion for Approval. That the draft Infrastructure Planning (Radioactive Waste Geological Disposal Facilities) Order 2015, which was laid before this House on 12 January, be approved. Q acc agreed to.",
     abstentions: int = 1,
     ayes: int = 202,
@@ -238,18 +258,19 @@ def create_sample_commons_division(
     suspended_or_expelled: int = 0,
     date: datetime.date = datetime.date.fromisoformat("2015-03-26"),
     deferred_vote: bool = False,
-    session: ParliamentarySession = create_sample_session,
+    session: Optional[ParliamentarySession] = None,
     uin: str = "CD:2015-03-26:188",
     division_number: int = 188,
 ) -> CommonsDivision:
     """Create a CommonsDivision with custom data."""
-    if callable(session):
-        session = session()
+    if not parliamentdotuk:
+        parliamentdotuk = _any_id()
+
+    if not session:
+        session = create_sample_session()
 
     return CommonsDivision.objects.create(
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        parliamentdotuk=parliamentdotuk,
         title=title,
         abstentions=abstentions,
         ayes=ayes,
@@ -267,7 +288,7 @@ def create_sample_commons_division(
 
 
 def create_sample_lords_division(
-    parliamentdotuk: int = _any_id,
+    parliamentdotuk: Optional[int] = None,
     title: str = "Education (Student Fees, Awards and Support) (Amendment) Regulations 2017",
     date: datetime.date = datetime.date.fromisoformat("2017-04-27"),
     ayes: int = 121,
@@ -275,20 +296,25 @@ def create_sample_lords_division(
     description: str = "<p>Lord Clark of Windermere moved that this House regrets that the Education (Student Fees, Awards and Support) (Amendment) Regulations 2017, which pave the way for students of nursing, midwifery and allied health professionals to receive loans rather than bursaries, have already been seen to discourage degree applications by a quarter, at the same time as Brexit has already reduced European Union migrant nursing and midwifery registrations by over 90 per cent; and that these factors risk turning an increasing problem in the National Health Service into a chronic one that potentially puts at risk safe levels of staffing (SI 2017/114). The House divided:</p>",
     whipped_vote: bool = True,
     division_number: int = 1,
-    session: ParliamentarySession = create_sample_session,
+    session: Optional[ParliamentarySession] = None,
 ) -> LordsDivision:
     """Create a LordsDivision with custom data."""
+
+    if not parliamentdotuk:
+        parliamentdotuk = _any_id()
+
+    if not session:
+        session = create_sample_session()
+
     return LordsDivision.objects.create(
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        parliamentdotuk=parliamentdotuk,
         title=title,
         date=date,
         ayes=ayes,
         noes=noes,
         description=description,
         whipped_vote=whipped_vote,
-        session=session() if callable(session) else session,
+        session=session,
         division_number=division_number,
     )
 
@@ -306,7 +332,7 @@ def create_sample_bill_type(
 
 def create_sample_bill(
     title: str = "Defibrillators (Availability) Bill",
-    parliamentdotuk: int = _any_id,
+    parliamentdotuk: Optional[int] = None,
     description: str = "A Bill to require the provision of defibrillators in education establishments, and in leisure, sports and certain other public facilities; to make provision for training persons to operate defibrillators; to make provision for funding the acquisition, installation, use and maintenance of defibrillators; and for connected purposes.",
     act_name: str = "",
     label: str = "Defibrillators (Availability)",
@@ -317,15 +343,23 @@ def create_sample_bill(
     is_private: bool = False,
     is_money_bill: bool = False,
     public_involvement_allowed: bool = False,
-    bill_type: BillType = create_sample_bill_type,
-    session: ParliamentarySession = None,
+    bill_type: Optional[BillType] = None,
+    session: Optional[ParliamentarySession] = None,
 ) -> Bill:
     """Create a Bill with custom data."""
+
+    if not parliamentdotuk:
+        parliamentdotuk = _any_id()
+
+    if not session:
+        session = create_sample_session()
+
+    if not bill_type:
+        bill_type = create_sample_bill_type()
+
     return Bill.objects.create(
         title=title,
-        parliamentdotuk=parliamentdotuk()
-        if callable(parliamentdotuk)
-        else parliamentdotuk,
+        parliamentdotuk=parliamentdotuk,
         description=description,
         act_name=act_name,
         label=label,
@@ -336,6 +370,44 @@ def create_sample_bill(
         is_private=is_private,
         is_money_bill=is_money_bill,
         public_involvement_allowed=public_involvement_allowed,
-        bill_type=bill_type() if callable(bill_type) else bill_type,
+        bill_type=bill_type,
         session=session,
+    )
+
+
+def create_sample_constituency_candidate(
+    name: Optional[str] = None,
+    constituency_result_detail: Optional[ConstituencyResultDetail] = None,
+    party_name: Optional[str] = None,
+    order: Optional[int] = None,
+    votes: Optional[int] = None,
+    party: Optional[Party] = any_sample_party(),
+) -> ConstituencyCandidate:
+    if not constituency_result_detail:
+        constituency_result_detail = create_constituency_result_detail(
+            constituency=create_sample_constituency(),
+            election=create_sample_election(),
+            mp=create_sample_person(),
+        )
+
+    if not name:
+        name = any_sample_member().name
+
+    if not order:
+        order = _any_int(10)
+
+    if not votes:
+        votes = _any_int(100)
+
+    if not party_name:
+        party = any_sample_party()
+        party_name = party.name
+
+    return ConstituencyCandidate.objects.create(
+        election_result=constituency_result_detail,
+        name=name,
+        votes=votes,
+        order=order,
+        party_name=party_name,
+        party=party,
     )

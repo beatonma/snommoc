@@ -23,6 +23,9 @@ class ConstituencyResultDetail(ParliamentDotUkMixin, BaseModel):
     turnout_fraction = models.DecimalField(max_digits=3, decimal_places=3)  # 0 < n < 1
     result = models.CharField(max_length=32)
 
+    class Meta:
+        ordering = ["constituency_result"]
+
     def __str__(self):
         return f"{self.constituency_result}"
 
@@ -57,6 +60,7 @@ class ConstituencyCandidate(BaseModel):
         unique_together = [
             ["election_result", "name"],
         ]
+        ordering = ["name", "election_result"]
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name}: {self.election_result}"

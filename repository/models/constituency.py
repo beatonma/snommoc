@@ -75,6 +75,7 @@ class ConstituencyResult(PeriodMixin, BaseModel):
                 name="unique_constituency_result",
             )
         ]
+        ordering = ["constituency", "election"]
 
 
 class UnlinkedConstituency(PeriodMixin, BaseModel):

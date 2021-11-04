@@ -5,6 +5,7 @@ from api.serializers.base import (
     DetailedModelSerializer,
     InlineModelSerializer,
 )
+from api.serializers.member import SimpleProfileSerializer
 from api.serializers.parties import InlinePartySerializer
 from repository.models import (
     ConstituencyCandidate,
@@ -30,11 +31,16 @@ class ElectionResultSerializer(DetailedModelSerializer):
 class _ConstituencyCandidateSerializer(InlineModelSerializer):
     party_name = serializers.CharField()
     party = InlinePartySerializer()
+    profile = serializers.SerializerMethodField()
+
+    def get_profile(self, obj):
+        return None if obj.person is None else SimpleProfileSerializer(obj.person).data
 
     class Meta:
         model = ConstituencyCandidate
         fields = [
             contract.NAME,
+            contract.PROFILE,
             contract.ELECTION_CANDIDATE_PARTY_NAME,
             contract.PARTY,
             contract.ELECTION_CANDIDATE_ORDER,

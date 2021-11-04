@@ -66,7 +66,7 @@ class ConstituencyResult(PeriodMixin, BaseModel):
     )
 
     def __str__(self):
-        return f"{self.election}: {self.constituency}"
+        return f"{self.election} | {self.constituency}"
 
     class Meta:
         constraints = [
@@ -75,6 +75,7 @@ class ConstituencyResult(PeriodMixin, BaseModel):
                 name="unique_constituency_result",
             )
         ]
+        ordering = ["constituency", "election"]
 
 
 class UnlinkedConstituency(PeriodMixin, BaseModel):

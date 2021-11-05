@@ -85,6 +85,17 @@ def _create_election_result(parliamentdotuk, data):
         _create_candidate(result, candidate, constituency, election)
 
 
+def _parse_candidate_name(raw_name: str) -> str:
+    """Remove extraneous whitespace and re-order name if in Surname, Forename format"""
+    normalised_whitespace = " ".join([x for x in raw_name.split(" ") if x])
+
+    if "," in normalised_whitespace:
+        parts = [x.strip() for x in normalised_whitespace.split(",")]
+        return f"{' '.join(parts[1:])} {parts[0]}"
+    else:
+        return normalised_whitespace
+
+
 def _create_candidate(
     election_result: ConstituencyResultDetail,
     candidate,
@@ -97,7 +108,7 @@ def _create_candidate(
         contract.CANDIDATE_PARTY,
     )
 
-    name = get_str(candidate, contract.CANDIDATE_NAME)
+    name = _parse_candidate_name(get_str(candidate, contract.CANDIDATE_NAME))
     person = get_member_for_election_result(name, constituency, election)
     party_name = get_str(candidate, contract.CANDIDATE_PARTY)
     party = get_party_by_name(party_name)

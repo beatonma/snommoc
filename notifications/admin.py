@@ -1,15 +1,16 @@
 from django.contrib import admin
 
+from common.admin import BaseAdmin
 from notifications.models import TaskNotification
 
 
 @admin.register(TaskNotification)
-class TaskNotificationAdmin(admin.ModelAdmin):
+class TaskNotificationAdmin(BaseAdmin):
     list_display = [
-        "title",
         "started_at",
         "finished_at",
-        "finished",
+        "complete",
+        "failed",
     ]
 
     ordering = [

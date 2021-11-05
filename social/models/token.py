@@ -51,7 +51,7 @@ class UserToken(DeletionPendingMixin, BaseModel):
         self.enabled = False
 
     def __str__(self):
-        return f"{self.provider}: {self.token}"
+        return self.username
 
 
 class UsernameChanged(BaseModel):

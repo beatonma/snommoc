@@ -1,21 +1,15 @@
-from django.contrib import admin
-
-from surface.models import (
-    FeaturedBill,
-    FeaturedCommonsDivision,
-    FeaturedLordsDivision,
-    FeaturedPerson,
-    MessageOfTheDay,
-)
+from common.admin import BaseAdmin, register_models_to_default_admin
+from surface.apps import SurfaceConfig
 
 
-@admin.register(
-    FeaturedPerson, FeaturedBill, FeaturedCommonsDivision, FeaturedLordsDivision
-)
-class FeaturedPersonAdmin(admin.ModelAdmin):
-    pass
+class SurfaceAdmin(BaseAdmin):
+    default_display_fields = ["display", "reason", "start", "end"]
+
+    default_ordering = ["-start", "-priority"]
+
+    default_search_fields = [
+        "title",
+    ]
 
 
-@admin.register(MessageOfTheDay)
-class MessageOfTheDayAdmin(admin.ModelAdmin):
-    pass
+register_models_to_default_admin(SurfaceConfig.name, SurfaceAdmin)

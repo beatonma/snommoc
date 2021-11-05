@@ -1,6 +1,7 @@
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.lda.update_election_results import (
     _create_election_result,
+    _parse_candidate_name,
 )
 from crawlers.parliamentdotuk.tests.data_lda_update_election_results import (
     ELECTION_RESULT_DETAIL,
@@ -44,17 +45,6 @@ class UpdateElectionResultsTests(LocalTestCase):
             election_id=382037, constituency_id=143474, mp_id=1423
         )
 
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Constituency,
-            Election,
-            ConstituencyResultDetail,
-            ConstituencyCandidate,
-            ConstituencyResult,
-            Person,
-            PartyAlsoKnownAs,
-        )
-
     def test_create_election_result(self):
         data = ELECTION_RESULT_DETAIL
         _create_election_result(382387, data)
@@ -76,4 +66,25 @@ class UpdateElectionResultsTests(LocalTestCase):
         )
         self.assertEqual(
             aberdeen_north.constituency_result.election.name, "2010 General Election"
+        )
+
+    def test_parse_candidate_name(self):
+        self.assertEqual(_parse_candidate_name("Caroline Lucas"), "Caroline Lucas")
+        self.assertEqual(_parse_candidate_name("Lucas, Caroline"), "Caroline Lucas")
+
+        self.assertEqual(_parse_candidate_name("Caroline   Lucas"), "Caroline Lucas")
+        self.assertEqual(_parse_candidate_name("Lucas,   Caroline"), "Caroline Lucas")
+
+        self.assertEqual(_parse_candidate_name(" Caroline Lucas "), "Caroline Lucas")
+        self.assertEqual(_parse_candidate_name(" Lucas, Caroline "), "Caroline Lucas")
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            Constituency,
+            Election,
+            ConstituencyResultDetail,
+            ConstituencyCandidate,
+            ConstituencyResult,
+            Person,
+            PartyAlsoKnownAs,
         )

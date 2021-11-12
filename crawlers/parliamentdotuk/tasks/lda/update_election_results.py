@@ -2,7 +2,7 @@ import logging
 
 from celery import shared_task
 
-from crawlers.network import json_cache
+from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
@@ -113,17 +113,33 @@ def _create_candidate(
     party_name = get_str(candidate, contract.CANDIDATE_PARTY)
     party = get_party_by_name(party_name)
 
+    votes = get_int(candidate, contract.CANDIDATE_VOTES)
+    order = get_int(candidate, contract.CANDIDATE_ORDINAL)
+
     ConstituencyCandidate.objects.update_or_create(
         election_result=election_result,
         name=name,
         defaults={
             "person": person,
-            "votes": get_int(candidate, contract.CANDIDATE_VOTES),
-            "order": get_int(candidate, contract.CANDIDATE_ORDINAL),
-            "party_name": get_str(candidate, contract.CANDIDATE_PARTY),
+            "votes": votes,
+            "order": order,
+            "party_name": party_name,
             "party": party,
         },
     )
+
+
+def fetch_and_create_election_result(
+    parliamentdotuk: int,
+    cache: JsonResponseCache,
+) -> None:
+    url = endpoints.url_for_election_result(parliamentdotuk)
+    data = get_item_data(
+        url,
+        cache=cache,
+    )
+
+    _create_election_result(parliamentdotuk, data)
 
 
 @shared_task
@@ -137,16 +153,7 @@ def update_election_results(follow_pagination=True, **kwargs) -> None:
         try:
             ConstituencyResultDetail.objects.get(parliamentdotuk=puk)
         except ConstituencyResultDetail.DoesNotExist:
-            fetch_and_create_election_result(puk)
-
-    def fetch_and_create_election_result(parliamentdotuk) -> None:
-        url = endpoints.url_for_election_result(parliamentdotuk)
-        data = get_item_data(
-            url,
-            cache=kwargs.get("cache"),
-        )
-
-        _create_election_result(parliamentdotuk, data)
+            fetch_and_create_election_result(puk, cache=kwargs.get("cache"))
 
     update_model(
         endpoints.ELECTION_RESULTS,

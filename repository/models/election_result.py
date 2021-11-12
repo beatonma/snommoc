@@ -63,4 +63,4 @@ class ConstituencyCandidate(BaseModel):
         ordering = ["name", "election_result"]
 
     def __str__(self):
-        return f"{self.name}: {self.election_result}"
+        return f"{self.name}: {self.election_result.parliamentdotuk}"

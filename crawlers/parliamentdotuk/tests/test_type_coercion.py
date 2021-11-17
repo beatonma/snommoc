@@ -11,8 +11,6 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
 
 
 class TypeCoercionTests(LocalTestCase):
-    """ """
-
     def test__coerce_to_list(self):
         test_func = coerce_to_list
 

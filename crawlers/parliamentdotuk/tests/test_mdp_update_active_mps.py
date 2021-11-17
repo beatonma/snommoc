@@ -61,8 +61,6 @@ from .data_mdp_update_active_mps import *
 
 
 class MdpUpdateActiveMpsTest(LocalTestCase):
-    """ """
-
     def setUp(self) -> None:
         commons, _ = House.objects.update_or_create(name=HOUSE_OF_COMMONS)
         House.objects.update_or_create(name=HOUSE_OF_LORDS)

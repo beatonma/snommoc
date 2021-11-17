@@ -3,8 +3,6 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform import mdp_client
 
 
 class MdpClientTests(LocalTestCase):
-    """ """
-
     def test__is_xml_null(self):
         test_func = mdp_client._is_xml_null
 

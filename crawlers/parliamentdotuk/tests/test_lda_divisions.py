@@ -29,8 +29,6 @@ from repository.models import (
 
 
 class CommonsDivisionsTestCase(LocalTestCase):
-    """ """
-
     def test_get_vote_commons_member_id(self):
         data = EXAMPLE_COMMONS_VOTE
         self.assertEqual(4443, _get_vote_commons_member_id(data))
@@ -108,8 +106,6 @@ def get_mock_divisions(*args, **kwargs):
 
 
 class MockCommonsDivisionTestCase(LocalTestCase):
-    """ """
-
     @patch(
         "crawlers.parliamentdotuk.tasks.lda.lda_client.get_json",
         side_effect=get_mock_divisions,

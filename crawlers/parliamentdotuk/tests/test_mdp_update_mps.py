@@ -198,8 +198,6 @@ class ResponseDataTest(LocalTestCase):
 
 
 class MdpUpdateMpsTest(LocalTestCase):
-    """ """
-
     def setUp(self) -> None:
         Constituency.objects.create(
             parliamentdotuk=12345,

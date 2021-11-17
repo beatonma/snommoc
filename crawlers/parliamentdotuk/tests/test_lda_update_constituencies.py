@@ -10,8 +10,6 @@ from .data_lda_update_constituencies import EXAMPLE_RESPONSE
 
 
 class UpdateConstituenciesTest(LocalTestCase):
-    """ """
-
     @patch(
         "crawlers.parliamentdotuk.tasks.lda.lda_client.get_json",
         side_effect=lambda *args, **kwargs: EXAMPLE_RESPONSE,

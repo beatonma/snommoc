@@ -1,8 +1,16 @@
 from django.contrib import admin
 
-from common.admin import BaseAdmin, get_module_models, register_models_to_default_admin
+from common.admin import BaseAdmin, register_models_to_default_admin
 from repository.apps import RepositoryConfig
-from repository.models import Constituency, Person
+from repository.models import (
+    Constituency,
+    ConstituencyAlsoKnownAs,
+    Party,
+    PartyAlsoKnownAs,
+    Person,
+    PersonAlsoKnownAs,
+)
+from repository.models.party import PartyTheme
 
 
 class RepositoryAdmin(BaseAdmin):
@@ -30,6 +38,34 @@ class RepositoryAdmin(BaseAdmin):
         "url",
     ]
 
+    default_readonly_fields = BaseAdmin.default_readonly_fields + [
+        "name",
+        "title",
+        "parliamentdotuk",
+        "label",
+        "date",
+        "start",
+        "end",
+    ]
+
+
+class ReadOnlyRepositoryAdmin(RepositoryAdmin):
+    def __init__(self, model, admin_site):
+        super().__init__(model, admin_site)
+        fields = model._meta.fields
+        self.readonly_fields = [x.name for x in fields]
+
+
+@admin.register(
+    ConstituencyAlsoKnownAs,
+    Party,
+    PartyAlsoKnownAs,
+    PersonAlsoKnownAs,
+    PartyTheme,
+)
+class DefaultEditableAdmin(RepositoryAdmin):
+    pass
+
 
 @admin.register(Constituency)
 class ConstituencyAdmin(RepositoryAdmin):
@@ -42,6 +78,11 @@ class ConstituencyAdmin(RepositoryAdmin):
     search_fields = [
         "mp__name",
         "gss_code",
+    ]
+
+    readonly_fields = [
+        "gss_code",
+        "ordinance_survey_name",
     ]
 
 
@@ -63,4 +104,4 @@ class PersonAdmin(RepositoryAdmin):
         ]
 
 
-register_models_to_default_admin(RepositoryConfig.name, RepositoryAdmin)
+register_models_to_default_admin(RepositoryConfig.name, ReadOnlyRepositoryAdmin)

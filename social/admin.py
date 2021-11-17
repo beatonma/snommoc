@@ -21,6 +21,17 @@ class SocialAdmin(BaseAdmin):
         "modified_on",
     ]
 
+    default_readonly_fields = BaseAdmin.default_readonly_fields + [
+        "deletion_requested_at",
+        "user",
+        "vote_type",
+        "text",
+        "token",
+        "previous_name",
+        "new_name",
+        "provider",
+    ]
+
 
 @admin.register(Comment)
 class CommentAdmin(SocialAdmin):

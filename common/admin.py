@@ -11,7 +11,8 @@ def get_module_models(module_name: str) -> List[models.Model]:
 
 
 def register_models_to_default_admin(
-    module_name: str, default_admin: Type[admin.ModelAdmin]
+    module_name: str,
+    default_admin: Type[admin.ModelAdmin],
 ):
     """
     Any models in the module that have not already been registered will be registered with default_admin.
@@ -41,12 +42,20 @@ class BaseAdmin(admin.ModelAdmin):
         "name",
     ]
 
+    default_readonly_fields = [
+        "created_on",
+        "modified_on",
+        "target_type",
+        "target_id",
+    ]
+
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
 
         self._set_default_display_fields(model)
         self._set_default_search_fields(model)
         self._set_default_ordering(model)
+        self._set_default_readonly_fields(model)
 
     def _set_default_display_fields(self, model):
         self.list_display = ["__str__"] + self._choose_fields(
@@ -62,6 +71,13 @@ class BaseAdmin(admin.ModelAdmin):
 
     def _set_default_ordering(self, model):
         self.ordering = self._choose_fields(model, self.ordering, self.default_ordering)
+
+    def _set_default_readonly_fields(self, model):
+        self.readonly_fields = self._choose_fields(
+            model,
+            self.readonly_fields,
+            self.default_readonly_fields,
+        )
 
     def _choose_fields(self, model, existing, fields) -> list:
         """

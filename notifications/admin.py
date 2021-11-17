@@ -17,3 +17,14 @@ class TaskNotificationAdmin(BaseAdmin):
         "-started_at",
         "-finished_at",
     ]
+
+    readonly_fields = [
+        "content",
+        "title",
+        "created_on",
+        "level",
+        "uuid",
+        "finished_at",
+        "complete",
+        "failed",
+    ]

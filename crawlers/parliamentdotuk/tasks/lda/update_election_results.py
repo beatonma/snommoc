@@ -5,6 +5,7 @@ from celery import shared_task
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
+from crawlers.parliamentdotuk.tasks.lda.lazy_update import lazy_update
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_int,
     get_item_data,
@@ -38,6 +39,8 @@ def _create_election_result(parliamentdotuk, data):
         contract.MAJORITY,
     )
 
+    log.info(f"Updating constituency result {parliamentdotuk}...")
+
     constituency_id = get_parliamentdotuk_id(data, contract.CONSTITUENCY_ABOUT)
     election_name = get_str(data, contract.ELECTION_NAME)
 
@@ -49,16 +52,10 @@ def _create_election_result(parliamentdotuk, data):
         },
     )
 
-    try:
-        constituency_result, _ = ConstituencyResult.objects.get_or_create(
-            election=election,
-            constituency=constituency,
-        )
-    except Exception as e:
-        log.warning(
-            f"Could not retrieve ConstituencyResult, constituency={constituency}, election={election}: {e}"
-        )
-        raise e
+    constituency_result, _ = ConstituencyResult.objects.get_or_create(
+        election=election,
+        constituency=constituency,
+    )
 
     electorate = get_int(data, contract.ELECTORATE)
     turnout = get_int(data, contract.TURNOUT)
@@ -148,12 +145,12 @@ def fetch_and_create_election_result(
 def update_election_results(follow_pagination=True, **kwargs) -> None:
     def update_result_details(json_data) -> None:
         """Data does not require updates so we only need to fetch it if we don't already have it."""
-        puk = get_parliamentdotuk_id(json_data)
-
-        try:
-            ConstituencyResultDetail.objects.get(parliamentdotuk=puk)
-        except ConstituencyResultDetail.DoesNotExist:
-            fetch_and_create_election_result(puk, cache=kwargs.get("cache"))
+        lazy_update(
+            ConstituencyResultDetail,
+            fetch_and_create_election_result,
+            json_data,
+            **kwargs,
+        )
 
     update_model(
         endpoints.ELECTION_RESULTS,

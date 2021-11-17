@@ -23,17 +23,17 @@ class Command(AsyncCommand):
             "--member_id", type=int, help="Update all details for a single person."
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **command_options):
         kwargs = None
 
-        if options["member_id"]:
+        if command_options["member_id"]:
             func = update_details_for_member
-            kwargs = {"member_id": options["member_id"]}
+            kwargs = {"member_id": command_options["member_id"]}
 
-        elif options["all"]:
+        elif command_options["all"]:
             func = update_profiles_for_all_members
 
         else:
             func = update_profiles_for_active_members
 
-        self.handle_async(func, *args, kwargs=kwargs, **options)
+        self.handle_async(func, func_kwargs=kwargs, **command_options)

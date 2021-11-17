@@ -38,23 +38,17 @@ class Command(AsyncCommand):
             help="Update a specific bill by parliamentdotuk ID",
         )
 
-    def handle(self, *args, **options):
-        if options["clear"]:
+    def handle(self, *args, **command_options):
+        if command_options["clear"]:
             _clear_bill_data()
 
-        func_kwargs = {}
-        if options["id"]:
-            options["instant"] = True
-            func = _update_bill
-            func_kwargs = {
-                "parliamentdotuk": options["id"],
-            }
+        if command_options["id"]:
+            update_single_bill(command_options["id"])
+            return
         else:
             func = update_bills
 
-        options.update(func_kwargs)
-
-        self.handle_async(func, *args, **options)
+        self.handle_async(func, *args, **command_options)
 
 
 def _clear_bill_data():
@@ -71,13 +65,14 @@ def _clear_bill_data():
 
 
 @json_cache(name="bills")
-def __update_bill(parliamentdotuk: int, **kwargs) -> Optional[str]:
+def update_single_bill(parliamentdotuk: int, **kwargs) -> Optional[str]:
     log.info(f"Updating bill #{parliamentdotuk}")
     try:
         data = get_item_data(endpoints.url_for_bill(parliamentdotuk), **kwargs)
         log.info(data)
         if data is None:
-            return None
+            print("No data")
+            return
 
         return _update_bill(parliamentdotuk, data)
     except Exception as e:

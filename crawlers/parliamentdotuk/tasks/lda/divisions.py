@@ -2,12 +2,13 @@ from typing import Optional
 
 from celery import shared_task
 
-from crawlers.network import json_cache
+from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import (
     divisions as contract,
     votes as votes_contract,
 )
+from crawlers.parliamentdotuk.tasks.lda.lazy_update import lazy_update
 from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_boolean,
     get_date,
@@ -47,7 +48,9 @@ def _get_session(data):
 
         session, _ = ParliamentarySession.objects.get_or_create(
             parliamentdotuk=parliamentdotuk,
-            name=date,
+            defaults={
+                "name": date,
+            },
         )
     return session
 
@@ -155,37 +158,55 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> None:
         _create_lords_vote(division.parliamentdotuk, vote)
 
 
+def fetch_and_create_commons_division(
+    parliamentdotuk: int,
+    cache: Optional[JsonResponseCache],
+) -> None:
+    data = get_item_data(
+        endpoints.url_for_commons_division(parliamentdotuk),
+        cache=cache,
+    )
+    if data is None:
+        return None
+
+    _create_commons_division(parliamentdotuk, data)
+
+
+def fetch_and_create_lords_division(
+    parliamentdotuk: int,
+    cache: Optional[JsonResponseCache],
+) -> None:
+    data = get_item_data(
+        endpoints.url_for_lords_division(parliamentdotuk),
+        cache=cache,
+    )
+    if data is None:
+        return
+
+    _create_lords_division(parliamentdotuk, data)
+
+
 @shared_task
 @task_notification(label="Update all divisions")
 @json_cache("divisions")
-def update_all_divisions(follow_pagination=True, **kwargs) -> None:
-    update_commons_divisions(follow_pagination, **kwargs)
-    update_lords_divisions(follow_pagination, **kwargs)
+def update_all_divisions(**kwargs) -> None:
+    update_commons_divisions(**kwargs)
+    update_lords_divisions(**kwargs)
 
 
 @shared_task
 @task_notification(label="Update Commons divisions")
 @json_cache("divisions")
 def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
-    def update_division(json_data) -> Optional[str]:
-        puk = get_parliamentdotuk_id(json_data)
-
-        try:
-            CommonsDivision.objects.get(parliamentdotuk=puk)
-            # Already exists, no need to fetch further data
-            return None
-        except CommonsDivision.DoesNotExist:
-            fetch_and_create_division(puk)
-
-    def fetch_and_create_division(parliamentdotuk) -> None:
-        data = get_item_data(
-            endpoints.url_for_commons_division(parliamentdotuk),
-            cache=kwargs.get("cache"),
+    def update_division(json_data) -> None:
+        """By default, only fetch data from network if we do not already have data about this division.
+        Use -force in management command to force update of already fetched data."""
+        lazy_update(
+            CommonsDivision,
+            fetch_and_create_commons_division,
+            json_data,
+            **kwargs,
         )
-        if data is None:
-            return None
-
-        _create_commons_division(parliamentdotuk, data)
 
     update_model(
         endpoints.COMMONS_DIVISIONS,
@@ -200,23 +221,14 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 @json_cache("divisions")
 def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> None:
-        puk = get_parliamentdotuk_id(json_data)
-
-        try:
-            LordsDivision.objects.get(parliamentdotuk=puk)
-            # Already exists, no need to fetch further data
-        except LordsDivision.DoesNotExist:
-            fetch_and_create_division(puk)
-
-    def fetch_and_create_division(parliamentdotuk) -> None:
-        data = get_item_data(
-            endpoints.url_for_lords_division(parliamentdotuk),
-            cache=kwargs.get("cache"),
+        """By default, only fetch data from network if we do not already have data about this division.
+        Use -force in management command to force update of already fetched data."""
+        lazy_update(
+            LordsDivision,
+            fetch_and_create_lords_division,
+            json_data,
+            **kwargs,
         )
-        if data is None:
-            return
-
-        _create_lords_division(parliamentdotuk, data)
 
     update_model(
         endpoints.LORDS_DIVISIONS,

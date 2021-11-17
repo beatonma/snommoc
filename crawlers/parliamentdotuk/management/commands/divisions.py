@@ -37,8 +37,8 @@ class Command(AsyncCommand):
             help="Only update Lords divisions.",
         )
 
-    def handle(self, *args, **options):
-        if options["clear"]:
+    def handle(self, *args, **command_options):
+        if command_options["clear"]:
             for M in [
                 LordsDivision,
                 CommonsDivision,
@@ -49,11 +49,11 @@ class Command(AsyncCommand):
 
             return
 
-        if options["commons"]:
+        if command_options["commons"]:
             func = update_commons_divisions
-        elif options["lords"]:
+        elif command_options["lords"]:
             func = update_lords_divisions
         else:
             func = update_all_divisions
 
-        self.handle_async(func, *args, **options)
+        self.handle_async(func, *args, **command_options)

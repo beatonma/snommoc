@@ -444,10 +444,11 @@ class MemberBiographyResponseData(MemberResponseData):
 
 def update_members(
     endpoint_url: str,
-    update_member_func: Callable[[Type[ResponseData]], None],
+    update_member_func: Callable[[ResponseData], None],
     response_class: Type[ResponseData],
     notification: TaskNotification,
     cache: Optional[JsonResponseCache] = None,
+    **kwargs,
 ) -> None:
     response = get_json(endpoint_url, cache=cache)
     try:

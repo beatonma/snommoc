@@ -15,10 +15,7 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_str,
     update_model,
 )
-from crawlers.parliamentdotuk.tasks.util.checks import (
-    MissingFieldException,
-    check_required_fields,
-)
+from crawlers.parliamentdotuk.tasks.util.checks import check_required_fields
 from notifications.models.task_notification import task_notification
 from repository.models import (
     Bill,
@@ -29,9 +26,8 @@ from repository.models import (
     BillStageType,
     BillType,
     ParliamentarySession,
-    Person,
 )
-from repository.models.person import PersonAlsoKnownAs
+from repository.resolution.members import get_member_by_name
 
 
 def _get_session(data):
@@ -138,7 +134,11 @@ def _update_bill_stage(bill, data: dict):
     parliamentdotuk = get_parliamentdotuk_id(data)
 
     stage_type_data = data.get(contract.BILL_STAGE_TYPE)
-    check_required_fields(stage_type_data, contract.ABOUT, contract.LABEL)
+    check_required_fields(
+        stage_type_data,
+        contract.ABOUT,
+        contract.LABEL,
+    )
     stage_type, _ = BillStageType.objects.get_or_create(
         parliamentdotuk=get_parliamentdotuk_id(stage_type_data),
         name=get_str(stage_type_data, contract.LABEL),
@@ -173,33 +173,14 @@ def _update_bill_stage(bill, data: dict):
 def _update_sponsor(bill, data):
     sponsor_name = get_str(data, contract.SPONSOR_NAME)
 
-    try:
-        person = Person.objects.get(name=sponsor_name)
+    person = get_member_by_name(sponsor_name)
+    if person:
         BillSponsor.objects.get_or_create(
             person=person,
             bill=bill,
         )
-        return
 
-    except Person.MultipleObjectsReturned:
-        BillSponsor.objects.get_or_create(
-            name=sponsor_name,
-            bill=bill,
-        )
-        return
-
-    except Person.DoesNotExist:
-        pass
-
-    try:
-        # Check if we have registered any aliases that match the name.
-        alias = PersonAlsoKnownAs.objects.get(alias=sponsor_name)
-        BillSponsor.objects.get_or_create(
-            person=alias.person,
-            bill=bill,
-        )
-        return
-    except PersonAlsoKnownAs.DoesNotExist:
+    else:
         BillSponsor.objects.get_or_create(
             name=sponsor_name,
             bill=bill,

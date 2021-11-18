@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from celery import shared_task
@@ -29,8 +30,10 @@ from repository.models import (
 )
 from repository.resolution.members import get_member_by_name, normalize_name
 
+log = logging.getLogger(__name__)
 
-def _get_session(data):
+
+def _get_session(data: dict):
     check_required_fields(
         data,
         contract.SESSION,
@@ -108,23 +111,23 @@ def _update_bill(parliamentdotuk: int, data: dict) -> Optional[str]:
         return bill.title
 
 
-def _update_bill_publication(bill, publication):
+def _update_bill_publication(bill: Bill, data: dict):
     check_required_fields(
-        publication,
+        data,
         contract.TITLE,
     )
 
-    pub_puk = get_parliamentdotuk_id(publication)
+    pub_puk = get_parliamentdotuk_id(data)
     BillPublication.objects.update_or_create(
         parliamentdotuk=pub_puk,
         defaults={
             "bill": bill,
-            "title": get_str(publication, contract.TITLE),
+            "title": get_str(data, contract.TITLE),
         },
     )
 
 
-def _update_bill_stage(bill, data: dict):
+def _update_bill_stage(bill: Bill, data: dict):
     check_required_fields(
         data,
         contract.ABOUT,
@@ -170,9 +173,15 @@ def _update_bill_stage(bill, data: dict):
         )
 
 
-def _update_sponsor(bill, data):
+def _update_sponsor(bill: Bill, data: dict):
     sponsor_name = get_str(data, contract.SPONSOR_NAME)
     normalized_name = normalize_name(sponsor_name)
+
+    if not normalized_name:
+        log.warning(
+            f"Sponsor name is empty (bill:{bill.parliamentdotuk}): '{sponsor_name}' -> '{normalized_name}'"
+        )
+        return
 
     person = get_member_by_name(normalized_name)
     if person:

@@ -9,7 +9,7 @@ from crawlers.parliamentdotuk.tasks.membersdataplatform.member_portrait import (
     update_member_portrait,
 )
 from repository.models import MemberPortrait, Person
-from repository.resolution.members import get_member_by_name
+from repository.resolution.members import get_member_by_name, normalize_name
 from util.management.async_command import AsyncCommand
 
 
@@ -61,7 +61,7 @@ def _update_single_member(id: int = None, name: str = None):
     if id:
         member = Person.objects.get(pk=id)
     else:
-        member = get_member_by_name(name)
+        member = get_member_by_name(normalize_name(name))
 
     if member is None:
         raise Exception(f"Member not found: name={name} [id={id}]")

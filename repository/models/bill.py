@@ -34,10 +34,12 @@ class BillSponsor(BaseModel):
     class Meta:
         unique_together = [
             ["person", "bill"],
+            ["name", "bill"],
         ]
+        ordering = ["name"]
 
     def __str__(self):
-        return f"{self.bill}: {self.name if self.name else self.person}"
+        return f"{self.name if self.name else self.person}: {self.bill}"
 
 
 class BillStageType(ParliamentDotUkMixin, BaseModel):
@@ -128,4 +130,4 @@ class Bill(ParliamentDotUkMixin, BaseModel):
     )
 
     def __str__(self):
-        return f"{self.parliamentdotuk}: {self.title}"
+        return f"[{self.parliamentdotuk}] {self.title}"

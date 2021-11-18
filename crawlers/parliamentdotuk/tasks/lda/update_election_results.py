@@ -97,8 +97,12 @@ def _create_candidate(
         contract.CANDIDATE_PARTY,
     )
 
-    name = normalize_name(get_str(candidate, contract.CANDIDATE_NAME))
-    person = get_member_for_election_result(name, constituency, election)
+    name = get_str(candidate, contract.CANDIDATE_NAME)
+    person = get_member_for_election_result(
+        normalize_name(name),
+        constituency,
+        election,
+    )
     party_name = get_str(candidate, contract.CANDIDATE_PARTY)
     party = get_party_by_name(party_name)
 

@@ -95,11 +95,11 @@ class _SessionSerializer(DetailedModelSerializer):
 
 
 class BillSerializer(DetailedModelSerializer):
-    sponsors = _BillSponsorSerializer(many=True, source="billsponsor_set")
-    publications = _BillPublicationSerializer(many=True, source="billpublication_set")
+    sponsors = _BillSponsorSerializer(many=True)
+    publications = _BillPublicationSerializer(many=True)
     type = _BillTypeSerializer(source="bill_type")
     session = _SessionSerializer()
-    stages = _BillStageSerializer(many=True, source="billstage_set")
+    stages = _BillStageSerializer(many=True)
 
     class Meta:
         model = Bill

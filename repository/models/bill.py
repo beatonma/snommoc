@@ -25,10 +25,14 @@ class BillSponsor(BaseModel):
         "Person",
         models.CASCADE,
         null=True,
+        related_name="sponsored_bills",
+        related_query_name="sponsored_bill",
     )
     bill = models.ForeignKey(
         "Bill",
         on_delete=models.CASCADE,
+        related_name="sponsors",
+        related_query_name="sponsor",
     )
 
     class Meta:
@@ -53,6 +57,7 @@ class BillStage(ParliamentDotUkMixin, BaseModel):
     bill = models.ForeignKey(
         "Bill",
         on_delete=models.CASCADE,
+        related_name="stages",
     )
 
     session = models.ForeignKey(
@@ -90,6 +95,8 @@ class BillPublication(ParliamentDotUkMixin, BaseModel):
     bill = models.ForeignKey(
         "Bill",
         on_delete=models.CASCADE,
+        related_name="publications",
+        related_query_name="publication",
     )
     title = models.CharField(max_length=512)
 

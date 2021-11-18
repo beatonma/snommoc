@@ -156,9 +156,9 @@ class UpdateBillTests(LocalTestCase):
         self.assertFalse(bill.is_private)
         self.assertFalse(bill.public_involvement_allowed)
 
-        self.assertLengthEquals(bill.billsponsor_set.all(), 2)
-        self.assertLengthEquals(bill.billstage_set.all(), 11)
-        self.assertLengthEquals(bill.billpublication_set.all(), 12)
+        self.assertLengthEquals(bill.sponsors.all(), 2)
+        self.assertLengthEquals(bill.stages.all(), 11)
+        self.assertLengthEquals(bill.publications.all(), 12)
 
         self.assertEqual(bill.bill_type.name, "Ballot")
         self.assertEqual(

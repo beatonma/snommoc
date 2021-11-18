@@ -18,6 +18,7 @@ from repository.resolution.constituency import (
     get_constituency_for_date,
     get_current_constituency,
 )
+from repository.resolution.members import normalize_name
 
 CACHE_NAME = "all-members"
 
@@ -87,7 +88,7 @@ def _update_lord_basic_info(data: MemberResponseData, house: House) -> None:
     Person.objects.update_or_create(
         parliamentdotuk=member_id,
         defaults={
-            "name": data.get_name(),
+            "name": normalize_name(data.get_name()),
             "full_title": data.get_full_title(),
             "party": party,
             "lords_type": lords_type,
@@ -119,7 +120,7 @@ def _update_mp_basic_info(data: MemberResponseData, house: House) -> None:
     person, _ = Person.objects.update_or_create(
         parliamentdotuk=member_id,
         defaults={
-            "name": data.get_name(),
+            "name": normalize_name(data.get_name()),
             "full_title": data.get_full_title(),
             "party": party,
             "constituency": constituency,

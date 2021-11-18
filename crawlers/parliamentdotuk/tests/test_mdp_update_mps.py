@@ -220,7 +220,7 @@ class MdpUpdateMpsTest(LocalTestCase):
         against.
         """
         self.assertEqual(ms_abbott.parliamentdotuk, 172)
-        self.assertEqualIgnoreCase(ms_abbott.name, "Ms Diane Abbott")
+        self.assertEqualIgnoreCase(ms_abbott.name, "Diane Abbott")
         self.assertEqualIgnoreCase(ms_abbott.full_title, "Rt Hon Diane Abbott MP")
         self.assertEqualIgnoreCase(ms_abbott.party.name, "Labour")
         self.assertEqual(ms_abbott.party.parliamentdotuk, 15)

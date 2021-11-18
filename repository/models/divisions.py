@@ -75,7 +75,7 @@ class CommonsDivision(Division):
 
 
 class LordsDivision(Division):
-    description = models.CharField(max_length=1024)
+    description = models.TextField()
     whipped_vote = models.BooleanField(default=False)
 
     @property

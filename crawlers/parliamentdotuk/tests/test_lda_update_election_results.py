@@ -1,7 +1,6 @@
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.lda.update_election_results import (
     _create_election_result,
-    _parse_candidate_name,
 )
 from crawlers.parliamentdotuk.tests.data_lda_update_election_results import (
     ELECTION_RESULT_DETAIL,
@@ -21,8 +20,6 @@ from util.time import get_today
 
 
 class UpdateElectionResultsTests(LocalTestCase):
-    """"""
-
     def setUp(self) -> None:
         Constituency.objects.create(
             parliamentdotuk=143474,
@@ -67,16 +64,6 @@ class UpdateElectionResultsTests(LocalTestCase):
         self.assertEqual(
             aberdeen_north.constituency_result.election.name, "2010 General Election"
         )
-
-    def test_parse_candidate_name(self):
-        self.assertEqual(_parse_candidate_name("Caroline Lucas"), "Caroline Lucas")
-        self.assertEqual(_parse_candidate_name("Lucas, Caroline"), "Caroline Lucas")
-
-        self.assertEqual(_parse_candidate_name("Caroline   Lucas"), "Caroline Lucas")
-        self.assertEqual(_parse_candidate_name("Lucas,   Caroline"), "Caroline Lucas")
-
-        self.assertEqual(_parse_candidate_name(" Caroline Lucas "), "Caroline Lucas")
-        self.assertEqual(_parse_candidate_name(" Lucas, Caroline "), "Caroline Lucas")
 
     def tearDown(self) -> None:
         self.delete_instances_of(

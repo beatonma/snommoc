@@ -109,7 +109,7 @@ class UpdateBillPartialTests(LocalTestCase):
         _update_sponsor(bill, data)
 
         nameonly_sponsor: BillSponsor = BillSponsor.objects.first()
-        self.assertIsNone(nameonly_sponsor.name)
+        self.assertEqual(nameonly_sponsor.name, "Baroness Pidding")
         self.assertEqual(nameonly_sponsor.person.name, "Baroness Pidding")
         self.assertEqual(nameonly_sponsor.bill, bill)
 

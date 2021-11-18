@@ -27,7 +27,7 @@ from repository.models import (
     BillType,
     ParliamentarySession,
 )
-from repository.resolution.members import get_member_by_name
+from repository.resolution.members import get_member_by_name, normalize_name
 
 
 def _get_session(data):
@@ -172,17 +172,19 @@ def _update_bill_stage(bill, data: dict):
 
 def _update_sponsor(bill, data):
     sponsor_name = get_str(data, contract.SPONSOR_NAME)
+    normalized_name = normalize_name(sponsor_name)
 
-    person = get_member_by_name(sponsor_name)
+    person = get_member_by_name(normalized_name)
     if person:
         BillSponsor.objects.get_or_create(
+            name=normalized_name,
             person=person,
             bill=bill,
         )
 
     else:
         BillSponsor.objects.get_or_create(
-            name=sponsor_name,
+            name=normalized_name,
             bill=bill,
         )
 

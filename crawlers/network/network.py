@@ -59,9 +59,9 @@ def get_json(
     if response.status_code == status.HTTP_204_NO_CONTENT:
         raise HttpNoContent
     elif response.status_code >= 500:
-        raise HttpServerError
+        raise HttpServerError(response.status_code)
     elif response.status_code >= 400:
-        raise HttpClientError
+        raise HttpClientError(response.status_code)
 
     response.encoding = "utf-8-sig"
 

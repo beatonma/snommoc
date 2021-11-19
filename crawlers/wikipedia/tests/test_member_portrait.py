@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase

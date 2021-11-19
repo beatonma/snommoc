@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from celery import shared_task
@@ -29,6 +30,8 @@ from repository.models import (
     LordsDivisionVote,
     ParliamentarySession,
 )
+
+log = logging.getLogger(__name__)
 
 
 def _get_session(data):
@@ -65,10 +68,15 @@ def _get_vote_lords_member_id(vote_data):
 
 def _create_commons_vote(division_id, vote):
     vote_type = get_str(vote, contract.VOTE_TYPE).split("#")[1]
+    person_id = _get_vote_commons_member_id(vote)
+
+    if person_id is None:
+        log.warning(f"Vote member ID is invalid: {vote}")
+        return
 
     CommonsDivisionVote.objects.update_or_create(
         division_id=division_id,
-        person_id=_get_vote_commons_member_id(vote),
+        person_id=person_id,
         defaults={
             "aye": vote_type == votes_contract.VOTE_AYE,
             "no": vote_type == votes_contract.VOTE_NO,
@@ -82,10 +90,15 @@ def _create_commons_vote(division_id, vote):
 
 def _create_lords_vote(division_id, vote):
     vote_type = get_str(vote, contract.VOTE_TYPE).split("#")[1]
+    person_id = _get_vote_lords_member_id(vote)
+
+    if person_id is None:
+        log.warning(f"Vote member ID is invalid: {vote}")
+        return
 
     LordsDivisionVote.objects.update_or_create(
         division_id=division_id,
-        person_id=_get_vote_lords_member_id(vote),
+        person_id=person_id,
         defaults={
             "aye": vote_type == votes_contract.VOTE_CONTENT,
             "no": vote_type == votes_contract.VOTE_NOT_CONTENT,
@@ -161,6 +174,7 @@ def _create_lords_division(parliamentdotuk: int, data: dict) -> None:
 def fetch_and_create_commons_division(
     parliamentdotuk: int,
     cache: Optional[JsonResponseCache],
+    **kwargs,
 ) -> None:
     data = get_item_data(
         endpoints.url_for_commons_division(parliamentdotuk),
@@ -175,6 +189,7 @@ def fetch_and_create_commons_division(
 def fetch_and_create_lords_division(
     parliamentdotuk: int,
     cache: Optional[JsonResponseCache],
+    **kwargs,
 ) -> None:
     data = get_item_data(
         endpoints.url_for_lords_division(parliamentdotuk),

@@ -98,7 +98,7 @@ class TaskNotification(models.Model):
     def format_url(self, url, text=None):
         if text is None:
             text = url
-        return f"<a href={url}>{text}</a>"
+        return f'<a href="{url}">{text}</a>'
 
     def __str__(self):
         return f"{self.title}"

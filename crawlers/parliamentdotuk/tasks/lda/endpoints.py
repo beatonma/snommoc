@@ -1,6 +1,4 @@
-# JSON
 CONSTITUENCIES_BASE_URL = "https://lda.data.parliament.uk/constituencies.json"
-COMMONS_MEMBERS_BASE_URL = "https://lda.data.parliament.uk/commonsmembers.json"
 
 # e.g. https://lda.data.parliament.uk/bills/754405.json
 BILLS = "https://lda.data.parliament.uk/bills.json"

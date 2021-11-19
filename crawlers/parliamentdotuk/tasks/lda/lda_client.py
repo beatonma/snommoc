@@ -150,7 +150,7 @@ def update_model(
                 )
                 continue
 
-            except (HttpError) as e:
+            except HttpError as e:
                 notification.warning(
                     f"Item response failed with status={e.status_code} [{_item_notification_info(index)}]"
                 )

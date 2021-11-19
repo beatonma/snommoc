@@ -184,18 +184,13 @@ def _update_sponsor(bill: Bill, data: dict):
         return
 
     person = get_member_by_name(normalized_name)
-    if person:
-        BillSponsor.objects.get_or_create(
-            name=normalized_name,
-            person=person,
-            bill=bill,
-        )
-
-    else:
-        BillSponsor.objects.get_or_create(
-            name=normalized_name,
-            bill=bill,
-        )
+    BillSponsor.objects.update_or_create(
+        name=normalized_name,
+        bill=bill,
+        defaults={
+            "person": person,
+        },
+    )
 
 
 @shared_task

@@ -136,10 +136,10 @@ def json_cache(
             result = None
 
             if is_root:
-                cache = JsonResponseCache(
+                cache = create_json_cache(
                     name=name,
-                    time_to_live_seconds=ttl_seconds,
-                    now=now() if callable(now) else now,
+                    ttl_seconds=ttl_seconds,
+                    now=now,
                 )
                 kwargs["cache"] = cache
 
@@ -160,3 +160,15 @@ def json_cache(
         return using_cache
 
     return cached_call
+
+
+def create_json_cache(
+    name: str,
+    ttl_seconds: int = TIME_TO_LIVE_DEFAULT,
+    now=get_now,
+) -> JsonResponseCache:
+    return JsonResponseCache(
+        name,
+        ttl_seconds,
+        now() if callable(now) else now,
+    )

@@ -1,20 +1,19 @@
-import re
 import datetime
-from typing import (
-    Any,
-    Dict,
-    Optional,
-    Callable,
-)
+import re
+from typing import Any, Callable, Dict, Optional
 
 from celery.utils.log import get_task_logger
 
+from crawlers.network import get_json
+from crawlers.network.exceptions import HttpError
+from crawlers.parliamentdotuk.tasks.lda import contract
 from crawlers.parliamentdotuk.tasks.lda.endpoints import (
     MAX_PAGE_SIZE,
-    PARAM_PAGE_SIZE,
     PARAM_PAGE,
+    PARAM_PAGE_SIZE,
     debug_url,
 )
+from crawlers.parliamentdotuk.tasks.util.checks import MissingFieldException
 from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
     coerce_to_date,
@@ -23,9 +22,6 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_str,
 )
 from notifications.models import TaskNotification
-from crawlers.network import get_json
-from crawlers.parliamentdotuk.tasks.lda import contract
-from crawlers.parliamentdotuk.tasks.util.checks import MissingFieldException
 
 log = get_task_logger(__name__)
 
@@ -128,6 +124,12 @@ def update_model(
     page_number = 0
     next_page = "no-next-page-placeholder"
 
+    def _item_notification_info(index: int):
+        url = debug_url(
+            endpoint_url, **{PARAM_PAGE: page_number, PARAM_PAGE_SIZE: page_size}
+        )
+        return f"Item #{index}: {notification.format_url(url)})"
+
     while next_page is not None:
         data = _get_list_page_json(
             endpoint_url,
@@ -138,23 +140,25 @@ def update_model(
 
         items = data["result"]["items"]
 
-        for item in items:
+        for index, item in enumerate(items):
             try:
                 update_item_func(item)
 
             except MissingFieldException as e:
                 notification.warning(
-                    f"Item response is missing required data and will be skipped: "
-                    f"[url={debug_url(endpoint_url, **{PARAM_PAGE:page_number, PARAM_PAGE_SIZE:page_size,})}] {e}"
+                    f"Item response is missing required data and will be skipped [{_item_notification_info(index)}]: {e}"
+                )
+                continue
+
+            except (HttpError) as e:
+                notification.warning(
+                    f"Item response failed with status={e.status_code} [{_item_notification_info(index)}]"
                 )
                 continue
 
             except Exception as e:
-                log.warning(f"Failed to update item: {e} {item}")
-
-                notification.append(
-                    f"Failed to read item for "
-                    f"url={debug_url(endpoint_url, **{PARAM_PAGE:page_number, PARAM_PAGE_SIZE:page_size,})}"
+                notification.warning(
+                    f"Failed to read item: [{_item_notification_info(index)}]"
                 )
                 notification.mark_as_failed(e)
                 return

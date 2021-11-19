@@ -458,7 +458,9 @@ def update_members(
             members = [members]
 
     except AttributeError as e:
-        notification.append(f"Failed to read item list for url={endpoint_url}")
+        notification.warning(
+            f"Failed to read item list for url={notification.format_url(endpoint_url)}"
+        )
         notification.mark_as_failed(e)
         return
 
@@ -466,8 +468,8 @@ def update_members(
         try:
             update_member_func(response_class(member))
         except Exception as e:
-            notification.append(
-                f'Failed to update member=[{member}…][<a href="{endpoint_url}">endpoint</a>]: {e}'
+            notification.warning(
+                f"Failed to update member=[{member}…][{notification.format_url(endpoint_url)}]: {e}"
             )
             notification.mark_as_failed(e)
             return

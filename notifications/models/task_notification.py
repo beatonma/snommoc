@@ -81,7 +81,9 @@ class TaskNotification(models.Model):
 
     def append(self, content: str, loglevel: int = logging.INFO):
         if self.finished:
-            log.warning("Task marked as finished but still being appended to")
+            log.warning(
+                f"Task marked as finished but still being appended to (complete={self.complete}, failed={self.failed})"
+            )
         log.log(loglevel, content)
         self.content = (self.content or "") + "\n" + content
         self.save()
@@ -92,6 +94,11 @@ class TaskNotification(models.Model):
     @classmethod
     def create(cls, content: str, title: str = "Task notification"):
         return TaskNotification.objects.create(content=content, title=title)
+
+    def format_url(self, url, text=None):
+        if text is None:
+            text = url
+        return f"<a href={url}>{text}</a>"
 
     def __str__(self):
         return f"{self.title}"

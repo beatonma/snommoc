@@ -10,7 +10,7 @@ from crawlers.parliamentdotuk.tasks.lda.divisions import (
     _get_vote_lords_member_id,
     update_commons_divisions,
 )
-from crawlers.parliamentdotuk.tests.data_lda_divisions import (
+from crawlers.parliamentdotuk.tests.lda.data_lda_divisions import (
     EXAMPLE_COMMONS_DIVISION,
     EXAMPLE_COMMONS_DIVISIONS_LIST,
     EXAMPLE_COMMONS_DIVISION_COMPLETE,

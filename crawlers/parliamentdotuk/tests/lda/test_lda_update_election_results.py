@@ -2,7 +2,7 @@ from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.lda.update_election_results import (
     _create_election_result,
 )
-from crawlers.parliamentdotuk.tests.data_lda_update_election_results import (
+from crawlers.parliamentdotuk.tests.lda.data_lda_update_election_results import (
     ELECTION_RESULT_DETAIL,
 )
 from repository.models import (

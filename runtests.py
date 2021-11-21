@@ -8,14 +8,13 @@ To enable a module for testing:
 
 Very heavily inspired by : https://github.com/django/django/blob/master/tests/runtests.py
 """
+import datetime
 import importlib
 import json
+import random
 import re
 import sys
-import random
-import datetime
 from typing import Dict
-
 from unittest import TestCase, TextTestResult
 
 import colorama
@@ -28,6 +27,7 @@ from django_nose import BasicNoseRunner
 
 from basetest.args import RUNTESTS_CLARGS
 from basetest.test_settings_default import *
+from basetest.testcase import LocalTestCalledNetwork
 from util.time import get_now
 
 TEST_METHOD_REGEX = re.compile(r"(test_[^\s]+)")
@@ -303,6 +303,10 @@ def _print_results(
     _compare_tests_with_previous(tests_run)
 
 
+def _catch_network_call(*args, **kwargs):
+    raise LocalTestCalledNetwork(f"Illegal network call: {args} [{kwargs}]")
+
+
 def _main():
     global TEST_APPS
 
@@ -315,6 +319,13 @@ def _main():
     os.environ["DJANGO_SETTINGS_MODULE"] = "basetest.test_settings_default"
 
     django.setup()
+
+    if not RUNTESTS_CLARGS.network:
+        import crawlers.network
+
+        crawlers.network.get_json = lambda *args, **kwargs: _catch_network_call(
+            *args, **kwargs
+        )
 
     all_passed = True
     tests_run = 0

@@ -1,4 +1,4 @@
-from unittest import skipUnless
+from unittest import skipIf, skipUnless
 
 from django.db import OperationalError
 from django.http import HttpResponse
@@ -17,9 +17,6 @@ class DirtyTestException(Exception):
 
 class BaseTestCase(TestCase):
     maxDiff = None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def delete_instances_of(
         self,
@@ -104,23 +101,17 @@ class LocalTestCalledNetwork(Exception):
     pass
 
 
+@skipIf(
+    RUNTESTS_CLARGS.network,
+    reason="Network tests run separately from local tests.",
+)
 class LocalTestCase(BaseTestCase):
     """Tests that use only local data - no external network calls!
 
-    Always run when runtests.py is run.
+    Local tests run by default but are disabled when `-network` command line flag is passsed to runtests.
     """
 
-    def _catch_network_call(self, *args, **kwargs):
-        raise LocalTestCalledNetwork(f"Illegal network call: {args} [{kwargs}]")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        import crawlers.network
-
-        crawlers.network.get_json = lambda *args, **kwargs: self._catch_network_call(
-            *args, **kwargs
-        )
+    pass
 
 
 class LocalApiTestCase(LocalTestCase):
@@ -141,12 +132,14 @@ class LocalApiTestCase(LocalTestCase):
         self.assertEqual(response["Content-Type"], "application/json")
 
 
-@skipUnless(RUNTESTS_CLARGS.network, reason="Network calls disabled by default")
+@skipUnless(
+    RUNTESTS_CLARGS.network,
+    reason="Network tests run separately from local tests.",
+)
 class NetworkTestCase(BaseTestCase):
     """Tests that interact a remote server.
 
-    Only run when specifically enabled via command line `-network` flag::
-        runtests.py -network
+    Network tasks are disabled by default but can be executed by passing the `-network` command line flag to runtests.
     """
 
     pass

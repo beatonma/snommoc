@@ -62,7 +62,6 @@ class MemberResolutionTest(LocalTestCase):
         self.assertEqual(result, self.mp)
 
     def test_get_member_for_election_result__multiple_mps_with_same_name(self):
-        print(Constituency.objects.all())
         create_sample_person(
             pk=104467,
             name="Drew Hendry",
@@ -101,9 +100,7 @@ class MemberResolutionTest(LocalTestCase):
         self.assertEqual(normalize_name(" Lucas, Caroline "), "Caroline Lucas")
 
     def test_get_normalized_name__normalizes_name_ordering(self):
-        """
-        Names in the format `Surname, Forename` should be rearranged to `Forename Surname`
-        """
+        """Names in the format `Surname, Forename` should be rearranged to `Forename Surname`"""
         self.assertEqual(normalize_name("Caroline Lucas"), "Caroline Lucas")
         self.assertEqual(normalize_name("Lucas, Caroline"), "Caroline Lucas")
 

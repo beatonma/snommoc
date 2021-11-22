@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 
-class DivisionSchema:
+class DivisionViewModel:
     """
     Schema definition: DivisionViewModel from https://lordsvotes-api.parliament.uk/index.html
     """
@@ -30,10 +30,10 @@ class DivisionSchema:
         remoteVotingStart: Optional[str],
         remoteVotingEnd: Optional[str],
         divisionWasExclusivelyRemote: bool,
-        contentTellers: Optional[List["DivisionMemberSchema"]],
-        notContentTellers: Optional[List["DivisionMemberSchema"]],
-        contents: Optional[List["DivisionMemberSchema"]],
-        notContents: Optional[List["DivisionMemberSchema"]],
+        contentTellers: Optional[List["DivisionMemberViewModel"]],
+        notContentTellers: Optional[List["DivisionMemberViewModel"]],
+        contents: Optional[List["DivisionMemberViewModel"]],
+        notContents: Optional[List["DivisionMemberViewModel"]],
     ):
         """
         :param divisionId:
@@ -88,14 +88,16 @@ class DivisionSchema:
         self.remoteVotingEnd = remoteVotingEnd
         self.divisionWasExclusivelyRemote = divisionWasExclusivelyRemote
 
-        self.contentTellers = [DivisionMemberSchema(**x) for x in contentTellers]
-        self.notContentTellers = [DivisionMemberSchema(**x) for x in notContentTellers]
-        self.contents = [DivisionMemberSchema(**x) for x in contents]
-        self.notContents = [DivisionMemberSchema(**x) for x in notContents]
+        self.contentTellers = [DivisionMemberViewModel(**x) for x in contentTellers]
+        self.notContentTellers = [
+            DivisionMemberViewModel(**x) for x in notContentTellers
+        ]
+        self.contents = [DivisionMemberViewModel(**x) for x in contents]
+        self.notContents = [DivisionMemberViewModel(**x) for x in notContents]
 
 
 @dataclass
-class DivisionMemberSchema:
+class DivisionMemberViewModel:
     """
     Schema definition: MemberViewModel from https://lordsvotes-api.parliament.uk/index.html
     """

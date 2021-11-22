@@ -4,6 +4,7 @@ from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.util.coercion import (
     coerce_to_boolean,
     coerce_to_date,
+    coerce_to_datetime,
     coerce_to_int,
     coerce_to_list,
     coerce_to_str,
@@ -11,7 +12,7 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
 
 
 class TypeCoercionTests(LocalTestCase):
-    def test__coerce_to_list(self):
+    def test_coerce_to_list(self):
         test_func = coerce_to_list
 
         self.assertEqual(test_func([]), [])
@@ -20,7 +21,7 @@ class TypeCoercionTests(LocalTestCase):
         self.assertEqual(test_func("a"), ["a"])
         self.assertEqual(test_func(["a"]), ["a"])
 
-    def test__coerce_to_int(self):
+    def test_coerce_to_int(self):
         test_func = coerce_to_int
 
         self.assertEqual(test_func(123), 123)
@@ -32,7 +33,7 @@ class TypeCoercionTests(LocalTestCase):
         self.assertEqual(test_func("abc"), None)
         self.assertEqual(test_func([]), None)
 
-    def test__coerce_to_str(self):
+    def test_coerce_to_str(self):
         test_func = coerce_to_str
 
         self.assertEqual(test_func("abc"), "abc")
@@ -41,7 +42,7 @@ class TypeCoercionTests(LocalTestCase):
         self.assertEqual(test_func(True), "True")
         self.assertEqual(test_func(None), None)
 
-    def test__coerce_to_date(self):
+    def test_coerce_to_date(self):
         test_func = coerce_to_date
 
         self.assertEqual(
@@ -77,7 +78,23 @@ class TypeCoercionTests(LocalTestCase):
             datetime.date(year=2001, month=5, day=6),
         )
 
-    def test__coerce_to_boolean(self):
+    def test_coerce_to_datetime(self):
+        test_func = coerce_to_datetime
+        self.assertEqual(
+            test_func("2021-11-22T11:45:21.783Z"),
+            datetime.datetime(
+                year=2021,
+                month=11,
+                day=22,
+                hour=11,
+                minute=45,
+                second=21,
+                microsecond=783000,
+                tzinfo=datetime.timezone.utc,
+            ),
+        )
+
+    def test_coerce_to_boolean(self):
         test_func = coerce_to_boolean
 
         self.assertEqual(test_func("true"), True)

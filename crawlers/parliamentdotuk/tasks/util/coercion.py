@@ -54,7 +54,7 @@ def coerce_to_boolean(value, default=None) -> Optional[bool]:
 def coerce_to_date(value) -> Optional[datetime.date]:
     try:
         return dateutil.parser.parse(value).date()
-    except (AttributeError, TypeError, ParserError):
+    except (AttributeError, OverflowError, ParserError, TypeError, ValueError):
         pass
 
     if isinstance(value, dict):
@@ -71,4 +71,9 @@ def coerce_to_date(value) -> Optional[datetime.date]:
         except (TypeError, ValueError):
             pass
 
-    return None
+
+def coerce_to_datetime(value) -> Optional[datetime.datetime]:
+    try:
+        return dateutil.parser.parse(value)
+    except (AttributeError, OverflowError, ParserError, TypeError, ValueError):
+        pass

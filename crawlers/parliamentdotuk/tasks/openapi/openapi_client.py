@@ -7,7 +7,7 @@ from notifications.models import TaskNotification
 
 def foreach(
     endpoint_url: str,
-    item_func: Callable[[Dict], None],
+    item_func: Callable[[Dict, Optional[TaskNotification]], None],
     notification: Optional[TaskNotification],
     cache: Optional[JsonResponseCache],
     items_per_page: int = 25,
@@ -29,6 +29,11 @@ def foreach(
             },
             cache=cache,
         )
+
+        if not isinstance(items, list):
+            raise TypeError(
+                f"openapi_client.foreach expects a response with a list of items, got {items}"
+            )
 
         if len(items) == 0:
             break

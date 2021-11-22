@@ -3,8 +3,8 @@ from typing import Optional
 
 from django.db.models import Q, QuerySet
 
+from repository.models import Constituency, Election, Party, Person
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-from repository.models import Constituency, Election, Person, Party
 
 """
 Titles and honorifics that may need to be stripped from a name when trying to resolve a Person.
@@ -26,8 +26,19 @@ _honorifics = [
 _honorifics_regex = re.compile(rf"({'|'.join(_honorifics)})", re.IGNORECASE)
 
 
+def get_member(**kwargs) -> Optional[Person]:
+    try:
+        return Person.objects.get(**kwargs)
+    except (Person.DoesNotExist, Person.MultipleObjectsReturned):
+        pass
+
+
+def get_members(**kwargs) -> QuerySet[Person]:
+    return Person.objects.filter(**kwargs)
+
+
 def get_active_members(**kwargs) -> QuerySet[Person]:
-    return Person.objects.filter(active=True, **kwargs)
+    return get_members(active=True, **kwargs)
 
 
 def get_active_mps(**kwargs) -> QuerySet[Person]:

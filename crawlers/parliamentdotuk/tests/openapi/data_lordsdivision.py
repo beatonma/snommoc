@@ -43,6 +43,16 @@ LORDS_DIVISION = {
             "partyAbbreviation": "Lab",
             "partyIsMainParty": True,
         },
+        {
+            "memberId": 395,
+            "name": "Lord Blunkett",
+            "listAs": "Blunkett, L.",
+            "memberFrom": "Life peer",
+            "party": "Labour",
+            "partyColour": "ff0000",
+            "partyAbbreviation": "Lab",
+            "partyIsMainParty": True,
+        },
     ],
     "notContents": [
         {

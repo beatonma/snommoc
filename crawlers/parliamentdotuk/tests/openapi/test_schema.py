@@ -8,6 +8,5 @@ class SchemaTestCase(LocalTestCase):
         schema = DivisionViewModel(**LORDS_DIVISION)
 
         self.assertEqual(2613, schema.divisionId)
-        self.assertEqual(2, len(schema.contents))
-
+        self.assertEqual(3, len(schema.contents))
         self.assertEqual("Lord Pendry", schema.contents[0].name)

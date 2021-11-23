@@ -12,6 +12,8 @@ from repository.models.mixins import (
 
 
 class Division(ParliamentDotUkMixin, BaseModel):
+    """Deprecated"""
+
     title = models.CharField(max_length=512)
     date = models.DateField()
 
@@ -75,6 +77,8 @@ class CommonsDivision(Division):
 
 
 class LordsDivision(Division):
+    """Deprecated"""
+
     description = models.TextField()
     whipped_vote = models.BooleanField(default=False)
 
@@ -94,6 +98,8 @@ class LordsDivision(Division):
 
 
 class DivisionVote(PersonMixin, BaseModel):
+    """Deprecated"""
+
     aye = models.BooleanField(default=False)
     no = models.BooleanField(default=False)
     abstention = models.BooleanField(default=False)
@@ -129,6 +135,8 @@ class CommonsDivisionVote(DivisionVote):
 
 
 class LordsDivisionVote(DivisionVote):
+    """Deprecated"""
+
     division = models.ForeignKey(
         "LordsDivision",
         on_delete=models.CASCADE,

@@ -63,7 +63,7 @@ def update_lords_division(
             person=person,
             division=division,
             defaults={
-                "vote": content,
+                "vote_type": content,
             },
         )
 
@@ -72,7 +72,9 @@ def update_lords_division(
         LordsDivisionMemberVote.objects.update_or_create(
             person=person,
             division=division,
-            vote=not_content,
+            defaults={
+                "vote_type": not_content,
+            },
         )
 
     if created and notification:
@@ -85,6 +87,7 @@ def update_lords_division(
 def update_lords_divisions(
     cache: Optional[JsonResponseCache] = None,
     notification: Optional[TaskNotification] = None,
+    **kwargs,
 ) -> None:
     openapi_client.foreach(
         endpoints.LORDS,

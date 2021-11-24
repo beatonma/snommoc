@@ -20,7 +20,7 @@ from repository.models import (
     CommonsDivision,
     Constituency,
     ConstituencyResult,
-    LordsDivision,
+    LordsDivisionRedux,
     Person,
 )
 from social.models import Comment
@@ -218,10 +218,10 @@ class CommonsDivisionSocialViewSet(_AbstractSocialViewSet):
 
 
 class LordsDivisionSocialViewSet(_AbstractSocialViewSet):
-    def get_target_title(self, target: LordsDivision) -> str:
+    def get_target_title(self, target: LordsDivisionRedux) -> str:
         return target.title
 
-    model_class = LordsDivision
+    model_class = LordsDivisionRedux
 
 
 class BillSocialViewSet(_AbstractSocialViewSet):

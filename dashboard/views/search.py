@@ -10,7 +10,7 @@ from repository.models import (
     Bill,
     CommonsDivision,
     Constituency,
-    LordsDivision,
+    LordsDivisionRedux,
     Party,
     Person,
 )
@@ -45,7 +45,7 @@ class DashboardSearch(StaffView):
         )
 
         lordsdivisions = _for_titled_model(
-            LordsDivision,
+            LordsDivisionRedux,
             query,
             "division/lords-detail",
             FeaturedModel=FeaturedLordsDivision,

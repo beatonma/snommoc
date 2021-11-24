@@ -82,17 +82,17 @@ class UpdateLordsDivisionsTests(LocalTestCase):
 
     def test_division_votes_are_correct(self):
         division: LordsDivisionRedux = LordsDivisionRedux.objects.first()
-        votes = division.votes
+        votes = division.votes_redux
 
         self.assertEqual(votes.count(), 5)
-        self.assertEqual(votes.filter(vote__name="content").count(), 3)
-        self.assertEqual(votes.filter(vote__name="not_content").count(), 2)
+        self.assertEqual(votes.filter(vote_type__name="content").count(), 3)
+        self.assertEqual(votes.filter(vote_type__name="not_content").count(), 2)
 
     def test_person_votes_related_name_is_correct(self):
         votes = get_member(pk=2758).lords_division_votes
 
         self.assertEqual(votes.count(), 1)
-        self.assertEqual(votes.first().vote.name, "content")
+        self.assertEqual(votes.first().vote_type.name, "content")
 
     def tearDown(self):
         self.delete_instances_of(

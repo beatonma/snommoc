@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from repository.models.houses import HOUSE_OF_LORDS
 from repository.models.mixins import BaseModel, ParliamentDotUkMixin
 
 
@@ -8,6 +9,7 @@ class LordsDivisionRedux(ParliamentDotUkMixin, BaseModel):
     title = models.TextField(null=True, blank=True)
     date = models.DateField()
     number = models.PositiveSmallIntegerField()
+    amendment_motion_notes = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
     is_whipped = models.BooleanField()
     is_government_content = models.BooleanField()
@@ -26,11 +28,26 @@ class LordsDivisionRedux(ParliamentDotUkMixin, BaseModel):
         related_name="sponsored_lords_divisions",
     )
     is_house = models.BooleanField(null=True)
-    amendment_motion_notes = models.TextField(null=True, blank=True)
     is_government_win = models.BooleanField(null=True, blank=True)
     remote_voting_start = models.DateTimeField(null=True, blank=True)
     remote_voting_end = models.DateTimeField(null=True, blank=True)
     division_was_exclusively_remote = models.BooleanField(null=True, blank=True)
+
+    @property
+    def house(self) -> str:
+        return HOUSE_OF_LORDS
+
+    @property
+    def passed(self) -> bool:
+        return self.ayes > self.noes
+
+    @property
+    def ayes(self) -> int:
+        return self.authoritative_content_count
+
+    @property
+    def noes(self) -> int:
+        return self.authoritative_not_content_count
 
     def __str__(self):
         return f"{self.title} ({self.date})"
@@ -45,9 +62,9 @@ class LordsDivisionMemberVote(BaseModel):
     division = models.ForeignKey(
         "repository.LordsDivisionRedux",
         on_delete=models.CASCADE,
-        related_name="votes",
+        related_name="votes_redux",
     )
-    vote = models.ForeignKey(
+    vote_type = models.ForeignKey(
         "repository.DivisionVoteType",
         on_delete=models.CASCADE,
         related_name="+",
@@ -60,9 +77,12 @@ class LordsDivisionMemberVote(BaseModel):
                 name="One vote per Person per LordsDivision",
             ),
         ]
+        ordering = [
+            "-modified_on",
+        ]
 
     def __str__(self):
-        return f"{self.division.title}: {self.person.name} [{self.vote.name}]"
+        return f"{self.division.title}: {self.person.name} [{self.vote_type.name}]"
 
 
 class DivisionVoteType(BaseModel):

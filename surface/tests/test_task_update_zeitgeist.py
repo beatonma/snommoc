@@ -2,8 +2,6 @@ from basetest.test_util import create_sample_dates
 from basetest.testcase import LocalTestCase
 from repository.models import (
     Bill,
-    CommonsDivision,
-    LordsDivision,
     Person,
 )
 from repository.tests.data.create import create_sample_person
@@ -19,9 +17,6 @@ from social.tests.util import (
     create_sample_vote,
 )
 from surface.models import (
-    FeaturedBill,
-    FeaturedCommonsDivision,
-    FeaturedLordsDivision,
     FeaturedPerson,
     ZeitgeistItem,
 )
@@ -75,12 +70,7 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
             Bill,
             Comment,
             Comment,
-            CommonsDivision,
-            FeaturedBill,
-            FeaturedCommonsDivision,
-            FeaturedLordsDivision,
             FeaturedPerson,
-            LordsDivision,
             Person,
             UserToken,
             Vote,

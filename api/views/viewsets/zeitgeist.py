@@ -2,12 +2,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 
 from api.serializers.zeitgeist import ZeitgeistSerializer
-
 from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Bill,
     CommonsDivision,
-    LordsDivision,
+    LordsDivisionRedux,
     Person,
 )
 from surface.models import (
@@ -34,7 +33,7 @@ class ZeitgeistViewSet(KeyRequiredViewSet):
             target_type=ContentType.objects.get_for_model(CommonsDivision)
         )
         lords_divisions = items.filter(
-            target_type=ContentType.objects.get_for_model(LordsDivision)
+            target_type=ContentType.objects.get_for_model(LordsDivisionRedux)
         )
         bills = items.filter(target_type=ContentType.objects.get_for_model(Bill))
 

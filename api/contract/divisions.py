@@ -5,6 +5,7 @@ DIVISION_VOTE = "vote"
 DIVISION_VOTE_AYES = "ayes"
 DIVISION_VOTE_NOES = "noes"
 DIVISION_VOTES = "votes"
+DIVISION_SPONSOR = "sponsor"
 
 DIVISION_VOTE_DID_NOT_VOTE = "did_not_vote"
 DIVISION_VOTE_ABSTENTIONS = "abstentions"

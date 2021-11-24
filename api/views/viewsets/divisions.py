@@ -4,7 +4,7 @@ from api.serializers.divisions import (
 )
 from api.serializers.divisions.votes import GenericInlineDivisionSerializer
 from api.views.viewsets import KeyRequiredViewSet
-from repository.models import CommonsDivision, LordsDivision
+from repository.models import CommonsDivision, LordsDivisionRedux
 from util.cleanup import UnusedClass
 
 
@@ -18,7 +18,7 @@ class CommonsDivisionViewSet(KeyRequiredViewSet):
 class LordsDivisionViewSet(KeyRequiredViewSet):
     """Return information about a Lords division, including vote results."""
 
-    queryset = LordsDivision.objects.all()
+    queryset = LordsDivisionRedux.objects.all()
     serializer_class = LordsDivisionSerializer
 
 
@@ -27,7 +27,7 @@ class RecentlyUpdatedDivisionsViewSet(UnusedClass, KeyRequiredViewSet):
 
     def get_queryset(self):
         commons = CommonsDivision.objects.order_by("-date")[:10]
-        lords = LordsDivision.objects.order_by("-date")[:10]
+        lords = LordsDivisionRedux.objects.order_by("-date")[:10]
 
         latest = sorted(
             [x for x in commons] + [x for x in lords],

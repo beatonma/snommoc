@@ -9,7 +9,7 @@ from notifications.models.task_notification import TaskNotification, task_notifi
 from repository.models import (
     Bill,
     CommonsDivision,
-    LordsDivision,
+    LordsDivisionRedux,
     Person,
 )
 from repository.models.mixins import BaseModel
@@ -33,7 +33,7 @@ ZEITGEIST_TARGET_MODELS = [
     Person,
     Bill,
     CommonsDivision,
-    LordsDivision,
+    LordsDivisionRedux,
 ]
 
 
@@ -115,7 +115,9 @@ def _update_featured_commons_divisions(today: datetime.date):
 
 def _update_featured_lords_divisions(today: datetime.date):
     for x in _filter_featured_content(FeaturedLordsDivision, today):
-        _create_featured_zeitgeist_item(LordsDivision, x.start or today, x.target.pk)
+        _create_featured_zeitgeist_item(
+            LordsDivisionRedux, x.start or today, x.target.pk
+        )
 
 
 def _update_featured_bills(today: datetime.date):

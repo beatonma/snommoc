@@ -2,7 +2,6 @@ from django.db import models
 
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
-    HOUSE_OF_LORDS,
 )
 from repository.models.mixins import (
     BaseModel,
@@ -76,27 +75,6 @@ class CommonsDivision(Division):
         return HOUSE_OF_COMMONS
 
 
-class LordsDivision(Division):
-    """Deprecated"""
-
-    description = models.TextField()
-    whipped_vote = models.BooleanField(default=False)
-
-    @property
-    def contents(self) -> int:
-        """Alias for ayes, as used in the House of Lords."""
-        return self.ayes
-
-    @property
-    def not_contents(self) -> int:
-        """Alias for noes, as used in the House of Lords."""
-        return self.noes
-
-    @property
-    def house(self):
-        return HOUSE_OF_LORDS
-
-
 class DivisionVote(PersonMixin, BaseModel):
     """Deprecated"""
 
@@ -134,14 +112,7 @@ class CommonsDivisionVote(DivisionVote):
         return f"{self.person} [{self.vote_type}]: {self.division}"
 
 
-class LordsDivisionVote(DivisionVote):
-    """Deprecated"""
-
-    division = models.ForeignKey(
-        "LordsDivision",
-        on_delete=models.CASCADE,
-        related_name="votes",
-    )
-
-    def __str__(self):
-        return f"{self.person} [{self.vote_type}]: {self.division}"
+# class LordsDivision(ParliamentDotUkMixin, models.Model):
+#     #     """Deprecated"""
+#
+#     pass

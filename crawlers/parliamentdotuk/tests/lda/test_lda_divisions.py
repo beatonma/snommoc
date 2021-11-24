@@ -22,8 +22,6 @@ from crawlers.parliamentdotuk.tests.lda.data_lda_divisions import (
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivision,
-    LordsDivisionVote,
     ParliamentarySession,
 )
 
@@ -90,8 +88,6 @@ class CommonsDivisionsTestCase(LocalTestCase):
         self.delete_instances_of(
             CommonsDivision,
             CommonsDivisionVote,
-            LordsDivision,
-            LordsDivisionVote,
             ParliamentarySession,
         )
 
@@ -133,7 +129,5 @@ class MockCommonsDivisionTestCase(LocalTestCase):
         self.delete_instances_of(
             CommonsDivision,
             CommonsDivisionVote,
-            LordsDivision,
-            LordsDivisionVote,
             ParliamentarySession,
         )

@@ -12,7 +12,7 @@ from repository.models import (
     ConstituencyResultDetail,
     Election,
     ElectionType,
-    LordsDivisionRedux,
+    LordsDivision,
     ParliamentarySession,
     Party,
     Person,
@@ -344,7 +344,7 @@ def create_sample_lords_division(
     description: str = None,
     whipped_vote: bool = None,
     division_number: int = 1,
-) -> LordsDivisionRedux:
+) -> LordsDivision:
     """Create a LordsDivision with custom data."""
     if not parliamentdotuk:
         parliamentdotuk = _any_id()
@@ -370,7 +370,7 @@ def create_sample_lords_division(
     if not division_number:
         division_number = _any_int(50)
 
-    return LordsDivisionRedux.objects.create(
+    return LordsDivision.objects.create(
         parliamentdotuk=parliamentdotuk,
         title=title,
         date=date,

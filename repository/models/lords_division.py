@@ -5,7 +5,7 @@ from repository.models.houses import HOUSE_OF_LORDS
 from repository.models.mixins import BaseModel, ParliamentDotUkMixin
 
 
-class LordsDivisionRedux(ParliamentDotUkMixin, BaseModel):
+class LordsDivision(ParliamentDotUkMixin, BaseModel):
     title = models.TextField(null=True, blank=True)
     date = models.DateField()
     number = models.PositiveSmallIntegerField()
@@ -53,14 +53,14 @@ class LordsDivisionRedux(ParliamentDotUkMixin, BaseModel):
         return f"{self.title} ({self.date})"
 
 
-class LordsDivisionMemberVote(BaseModel):
+class LordsDivisionVote(BaseModel):
     person = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
         related_name="lords_division_votes",
     )
     division = models.ForeignKey(
-        "repository.LordsDivisionRedux",
+        "repository.LordsDivision",
         on_delete=models.CASCADE,
         related_name="votes_redux",
     )

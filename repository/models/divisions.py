@@ -110,9 +110,3 @@ class CommonsDivisionVote(DivisionVote):
 
     def __str__(self):
         return f"{self.person} [{self.vote_type}]: {self.division}"
-
-
-# class LordsDivision(ParliamentDotUkMixin, models.Model):
-#     #     """Deprecated"""
-#
-#     pass

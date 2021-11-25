@@ -5,8 +5,8 @@ from api.serializers.base import InlineModelSerializer
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivisionMemberVote,
-    LordsDivisionRedux,
+    LordsDivision,
+    LordsDivisionVote,
 )
 
 
@@ -41,7 +41,7 @@ class _InlineCommonsDivisionSerializer(_BaseInlineDivisionSerializer):
 
 class _InlineLordsDivisionSerializer(_BaseInlineDivisionSerializer):
     class Meta:
-        model = LordsDivisionRedux
+        model = LordsDivision
         fields = _BaseInlineDivisionSerializer._fields
 
 
@@ -65,5 +65,5 @@ class LordsVotesSerializer(_BaseVoteSerializer):
     vote_type = serializers.CharField(source="vote_type.name")
 
     class Meta:
-        model = LordsDivisionMemberVote
+        model = LordsDivisionVote
         fields = _BaseVoteSerializer._fields

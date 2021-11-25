@@ -44,7 +44,7 @@ class FeaturedCommonsDivision(BaseFeatured):
 
 class FeaturedLordsDivision(BaseFeatured):
     target = models.ForeignKey(
-        "repository.LordsDivisionRedux",
+        "repository.LordsDivision",
         on_delete=models.CASCADE,
         related_name="+",
     )

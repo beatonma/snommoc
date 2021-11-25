@@ -12,8 +12,8 @@ from crawlers.parliamentdotuk.tasks.util.coercion import (
 from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models.lords_division import (
     DivisionVoteType,
-    LordsDivisionMemberVote,
-    LordsDivisionRedux,
+    LordsDivision,
+    LordsDivisionVote,
 )
 from repository.resolution.members import get_member
 
@@ -28,7 +28,7 @@ def update_lords_division(
         get_member(pk=data.sponsoringMemberId) if data.sponsoringMemberId else None
     )
 
-    division, created = LordsDivisionRedux.objects.update_or_create(
+    division, created = LordsDivision.objects.update_or_create(
         parliamentdotuk=data.divisionId,
         defaults={
             "title": data.title,
@@ -59,7 +59,7 @@ def update_lords_division(
 
     for vote in data.contents + data.contentTellers:
         person = get_member(pk=vote.memberId)
-        LordsDivisionMemberVote.objects.update_or_create(
+        LordsDivisionVote.objects.update_or_create(
             person=person,
             division=division,
             defaults={
@@ -69,7 +69,7 @@ def update_lords_division(
 
     for vote in data.notContents + data.notContentTellers:
         person = get_member(pk=vote.memberId)
-        LordsDivisionMemberVote.objects.update_or_create(
+        LordsDivisionVote.objects.update_or_create(
             person=person,
             division=division,
             defaults={

@@ -4,10 +4,7 @@ from api import contract
 from api.serializers.base import DetailedModelSerializer
 from api.serializers.member import SimpleProfileSerializer
 from api.serializers.parties import InlinePartySerializer
-from repository.models import (
-    LordsDivisionMemberVote,
-    LordsDivisionRedux,
-)
+from repository.models import LordsDivision, LordsDivisionVote
 
 
 class _LordsDivisionVoteSerializer(DetailedModelSerializer):
@@ -17,7 +14,7 @@ class _LordsDivisionVoteSerializer(DetailedModelSerializer):
     party = InlinePartySerializer(source="person.party")
 
     class Meta:
-        model = LordsDivisionMemberVote
+        model = LordsDivisionVote
         fields = [
             contract.PARLIAMENTDOTUK,
             contract.NAME,
@@ -34,7 +31,7 @@ class LordsDivisionSerializer(DetailedModelSerializer):
     sponsor = SimpleProfileSerializer(source="sponsoring_member")
 
     class Meta:
-        model = LordsDivisionRedux
+        model = LordsDivision
         fields = [
             contract.PARLIAMENTDOTUK,
             contract.TITLE,

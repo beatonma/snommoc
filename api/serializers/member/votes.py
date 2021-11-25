@@ -8,7 +8,7 @@ from api.serializers.divisions.votes import (
 )
 from repository.models import (
     CommonsDivisionVote,
-    LordsDivisionMemberVote,
+    LordsDivisionVote,
     Person,
 )
 
@@ -23,7 +23,7 @@ class MemberVotesSerializer(DetailedModelSerializer):
         return self._get(person, CommonsDivisionVote, CommonsVotesSerializer)
 
     def get_lords(self, person):
-        return self._get(person, LordsDivisionMemberVote, LordsVotesSerializer)
+        return self._get(person, LordsDivisionVote, LordsVotesSerializer)
 
     def _get(self, person, model, serializer_model):
         qset = (

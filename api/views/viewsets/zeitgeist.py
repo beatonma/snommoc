@@ -6,7 +6,7 @@ from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Bill,
     CommonsDivision,
-    LordsDivisionRedux,
+    LordsDivision,
     Person,
 )
 from surface.models import (
@@ -33,7 +33,7 @@ class ZeitgeistViewSet(KeyRequiredViewSet):
             target_type=ContentType.objects.get_for_model(CommonsDivision)
         )
         lords_divisions = items.filter(
-            target_type=ContentType.objects.get_for_model(LordsDivisionRedux)
+            target_type=ContentType.objects.get_for_model(LordsDivision)
         )
         bills = items.filter(target_type=ContentType.objects.get_for_model(Bill))
 

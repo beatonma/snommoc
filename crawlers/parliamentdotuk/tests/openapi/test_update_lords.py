@@ -6,8 +6,8 @@ from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import LORDS_DIVI
 from repository.models import Person
 from repository.models.lords_division import (
     DivisionVoteType,
-    LordsDivisionMemberVote,
-    LordsDivisionRedux,
+    LordsDivision,
+    LordsDivisionVote,
 )
 from repository.resolution.members import get_member
 from repository.tests.data.create import create_sample_person
@@ -44,10 +44,10 @@ class UpdateLordsDivisionsTests(LocalTestCase):
         update_lords_division(data)
 
     def test_division_is_created(self):
-        self.assertEqual(LordsDivisionRedux.objects.count(), 1)
+        self.assertEqual(LordsDivision.objects.count(), 1)
 
     def test_division_fields_are_correct(self):
-        division: LordsDivisionRedux = LordsDivisionRedux.objects.first()
+        division: LordsDivision = LordsDivision.objects.first()
 
         self.assertEqual(division.pk, 2613)
         self.assertEqual(division.title, "Dormant Assets Bill [HL]")
@@ -81,7 +81,7 @@ class UpdateLordsDivisionsTests(LocalTestCase):
         self.assertEqual(division.division_was_exclusively_remote, True)
 
     def test_division_votes_are_correct(self):
-        division: LordsDivisionRedux = LordsDivisionRedux.objects.first()
+        division: LordsDivision = LordsDivision.objects.first()
         votes = division.votes_redux
 
         self.assertEqual(votes.count(), 5)
@@ -97,7 +97,7 @@ class UpdateLordsDivisionsTests(LocalTestCase):
     def tearDown(self):
         self.delete_instances_of(
             DivisionVoteType,
-            LordsDivisionRedux,
-            LordsDivisionMemberVote,
+            LordsDivision,
+            LordsDivisionVote,
             Person,
         )

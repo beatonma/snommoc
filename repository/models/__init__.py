@@ -48,11 +48,7 @@ from .houses import (
     House,
     HouseMembership,
 )
-from .lords_division import (
-    DivisionVoteType,
-    LordsDivisionMemberVote,
-    LordsDivisionRedux,
-)
+from .lords_division import DivisionVoteType, LordsDivision, LordsDivisionVote
 from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech
 from .party import (

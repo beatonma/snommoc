@@ -3,6 +3,7 @@ from typing import Optional
 
 from celery import shared_task
 
+from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import (
@@ -15,7 +16,6 @@ from crawlers.parliamentdotuk.tasks.lda.lda_client import (
     get_date,
     get_int,
     get_item_data,
-    get_list,
     get_parliamentdotuk_id,
     get_str,
     parse_parliamentdotuk_id,
@@ -26,8 +26,6 @@ from notifications.models.task_notification import task_notification
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivision,
-    LordsDivisionVote,
     ParliamentarySession,
 )
 
@@ -186,32 +184,9 @@ def fetch_and_create_commons_division(
     _create_commons_division(parliamentdotuk, data)
 
 
-def fetch_and_create_lords_division(
-    parliamentdotuk: int,
-    cache: Optional[JsonResponseCache],
-    **kwargs,
-) -> None:
-    data = get_item_data(
-        endpoints.url_for_lords_division(parliamentdotuk),
-        cache=cache,
-    )
-    if data is None:
-        return
-
-    _create_lords_division(parliamentdotuk, data)
-
-
-@shared_task
-@task_notification(label="Update all divisions")
-@json_cache("divisions")
-def update_all_divisions(**kwargs) -> None:
-    update_commons_divisions(**kwargs)
-    update_lords_divisions(**kwargs)
-
-
 @shared_task
 @task_notification(label="Update Commons divisions")
-@json_cache("divisions")
+@json_cache(caches.COMMONS_DIVISIONS)
 def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
     def update_division(json_data) -> None:
         """By default, only fetch data from network if we do not already have data about this division.

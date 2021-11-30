@@ -3,6 +3,7 @@ from typing import Optional
 
 from celery import shared_task
 
+from crawlers import caches
 from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import bills as contract
@@ -195,7 +196,7 @@ def _update_sponsor(bill: Bill, data: dict):
 
 @shared_task
 @task_notification(label="Update bills")
-@json_cache(name="bills")
+@json_cache(caches.BILLS)
 def update_bills(follow_pagination=True, **kwargs) -> None:
     def fetch_and_update_bill(json_data) -> Optional[str]:
         parliamentdotuk = get_parliamentdotuk_id(json_data)

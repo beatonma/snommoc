@@ -2,6 +2,7 @@ from typing import Optional
 
 from celery import shared_task
 
+from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.schema import DivisionViewModel
@@ -81,16 +82,29 @@ def update_lords_division(
         notification.append(f"Created LordsDivision '{division}'")
 
 
+@json_cache(caches.LORDS_DIVISIONS)
+def fetch_and_update_lords_division(
+    parliamentdotuk: int,
+    cache: Optional[JsonResponseCache] = None,
+):
+    openapi_client.get(
+        endpoints.lords_division(parliamentdotuk),
+        update_lords_division,
+        notification=None,
+        cache=cache,
+    )
+
+
 @shared_task
 @task_notification(label="Update Lords divisions")
-@json_cache("lords-divisions")
+@json_cache(caches.LORDS_DIVISIONS)
 def update_lords_divisions(
     cache: Optional[JsonResponseCache] = None,
     notification: Optional[TaskNotification] = None,
     **kwargs,
 ) -> None:
     openapi_client.foreach(
-        endpoints.LORDS,
+        endpoints.LORDS_DIVISIONS_ALL,
         item_func=update_lords_division,
         cache=cache,
         notification=notification,

@@ -1,23 +1,22 @@
 from celery import shared_task
-from repository.models import UnlinkedConstituency
 
 from notifications.models.task_notification import task_notification
+from repository.models import UnlinkedConstituency
 from .lda import (
-    update_constituencies,
     update_bills,
-    update_all_divisions,
     update_commons_divisions,
-    update_lords_divisions,
+    update_constituencies,
     update_election_results,
 )
 from .membersdataplatform import (
-    update_member_portraits,
-    update_missing_member_portraits_wikipedia,
-    update_member_portraits_wikipedia,
-    update_all_members_basic_info,
     update_active_member_details,
     update_all_member_details,
+    update_all_members_basic_info,
+    update_member_portraits,
+    update_member_portraits_wikipedia,
+    update_missing_member_portraits_wikipedia,
 )
+from .openapi import update_lords_divisions
 
 
 @shared_task
@@ -46,3 +45,10 @@ def _reset_unlinked_constituencies():
     and are temporary placeholder objects. They should be consumed via staff dashboard actions after update completes.
     """
     UnlinkedConstituency.objects.all().delete()
+
+
+@shared_task
+@task_notification(label="Update Commons and Lords divisions")
+def update_all_divisions(**kwargs):
+    update_commons_divisions(**kwargs)
+    update_lords_divisions(**kwargs)

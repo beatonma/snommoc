@@ -86,24 +86,6 @@ def _create_commons_vote(division_id, vote):
     )
 
 
-def _create_lords_vote(division_id, vote):
-    vote_type = get_str(vote, contract.VOTE_TYPE).split("#")[1]
-    person_id = _get_vote_lords_member_id(vote)
-
-    if person_id is None:
-        log.warning(f"Vote member ID is invalid: {vote}")
-        return
-
-    LordsDivisionVote.objects.update_or_create(
-        division_id=division_id,
-        person_id=person_id,
-        defaults={
-            "aye": vote_type == votes_contract.VOTE_CONTENT,
-            "no": vote_type == votes_contract.VOTE_NOT_CONTENT,
-        },
-    )
-
-
 def _create_commons_division(parliamentdotuk: int, data: dict) -> None:
     check_required_fields(
         data,
@@ -137,38 +119,6 @@ def _create_commons_division(parliamentdotuk: int, data: dict) -> None:
         _create_commons_vote(division.parliamentdotuk, vote)
 
 
-def _create_lords_division(parliamentdotuk: int, data: dict) -> None:
-    check_required_fields(
-        data,
-        contract.TITLE,
-        contract.DESCRIPTION,
-        contract.DATE,
-        contract.DIVISION_NUMBER,
-        contract.UIN,
-        contract.CONTENT,
-        contract.NOT_CONTENT,
-    )
-
-    division, _ = LordsDivision.objects.update_or_create(
-        parliamentdotuk=parliamentdotuk,
-        defaults={
-            "title": get_str(data, contract.TITLE),
-            "description": get_str(data, contract.DESCRIPTION),
-            "ayes": get_int(data, contract.CONTENT),
-            "noes": get_int(data, contract.NOT_CONTENT),
-            "date": get_date(data, contract.DATE),
-            "session": _get_session(data),
-            "uin": get_str(data, contract.UIN),
-            "division_number": get_int(data, contract.DIVISION_NUMBER),
-            "whipped_vote": get_boolean(data, contract.WHIPPED_VOTE),
-        },
-    )
-
-    votes = get_list(data, contract.VOTES)
-    for vote in votes:
-        _create_lords_vote(division.parliamentdotuk, vote)
-
-
 def fetch_and_create_commons_division(
     parliamentdotuk: int,
     cache: Optional[JsonResponseCache],
@@ -200,28 +150,6 @@ def update_commons_divisions(follow_pagination=True, **kwargs) -> None:
 
     update_model(
         endpoints.COMMONS_DIVISIONS,
-        update_item_func=update_division,
-        follow_pagination=follow_pagination,
-        **kwargs,
-    )
-
-
-@shared_task
-@task_notification(label="Update Lords divisions")
-@json_cache("divisions")
-def update_lords_divisions(follow_pagination=True, **kwargs) -> None:
-    def update_division(json_data) -> None:
-        """By default, only fetch data from network if we do not already have data about this division.
-        Use -force in management command to force update of already fetched data."""
-        lazy_update(
-            LordsDivision,
-            fetch_and_create_lords_division,
-            json_data,
-            **kwargs,
-        )
-
-    update_model(
-        endpoints.LORDS_DIVISIONS,
         update_item_func=update_division,
         follow_pagination=follow_pagination,
         **kwargs,

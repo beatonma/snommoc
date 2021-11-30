@@ -1,3 +1,5 @@
+from typing import Optional
+
 import crawlers
 from basetest.testcase import NetworkTestCase
 from crawlers.network.cache import create_json_cache
@@ -9,7 +11,7 @@ class ClientTestCase(NetworkTestCase):
     def test_client__foreach(self):
         items_processed = 0
 
-        def item_func(data: dict) -> None:
+        def item_func(data: dict, notification: Optional[TaskNotification]) -> None:
             nonlocal items_processed
             items_processed = items_processed + 1
 

@@ -11,7 +11,7 @@ from django.utils import timezone
 
 from util import settings_contract
 from util.settings import get_cache_settings
-from util.time import get_now, coerce_timezone
+from util.time import coerce_timezone, get_now
 
 log = logging.getLogger(__name__)
 
@@ -38,12 +38,10 @@ class JsonResponseCache:
 
     def __init__(
         self,
-        name,
-        time_to_live_seconds=TIME_TO_LIVE_DEFAULT,
-        now=get_now,
+        name: str,
+        time_to_live_seconds: int,
+        now: datetime.datetime,
     ):
-        if callable(now):
-            now = now()
 
         root = settings.CRAWLER_CACHE_ROOT
         self.cache_dir = os.path.join(root, name)

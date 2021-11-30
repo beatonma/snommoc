@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, Union
 from urllib.parse import urlparse
 
 import requests
@@ -24,10 +24,11 @@ def get_json(
     cache: Optional[JsonResponseCache] = None,
     dangerous_encoded_params: bool = False,
     **kwargs,
-) -> dict:
+) -> Union[dict, list]:
     """
     If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().
     """
+
     req = requests.Request(
         "GET",
         url,

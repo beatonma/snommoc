@@ -2,6 +2,7 @@ import logging
 
 from celery import shared_task
 
+from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
@@ -137,7 +138,7 @@ def fetch_and_create_election_result(
 
 @shared_task
 @task_notification(label="Update constituency results")
-@json_cache(name="election-results")
+@json_cache(caches.ELECTION_RESULTS)
 def update_election_results(follow_pagination=True, **kwargs) -> None:
     def update_result_details(json_data) -> None:
         """Data does not require updates so we only need to fetch it if we don't already have it."""

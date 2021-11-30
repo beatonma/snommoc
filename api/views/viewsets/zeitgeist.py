@@ -2,7 +2,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 
 from api.serializers.zeitgeist import ZeitgeistSerializer
-
 from api.views.viewsets import KeyRequiredViewSet
 from repository.models import (
     Bill,

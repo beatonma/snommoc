@@ -10,7 +10,7 @@ from crawlers.parliamentdotuk.tasks.lda.divisions import (
     _get_vote_lords_member_id,
     update_commons_divisions,
 )
-from crawlers.parliamentdotuk.tests.data_lda_divisions import (
+from crawlers.parliamentdotuk.tests.lda.data_lda_divisions import (
     EXAMPLE_COMMONS_DIVISION,
     EXAMPLE_COMMONS_DIVISIONS_LIST,
     EXAMPLE_COMMONS_DIVISION_COMPLETE,
@@ -22,8 +22,6 @@ from crawlers.parliamentdotuk.tests.data_lda_divisions import (
 from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivision,
-    LordsDivisionVote,
     ParliamentarySession,
 )
 
@@ -90,8 +88,6 @@ class CommonsDivisionsTestCase(LocalTestCase):
         self.delete_instances_of(
             CommonsDivision,
             CommonsDivisionVote,
-            LordsDivision,
-            LordsDivisionVote,
             ParliamentarySession,
         )
 
@@ -133,7 +129,5 @@ class MockCommonsDivisionTestCase(LocalTestCase):
         self.delete_instances_of(
             CommonsDivision,
             CommonsDivisionVote,
-            LordsDivision,
-            LordsDivisionVote,
             ParliamentarySession,
         )

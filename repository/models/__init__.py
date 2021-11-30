@@ -4,11 +4,11 @@ from .address import (
 )
 from .bill import (
     Bill,
+    BillPublication,
     BillSponsor,
-    BillStageType,
     BillStage,
     BillStageSitting,
-    BillPublication,
+    BillStageType,
     BillType,
 )
 from .committees import (
@@ -18,9 +18,9 @@ from .committees import (
 )
 from .constituency import (
     Constituency,
+    ConstituencyAlsoKnownAs,
     ConstituencyBoundary,
     ConstituencyResult,
-    ConstituencyAlsoKnownAs,
     UnlinkedConstituency,
 )
 from .declared_interests import (
@@ -30,15 +30,8 @@ from .declared_interests import (
 from .divisions import (
     CommonsDivision,
     CommonsDivisionVote,
-    LordsDivision,
-    LordsDivisionVote,
 )
-from .election import (
-    Election,
-    ElectionNationalResult,
-    ElectionType,
-    ContestedElection,
-)
+from .election import ContestedElection, Election, ElectionNationalResult, ElectionType
 from .election_result import (
     ConstituencyCandidate,
     ConstituencyResultDetail,
@@ -55,6 +48,7 @@ from .houses import (
     House,
     HouseMembership,
 )
+from .lords_division import DivisionVoteType, LordsDivision, LordsDivisionVote
 from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech
 from .party import (
@@ -62,7 +56,7 @@ from .party import (
     PartyAlsoKnownAs,
     PartyAssociation,
 )
-from .person import Person, PersonAlsoKnownAs, LifeEvent
+from .person import LifeEvent, Person, PersonAlsoKnownAs
 from .portrait import MemberPortrait
 from .posts import (
     GovernmentPost,

@@ -4,6 +4,7 @@ This is the baseline - we will need to provide additional data for active MPs.
 """
 from celery import shared_task
 
+from crawlers import caches
 from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints, mdp_client
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
@@ -20,12 +21,10 @@ from repository.resolution.constituency import (
 )
 from repository.resolution.members import normalize_name
 
-CACHE_NAME = "all-members"
-
 
 @shared_task
 @task_notification(label="Update all members basic info")
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def update_all_members_basic_info(**kwargs):
     update_all_mps_basic_info(**kwargs)
     update_all_lords_basic_info(**kwargs)
@@ -33,7 +32,7 @@ def update_all_members_basic_info(**kwargs):
 
 @shared_task
 @task_notification(label="Update all MPs basic info")
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def update_all_mps_basic_info(**kwargs):
     """
     Refresh basic data for all MPs, both active and historic.
@@ -50,7 +49,7 @@ def update_all_mps_basic_info(**kwargs):
 
 @shared_task
 @task_notification(label="Update all Lords basic info")
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def update_all_lords_basic_info(**kwargs):
     """
     Refresh basic data for all MPs, both active and historic.

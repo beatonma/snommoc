@@ -6,6 +6,7 @@ from typing import Optional
 
 import dateutil
 from dateutil.parser import ParserError
+from django.utils import timezone
 
 from util.time import year_only_date
 
@@ -54,7 +55,7 @@ def coerce_to_boolean(value, default=None) -> Optional[bool]:
 def coerce_to_date(value) -> Optional[datetime.date]:
     try:
         return dateutil.parser.parse(value).date()
-    except (AttributeError, TypeError, ParserError):
+    except (AttributeError, OverflowError, ParserError, TypeError, ValueError):
         pass
 
     if isinstance(value, dict):
@@ -71,4 +72,13 @@ def coerce_to_date(value) -> Optional[datetime.date]:
         except (TypeError, ValueError):
             pass
 
-    return None
+
+def coerce_to_datetime(value) -> Optional[datetime.datetime]:
+    try:
+        dt = dateutil.parser.parse(value)
+        if timezone.is_naive(dt):
+            return timezone.make_aware(dt, timezone.timezone.utc)
+        else:
+            return dt
+    except (AttributeError, OverflowError, ParserError, TypeError, ValueError):
+        pass

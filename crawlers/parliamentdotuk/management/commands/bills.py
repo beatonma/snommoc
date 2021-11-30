@@ -6,6 +6,7 @@ Update Bills with:
 import logging
 from typing import Optional
 
+from crawlers import caches
 from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.bills import _update_bill, update_bills
@@ -64,7 +65,7 @@ def _clear_bill_data():
         M.objects.all().delete()
 
 
-@json_cache(name="bills")
+@json_cache(caches.BILLS)
 def update_single_bill(parliamentdotuk: int, **kwargs) -> Optional[str]:
     log.info(f"Updating bill #{parliamentdotuk}")
     try:

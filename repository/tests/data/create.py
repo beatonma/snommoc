@@ -21,6 +21,10 @@ from repository.tests.data.sample_constituencies import (
     SAMPLE_CONSTITUENCIES,
     any_sample_constituency,
 )
+from repository.tests.data.sample_divisions import (
+    any_division_description,
+    any_division_title,
+)
 from repository.tests.data.sample_election import SAMPLE_ELECTIONS, any_sample_election
 from repository.tests.data.sample_members import any_sample_member
 from repository.tests.data.sample_parties import SAMPLE_PARTIES, any_sample_party
@@ -32,6 +36,18 @@ def _any_int(max: int = 100) -> int:
 
 def _any_id() -> int:
     return _any_int(10_000)
+
+
+def _any_date() -> datetime.date:
+    return datetime.date(
+        year=random.randint(1990, 2025),
+        month=random.randint(1, 12),
+        day=random.randint(1, 28),
+    )
+
+
+def _any_bool() -> bool:
+    return bool(random.getrandbits(1))
 
 
 def create_sample_person(
@@ -250,26 +266,56 @@ def create_sample_session(
 
 def create_sample_commons_division(
     parliamentdotuk: Optional[int] = None,
-    title: str = "Statutory Instruments: Motion for Approval. That the draft Infrastructure Planning (Radioactive Waste Geological Disposal Facilities) Order 2015, which was laid before this House on 12 January, be approved. Q acc agreed to.",
-    abstentions: int = 1,
-    ayes: int = 202,
-    noes: int = 225,
-    did_not_vote: int = 216,
-    non_eligible: int = 0,
-    errors: int = 0,
-    suspended_or_expelled: int = 0,
-    date: datetime.date = datetime.date.fromisoformat("2015-03-26"),
-    deferred_vote: bool = False,
+    title: str = None,
+    abstentions: int = None,
+    ayes: int = None,
+    noes: int = None,
+    did_not_vote: int = None,
+    non_eligible: int = None,
+    errors: int = None,
+    suspended_or_expelled: int = None,
+    date: datetime.date = None,
+    deferred_vote: bool = _any_bool(),
     session: Optional[ParliamentarySession] = None,
     uin: str = "CD:2015-03-26:188",
-    division_number: int = 188,
+    division_number: int = None,
 ) -> CommonsDivision:
     """Create a CommonsDivision with custom data."""
     if not parliamentdotuk:
         parliamentdotuk = _any_id()
 
+    if not title:
+        title = any_division_title()
+
     if not session:
         session = create_sample_session()
+
+    if not abstentions:
+        abstentions = _any_int(300)
+
+    if not ayes:
+        ayes = _any_int(350)
+
+    if not noes:
+        noes = _any_int(350)
+
+    if not did_not_vote:
+        did_not_vote = _any_int(300)
+
+    if not non_eligible:
+        non_eligible = _any_int(300)
+
+    if not errors:
+        errors = _any_int(30)
+
+    if not suspended_or_expelled:
+        suspended_or_expelled = _any_int(30)
+
+    if not date:
+        date = _any_date()
+
+    if not division_number:
+        division_number = _any_int(200)
 
     return CommonsDivision.objects.create(
         parliamentdotuk=parliamentdotuk,
@@ -291,33 +337,57 @@ def create_sample_commons_division(
 
 def create_sample_lords_division(
     parliamentdotuk: Optional[int] = None,
-    title: str = "Education (Student Fees, Awards and Support) (Amendment) Regulations 2017",
-    date: datetime.date = datetime.date.fromisoformat("2017-04-27"),
+    title: str = None,
+    date: datetime.date = None,
     ayes: int = 121,
     noes: int = 159,
-    description: str = "<p>Lord Clark of Windermere moved that this House regrets that the Education (Student Fees, Awards and Support) (Amendment) Regulations 2017, which pave the way for students of nursing, midwifery and allied health professionals to receive loans rather than bursaries, have already been seen to discourage degree applications by a quarter, at the same time as Brexit has already reduced European Union migrant nursing and midwifery registrations by over 90 per cent; and that these factors risk turning an increasing problem in the National Health Service into a chronic one that potentially puts at risk safe levels of staffing (SI 2017/114). The House divided:</p>",
-    whipped_vote: bool = True,
+    description: str = None,
+    whipped_vote: bool = None,
     division_number: int = 1,
-    session: Optional[ParliamentarySession] = None,
 ) -> LordsDivision:
     """Create a LordsDivision with custom data."""
-
     if not parliamentdotuk:
         parliamentdotuk = _any_id()
 
-    if not session:
-        session = create_sample_session()
+    if not title:
+        title = any_division_title()
+
+    if not date:
+        date = _any_date()
+
+    if not ayes:
+        ayes = _any_int(300)
+
+    if not noes:
+        noes = _any_int(300)
+
+    if not description:
+        description = any_division_description()
+
+    if whipped_vote is None:
+        whipped_vote = _any_bool()
+
+    if not division_number:
+        division_number = _any_int(50)
 
     return LordsDivision.objects.create(
         parliamentdotuk=parliamentdotuk,
         title=title,
         date=date,
-        ayes=ayes,
-        noes=noes,
-        description=description,
-        whipped_vote=whipped_vote,
-        session=session,
-        division_number=division_number,
+        authoritative_content_count=ayes,
+        authoritative_not_content_count=noes,
+        amendment_motion_notes=description,
+        is_whipped=whipped_vote,
+        number=division_number,
+        is_government_content=_any_bool(),
+        is_government_win=_any_bool(),
+        division_had_tellers=_any_bool(),
+        division_was_exclusively_remote=_any_bool(),
+        is_house=_any_bool(),
+        teller_content_count=_any_bool(),
+        teller_not_content_count=_any_bool(),
+        member_content_count=_any_int(500),
+        member_not_content_count=_any_int(500),
     )
 
 

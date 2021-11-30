@@ -2,7 +2,6 @@ from django.db import models
 
 from repository.models.houses import (
     HOUSE_OF_COMMONS,
-    HOUSE_OF_LORDS,
 )
 from repository.models.mixins import (
     BaseModel,
@@ -12,6 +11,8 @@ from repository.models.mixins import (
 
 
 class Division(ParliamentDotUkMixin, BaseModel):
+    """Deprecated"""
+
     title = models.CharField(max_length=512)
     date = models.DateField()
 
@@ -74,26 +75,9 @@ class CommonsDivision(Division):
         return HOUSE_OF_COMMONS
 
 
-class LordsDivision(Division):
-    description = models.TextField()
-    whipped_vote = models.BooleanField(default=False)
-
-    @property
-    def contents(self) -> int:
-        """Alias for ayes, as used in the House of Lords."""
-        return self.ayes
-
-    @property
-    def not_contents(self) -> int:
-        """Alias for noes, as used in the House of Lords."""
-        return self.noes
-
-    @property
-    def house(self):
-        return HOUSE_OF_LORDS
-
-
 class DivisionVote(PersonMixin, BaseModel):
+    """Deprecated"""
+
     aye = models.BooleanField(default=False)
     no = models.BooleanField(default=False)
     abstention = models.BooleanField(default=False)
@@ -120,17 +104,6 @@ class DivisionVote(PersonMixin, BaseModel):
 class CommonsDivisionVote(DivisionVote):
     division = models.ForeignKey(
         "CommonsDivision",
-        on_delete=models.CASCADE,
-        related_name="votes",
-    )
-
-    def __str__(self):
-        return f"{self.person} [{self.vote_type}]: {self.division}"
-
-
-class LordsDivisionVote(DivisionVote):
-    division = models.ForeignKey(
-        "LordsDivision",
         on_delete=models.CASCADE,
         related_name="votes",
     )

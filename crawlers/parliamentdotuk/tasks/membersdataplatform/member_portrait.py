@@ -2,18 +2,17 @@ import logging
 import re
 from typing import Optional
 
+from celery import shared_task
 from django.db.models import QuerySet
 
-from celery import shared_task
-
-from common.network.rate_limit import rate_limit
+from crawlers import caches
+from crawlers.network import HttpNoContent, get_json, json_cache
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
 from crawlers.wikipedia.tasks.member_portrait import update_wikipedia_member_portraits
 from notifications.models.task_notification import task_notification
 from repository.models import Person
 from repository.models.portrait import MemberPortrait
 from repository.resolution import get_active_members
-from crawlers.network import HttpNoContent, get_json, json_cache
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ def _update_official_member_portrait(member: Person, portrait_url: str):
         log.warning(f"Failed to update portrait data for member {member}")
 
 
-@json_cache(name="memberportraits")
+@json_cache(caches.MEMBER_PORTRAITS)
 def _update_official_member_portraits(members: QuerySet[Person], **kwargs):
     """Try to get portrait data from the official parliament.uk API for each given member."""
 
@@ -70,8 +69,6 @@ def _update_official_member_portraits(members: QuerySet[Person], **kwargs):
         url = _get_portrait_url(m.parliamentdotuk)
         if url is not None:
             _update_official_member_portrait(m, url)
-
-        rate_limit()
 
 
 @shared_task

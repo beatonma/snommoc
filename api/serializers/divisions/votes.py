@@ -6,6 +6,7 @@ from repository.models import (
     CommonsDivision,
     CommonsDivisionVote,
     LordsDivision,
+    LordsDivisionVote,
 )
 
 
@@ -61,7 +62,8 @@ class CommonsVotesSerializer(_BaseVoteSerializer):
 
 class LordsVotesSerializer(_BaseVoteSerializer):
     division = _InlineLordsDivisionSerializer()
+    vote_type = serializers.CharField(source="vote_type.name")
 
     class Meta:
-        model = CommonsDivisionVote
+        model = LordsDivisionVote
         fields = _BaseVoteSerializer._fields

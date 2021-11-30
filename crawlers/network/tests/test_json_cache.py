@@ -5,10 +5,9 @@ import shutil
 from django.conf import settings
 
 from basetest.testcase import LocalTestCase
-
 from crawlers.network.cache import (
-    JsonResponseCache,
     _url_to_filename,
+    create_json_cache,
     json_cache,
 )
 from util.time import get_now
@@ -19,7 +18,7 @@ class JsonCacheTest(LocalTestCase):
 
     cache_name = "json-cache-test"
 
-    def test__url_to_filename(self):
+    def test_url_to_filename(self):
         url = "https://data.parliament.uk/membersdataplatform/services/mnis/members/query/id=2451/FullBiog/"
         filename = _url_to_filename(url)
 
@@ -31,7 +30,7 @@ class JsonCacheTest(LocalTestCase):
         )
 
     def test_cache_is_correct(self):
-        cache = JsonResponseCache(self.cache_name, time_to_live_seconds=1000)
+        cache = create_json_cache(self.cache_name, ttl_seconds=1000)
 
         url = "https://parliament.uk/example/request/data.json"
         data = {"a": 3, "b": 19}
@@ -51,22 +50,45 @@ class JsonCacheTest(LocalTestCase):
         live_cache_timestamp = now + datetime.timedelta(minutes=55)
         expired_timestamp = now + datetime.timedelta(minutes=65)
 
-        ttl = datetime.timedelta(minutes=60).total_seconds()
+        ttl = int(datetime.timedelta(minutes=60).total_seconds())
 
-        cache = JsonResponseCache(self.cache_name, time_to_live_seconds=ttl, now=now)
+        cache = create_json_cache(self.cache_name, ttl_seconds=ttl, now=now)
         cache.remember(url, data)
         cache.finish(now=now)
 
-        live_cache = JsonResponseCache(
-            self.cache_name, time_to_live_seconds=ttl, now=live_cache_timestamp
+        live_cache = create_json_cache(
+            self.cache_name, ttl_seconds=ttl, now=live_cache_timestamp
         )
         self.assertDictEqual(live_cache.get_json(url), data)
 
         # Cache should be flushed as previous timestamp is more than [ttl] seconds in the past.
-        expired_cache = JsonResponseCache(
-            self.cache_name, time_to_live_seconds=ttl, now=expired_timestamp
+        expired_cache = create_json_cache(
+            self.cache_name, ttl_seconds=ttl, now=expired_timestamp
         )
         self.assertIsNone(expired_cache.get_json(url))
+
+    def test_cache_lifecycle_methods(self):
+        url = "https://parliament.uk/example/request/data.json"
+        data = {"a": 7, "b": 23}
+
+        cache = create_json_cache(self.cache_name)
+
+        # Creates file with name=hash of url
+        cache.remember(url, data)
+
+        files = os.listdir(cache.cache_dir)
+        self.assertEqual(len(files), 1)
+
+        # Creates cache.json file
+        cache.finish()
+
+        files = os.listdir(cache.cache_dir)
+        self.assertEqual(len(files), 2)
+
+        # Remove all files from this cache directory
+        cache._flush()
+        files = os.listdir(cache.cache_dir)
+        self.assertEqual(len(files), 0)
 
     def tearDown(self) -> None:
         cache_dir = os.path.join(settings.CRAWLER_CACHE_ROOT, self.cache_name)
@@ -103,13 +125,13 @@ class JsonCacheDecoratorTest(LocalTestCase):
     def test_json_cache_decorator__data_is_retrievable(self):
         self.decorated_child()
 
-        cache = JsonResponseCache("decorated-child")
+        cache = create_json_cache("decorated-child")
         self.assertDictEqual(cache.get_json(self.child_url), self.child_data)
 
     def test_json_cache_decorator_nested__should_share_root_cache(self):
         self.decorated_root()
 
-        cache = JsonResponseCache("decorated-root")
+        cache = create_json_cache("decorated-root")
         self.assertDictEqual(cache.get_json(self.root_url), self.root_data)
         self.assertDictEqual(cache.get_json(self.child_url), self.child_data)
 

@@ -1,5 +1,6 @@
 from celery import shared_task
 
+from crawlers import caches
 from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.contract import constituencies as contract
@@ -16,7 +17,7 @@ from repository.models import Constituency
 
 @shared_task
 @task_notification(label="Update constituencies")
-@json_cache(name="constituencies")
+@json_cache(caches.CONSTITUENCIES)
 def update_constituencies(follow_pagination=True, **kwargs) -> None:
     def build_constituency(json_data):
         check_required_fields(

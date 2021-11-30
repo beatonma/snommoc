@@ -7,10 +7,12 @@ more details data about them.
 import logging
 from typing import Callable, List, Optional, Tuple, Type
 
+from celery import shared_task
 from phonenumber_field.phonenumber import PhoneNumber
 from phonenumbers import NumberParseException
 
-from celery import shared_task
+from crawlers import caches
+from crawlers.network import json_cache
 from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
 from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
     AddressResponseData,
@@ -62,26 +64,23 @@ from repository.models import (
     WebAddress,
 )
 from repository.models.address import PHONE_NUMBER_REGION
-from repository.resolution.constituency import (
-    get_constituency_for_date,
-    get_current_constituency,
-)
 from repository.models.party import get_or_create_party
 from repository.models.posts import (
     BasePost,
     BasePostMember,
     get_current_post_for_person,
 )
-from crawlers.network import json_cache
-
-CACHE_NAME = "active-members"
+from repository.resolution.constituency import (
+    get_constituency_for_date,
+    get_current_constituency,
+)
 
 log = logging.getLogger(__name__)
 
 
 @shared_task
 @task_notification(label="Update active member details")
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def update_active_member_details(
     debug_max_updates: Optional[int] = None,
     **kwargs,
@@ -101,12 +100,12 @@ def update_active_member_details(
 
 @shared_task
 @task_notification(label="Update all member details")
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def update_all_member_details(**kwargs):
     _update_details_for_members(Person.objects.all(), **kwargs)
 
 
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def _update_details_for_members(members, **kwargs):
     for member in members:
         update_details_for_member(member.parliamentdotuk, **kwargs)
@@ -118,7 +117,7 @@ def _update_details_for_members(members, **kwargs):
 
 @shared_task
 @task_notification(label="Update details for single member")
-@json_cache(name=CACHE_NAME)
+@json_cache(caches.MEMBERS)
 def update_details_for_member(member_id: int, **kwargs):
     update_members(
         endpoints.member_biography(member_id),

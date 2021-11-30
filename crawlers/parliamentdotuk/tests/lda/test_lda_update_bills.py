@@ -7,7 +7,7 @@ from crawlers.parliamentdotuk.tasks.lda.bills import (
     _update_bill_stage,
     _update_sponsor,
 )
-from crawlers.parliamentdotuk.tests.data_lda_update_bills import (
+from crawlers.parliamentdotuk.tests.lda.data_lda_update_bills import (
     EXAMPLE_BILL,
     EXAMPLE_BILL_PUBLICATION,
     EXAMPLE_BILL_SPONSOR,

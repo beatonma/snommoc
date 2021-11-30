@@ -53,16 +53,7 @@ class TaskNotification(models.Model):
         self.save()
 
     def mark_as_complete(self):
-        if self.failed:
-            log.warning(
-                "TaskNotification.mark_as_complete called on task already marked as FAILED"
-            )
-            return
-
-        if self.complete:
-            log.warning(
-                "TaskNotification.mark_as_complete called on task already marked as complete"
-            )
+        if self.finished:
             return
 
         self.complete = True
@@ -74,6 +65,7 @@ class TaskNotification(models.Model):
             self.content = (
                 self.content or ""
             ) + f"\n{err}\n\n{traceback.format_exc(limit=20)}"
+            log.error(f"Task `{self.title} {self.pk}` failed: {err}")
 
         self.failed = True
         self.finished_at = get_now()

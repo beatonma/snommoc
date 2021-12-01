@@ -49,6 +49,15 @@ def foreach(
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
     Paging is handled automatically until no more items are returned, or max_items count is reached (if specified).
+
+    Endpoints may return a JSON list of items, or a JSON object with an 'items' child list.
+
+    Handled responses:
+        - [...]
+        - {
+            "items": [...],
+            ...
+          }
     """
     item_count = 0
 
@@ -58,7 +67,7 @@ def foreach(
         return f"Item #{index} of {endpoint_url}?{params}"
 
     while True:
-        items = get_json(
+        data = get_json(
             endpoint_url,
             params={
                 "skip": item_count,
@@ -67,9 +76,15 @@ def foreach(
             cache=cache,
         )
 
+        if isinstance(data, dict):
+            # Unwrap the items list.
+            items = data.get("items")
+        else:
+            items = data
+
         if not isinstance(items, list):
             raise TypeError(
-                f"openapi_client.foreach expects a response with a list of items, got {items}"
+                f"openapi_client.foreach expects a response with a list of items, got {data}"
             )
 
         if len(items) == 0:

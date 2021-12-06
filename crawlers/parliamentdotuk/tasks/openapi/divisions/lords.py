@@ -5,10 +5,8 @@ from celery import shared_task
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
-from crawlers.parliamentdotuk.tasks.openapi.schema import DivisionViewModel
-from crawlers.parliamentdotuk.tasks.util.coercion import (
-    coerce_to_date,
-    coerce_to_datetime,
+from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
+    DivisionViewModel,
 )
 from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models.lords_division import (
@@ -33,7 +31,7 @@ def update_lords_division(
         parliamentdotuk=data.divisionId,
         defaults={
             "title": data.title,
-            "date": coerce_to_date(data.date),
+            "date": data.date,
             "number": data.number,
             "notes": data.notes,
             "is_whipped": data.isWhipped,
@@ -49,8 +47,8 @@ def update_lords_division(
             "is_house": data.isHouse,
             "amendment_motion_notes": data.amendmentMotionNotes,
             "is_government_win": data.isGovernmentWin,
-            "remote_voting_start": coerce_to_datetime(data.remoteVotingStart),
-            "remote_voting_end": coerce_to_datetime(data.remoteVotingEnd),
+            "remote_voting_start": data.remoteVotingStart,
+            "remote_voting_end": data.remoteVotingEnd,
             "division_was_exclusively_remote": data.divisionWasExclusivelyRemote,
         },
     )

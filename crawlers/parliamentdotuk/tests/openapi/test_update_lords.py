@@ -2,7 +2,9 @@ import datetime
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.divisions.lords import update_lords_division
-from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import LORDS_DIVISION
+from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
+    LORDS_DIVISION_DATA,
+)
 from repository.models import Person
 from repository.models.lords_division import (
     DivisionVoteType,
@@ -39,7 +41,7 @@ class UpdateLordsDivisionsTests(LocalTestCase):
             parliamentdotuk=3799,
             name="Lord James of Blackheath",
         )
-        data = LORDS_DIVISION
+        data = LORDS_DIVISION_DATA
 
         update_lords_division(data)
 

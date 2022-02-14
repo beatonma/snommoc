@@ -16,13 +16,14 @@ def coerce_timezone(dt) -> datetime.datetime:
     """
     Convert a date or naive datetime to an aware datetime.
     """
-    if isinstance(dt, datetime.datetime) and timezone.is_aware(dt):
-        return dt
+    if isinstance(dt, datetime.datetime):
+        if timezone.is_aware(dt):
+            return dt
+        else:
+            return timezone.make_aware(dt)
 
     elif isinstance(dt, datetime.date):
-        dt = timezone.datetime(dt.year, dt.month, dt.day)
-
-    return timezone.make_aware(dt)
+        return timezone.make_aware(datetime.datetime(dt.year, dt.month, dt.day))
 
 
 def years_between(

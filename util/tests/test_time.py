@@ -1,13 +1,15 @@
-import datetime
-from datetime import date as d
+from datetime import date, date as d, datetime
 from typing import Optional
+
+from django.utils.timezone import utc
 
 from basetest.testcase import LocalTestCase
 from util import time as timeutil
+from util.time import coerce_timezone
 
 
 class TimeUtilTests(LocalTestCase):
-    """"""
+    """Tests for util.time functions."""
 
     def test_years_between(self):
         self.assertEqual(
@@ -115,3 +117,17 @@ class TimeUtilTests(LocalTestCase):
 
         _assert_not_in_range(d(2001, 4, 16), d(2003, 5, 17))
         _assert_not_in_range(d(2032, 1, 24), d(2078, 1, 12))
+
+    def test_coerce_timezone(self):
+        self.assertEqual(
+            coerce_timezone(date(2021, 12, 13)), datetime(2021, 12, 13, tzinfo=utc)
+        )
+
+        self.assertEqual(
+            coerce_timezone(datetime(2021, 11, 12)), datetime(2021, 11, 12, tzinfo=utc)
+        )
+
+        self.assertEqual(
+            coerce_timezone(datetime(2021, 6, 7, 8, 9, 10)),
+            datetime(2021, 6, 7, 8, 9, 10, tzinfo=utc),
+        )

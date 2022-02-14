@@ -9,9 +9,7 @@ from notifications.models import TaskNotification
 
 class ClientTestCase(NetworkTestCase):
     def test_client_foreach_with_list_response(self):
-        """
-        Test foreach when the endpoint returns an unwrapped list of items.
-        """
+        """Test foreach when the endpoint returns an unwrapped list of items."""
         items_processed = 0
         division_id = None
 
@@ -38,9 +36,7 @@ class ClientTestCase(NetworkTestCase):
         self.assertTrue(isinstance(division_id, int))
 
     def test_client_foreach_with_wrapped_response(self):
-        """
-        Test foreach when the endpoint returns a dictinary with an 'items' child list.
-        """
+        """Test foreach when the endpoint returns a dictionary with an 'items' child list."""
         items_processed = 0
         bill_id = None
 

@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import skipIf, skipUnless
 
 from django.db import OperationalError
@@ -7,6 +8,7 @@ from rest_framework import status
 
 from basetest.args import RUNTESTS_CLARGS
 from util.models.generics import BaseModelMixin, get_concrete_models
+from util.time import coerce_timezone
 
 
 class DirtyTestException(Exception):
@@ -56,6 +58,9 @@ class BaseTestCase(TestCase):
     def assertLengthEquals(self, collection, expected_length: int, msg=None):
         self.assertEqual(len(collection), expected_length, msg=msg)
 
+    def assertDateTimeEqual(self, actual: datetime, expected: datetime, msg=None):
+        self.assertEqual(actual, coerce_timezone(expected), msg=msg)
+
     def assertNoneCreated(self, model_class, msg=None):
         self.assertEqual(model_class.objects.all().count(), 0, msg=msg)
 
@@ -68,7 +73,8 @@ class BaseTestCase(TestCase):
 
         if len(first) != len(second):
             raise AssertionError(
-                f"assertContentsEqual failed: Lists have different lengths [{len(first)} != {len(second)}]"
+                "assertContentsEqual failed: Lists have different lengths"
+                f" [{len(first)} != {len(second)}]"
             )
 
         def appearances(item, lst) -> int:

@@ -1,5 +1,7 @@
 import datetime
 
+from django.utils import timezone
+
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.divisions.lords import update_lords_division
 from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
@@ -43,7 +45,7 @@ class UpdateLordsDivisionsTests(LocalTestCase):
         )
         data = LORDS_DIVISION_DATA
 
-        update_lords_division(data)
+        update_lords_division(data, notification=None)
 
     def test_division_is_created(self):
         self.assertEqual(LordsDivision.objects.count(), 1)
@@ -69,16 +71,21 @@ class UpdateLordsDivisionsTests(LocalTestCase):
         self.assertEqual(division.is_house, True)
         self.assertEqual(
             division.amendment_motion_notes,
-            "<p>Baroness Kramer moved amendment 6, in clause 29, page 22, line 20, at end to insert—<br />“(3A) An order under this section may not be made unless the Secretary of State has certified that dormant account money will be used to fund projects, or aspects of project, for which funds would be unlikely to be made available by a Government department.”<br />The House divided:</p>",
+            "<p>Baroness Kramer moved amendment 6, in clause 29, page 22, line 20, at"
+            " end to insert—<br />“(3A) An order under this section may not be made"
+            " unless the Secretary of State has certified that dormant account money"
+            " will be used to fund projects, or aspects of project, for which funds"
+            " would be unlikely to be made available by a Government department.”<br"
+            " />The House divided:</p>",
         )
         self.assertEqual(division.is_government_win, True)
-        self.assertEqual(
+        self.assertDateTimeEqual(
             division.remote_voting_start,
-            datetime.datetime(2021, 11, 16, 17, 49, 37, tzinfo=datetime.timezone.utc),
+            timezone.datetime(2021, 11, 16, 17, 49, 37),
         )
-        self.assertEqual(
+        self.assertDateTimeEqual(
             division.remote_voting_end,
-            datetime.datetime(2021, 11, 16, 17, 59, 37, tzinfo=datetime.timezone.utc),
+            timezone.datetime(2021, 11, 16, 17, 59, 37),
         )
         self.assertEqual(division.division_was_exclusively_remote, True)
 

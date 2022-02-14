@@ -10,7 +10,7 @@ from repository.models.mixins import (
 class ParliamentarySession(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     """A legislative session, usually lasting about a year."""
 
-    name = models.CharField(max_length=24)
+    name = models.CharField(max_length=24, null=True, blank=True)
 
     def __str__(self):
         return self.name

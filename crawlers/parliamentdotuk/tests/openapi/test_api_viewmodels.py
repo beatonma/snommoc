@@ -1,20 +1,23 @@
 from datetime import datetime
 
-from django.utils import timezone
-
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import Bill, BillSummary, House
+from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import (
+    Bill,
+    BillStage,
+    BillSummary,
+    House,
+)
 from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
     DivisionViewModel,
 )
-from crawlers.parliamentdotuk.tests.openapi.data_bill import BILL_DATA, BILL_SUMMARY_DATA
+from crawlers.parliamentdotuk.tests.openapi.data_bill import (
+    BILL_DATA,
+    BILL_STAGE_DATA,
+    BILL_SUMMARY_DATA,
+)
 from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
     LORDS_DIVISION_DATA,
 )
-
-
-def _utc_datetime(year: int, month: int, day: int, hour: int=0, minute: int=0, second: int=0) -> datetime:
-    return datetime(year, month, day, hour, minute, second, tzinfo=timezone.timezone.utc)
 
 
 class ApiViewmodelTestCase(LocalTestCase):
@@ -45,15 +48,37 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(stage.description, "Royal Assent")
         self.assertEqual(stage.house, House.Unassigned)
 
-        self.assertEqual(
-            sitting.date, _utc_datetime(2010, 4, 8)
-        )
+        self.assertDateTimeEqual(sitting.date, datetime(2010, 4, 8))
 
     def test_bill_viewmodels(self):
         bill = Bill(**BILL_DATA)
 
-        self.assertEqual(bill.longTitle, "A Bill To authorise the use of resources for the service of the years ending with 31 March 2010 and 31 March 2011 and to apply certain sums out of the Consolidated Fund to the service of the years ending with 31 March 2010 and 31 March 2011; and to appropriate the supply authorised in this Session of Parliament for the service of the years ending with 31 March 2010 and 31 March 2011.")
-        self.assertEqual(bill.summary, "<p>The Bill provides Parliamentary authority for funds requested by the Government. It is part of 'supply procedure', which is how Parliament grants the Government&rsquo;s requests for resources.</p><p>Two Consolidated Fund (Appropriation) Bills are passed each year, in March and July. They are sometimes referred to simply as &ldquo;Appropriation Bills&rdquo;. These, together with the Consolidated Fund Bill, provide authorisation from Parliament for the resources sought by the Government. Proceedings on the Bill are formal, ie there is no debate and the Bill goes through 'on the nod'.</p><p><strong>Key areas</strong></p><ul><li>authorises provision sought in the Spring Supplementary Estimates for 2010/11 and the Statement of Excesses for 2009/10</li><li>authorises the release of money from the Consolidated Fund, which is the Government&rsquo;s bank account</li><li>places limits on the purposes for which the money may be spent.</li></ul>")
+        self.assertEqual(
+            bill.longTitle,
+            "A Bill To authorise the use of resources for the service of the years"
+            " ending with 31 March 2010 and 31 March 2011 and to apply certain sums out"
+            " of the Consolidated Fund to the service of the years ending with 31 March"
+            " 2010 and 31 March 2011; and to appropriate the supply authorised in this"
+            " Session of Parliament for the service of the years ending with 31 March"
+            " 2010 and 31 March 2011.",
+        )
+        self.assertEqual(
+            bill.summary,
+            "<p>The Bill provides Parliamentary authority for funds requested by the"
+            " Government. It is part of 'supply procedure', which is how Parliament"
+            " grants the Government&rsquo;s requests for resources.</p><p>Two"
+            " Consolidated Fund (Appropriation) Bills are passed each year, in March"
+            " and July. They are sometimes referred to simply as &ldquo;Appropriation"
+            " Bills&rdquo;. These, together with the Consolidated Fund Bill, provide"
+            " authorisation from Parliament for the resources sought by the Government."
+            " Proceedings on the Bill are formal, ie there is no debate and the Bill"
+            " goes through 'on the nod'.</p><p><strong>Key"
+            " areas</strong></p><ul><li>authorises provision sought in the Spring"
+            " Supplementary Estimates for 2010/11 and the Statement of Excesses for"
+            " 2009/10</li><li>authorises the release of money from the Consolidated"
+            " Fund, which is the Government&rsquo;s bank account</li><li>places limits"
+            " on the purposes for which the money may be spent.</li></ul>",
+        )
 
         sponsors = bill.sponsors
 
@@ -68,17 +93,24 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(member.party, "Conservative")
         self.assertEqual(member.partyColor, "0000ff")
         self.assertEqual(member.house, House.Commons)
-        self.assertEqual(member.memberPhoto, "https://members-api.parliament.uk/api/Members/1414/Thumbnail")
-        self.assertEqual(member.memberPage, "https://members.parliament.uk/member/1414/contact")
+        self.assertEqual(
+            member.memberPhoto,
+            "https://members-api.parliament.uk/api/Members/1414/Thumbnail",
+        )
+        self.assertEqual(
+            member.memberPage, "https://members.parliament.uk/member/1414/contact"
+        )
         self.assertEqual(member.memberFrom, "Fareham")
-        
+
         self.assertEqual(org.name, "HM Treasury")
-        self.assertEqual(org.url, "https://www.gov.uk/government/organisations/hm-treasury")
+        self.assertEqual(
+            org.url, "https://www.gov.uk/government/organisations/hm-treasury"
+        )
 
         promoter = bill.promoters[0]
-        
+
         self.assertEqual(promoter.organisationName, "Sample promoter")
-        self.assertEqual(promoter.organisationUrl, "https://snommoc.org")
+        self.assertEqual(promoter.organisationUrl, "https://snommoc.org/promoter")
 
         self.assertIsNone(bill.petitioningPeriod)
         self.assertIsNone(bill.petitionInformation)
@@ -86,14 +118,14 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(bill.shortTitle, "Appropriation Act 2011")
         self.assertEqual(bill.currentHouse, House.Unassigned)
         self.assertEqual(bill.originatingHouse, House.Commons)
-        self.assertEqual(bill.lastUpdate, _utc_datetime(2012, 3, 28, 9, 58, 29))
+        self.assertDateTimeEqual(bill.lastUpdate, datetime(2012, 3, 28, 9, 58, 29))
         self.assertIsNone(bill.billWithdrawn)
         self.assertFalse(bill.isDefeated)
-        self.assertEqual(bill.billTypeId, 1)
+        self.assertEqual(bill.billTypeId, 4)
         self.assertEqual(bill.introducedSessionId, 24)
         self.assertEqual(bill.includedSessionIds, [24])
         self.assertTrue(bill.isAct)
-        
+
         stage = bill.currentStage
         self.assertEqual(stage.id, 4181)
         self.assertEqual(stage.stageId, 11)
@@ -101,17 +133,36 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(stage.description, "Royal Assent")
         self.assertEqual(stage.abbreviation, "RA")
         self.assertEqual(stage.house, House.Unassigned)
-        
+
         sitting = stage.stageSittings[0]
         self.assertEqual(sitting.id, 3957)
         self.assertEqual(sitting.stageId, 11)
         self.assertEqual(sitting.billStageId, 4181)
         self.assertEqual(sitting.billId, 836)
-        self.assertEqual(sitting.date, _utc_datetime(2011, 3, 16))
+        self.assertDateTimeEqual(sitting.date, datetime(2011, 3, 16))
 
         agent = bill.agent
-        self.assertEqual(agent.name, "Sample agent",)
-        self.assertEqual(agent.address, "Sample address",)
-        self.assertEqual(agent.phoneNo, "01234 567890",)
-        self.assertEqual(agent.email, "sample@snommoc.org",)
+        self.assertEqual(
+            agent.name,
+            "Sample agent",
+        )
+        self.assertEqual(
+            agent.address,
+            "Sample address",
+        )
+        self.assertEqual(
+            agent.phoneNo,
+            "01234 567890",
+        )
+        self.assertEqual(
+            agent.email,
+            "sample@snommoc.org",
+        )
         self.assertEqual(agent.website, "https://snommoc.org")
+
+    def test_billstage_viewmodels(self):
+        stage = BillStage(**BILL_STAGE_DATA)
+
+        self.assertEqual(stage.id, 42)
+        self.assertEqual(stage.name, "Consideration of Lords message")
+        self.assertEqual(stage.house, House.Commons)

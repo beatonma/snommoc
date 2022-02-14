@@ -1,6 +1,4 @@
-"""
-Viewmodels for parsing responses from Bill OpenAPI endpoints.
-"""
+"""Viewmodels for parsing responses from Bill OpenAPI endpoints."""
 
 import enum
 from dataclasses import dataclass
@@ -12,17 +10,61 @@ from crawlers.parliamentdotuk.tasks.util.coercion import coerce_to_datetime
 
 @enum.unique
 class House(enum.Enum):
+    """Definition from https://bills-api.parliament.uk/index.html"""
+
     All = enum.auto()
     Commons = enum.auto()
     Lords = enum.auto()
     Unassigned = enum.auto()
 
 
+@enum.unique
+class BillTypeCategory(enum.Enum):
+    """Definition from https://bills-api.parliament.uk/index.html"""
+
+    Public = enum.auto()
+    Private = enum.auto()
+    Hybrid = enum.auto()
+
+
+class BillType:
+    """Schema definition: BillType from https://bills-api.parliament.uk/index.html"""
+
+    id: int
+    category: BillTypeCategory
+    name: str
+    description: str
+
+    def __init__(
+        self,
+        id: int,
+        category: str,
+        name: str,
+        description: str,
+    ):
+        self.id = id
+        self.category = BillTypeCategory[category]
+        self.name = name
+        self.description = description
+
+
+class BillStage:
+    """Schema definition: BillStage from https://bills-api.parliament.uk/index.html"""
+
+    id: int
+    name: str
+    house: House
+
+    def __init__(self, id: int, name: str, house: str):
+        print(id, name, house)
+        self.id = id
+        self.name = name
+        self.house = House[house]
+
+
 @dataclass
 class BillStageSitting:
-    """
-    Schema definition: BillStageSitting from https://bills-api.parliament.uk/index.html
-    """
+    """Schema definition: BillStageSitting from https://bills-api.parliament.uk/index.html"""
 
     id: int
     stageId: int
@@ -46,8 +88,11 @@ class BillStageSitting:
 
 
 class StageSummary:
-    """
-    Schema definition: StageSummary from https://bills-api.parliament.uk/index.html
+    """Schema definition: StageSummary from https://bills-api.parliament.uk/index.html
+
+    :param id: Unique identifier for this StageSummary.
+    :param stageId: ID for related BillStageType.
+    :param sessionId: ID for related ParliamentarySession.
     """
 
     id: int
@@ -81,9 +126,7 @@ class StageSummary:
 
 
 class BillSummary:
-    """
-    Schema definition: BillSummary from https://bills-api.parliament.uk/index.html
-    """
+    """Schema definition: BillSummary from https://bills-api.parliament.uk/index.html"""
 
     billId: int
     shortTitle: str
@@ -104,7 +147,7 @@ class BillSummary:
         shortTitle: str,
         currentHouse: str,
         originatingHouse: str,
-        lastUpdate: datetime,
+        lastUpdate: str,
         billWithdrawn: Optional[datetime],
         isDefeated: bool,
         billTypeId: int,
@@ -129,6 +172,8 @@ class BillSummary:
 
 @dataclass
 class BillAgent:
+    """Schema definition: BillAgent from https://bills-api.parliament.uk/index.html"""
+
     name: Optional[str]
     address: Optional[str]
     phoneNo: Optional[str]
@@ -137,10 +182,7 @@ class BillAgent:
 
 
 class Member:
-
-    """
-    Schema definition: Member from https://bills-api.parliament.uk/index.html
-    """
+    """Schema definition: Member from https://bills-api.parliament.uk/index.html"""
 
     memberId: int
     name: Optional[str]
@@ -174,9 +216,7 @@ class Member:
 
 @dataclass
 class Organisation:
-    """
-    Schema definition: Organisation from https://bills-api.parliament.uk/index.html
-    """
+    """Schema definition: Organisation from https://bills-api.parliament.uk/index.html"""
 
     name: Optional[str]
     url: Optional[str]
@@ -184,18 +224,14 @@ class Organisation:
 
 @dataclass
 class Promoter:
-    """
-    Schema definition: Promoter from https://bills-api.parliament.uk/index.html
-    """
+    """Schema definition: Promoter from https://bills-api.parliament.uk/index.html"""
 
     organisationName: Optional[str]
     organisationUrl: Optional[str]
 
 
 class Sponsor:
-    """
-    Schema definition: Sponsor from https://bills-api.parliament.uk/index.html
-    """
+    """Schema definition: Sponsor from https://bills-api.parliament.uk/index.html"""
 
     member: Optional[Member]
     organisation: Optional[Organisation]
@@ -211,23 +247,10 @@ class Sponsor:
         self.organisation = Organisation(**organisation) if organisation else None
         self.sortOrder = sortOrder
 
-class Bill:
-    """
-    Schema definition: Bill from https://bills-api.parliament.uk/index.html
-    """
 
-    billId: int
-    shortTitle: Optional[str]
-    currentHouse: House
-    originatingHouse: House
-    lastUpdate: datetime
-    billWithdrawn: Optional[datetime]
-    isDefeated: bool
-    billTypeId: int
-    introducedSessionId: int
-    includedSessionIds: List[int]
-    isAct: bool
-    currentStage: StageSummary
+class Bill(BillSummary):
+    """Schema definition: Bill from https://bills-api.parliament.uk/index.html"""
+
     longTitle: Optional[str]
     summary: Optional[str]
     sponsors: List[Sponsor]
@@ -258,18 +281,20 @@ class Bill:
         petitionInformation: Optional[str],
         agent: dict,
     ):
-        self.billId = billId
-        self.shortTitle = shortTitle
-        self.currentHouse = House[currentHouse]
-        self.originatingHouse = House[originatingHouse]
-        self.lastUpdate = coerce_to_datetime(lastUpdate)
-        self.billWithdrawn = coerce_to_datetime(billWithdrawn)
-        self.isDefeated = isDefeated
-        self.billTypeId = billTypeId
-        self.introducedSessionId = introducedSessionId
-        self.includedSessionIds = includedSessionIds
-        self.isAct = isAct
-        self.currentStage = StageSummary(**currentStage) if currentStage else None
+        super().__init__(
+            billId=billId,
+            shortTitle=shortTitle,
+            currentHouse=currentHouse,
+            originatingHouse=originatingHouse,
+            lastUpdate=lastUpdate,
+            billWithdrawn=billWithdrawn,
+            isDefeated=isDefeated,
+            billTypeId=billTypeId,
+            introducedSessionId=introducedSessionId,
+            includedSessionIds=includedSessionIds,
+            isAct=isAct,
+            currentStage=currentStage,
+        )
         self.longTitle = longTitle
         self.summary = summary
         self.sponsors = [Sponsor(**x) for x in sponsors]

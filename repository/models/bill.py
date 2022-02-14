@@ -1,4 +1,5 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 from repository.models.mixins import (
     BaseModel,
@@ -6,135 +7,175 @@ from repository.models.mixins import (
 )
 
 
-class BillType(BaseModel):
-    name = models.CharField(max_length=128)
-    description = models.CharField(max_length=512)
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class BillSponsor(BaseModel):
-    name = models.CharField(
-        max_length=128,
-        null=True,
-        blank=True,
-        help_text="Raw name of the person if a Person instance cannot be found.",
-    )
-    person = models.ForeignKey(
-        "Person",
-        models.CASCADE,
-        null=True,
-        related_name="sponsored_bills",
-        related_query_name="sponsored_bill",
-    )
-    bill = models.ForeignKey(
-        "Bill",
-        on_delete=models.CASCADE,
-        related_name="sponsors",
-        related_query_name="sponsor",
-    )
-
-    class Meta:
-        unique_together = [
-            ["person", "bill"],
-            ["name", "bill"],
-        ]
-        ordering = ["name"]
-
-    def __str__(self):
-        return f"{self.name if self.name else self.person}: {self.bill}"
-
-
 class BillStageType(ParliamentDotUkMixin, BaseModel):
-    name = models.CharField(max_length=512)
+    """Definition of a type of bill stage"""
+
+    name = models.CharField(max_length=256)
+    house = models.ForeignKey("repository.House", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class BillStage(ParliamentDotUkMixin, BaseModel):
+    """Represents a stage of a specific Bill.
+
+    Based on StageSummary viewmodel from https://bills-api.parliament.uk/index.html"""
+
     bill = models.ForeignKey(
-        "Bill",
+        "repository.Bill",
         on_delete=models.CASCADE,
-        related_name="stages",
     )
 
-    session = models.ForeignKey(
-        "ParliamentarySession",
+    description = models.CharField(max_length=256, null=True, blank=True)
+    abbreviation = models.CharField(max_length=16, null=True, blank=True)
+
+    stage_type = models.ForeignKey(
+        "repository.BillStageType",
         on_delete=models.CASCADE,
         related_name="+",
     )
 
-    bill_stage_type = models.ForeignKey(
-        "BillStageType",
+    session = models.ForeignKey(
+        "repository.ParliamentarySession",
         on_delete=models.CASCADE,
-        blank=True,
-        null=True,
+        related_name="bill_stages",
     )
 
+    sort_order = models.PositiveSmallIntegerField()
+
     def __str__(self):
-        return f"{self.bill_stage_type}: {self.bill}"
+        return f"{self.description}: {self.bill}"
 
 
 class BillStageSitting(ParliamentDotUkMixin, BaseModel):
-    bill_stage = models.ForeignKey(
-        "BillStage",
+    stage = models.ForeignKey(
+        "repository.BillStage",
         on_delete=models.CASCADE,
         related_name="sittings",
     )
-    date = models.DateField(blank=True, null=True)
-    formal = models.BooleanField()
-    provisional = models.BooleanField()
+
+    date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.date}: {self.bill_stage}"
+        return f"{self.stage} [{self.date}]"
 
 
-class BillPublication(ParliamentDotUkMixin, BaseModel):
-    bill = models.ForeignKey(
-        "Bill",
+class BillTypeCategory(BaseModel):
+    name = models.CharField(max_length=32, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BillType(ParliamentDotUkMixin, BaseModel):
+    name = models.CharField(max_length=256)
+    description = models.TextField()
+    category = models.ForeignKey(
+        "repository.BillTypeCategory",
         on_delete=models.CASCADE,
-        related_name="publications",
-        related_query_name="publication",
+        related_name="+",
     )
-    title = models.CharField(max_length=512)
 
     def __str__(self):
-        return f"{self.parliamentdotuk}: {self.title}"
+        return self.name
+
+
+class BillAgent(BaseModel):
+    name = models.CharField(max_length=256)
+    address = models.TextField(null=True, blank=True)
+    phone_number = PhoneNumberField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BillSponsor(BaseModel):
+    bill = models.ForeignKey(
+        "repository.Bill",
+        on_delete=models.CASCADE,
+        related_name="sponsors",
+    )
+
+    member = models.ForeignKey(
+        "repository.Person",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="sponsored_bills",
+    )
+
+    organisation = models.ForeignKey(
+        "repository.Organisation",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="sponsored_bills",
+    )
+
+    sort_order = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return f"{self.member}|{self.organisation}: {self.bill}"
 
 
 class Bill(ParliamentDotUkMixin, BaseModel):
-    """A proposal for a new law, or a proposal to change an existing law that
-    is presented for debate before Parliament."""
+    short_title = models.CharField(max_length=512)
+    long_title = models.TextField(null=True, blank=True)
+    summary = models.TextField(null=True, blank=True)
 
-    title = models.CharField(max_length=512)
-    description = models.CharField(max_length=2048, null=True, blank=True)
-    act_name = models.CharField(max_length=512, null=True, blank=True)
-    label = models.CharField(max_length=512)
-    homepage = models.URLField()
-    date = models.DateField()
-
-    ballot_number = models.PositiveIntegerField(default=0)
-    bill_chapter = models.CharField(max_length=64, blank=True, null=True)
-
-    is_private = models.BooleanField(default=False)
-    is_money_bill = models.BooleanField(default=False)
-
-    public_involvement_allowed = models.BooleanField(default=False)
-
+    current_house = models.ForeignKey(
+        "repository.House",
+        on_delete=models.CASCADE,
+        related_name="bills_current",
+    )
+    originating_house = models.ForeignKey(
+        "repository.House",
+        on_delete=models.CASCADE,
+        related_name="bills_originated",
+    )
+    last_update = models.DateTimeField()
+    bill_withdrawn = models.DateTimeField(null=True, blank=True)
+    is_defeated = models.BooleanField()
+    is_act = models.BooleanField()
     bill_type = models.ForeignKey(
-        "BillType",
+        "repository.BillType",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
+    introduced_session = models.ForeignKey(
+        "repository.ParliamentarySession",
+        on_delete=models.CASCADE,
+        related_name="bills_introduced",
+    )
+    included_sessions = models.ManyToManyField(
+        "repository.ParliamentarySession",
+        related_name="bills",
+    )
+
+    current_stage = models.ForeignKey(
+        "repository.BillStage",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    petitioning_period = models.CharField(max_length=512, null=True, blank=True)
+    petitioning_information = models.TextField(null=True, blank=True)
+
+    agent = models.ForeignKey(
+        "repository.BillAgent",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
-    session = models.ForeignKey(
-        "ParliamentarySession",
-        on_delete=models.CASCADE,
-        null=True,
-        related_name="bills",
+    promoters = models.ManyToManyField(
+        "repository.Organisation",
+        related_name="promoted_bills",
     )
 
     def __str__(self):
-        return f"[{self.parliamentdotuk}] {self.title}"
+        return self.short_title

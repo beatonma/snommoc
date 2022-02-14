@@ -2,9 +2,8 @@ import datetime
 import random
 from typing import Optional
 
+from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
 from repository.models import (
-    Bill,
-    BillType,
     CommonsDivision,
     Constituency,
     ConstituencyCandidate,
@@ -12,10 +11,16 @@ from repository.models import (
     ConstituencyResultDetail,
     Election,
     ElectionType,
+    House,
     LordsDivision,
     ParliamentarySession,
     Party,
     Person,
+)
+from repository.models.bill import BillStageType, BillType, BillTypeCategory
+from repository.tests.data.sample_bills import (
+    any_sample_bill_stage_type,
+    any_sample_bill_type,
 )
 from repository.tests.data.sample_constituencies import (
     SAMPLE_CONSTITUENCIES,
@@ -335,6 +340,20 @@ def create_sample_commons_division(
     )
 
 
+def _coerce_house(house: Optional[str]) -> House:
+    """Convert a house name or viewmodels.House to a House instance, or return default "Commons" """
+    if house is None:
+        house, _ = House.objects.get_or_create(name=viewmodels.House.Commons.name)
+
+    elif isinstance(house, str):
+        house, _ = House.objects.get_or_create(name=house)
+
+    elif isinstance(house, viewmodels.House):
+        house, _ = House.objects.get_or_create(name=house.name)
+
+    return house
+
+
 def create_sample_lords_division(
     parliamentdotuk: Optional[int] = None,
     title: str = None,
@@ -391,60 +410,119 @@ def create_sample_lords_division(
     )
 
 
-def create_sample_bill_type(
-    name: str = "Ten Minute Rule",
-    description: str = "Private Members' Bill (under the Ten Minute Rule)",
-) -> BillType:
-    """Create a BillType with custom data."""
-    return BillType.objects.create(
-        name=name,
-        description=description,
-    )
+# def create_sample_bill_sitting() -> BillStageSitting:
+#     return BillStageSitting()
 
 
-def create_sample_bill(
-    title: str = "Defibrillators (Availability) Bill",
+def create_sample_bill_stage_type(
     parliamentdotuk: Optional[int] = None,
-    description: str = "A Bill to require the provision of defibrillators in education establishments, and in leisure, sports and certain other public facilities; to make provision for training persons to operate defibrillators; to make provision for funding the acquisition, installation, use and maintenance of defibrillators; and for connected purposes.",
-    act_name: str = "",
-    label: str = "Defibrillators (Availability)",
-    homepage: str = "http://services.parliament.uk/bills/2017-19/defibrillatorsavailability.html",
-    date: datetime.date = datetime.date.fromisoformat("2018-12-20"),
-    ballot_number: int = 0,
-    bill_chapter: str = "",
-    is_private: bool = False,
-    is_money_bill: bool = False,
-    public_involvement_allowed: bool = False,
-    bill_type: Optional[BillType] = None,
-    session: Optional[ParliamentarySession] = None,
-) -> Bill:
-    """Create a Bill with custom data."""
+    name: Optional[str] = None,
+    house: Optional[str] = None,
+) -> BillStageType:
+    sample = any_sample_bill_stage_type()
 
-    if not parliamentdotuk:
-        parliamentdotuk = _any_id()
+    if parliamentdotuk:
+        sample.id = parliamentdotuk
 
-    if not session:
-        session = create_sample_session()
+    if name:
+        sample.name = name
 
-    if not bill_type:
-        bill_type = create_sample_bill_type()
-
-    return Bill.objects.create(
-        title=title,
-        parliamentdotuk=parliamentdotuk,
-        description=description,
-        act_name=act_name,
-        label=label,
-        homepage=homepage,
-        date=date,
-        ballot_number=ballot_number,
-        bill_chapter=bill_chapter,
-        is_private=is_private,
-        is_money_bill=is_money_bill,
-        public_involvement_allowed=public_involvement_allowed,
-        bill_type=bill_type,
-        session=session,
+    return BillStageType.objects.update_or_create(
+        parliamentdotuk=sample.id,
+        defaults={
+            "name": sample.name,
+            "house": _coerce_house(house or sample.house),
+        },
     )
+
+
+def create_sample_bill_type(
+    parliamentdotuk: Optional[int] = None,
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    category: Optional[BillTypeCategory] = None,
+) -> BillType:
+    sample = any_sample_bill_type()
+
+    if parliamentdotuk:
+        sample.id = parliamentdotuk
+
+    if name:
+        sample.name = name
+
+    if description:
+        sample.description = description
+
+    if isinstance(category, str):
+        category, _ = BillTypeCategory.objects.get_or_create(name=category)
+
+    elif not category:
+        category, _ = BillTypeCategory.objects.get_or_create(name=sample.category)
+
+    return BillType.objects.update_or_create(
+        parliamentdotuk=sample.id,
+        defaults={
+            "name": sample.name,
+            "description": sample.description,
+            "category": category,
+        },
+    )
+
+
+# def create_sample_bill_type(
+#     name: str = "Ten Minute Rule",
+#     description: str = "Private Members' Bill (under the Ten Minute Rule)",
+# ) -> BillType:
+#     """Create a BillType with custom data."""
+#     return BillType.objects.create(
+#         name=name,
+#         description=description,
+#     )
+#
+#
+# def create_sample_bill(
+#     title: str = "Defibrillators (Availability) Bill",
+#     parliamentdotuk: Optional[int] = None,
+#     description: str = "A Bill to require the provision of defibrillators in education establishments, and in leisure, sports and certain other public facilities; to make provision for training persons to operate defibrillators; to make provision for funding the acquisition, installation, use and maintenance of defibrillators; and for connected purposes.",
+#     act_name: str = "",
+#     label: str = "Defibrillators (Availability)",
+#     homepage: str = "http://services.parliament.uk/bills/2017-19/defibrillatorsavailability.html",
+#     date: datetime.date = datetime.date.fromisoformat("2018-12-20"),
+#     ballot_number: int = 0,
+#     bill_chapter: str = "",
+#     is_private: bool = False,
+#     is_money_bill: bool = False,
+#     public_involvement_allowed: bool = False,
+#     bill_type: Optional[BillType] = None,
+#     session: Optional[ParliamentarySession] = None,
+# ) -> Bill:
+#     """Create a Bill with custom data."""
+#
+#     if not parliamentdotuk:
+#         parliamentdotuk = _any_id()
+#
+#     if not session:
+#         session = create_sample_session()
+#
+#     if not bill_type:
+#         bill_type = create_sample_bill_type()
+#
+#     return Bill.objects.create(
+#         title=title,
+#         parliamentdotuk=parliamentdotuk,
+#         description=description,
+#         act_name=act_name,
+#         label=label,
+#         homepage=homepage,
+#         date=date,
+#         ballot_number=ballot_number,
+#         bill_chapter=bill_chapter,
+#         is_private=is_private,
+#         is_money_bill=is_money_bill,
+#         public_involvement_allowed=public_involvement_allowed,
+#         bill_type=bill_type,
+#         session=session,
+#     )
 
 
 def create_sample_constituency_candidate(

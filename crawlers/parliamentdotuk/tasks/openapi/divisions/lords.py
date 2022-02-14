@@ -19,7 +19,7 @@ from repository.resolution.members import get_member
 
 def update_lords_division(
     data_dict: dict,
-    notification: Optional[TaskNotification] = None,
+    notification: Optional[TaskNotification],
 ) -> None:
     data = DivisionViewModel(**data_dict)
 
@@ -97,8 +97,8 @@ def fetch_and_update_lords_division(
 @task_notification(label="Update Lords divisions")
 @json_cache(caches.LORDS_DIVISIONS)
 def update_lords_divisions(
-    cache: Optional[JsonResponseCache] = None,
-    notification: Optional[TaskNotification] = None,
+    cache: Optional[JsonResponseCache],
+    notification: Optional[TaskNotification],
     **kwargs,
 ) -> None:
     openapi_client.foreach(

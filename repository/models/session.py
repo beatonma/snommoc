@@ -13,4 +13,7 @@ class ParliamentarySession(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     name = models.CharField(max_length=24, null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        else:
+            return f"{self.start} - {self.end}"

@@ -2,7 +2,6 @@ import datetime
 import random
 from typing import Optional
 
-from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
 from repository.models import (
     CommonsDivision,
     Constituency,
@@ -343,13 +342,13 @@ def create_sample_commons_division(
 def _coerce_house(house: Optional[str]) -> House:
     """Convert a house name or viewmodels.House to a House instance, or return default "Commons" """
     if house is None:
-        house, _ = House.objects.get_or_create(name=viewmodels.House.Commons.name)
+        house, _ = House.objects.get_or_create(name="Commons")
 
     elif isinstance(house, str):
         house, _ = House.objects.get_or_create(name=house)
 
-    elif isinstance(house, viewmodels.House):
-        house, _ = House.objects.get_or_create(name=house.name)
+    else:
+        raise ValueError(f"_coerce_house got unexpected argument '{house}")
 
     return house
 

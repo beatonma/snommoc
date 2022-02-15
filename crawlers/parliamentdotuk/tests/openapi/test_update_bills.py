@@ -1,6 +1,7 @@
 import datetime
 
 from basetest.testcase import LocalTestCase
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import _update_bill_stage
 from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
     _update_bill_stage_type,
 )
@@ -11,6 +12,7 @@ from crawlers.parliamentdotuk.tasks.openapi.bills.update import (
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_DATA,
     BILL_STAGE_DATA,
+    BILL_STAGE_TYPE_DATA,
     BILL_TYPE_DATA,
 )
 from notifications.models import TaskNotification
@@ -45,7 +47,7 @@ class BillUpdateTests(LocalTestCase):
         )
 
     def test_update_bill_stage_type(self):
-        _update_bill_stage_type(BILL_STAGE_DATA, notification=None)
+        _update_bill_stage_type(BILL_STAGE_TYPE_DATA, notification=None)
 
         stage = BillStageType.objects.get(parliamentdotuk=42)
         self.assertEqual(stage.name, "Consideration of Lords message")
@@ -70,13 +72,13 @@ class BillUpdateTests(LocalTestCase):
             bill.last_update,
             datetime.datetime(2012, 3, 28, 9, 58, 29),
         )
-        self.assertIsNone(bill.bill_withdrawn)
+        self.assertIsNone(bill.date_withdrawn)
         self.assertFalse(bill.is_defeated)
         self.assertTrue(bill.is_act)
 
         self.assertEqual(bill.bill_type.pk, 4)
-        self.assertEqual(bill.introduced_session_id, 24)
-        self.assertEqual(bill.included_sessions.first().pk, 24)
+        self.assertEqual(bill.session_introduced_id, 24)
+        self.assertEqual(bill.sessions.first().pk, 24)
 
         sponsors = bill.sponsors.all()
         self.assertLengthEquals(sponsors, 2)
@@ -94,6 +96,26 @@ class BillUpdateTests(LocalTestCase):
         self.assertEqual(agent.phone_number, "01234 567890")
         self.assertEqual(agent.email, "sample@snommoc.org")
         self.assertEqual(agent.website, "https://snommoc.org")
+
+    def test_update_bill_stages(self):
+        create_sample_session(parliamentdotuk=24, name="Sample session")
+        create_sample_bill_stage_type(parliamentdotuk=6)
+
+        _update_bill_stage(BILL_STAGE_DATA, None, {"bill_id": 836})
+
+        stage = BillStage.objects.first()
+        self.assertEqual(stage.pk, 4116)
+        self.assertEqual(stage.bill_id, 836)
+        self.assertEqual(stage.description, "1st reading")
+        self.assertEqual(stage.abbreviation, "1R")
+        self.assertEqual(stage.house.name, "Commons")
+        self.assertEqual(stage.stage_type_id, 6)
+        self.assertEqual(stage.session_id, 24)
+        self.assertEqual(stage.sort_order, 1)
+
+        sitting = stage.sittings.first()
+        self.assertEqual(sitting.pk, 3879)
+        self.assertDateTimeEqual(sitting.date, datetime.datetime(2011, 3, 2, 0, 0, 0))
 
     def tearDown(self) -> None:
         self.delete_instances_of(

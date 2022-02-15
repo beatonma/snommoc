@@ -3,7 +3,7 @@ from datetime import datetime
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import (
     Bill,
-    BillStage,
+    BillStageType,
     BillSummary,
     House,
 )
@@ -12,7 +12,7 @@ from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
 )
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_DATA,
-    BILL_STAGE_DATA,
+    BILL_STAGE_TYPE_DATA,
     BILL_SUMMARY_DATA,
 )
 from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
@@ -161,7 +161,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(agent.website, "https://snommoc.org")
 
     def test_billstage_viewmodels(self):
-        stage = BillStage(**BILL_STAGE_DATA)
+        stage = BillStageType(**BILL_STAGE_TYPE_DATA)
 
         self.assertEqual(stage.id, 42)
         self.assertEqual(stage.name, "Consideration of Lords message")

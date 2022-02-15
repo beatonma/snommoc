@@ -25,10 +25,17 @@ class BillStage(ParliamentDotUkMixin, BaseModel):
     bill = models.ForeignKey(
         "repository.Bill",
         on_delete=models.CASCADE,
+        related_name="stages",
     )
 
     description = models.CharField(max_length=256, null=True, blank=True)
     abbreviation = models.CharField(max_length=16, null=True, blank=True)
+
+    house = models.ForeignKey(
+        "repository.House",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
 
     stage_type = models.ForeignKey(
         "repository.BillStageType",
@@ -124,7 +131,9 @@ class BillSponsor(BaseModel):
 class Bill(ParliamentDotUkMixin, BaseModel):
     short_title = models.CharField(max_length=512)
     long_title = models.TextField(null=True, blank=True)
-    summary = models.TextField(null=True, blank=True)
+    summary = models.TextField(
+        null=True, blank=True, help_text="HTML-formatted description"
+    )
 
     current_house = models.ForeignKey(
         "repository.House",
@@ -137,7 +146,7 @@ class Bill(ParliamentDotUkMixin, BaseModel):
         related_name="bills_originated",
     )
     last_update = models.DateTimeField()
-    bill_withdrawn = models.DateTimeField(null=True, blank=True)
+    date_withdrawn = models.DateTimeField(null=True, blank=True)
     is_defeated = models.BooleanField()
     is_act = models.BooleanField()
     bill_type = models.ForeignKey(
@@ -145,12 +154,12 @@ class Bill(ParliamentDotUkMixin, BaseModel):
         on_delete=models.CASCADE,
         related_name="+",
     )
-    introduced_session = models.ForeignKey(
+    session_introduced = models.ForeignKey(
         "repository.ParliamentarySession",
         on_delete=models.CASCADE,
         related_name="bills_introduced",
     )
-    included_sessions = models.ManyToManyField(
+    sessions = models.ManyToManyField(
         "repository.ParliamentarySession",
         related_name="bills",
     )

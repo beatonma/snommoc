@@ -13,7 +13,7 @@ def _update_bill_stage_type(
     notification: Optional[TaskNotification],
 ) -> None:
     print(data)
-    stage = viewmodels.BillStage(**data)
+    stage = viewmodels.BillStageType(**data)
     house, _ = House.objects.get_or_create(name=stage.house.name)
 
     BillStageType.objects.update_or_create(

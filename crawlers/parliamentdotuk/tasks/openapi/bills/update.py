@@ -33,12 +33,15 @@ def _get_agent(api_bill: viewmodels.Bill) -> Optional[BillAgent]:
 def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
     stage = api_bill.currentStage
     stage_type = BillStageType.objects.get(parliamentdotuk=stage.stageId)
+    house, _ = House.objects.get_or_create(name=stage.house.name)
+
     current_stage, _ = BillStage.objects.update_or_create(
         parliamentdotuk=stage.id,
         defaults={
             "bill": db_bill,
             "description": stage.description,
             "abbreviation": stage.abbreviation,
+            "house": house,
             "session_id": stage.sessionId,
             "sort_order": stage.sortOrder,
             "stage_type": stage_type,
@@ -88,7 +91,7 @@ def _update_bill(data: dict, notification: Optional[TaskNotification]) -> None:
         name=api_bill.originatingHouse.name
     )
     bill_type, _ = BillType.objects.get_or_create(parliamentdotuk=api_bill.billTypeId)
-    introduced_session, _ = ParliamentarySession.objects.get_or_create(
+    session_introduced, _ = ParliamentarySession.objects.get_or_create(
         parliamentdotuk=api_bill.introducedSessionId
     )
 
@@ -101,18 +104,18 @@ def _update_bill(data: dict, notification: Optional[TaskNotification]) -> None:
             "current_house": current_house,
             "originating_house": originating_house,
             "last_update": api_bill.lastUpdate,
-            "bill_withdrawn": api_bill.billWithdrawn,
+            "date_withdrawn": api_bill.billWithdrawn,
             "is_defeated": api_bill.isDefeated,
             "is_act": api_bill.isAct,
             "bill_type": bill_type,
-            "introduced_session": introduced_session,
+            "session_introduced": session_introduced,
         },
     )
 
     included_sessions = ParliamentarySession.objects.filter(
         parliamentdotuk__in=api_bill.includedSessionIds
     )
-    db_bill.included_sessions.set(included_sessions)
+    db_bill.sessions.set(included_sessions)
 
     db_bill.current_stage = _get_current_stage(api_bill, db_bill)
     db_bill.agent = _get_agent(api_bill)

@@ -11,17 +11,22 @@ def _log_data(endpoint_url, **kwargs):
 
 def _apply_item_func(
     item: dict,
-    item_func: Callable[[Dict, Optional[TaskNotification]], None],
+    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     report: Callable[[], str],
+    func_kwargs: Optional[dict],
 ) -> bool:
     """
     :param report: A function that describes the item for useful error logging.
     :return: True if the caller should continue its task, False if the caller should halt the task.
              HttpError will log a warning but allow the caller to continue.
     """
+
     try:
-        item_func(item, notification)
+        if func_kwargs is None:
+            item_func(item, notification)
+        else:
+            item_func(item, notification, func_kwargs)
         return True
 
     except HttpError as e:
@@ -40,11 +45,12 @@ def _apply_item_func(
 
 def foreach(
     endpoint_url: str,
-    item_func: Callable[[Dict, Optional[TaskNotification]], None],
+    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     cache: Optional[JsonResponseCache],
     items_per_page: int = 25,
     max_items: Optional[int] = None,
+    func_kwargs: Optional[dict] = None,
 ):
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
@@ -84,7 +90,8 @@ def foreach(
 
         if not isinstance(items, list):
             raise TypeError(
-                f"openapi_client.foreach expects a response with a list of items, got {data}"
+                "openapi_client.foreach expects a response with a list of items, got"
+                f" {data}"
             )
 
         if len(items) == 0:
@@ -96,6 +103,7 @@ def foreach(
                 item_func,
                 notification,
                 lambda: _item_notification_info(index),
+                func_kwargs,
             )
 
             item_count = item_count + 1
@@ -108,9 +116,10 @@ def foreach(
 
 def get(
     endpoint_url: str,
-    item_func: Callable[[Dict, Optional[TaskNotification]], None],
+    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     cache: Optional[JsonResponseCache],
+    func_kwargs: Optional[dict] = None,
 ):
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.
@@ -130,4 +139,5 @@ def get(
         item_func,
         notification,
         lambda: endpoint_url,
+        func_kwargs,
     )

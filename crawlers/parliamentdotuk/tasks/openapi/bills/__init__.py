@@ -4,6 +4,9 @@ from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import (
+    fetch_and_update_bill_stages,
+)
 from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
     update_bill_stage_types,
 )
@@ -26,6 +29,8 @@ def fetch_and_update_bill(
         notification=notification,
         cache=cache,
     )
+
+    fetch_and_update_bill_stages(parliamentdotuk, cache, notification)
 
 
 @json_cache(caches.BILLS)

@@ -139,11 +139,31 @@ BILL_SUMMARY_DATA = {
     },
 }
 
-BILL_STAGE_DATA = {
+BILL_STAGE_TYPE_DATA = {
     "id": 42,
     "name": "Consideration of Lords message",
     "house": "Commons",
 }
+
+BILL_STAGE_DATA = {
+    "id": 4116,
+    "stageId": 6,
+    "sessionId": 24,
+    "description": "1st reading",
+    "abbreviation": "1R",
+    "house": "Commons",
+    "stageSittings": [
+        {
+            "id": 3879,
+            "stageId": 6,
+            "billStageId": 4116,
+            "billId": 836,
+            "date": "2011-03-02T00:00:00",
+        }
+    ],
+    "sortOrder": 1,
+}
+
 
 BILL_TYPE_DATA = {
     "id": 4,

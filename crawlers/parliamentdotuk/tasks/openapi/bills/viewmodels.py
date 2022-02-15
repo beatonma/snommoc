@@ -48,7 +48,7 @@ class BillType:
         self.description = description
 
 
-class BillStage:
+class BillStageType:
     """Schema definition: BillStage from https://bills-api.parliament.uk/index.html"""
 
     id: int

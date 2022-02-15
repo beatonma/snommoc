@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("repository", "0018_person_current_post"),
+        ("repository", "0001_squashed_0033_auto_20210902_1733"),
         ("surface", "0001_initial"),
     ]
 

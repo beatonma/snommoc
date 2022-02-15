@@ -9,42 +9,6 @@ import util.time
 
 class Migration(migrations.Migration):
 
-    replaces = [
-        ("repository", "0001_initial"),
-        ("repository", "0002_auto_20191110_1804"),
-        ("repository", "0003_auto_20191114_2151"),
-        ("repository", "0004_auto_20200109_2114"),
-        ("repository", "0005_auto_20200111_2040"),
-        ("repository", "0006_auto_20200112_1757"),
-        ("repository", "0007_auto_20200112_1816"),
-        ("repository", "0008_auto_20200113_2124"),
-        ("repository", "0009_auto_20200113_2132"),
-        ("repository", "0010_auto_20200114_1957"),
-        ("repository", "0011_auto_20200114_2034"),
-        ("repository", "0012_auto_20200119_2157"),
-        ("repository", "0013_auto_20200303_1516"),
-        ("repository", "0014_auto_20200316_2026"),
-        ("repository", "0015_auto_20200318_1249"),
-        ("repository", "0016_auto_20200318_1617"),
-        ("repository", "0017_memberportrait"),
-        ("repository", "0018_person_current_post"),
-        ("repository", "0019_auto_20200423_1919"),
-        ("repository", "0020_constituencyalsoknownas"),
-        ("repository", "0021_auto_20200511_1324"),
-        ("repository", "0022_auto_20200511_1347"),
-        ("repository", "0023_auto_20200511_1527"),
-        ("repository", "0024_auto_20200511_1536"),
-        ("repository", "0025_auto_20200513_1638"),
-        ("repository", "0026_auto_20200820_1823"),
-        ("repository", "0027_auto_20210419_1343"),
-        ("repository", "0028_auto_20210428_1326"),
-        ("repository", "0029_auto_20210429_1550"),
-        ("repository", "0030_alter_declaredinterest_description"),
-        ("repository", "0031_auto_20210505_1928"),
-        ("repository", "0032_auto_20210510_1855"),
-        ("repository", "0033_auto_20210902_1733"),
-    ]
-
     initial = True
 
     dependencies = []
@@ -66,7 +30,10 @@ class Migration(migrations.Migration):
                     "wikipedia",
                     models.CharField(
                         blank=True,
-                        help_text="Path section of a wikipedia url (e.g. 'John_Baron_(politician)')",
+                        help_text=(
+                            "Path section of a wikipedia url (e.g."
+                            " 'John_Baron_(politician)')"
+                        ),
                         max_length=128,
                         null=True,
                     ),
@@ -139,7 +106,9 @@ class Migration(migrations.Migration):
                 (
                     "active",
                     models.BooleanField(
-                        help_text="Whether this person currently has a seat in parliament."
+                        help_text=(
+                            "Whether this person currently has a seat in parliament."
+                        )
                     ),
                 ),
             ],
@@ -808,7 +777,10 @@ class Migration(migrations.Migration):
                 (
                     "description",
                     models.CharField(
-                        help_text="What kind of address is this? e.g Parliamentary, Constituency...",
+                        help_text=(
+                            "What kind of address is this? e.g Parliamentary,"
+                            " Constituency..."
+                        ),
                         max_length=32,
                     ),
                 ),
@@ -918,7 +890,10 @@ class Migration(migrations.Migration):
                 (
                     "description",
                     models.CharField(
-                        help_text="What kind of address is this? e.g Twitter, personal site...",
+                        help_text=(
+                            "What kind of address is this? e.g Twitter, personal"
+                            " site..."
+                        ),
                         max_length=32,
                     ),
                 ),
@@ -984,7 +959,10 @@ class Migration(migrations.Migration):
             name="party",
             field=models.ForeignKey(
                 blank=True,
-                help_text="Current party membership. Historic memberships can be retrieved via PartyAssociation model.",
+                help_text=(
+                    "Current party membership. Historic memberships can be retrieved"
+                    " via PartyAssociation model."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="repository.party",
@@ -1374,7 +1352,9 @@ class Migration(migrations.Migration):
             model_name="physicaladdress",
             name="description",
             field=models.CharField(
-                help_text="What kind of address is this? e.g Parliamentary, Constituency...",
+                help_text=(
+                    "What kind of address is this? e.g Parliamentary, Constituency..."
+                ),
                 max_length=128,
             ),
         ),
@@ -1533,7 +1513,10 @@ class Migration(migrations.Migration):
                     "deferred_vote",
                     models.BooleanField(
                         default=False,
-                        help_text="A deferred vote is one that is not held immediately at the end of the debate, but at a later 'convenient' time",
+                        help_text=(
+                            "A deferred vote is one that is not held immediately at the"
+                            " end of the debate, but at a later 'convenient' time"
+                        ),
                     ),
                 ),
                 (
@@ -1552,13 +1535,18 @@ class Migration(migrations.Migration):
                 (
                     "non_eligible",
                     models.PositiveSmallIntegerField(
-                        help_text="How many members were ineligible to vote in this division"
+                        help_text=(
+                            "How many members were ineligible to vote in this division"
+                        )
                     ),
                 ),
                 (
                     "suspended_or_expelled",
                     models.PositiveSmallIntegerField(
-                        help_text="How many members were unable to vote due to suspension or expulsion"
+                        help_text=(
+                            "How many members were unable to vote due to suspension or"
+                            " expulsion"
+                        )
                     ),
                 ),
             ],
@@ -1677,7 +1665,9 @@ class Migration(migrations.Migration):
             name="wikipedia",
             field=models.CharField(
                 blank=True,
-                help_text="Path section of a wikipedia url (e.g. 'John_Baron_(politician)')",
+                help_text=(
+                    "Path section of a wikipedia url (e.g. 'John_Baron_(politician)')"
+                ),
                 max_length=128,
                 null=True,
             ),
@@ -1972,7 +1962,10 @@ class Migration(migrations.Migration):
                     "name",
                     models.CharField(
                         blank=True,
-                        help_text="Raw name of the person if a Person instance cannot be found.",
+                        help_text=(
+                            "Raw name of the person if a Person instance cannot be"
+                            " found."
+                        ),
                         max_length=128,
                         null=True,
                     ),
@@ -2019,7 +2012,10 @@ class Migration(migrations.Migration):
                 (
                     "alias",
                     models.OneToOneField(
-                        help_text="An alternative instance, probably with a differently formatted name",
+                        help_text=(
+                            "An alternative instance, probably with a differently"
+                            " formatted name"
+                        ),
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="alias",
                         to="repository.party",
@@ -2440,7 +2436,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="The source of this person's lordship, if applicable (e.g. hereditary, bishop, peerage, etc)",
+                help_text=(
+                    "The source of this person's lordship, if applicable (e.g."
+                    " hereditary, bishop, peerage, etc)"
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="repository.lordstype",

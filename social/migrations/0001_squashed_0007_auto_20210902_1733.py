@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
-        ("repository", "0014_auto_20200316_2026"),
+        ("repository", "0001_squashed_0033_auto_20210902_1733"),
     ]
 
     operations = [
@@ -266,7 +266,10 @@ class Migration(migrations.Migration):
                 unique=True,
                 validators=[
                     django.core.validators.RegexValidator(
-                        message="Must start and end with alphanumerics. Otherwise also allow dash, underscore, dot. Minimum 4 characters.",
+                        message=(
+                            "Must start and end with alphanumerics. Otherwise also"
+                            " allow dash, underscore, dot. Minimum 4 characters."
+                        ),
                         regex="^[0-9a-zA-Z][0-9a-zA-Z-_.]{2,}[0-9a-zA-Z]$",
                     )
                 ],

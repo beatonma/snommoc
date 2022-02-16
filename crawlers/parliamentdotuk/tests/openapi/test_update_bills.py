@@ -1,6 +1,9 @@
-import datetime
+from datetime import datetime
 
 from basetest.testcase import LocalTestCase
+from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
+    _update_bill_publication,
+)
 from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import _update_bill_stage
 from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
     _update_bill_stage_type,
@@ -11,15 +14,19 @@ from crawlers.parliamentdotuk.tasks.openapi.bills.update import (
 )
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_DATA,
+    BILL_PUBLICATION_DATA,
     BILL_STAGE_DATA,
     BILL_STAGE_TYPE_DATA,
     BILL_TYPE_DATA,
 )
 from notifications.models import TaskNotification
-from repository.models import Organisation, ParliamentarySession
+from repository.models import House, Organisation, ParliamentarySession
 from repository.models.bill import (
     Bill,
     BillAgent,
+    BillPublication,
+    BillPublicationLink,
+    BillPublicationType,
     BillSponsor,
     BillStage,
     BillStageSitting,
@@ -28,6 +35,7 @@ from repository.models.bill import (
     BillTypeCategory,
 )
 from repository.tests.data.create import (
+    create_sample_bill,
     create_sample_bill_stage_type,
     create_sample_bill_type,
     create_sample_person,
@@ -70,7 +78,7 @@ class BillUpdateTests(LocalTestCase):
         self.assertEqual(bill.originating_house.name, "Commons")
         self.assertDateTimeEqual(
             bill.last_update,
-            datetime.datetime(2012, 3, 28, 9, 58, 29),
+            datetime(2012, 3, 28, 9, 58, 29),
         )
         self.assertIsNone(bill.date_withdrawn)
         self.assertFalse(bill.is_defeated)
@@ -115,18 +123,46 @@ class BillUpdateTests(LocalTestCase):
 
         sitting = stage.sittings.first()
         self.assertEqual(sitting.pk, 3879)
-        self.assertDateTimeEqual(sitting.date, datetime.datetime(2011, 3, 2, 0, 0, 0))
+        self.assertDateTimeEqual(sitting.date, datetime(2011, 3, 2, 0, 0, 0))
+
+    def test_update_bill_publication(self):
+        create_sample_bill(parliamentdotuk=723)
+
+        _update_bill_publication(
+            BILL_PUBLICATION_DATA, notification=None, func_kwargs={"bill_id": 723}
+        )
+
+        pub = BillPublication.objects.first()
+        self.assertEqual(pub.house.name, "Commons")
+        self.assertEqual(pub.parliamentdotuk, 2716)
+        self.assertTrue(pub.title.startswith("Public Administration "))
+        self.assertDateTimeEqual(pub.display_date, datetime(2008, 6, 4, 0, 0, 0))
+
+        pub_type = pub.publication_type
+        self.assertEqual(pub_type.parliamentdotuk, 9)
+        self.assertEqual(pub_type.name, "Select Committee report")
+        self.assertTrue(pub_type.description.startswith("The following select "))
+
+        link = pub.links.first()
+        self.assertEqual(link.parliamentdotuk, 3096)
+        self.assertEqual(link.content_type, "text/html")
+        self.assertTrue(link.title.startswith("Public Admin"))
+        self.assertTrue(link.url.startswith("https://www.publ"))
 
     def tearDown(self) -> None:
         self.delete_instances_of(
             Bill,
             BillAgent,
+            BillPublication,
+            BillPublicationLink,
+            BillPublicationType,
             BillSponsor,
             BillStage,
             BillStageType,
             BillStageSitting,
             BillType,
             BillTypeCategory,
+            House,
             Organisation,
             ParliamentarySession,
             TaskNotification,

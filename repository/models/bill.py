@@ -5,6 +5,7 @@ from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
 )
+from util.strings import ellipsise
 
 
 class BillStageType(ParliamentDotUkMixin, BaseModel):
@@ -133,10 +134,10 @@ class BillPublicationType(ParliamentDotUkMixin, BaseModel):
     description = models.TextField()
 
     def __str__(self):
-        return self.name
+        return ellipsise(self.name)
 
 
-class BillPublication(BaseModel):
+class BillPublication(ParliamentDotUkMixin, BaseModel):
     bill = models.ForeignKey(
         "repository.Bill",
         on_delete=models.CASCADE,
@@ -147,8 +148,16 @@ class BillPublication(BaseModel):
         on_delete=models.CASCADE,
         related_name="+",
     )
+    house = models.ForeignKey(
+        "repository.House",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
     title = models.CharField(max_length=255)
     display_date = models.DateTimeField()
+
+    def __str__(self):
+        return ellipsise(self.title)
 
 
 class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
@@ -161,6 +170,9 @@ class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
     title = models.CharField(max_length=255)
     url = models.URLField()
     content_type = models.CharField(max_length=64)
+
+    def __str__(self):
+        return ellipsise(self.title)
 
 
 class Bill(ParliamentDotUkMixin, BaseModel):

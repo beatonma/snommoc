@@ -4,6 +4,9 @@ from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
+    fetch_and_update_bill_publications,
+)
 from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import (
     fetch_and_update_bill_stages,
 )
@@ -30,7 +33,9 @@ def fetch_and_update_bill(
         cache=cache,
     )
 
+    # Update related data for this bill
     fetch_and_update_bill_stages(parliamentdotuk, cache, notification)
+    fetch_and_update_bill_publications(parliamentdotuk, cache, notification)
 
 
 @json_cache(caches.BILLS)
@@ -39,7 +44,6 @@ def update_bills(
     notification: Optional[TaskNotification],
     force: bool = False,  # TODO check bill last_update
 ) -> None:
-    # TODO update sessions?
     update_bill_types(cache=cache, notification=notification)
     update_bill_stage_types(cache=cache, notification=notification)
 

@@ -16,7 +16,7 @@ from repository.models import (
     Party,
     Person,
 )
-from repository.models.bill import BillStageType, BillType, BillTypeCategory
+from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
 from repository.tests.data.sample_bills import (
     any_sample_bill_stage_type,
     any_sample_bill_type,
@@ -32,6 +32,16 @@ from repository.tests.data.sample_divisions import (
 from repository.tests.data.sample_election import SAMPLE_ELECTIONS, any_sample_election
 from repository.tests.data.sample_members import any_sample_member
 from repository.tests.data.sample_parties import SAMPLE_PARTIES, any_sample_party
+
+LOREM_IPSUM = (
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit nunc,"
+    " sed sodales purus. Vivamus pulvinar et diam sit amet iaculis. Integer nec"
+    " elementum urna, a facilisis sem. Aenean commodo ac sapien vel rutrum. In eget"
+    " quam est. Sed quis convallis tortor, sit amet lobortis urna. Morbi tempor, augue"
+    " id lobortis bibendum, nibh nulla vehicula sapien, id venenatis sapien elit vel"
+    " augue. Etiam egestas purus diam, sit amet finibus massa venenatis ut. Donec et"
+    " lorem est. Morbi lacus leo, malesuada a laoreet a, vehicula vel ex."
+)
 
 
 def _any_int(max: int = 100) -> int:
@@ -52,6 +62,10 @@ def _any_date() -> datetime.date:
 
 def _any_bool() -> bool:
     return bool(random.getrandbits(1))
+
+
+def _any_str(max_length: int = 32) -> str:
+    return LOREM_IPSUM[random.randint(0, 100) : random.randint(120, 300)][:max_length]
 
 
 def create_sample_person(
@@ -340,7 +354,6 @@ def create_sample_commons_division(
 
 
 def _coerce_house(house: Optional[str]) -> House:
-    """Convert a house name or viewmodels.House to a House instance, or return default "Commons" """
     if house is None:
         house, _ = House.objects.get_or_create(name="Commons")
 
@@ -349,6 +362,15 @@ def _coerce_house(house: Optional[str]) -> House:
 
     else:
         raise ValueError(f"_coerce_house got unexpected argument '{house}")
+
+    return house
+
+
+def create_sample_house(name: Optional[str] = None) -> House:
+    if name is None:
+        name = random.choice(["Commons", "Lords", "Unassigned"])
+
+    house, _ = House.objects.get_or_create(name=name)
 
     return house
 
@@ -409,10 +431,6 @@ def create_sample_lords_division(
     )
 
 
-# def create_sample_bill_sitting() -> BillStageSitting:
-#     return BillStageSitting()
-
-
 def create_sample_bill_stage_type(
     parliamentdotuk: Optional[int] = None,
     name: Optional[str] = None,
@@ -432,7 +450,7 @@ def create_sample_bill_stage_type(
             "name": sample.name,
             "house": _coerce_house(house or sample.house),
         },
-    )
+    )[0]
 
 
 def create_sample_bill_type(
@@ -465,63 +483,49 @@ def create_sample_bill_type(
             "description": sample.description,
             "category": category,
         },
+    )[0]
+
+
+def create_sample_bill(
+    parliamentdotuk: Optional[int] = None,
+    short_title: Optional[str] = None,
+    long_title: Optional[str] = None,
+    last_update: Optional[datetime.datetime] = None,
+    bill_type: Optional[BillType] = None,
+) -> Bill:
+    if not parliamentdotuk:
+        parliamentdotuk = _any_id()
+
+    if not short_title:
+        short_title = _any_str()
+
+    if not long_title:
+        long_title = _any_str()
+
+    if not last_update:
+        last_update = _any_date()
+
+    if not bill_type:
+        bill_type = create_sample_bill_type()
+
+    session = create_sample_session()
+
+    bill = Bill.objects.create(
+        parliamentdotuk=parliamentdotuk,
+        short_title=short_title,
+        long_title=long_title,
+        summary=_any_str(),
+        last_update=last_update,
+        date_withdrawn=_any_date(),
+        bill_type=bill_type,
+        session_introduced=session,
+        is_act=_any_bool(),
+        is_defeated=_any_bool(),
+        current_house=create_sample_house(),
+        originating_house=create_sample_house(),
     )
-
-
-# def create_sample_bill_type(
-#     name: str = "Ten Minute Rule",
-#     description: str = "Private Members' Bill (under the Ten Minute Rule)",
-# ) -> BillType:
-#     """Create a BillType with custom data."""
-#     return BillType.objects.create(
-#         name=name,
-#         description=description,
-#     )
-#
-#
-# def create_sample_bill(
-#     title: str = "Defibrillators (Availability) Bill",
-#     parliamentdotuk: Optional[int] = None,
-#     description: str = "A Bill to require the provision of defibrillators in education establishments, and in leisure, sports and certain other public facilities; to make provision for training persons to operate defibrillators; to make provision for funding the acquisition, installation, use and maintenance of defibrillators; and for connected purposes.",
-#     act_name: str = "",
-#     label: str = "Defibrillators (Availability)",
-#     homepage: str = "http://services.parliament.uk/bills/2017-19/defibrillatorsavailability.html",
-#     date: datetime.date = datetime.date.fromisoformat("2018-12-20"),
-#     ballot_number: int = 0,
-#     bill_chapter: str = "",
-#     is_private: bool = False,
-#     is_money_bill: bool = False,
-#     public_involvement_allowed: bool = False,
-#     bill_type: Optional[BillType] = None,
-#     session: Optional[ParliamentarySession] = None,
-# ) -> Bill:
-#     """Create a Bill with custom data."""
-#
-#     if not parliamentdotuk:
-#         parliamentdotuk = _any_id()
-#
-#     if not session:
-#         session = create_sample_session()
-#
-#     if not bill_type:
-#         bill_type = create_sample_bill_type()
-#
-#     return Bill.objects.create(
-#         title=title,
-#         parliamentdotuk=parliamentdotuk,
-#         description=description,
-#         act_name=act_name,
-#         label=label,
-#         homepage=homepage,
-#         date=date,
-#         ballot_number=ballot_number,
-#         bill_chapter=bill_chapter,
-#         is_private=is_private,
-#         is_money_bill=is_money_bill,
-#         public_involvement_allowed=public_involvement_allowed,
-#         bill_type=bill_type,
-#         session=session,
-#     )
+    bill.sessions.set([session])
+    return bill
 
 
 def create_sample_constituency_candidate(
@@ -559,4 +563,4 @@ def create_sample_constituency_candidate(
         order=order,
         party_name=party_name,
         party=party,
-    )
+    )[0]

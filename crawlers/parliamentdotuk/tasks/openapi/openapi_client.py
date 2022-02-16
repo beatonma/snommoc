@@ -114,6 +114,10 @@ def foreach(
                         notification.append(f"max_items={max_items} limit reached.")
                     return
 
+        if "totalResults" not in data or "itemsPerPage" not in data:
+            # Exit if data is not paginated.
+            return
+
 
 def get(
     endpoint_url: str,

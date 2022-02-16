@@ -48,6 +48,7 @@ def foreach(
     item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     cache: Optional[JsonResponseCache],
+    items_key: str = "items",
     items_per_page: int = 25,
     max_items: Optional[int] = None,
     func_kwargs: Optional[dict] = None,
@@ -84,7 +85,7 @@ def foreach(
 
         if isinstance(data, dict):
             # Unwrap the items list.
-            items = data.get("items")
+            items = data.get(items_key)
         else:
             items = data
 

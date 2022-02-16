@@ -1,1 +1,1 @@
-from .profile import SimpleProfileSerializer, FullProfileSerializer
+from .profile import FullMemberSerializer, SimpleProfileSerializer

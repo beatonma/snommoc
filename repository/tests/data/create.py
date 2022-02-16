@@ -563,4 +563,4 @@ def create_sample_constituency_candidate(
         order=order,
         party_name=party_name,
         party=party,
-    )[0]
+    )

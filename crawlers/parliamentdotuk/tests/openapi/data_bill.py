@@ -177,3 +177,34 @@ BILL_TYPE_DATA = {
         " out more about Hybrid Bills</a></div>"
     ),
 }
+
+
+BILL_PUBLICATION_DATA = {
+    "house": "Commons",
+    "id": 2716,
+    "title": (
+        "Public Administration Select Committee, Constitional Renewal: Draft Bill and"
+        " White Paper (HC 499, 2007-08)"
+    ),
+    "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": (
+            "The following select committee reports have been identified as relevant to"
+            " the debate on the Bill."
+        ),
+    },
+    "displayDate": "2008-06-04T00:00:00",
+    "links": [
+        {
+            "id": 3096,
+            "title": (
+                "Public Administration Select Committee, Constitional Renewal: Draft"
+                " Bill and White Paper (HC 499, 2007-08)"
+            ),
+            "url": "https://www.publications.parliament.uk/pa/cm200708/cmselect/cmpubadm/499/49902.htm",
+            "contentType": "text/html",
+        }
+    ],
+    "files": [],
+}

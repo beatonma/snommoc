@@ -125,51 +125,6 @@ class StageSummary:
         self.sortOrder = sortOrder
 
 
-class BillSummary:
-    """Schema definition: BillSummary from https://bills-api.parliament.uk/index.html"""
-
-    billId: int
-    shortTitle: str
-    currentHouse: House
-    originatingHouse: House
-    lastUpdate: datetime
-    billWithdrawn: Optional[datetime]
-    isDefeated: bool
-    billTypeId: int
-    introducedSessionId: int
-    includedSessionIds: List[int]
-    isAct: bool
-    currentStage: StageSummary
-
-    def __init__(
-        self,
-        billId: int,
-        shortTitle: str,
-        currentHouse: str,
-        originatingHouse: str,
-        lastUpdate: str,
-        billWithdrawn: Optional[datetime],
-        isDefeated: bool,
-        billTypeId: int,
-        introducedSessionId: int,
-        includedSessionIds: List[int],
-        isAct: bool,
-        currentStage: dict,
-    ):
-        self.billId = billId
-        self.shortTitle = shortTitle
-        self.currentHouse = House[currentHouse]
-        self.originatingHouse = House[originatingHouse]
-        self.lastUpdate = coerce_to_datetime(lastUpdate)
-        self.billWithdrawn = coerce_to_datetime(billWithdrawn)
-        self.isDefeated = isDefeated
-        self.billTypeId = billTypeId
-        self.introducedSessionId = introducedSessionId
-        self.includedSessionIds = includedSessionIds
-        self.isAct = isAct
-        self.currentStage = StageSummary(**currentStage) if currentStage else None
-
-
 @dataclass
 class BillAgent:
     """Schema definition: BillAgent from https://bills-api.parliament.uk/index.html"""
@@ -246,6 +201,92 @@ class Sponsor:
         self.member = Member(**member) if member else None
         self.organisation = Organisation(**organisation) if organisation else None
         self.sortOrder = sortOrder
+
+
+@dataclass
+class BillPublicationLink:
+    id: int
+    title: str
+    url: str
+    contentType: str
+
+
+@dataclass
+class BillPublicationType:
+    id: int
+    name: str
+    description: str
+
+
+class BillPublication:
+    id: int
+    house: House
+    title: str
+    displayDate: datetime
+    publicationType: BillPublicationType
+    links: List[BillPublicationLink]
+
+    def __init__(
+        self,
+        id: int,
+        house: str,
+        title: str,
+        displayDate: datetime,
+        publicationType: dict,
+        links: List[dict],
+        files: List[dict],  # Unused
+    ):
+        self.id = id
+        self.house = House[house]
+        self.title = title
+        self.displayDate = coerce_to_datetime(displayDate)
+        self.publicationType = BillPublicationType(**publicationType)
+        self.links = [BillPublicationLink(**link) for link in links]
+
+
+class BillSummary:
+    """Schema definition: BillSummary from https://bills-api.parliament.uk/index.html"""
+
+    billId: int
+    shortTitle: str
+    currentHouse: House
+    originatingHouse: House
+    lastUpdate: datetime
+    billWithdrawn: Optional[datetime]
+    isDefeated: bool
+    billTypeId: int
+    introducedSessionId: int
+    includedSessionIds: List[int]
+    isAct: bool
+    currentStage: StageSummary
+
+    def __init__(
+        self,
+        billId: int,
+        shortTitle: str,
+        currentHouse: str,
+        originatingHouse: str,
+        lastUpdate: str,
+        billWithdrawn: Optional[datetime],
+        isDefeated: bool,
+        billTypeId: int,
+        introducedSessionId: int,
+        includedSessionIds: List[int],
+        isAct: bool,
+        currentStage: dict,
+    ):
+        self.billId = billId
+        self.shortTitle = shortTitle
+        self.currentHouse = House[currentHouse]
+        self.originatingHouse = House[originatingHouse]
+        self.lastUpdate = coerce_to_datetime(lastUpdate)
+        self.billWithdrawn = coerce_to_datetime(billWithdrawn)
+        self.isDefeated = isDefeated
+        self.billTypeId = billTypeId
+        self.introducedSessionId = introducedSessionId
+        self.includedSessionIds = includedSessionIds
+        self.isAct = isAct
+        self.currentStage = StageSummary(**currentStage) if currentStage else None
 
 
 class Bill(BillSummary):

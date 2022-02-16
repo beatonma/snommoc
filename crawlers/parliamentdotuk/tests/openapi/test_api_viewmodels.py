@@ -3,6 +3,7 @@ from datetime import datetime
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import (
     Bill,
+    BillPublication,
     BillStageType,
     BillSummary,
     House,
@@ -12,6 +13,7 @@ from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
 )
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_DATA,
+    BILL_PUBLICATION_DATA,
     BILL_STAGE_TYPE_DATA,
     BILL_SUMMARY_DATA,
 )
@@ -166,3 +168,22 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(stage.id, 42)
         self.assertEqual(stage.name, "Consideration of Lords message")
         self.assertEqual(stage.house, House.Commons)
+
+    def test_billpublication_viewmodels(self):
+        pub = BillPublication(**BILL_PUBLICATION_DATA)
+
+        self.assertEqual(pub.id, 2716)
+        self.assertEqual(pub.house, House.Commons)
+        self.assertTrue(pub.title.startswith("Public Administration "))
+        self.assertDateTimeEqual(pub.displayDate, datetime(2008, 6, 4, 0, 0, 0))
+
+        pub_type = pub.publicationType
+        self.assertEqual(pub_type.id, 9)
+        self.assertEqual(pub_type.name, "Select Committee report")
+        self.assertTrue(pub_type.description.startswith("The following "))
+
+        link = pub.links[0]
+        self.assertEqual(link.id, 3096)
+        self.assertTrue(link.title.startswith("Public Administration "))
+        self.assertTrue(link.url.startswith("https://www.publications"))
+        self.assertEqual(link.contentType, "text/html")

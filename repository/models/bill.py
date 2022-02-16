@@ -10,7 +10,7 @@ from repository.models.mixins import (
 class BillStageType(ParliamentDotUkMixin, BaseModel):
     """Definition of a type of bill stage"""
 
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=255)
     house = models.ForeignKey("repository.House", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -28,7 +28,7 @@ class BillStage(ParliamentDotUkMixin, BaseModel):
         related_name="stages",
     )
 
-    description = models.CharField(max_length=256, null=True, blank=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
     abbreviation = models.CharField(max_length=16, null=True, blank=True)
 
     house = models.ForeignKey(
@@ -76,7 +76,7 @@ class BillTypeCategory(BaseModel):
 
 
 class BillType(ParliamentDotUkMixin, BaseModel):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=255)
     description = models.TextField()
     category = models.ForeignKey(
         "repository.BillTypeCategory",
@@ -89,7 +89,7 @@ class BillType(ParliamentDotUkMixin, BaseModel):
 
 
 class BillAgent(BaseModel):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=255)
     address = models.TextField(null=True, blank=True)
     phone_number = PhoneNumberField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
@@ -128,8 +128,43 @@ class BillSponsor(BaseModel):
         return f"{self.member}|{self.organisation}: {self.bill}"
 
 
+class BillPublicationType(ParliamentDotUkMixin, BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
+class BillPublication(BaseModel):
+    bill = models.ForeignKey(
+        "repository.Bill",
+        on_delete=models.CASCADE,
+        related_name="publications",
+    )
+    publication_type = models.ForeignKey(
+        "repository.BillPublicationType",
+        on_delete=models.CASCADE,
+        related_name="+",
+    )
+    title = models.CharField(max_length=255)
+    display_date = models.DateTimeField()
+
+
+class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
+    publication = models.ForeignKey(
+        "repository.BillPublication",
+        on_delete=models.CASCADE,
+        related_name="links",
+    )
+
+    title = models.CharField(max_length=255)
+    url = models.URLField()
+    content_type = models.CharField(max_length=64)
+
+
 class Bill(ParliamentDotUkMixin, BaseModel):
-    short_title = models.CharField(max_length=512)
+    short_title = models.CharField(max_length=255)
     long_title = models.TextField(null=True, blank=True)
     summary = models.TextField(
         null=True, blank=True, help_text="HTML-formatted description"

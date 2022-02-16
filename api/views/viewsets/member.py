@@ -1,11 +1,9 @@
-"""
-Viewsets for any data about a particular member.
-"""
+"""Viewsets for any data about a particular member."""
 
 import logging
 
 from api.serializers.inline import InlineMemberSerializer
-from api.serializers.member import FullProfileSerializer
+from api.serializers.member import FullMemberSerializer
 from api.serializers.member.votes import MemberVotesSerializer
 from api.views.viewsets import (
     KeyRequiredViewSet,
@@ -38,7 +36,7 @@ class MemberViewSet(Searchable, KeyRequiredViewSet):
 class ProfileViewSet(_BaseMemberViewSet):
     """Return detailed data about a person."""
 
-    serializer_class = FullProfileSerializer
+    serializer_class = FullMemberSerializer
 
 
 class MemberVotesViewSet(_BaseMemberViewSet):

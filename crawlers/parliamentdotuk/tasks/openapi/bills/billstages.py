@@ -19,13 +19,6 @@ def _update_bill_stage(
     )
     house, _ = House.objects.get_or_create(name=api_stage.house.name)
 
-    for sitting in api_stage.stageSittings:
-        BillStageSitting.objects.update_or_create(
-            parliamentdotuk=sitting.id,
-            stage_id=api_stage.id,
-            date=sitting.date,
-        )
-
     stage, _ = BillStage.objects.update_or_create(
         parliamentdotuk=api_stage.id,
         defaults={
@@ -38,6 +31,13 @@ def _update_bill_stage(
             "stage_type_id": api_stage.stageId,
         },
     )
+
+    for sitting in api_stage.stageSittings:
+        BillStageSitting.objects.update_or_create(
+            parliamentdotuk=sitting.id,
+            stage_id=api_stage.id,
+            date=sitting.date,
+        )
 
 
 def fetch_and_update_bill_stages(

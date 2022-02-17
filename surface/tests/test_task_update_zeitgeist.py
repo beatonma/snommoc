@@ -4,7 +4,12 @@ from repository.models import (
     Bill,
     Person,
 )
-from repository.tests.data.create import create_sample_person
+from repository.tests.data.create import (
+    create_sample_bill,
+    create_sample_commons_division,
+    create_sample_lords_division,
+    create_sample_person,
+)
 from social.models import (
     Comment,
     Vote,
@@ -28,8 +33,6 @@ def _create_featured_person(person: Person):
 
 
 class UpdateZeitgeistTaskTest(LocalTestCase):
-    """"""
-
     def setUp(self):
         dates = create_sample_dates(count=10)
 
@@ -51,11 +54,24 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
 
         _create_featured_person(anna)
 
+        bill = create_sample_bill(175, title="A voted-on bill title")
+        create_sample_vote(bill, user1, "aye")
+
+        commons_div = create_sample_commons_division(
+            984, title="A commented-on commons division"
+        )
+        create_sample_comment(commons_div, user2)
+
+        lords_div = create_sample_lords_division(840, title="A voted-on lords division")
+        create_sample_vote(lords_div, user2, "no")
+
     def test_zeitgeist_is_correct(self):
         update_zeitgeist()
 
         zeitgeist = ZeitgeistItem.objects.all()
-        self.assertEqual(zeitgeist.count(), 3)
+
+        # 6 items =  3 people + 1 bill + 1 commons division + 1 lords division
+        self.assertEqual(zeitgeist.count(), 6)
 
         anna = zeitgeist.get(target_id=37)
         self.assertEqual(anna.reason, ZeitgeistItem.REASON_FEATURE)
@@ -64,6 +80,15 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
         boris = zeitgeist.get(target_id=11)
         self.assertEqual(boris.reason, ZeitgeistItem.REASON_SOCIAL)
         self.assertEqual(boris.target.name, "Boris Johnson")
+
+        bill = zeitgeist.get(target_id=175)
+        self.assertEqual(bill.target.title, "A voted-on bill title")
+
+        commons_div = zeitgeist.get(target_id=984)
+        self.assertEqual(commons_div.target.title, "A commented-on commons division")
+
+        lords_div = zeitgeist.get(target_id=840)
+        self.assertEqual(lords_div.target.title, "A voted-on lords division")
 
     def tearDown(self) -> None:
         self.delete_instances_of(

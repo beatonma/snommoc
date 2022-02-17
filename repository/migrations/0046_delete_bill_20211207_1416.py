@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("repository", "0045_auto_20211124_1731"),
+        ("surface", "0008_delete_featuredbill"),
     ]
 
     operations = [
@@ -129,5 +130,26 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name="billsponsor",
             name="person",
+        ),
+        migrations.DeleteModel(
+            name="BillPublication",
+        ),
+        migrations.DeleteModel(
+            name="BillSponsor",
+        ),
+        migrations.DeleteModel(
+            name="BillStage",
+        ),
+        migrations.DeleteModel(
+            name="BillStageSitting",
+        ),
+        migrations.DeleteModel(
+            name="BillStageType",
+        ),
+        migrations.DeleteModel(
+            name="BillType",
+        ),
+        migrations.DeleteModel(
+            name="Bill",
         ),
     ]

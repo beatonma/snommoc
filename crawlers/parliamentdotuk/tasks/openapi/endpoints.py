@@ -24,7 +24,7 @@ def bill(bill_id: int) -> str:
 
     Sample: https://bills-api.parliament.uk/api/v1/Bills/764
     """
-    return BILL_SINGLE.format(billid=bill_id)
+    return BILL_SINGLE.format(bill_id=bill_id)
 
 
 def bill_stages(bill_id: int) -> str:

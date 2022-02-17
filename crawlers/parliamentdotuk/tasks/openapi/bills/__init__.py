@@ -1,5 +1,7 @@
 from typing import Optional
 
+from celery.utils import log as logging
+
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
@@ -18,14 +20,19 @@ from crawlers.parliamentdotuk.tasks.openapi.bills.update import (
     _update_bill,
 )
 from notifications.models import TaskNotification
+from notifications.models.task_notification import task_notification
+
+log = logging.get_logger(__name__)
 
 
+@task_notification(label="Update individual bill")
 @json_cache(caches.BILLS)
 def fetch_and_update_bill(
     parliamentdotuk: int,
     cache: Optional[JsonResponseCache],
     notification: Optional[TaskNotification],
 ) -> None:
+    log.info(f"Updating bill #{parliamentdotuk}")
     openapi_client.get(
         endpoints.bill(parliamentdotuk),
         item_func=_update_bill,
@@ -36,13 +43,15 @@ def fetch_and_update_bill(
     # Update related data for this bill
     fetch_and_update_bill_stages(parliamentdotuk, cache, notification)
     fetch_and_update_bill_publications(parliamentdotuk, cache, notification)
+    log.info(f"Bill #{parliamentdotuk} updated successfully")
 
 
+@task_notification(label="Update bills")
 @json_cache(caches.BILLS)
 def update_bills(
     cache: Optional[JsonResponseCache],
     notification: Optional[TaskNotification],
-    force: bool = False,  # TODO check bill last_update
+    force_update: bool = False,  # TODO check bill last_update
 ) -> None:
     update_bill_types(cache=cache, notification=notification)
     update_bill_stage_types(cache=cache, notification=notification)
@@ -55,9 +64,11 @@ def update_bills(
         summary = viewmodels.BillSummary(**dict)
         fetch_and_update_bill(summary.billId, cache=cache, notification=notification)
 
+    log.info("Updating all bills...")
     openapi_client.foreach(
         endpoints.BILLS_ALL,
         item_func=_update_item_proxy,
         cache=cache,
         notification=notification,
     )
+    log.info("All bills updated successfully")

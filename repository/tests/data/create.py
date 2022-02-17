@@ -488,7 +488,7 @@ def create_sample_bill_type(
 
 def create_sample_bill(
     parliamentdotuk: Optional[int] = None,
-    short_title: Optional[str] = None,
+    title: Optional[str] = None,
     long_title: Optional[str] = None,
     last_update: Optional[datetime.datetime] = None,
     bill_type: Optional[BillType] = None,
@@ -496,8 +496,8 @@ def create_sample_bill(
     if not parliamentdotuk:
         parliamentdotuk = _any_id()
 
-    if not short_title:
-        short_title = _any_str()
+    if not title:
+        title = _any_str()
 
     if not long_title:
         long_title = _any_str()
@@ -512,7 +512,7 @@ def create_sample_bill(
 
     bill = Bill.objects.create(
         parliamentdotuk=parliamentdotuk,
-        short_title=short_title,
+        title=title,
         long_title=long_title,
         summary=_any_str(),
         last_update=last_update,

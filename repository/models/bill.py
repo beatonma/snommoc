@@ -176,7 +176,7 @@ class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
 
 
 class Bill(ParliamentDotUkMixin, BaseModel):
-    short_title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     long_title = models.TextField(null=True, blank=True)
     summary = models.TextField(
         null=True, blank=True, help_text="HTML-formatted description"
@@ -234,4 +234,4 @@ class Bill(ParliamentDotUkMixin, BaseModel):
     )
 
     def __str__(self):
-        return self.short_title
+        return self.title

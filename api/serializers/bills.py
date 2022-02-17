@@ -32,7 +32,7 @@ class _OrganisationSerializer(DetailedModelSerializer):
 
 
 class InlineBillSerializer(InlineModelSerializer):
-    title = serializers.CharField(source="short_title")
+    title = serializers.CharField()
     description = serializers.CharField(source="summary")
 
     class Meta:
@@ -115,7 +115,7 @@ class _BillStageSerializer(DetailedModelSerializer):
 
 
 class BillSerializer(DetailedModelSerializer):
-    title = serializers.CharField(source="short_title")
+    title = serializers.CharField()
     description = serializers.CharField(source="summary")
     sponsors = _BillSponsorSerializer(many=True)
     publications = _BillPublicationSerializer(many=True)

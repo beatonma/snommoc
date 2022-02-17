@@ -98,7 +98,7 @@ def _update_bill(data: dict, notification: Optional[TaskNotification]) -> None:
     db_bill, _ = Bill.objects.update_or_create(
         parliamentdotuk=api_bill.billId,
         defaults={
-            "short_title": api_bill.shortTitle,
+            "title": api_bill.shortTitle,
             "long_title": api_bill.longTitle,
             "summary": api_bill.summary,
             "current_house": current_house,

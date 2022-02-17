@@ -71,7 +71,7 @@ class BillUpdateTests(LocalTestCase):
 
         bill = Bill.objects.get(pk=836)
 
-        self.assertEqual(bill.short_title, "Appropriation Act 2011")
+        self.assertEqual(bill.title, "Appropriation Act 2011")
         self.assertTrue(bill.long_title.startswith("A Bill To authorise "))
         self.assertTrue(bill.summary.startswith("<p>The Bill provides "))
         self.assertEqual(bill.current_house.name, "Unassigned")

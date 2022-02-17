@@ -65,8 +65,10 @@ def _get_sponsors(api_bill: viewmodels.Bill) -> List[BillSponsor]:
         x, _ = BillSponsor.objects.update_or_create(
             bill_id=api_bill.billId,
             member_id=sponsor.member.memberId,
-            organisation=organisation,
-            sort_order=sponsor.sortOrder,
+            defaults={
+                "organisation": organisation,
+                "sort_order": sponsor.sortOrder,
+            },
         )
         sponsors.append(x)
 
@@ -77,7 +79,10 @@ def _get_promoters(api_bill: viewmodels.Bill) -> List[Organisation]:
     promoters = []
     for promoter in api_bill.promoters:
         organisation, _ = Organisation.objects.update_or_create(
-            name=promoter.organisationName, defaults={"url": promoter.organisationUrl}
+            name=promoter.organisationName,
+            defaults={
+                "url": promoter.organisationUrl,
+            },
         )
         promoters.append(organisation)
     return promoters

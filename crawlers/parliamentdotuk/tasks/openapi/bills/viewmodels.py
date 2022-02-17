@@ -56,7 +56,6 @@ class BillStageType:
     house: House
 
     def __init__(self, id: int, name: str, house: str):
-        print(id, name, house)
         self.id = id
         self.name = name
         self.house = House[house]

@@ -1,13 +1,13 @@
 from django.http import HttpResponse
 
-from dashboard.views.dashboard import StaffView
 from crawlers.parliamentdotuk.tasks import (
-    update_profiles_for_active_members,
-    update_member_portraits,
-    update_bills,
     update_all_divisions,
     update_election_results,
+    update_member_portraits,
+    update_profiles_for_active_members,
 )
+from crawlers.parliamentdotuk.tasks.openapi.bills import update_bills
+from dashboard.views.dashboard import StaffView
 
 
 class _TaskView(StaffView):

@@ -104,7 +104,8 @@ class JsonResponseCache:
 
         if delta.total_seconds() >= self.time_to_live:
             log.info(
-                f"Cache has expired (age={delta.total_seconds()} seconds, ttl={self.time_to_live})"
+                f"Cache has expired (age={delta.total_seconds()} seconds,"
+                f" ttl={self.time_to_live})"
             )
             return True
 
@@ -145,7 +146,7 @@ def json_cache(
                 result = func(*args, **kwargs)
 
             except Exception as e:
-                log.warning(e)
+                raise e
 
             finally:
                 if is_root:

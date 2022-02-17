@@ -2,6 +2,8 @@ import datetime
 import random
 from typing import Optional
 
+from django.utils import timezone
+
 from repository.models import (
     CommonsDivision,
     Constituency,
@@ -57,6 +59,19 @@ def _any_date() -> datetime.date:
         year=random.randint(1990, 2025),
         month=random.randint(1, 12),
         day=random.randint(1, 28),
+    )
+
+
+def _any_datetime() -> datetime.datetime:
+    return timezone.make_aware(
+        datetime.datetime(
+            year=random.randint(1990, 2025),
+            month=random.randint(1, 12),
+            day=random.randint(1, 28),
+            hour=random.randint(0, 23),
+            minute=random.randint(0, 59),
+            second=random.randint(0, 59),
+        )
     )
 
 
@@ -503,7 +518,7 @@ def create_sample_bill(
         long_title = _any_str()
 
     if not last_update:
-        last_update = _any_date()
+        last_update = _any_datetime()
 
     if not bill_type:
         bill_type = create_sample_bill_type()
@@ -516,7 +531,7 @@ def create_sample_bill(
         long_title=long_title,
         summary=_any_str(),
         last_update=last_update,
-        date_withdrawn=_any_date(),
+        withdrawn_at=_any_datetime(),
         bill_type=bill_type,
         session_introduced=session,
         is_act=_any_bool(),

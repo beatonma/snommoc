@@ -193,7 +193,7 @@ class Bill(ParliamentDotUkMixin, BaseModel):
         related_name="bills_originated",
     )
     last_update = models.DateTimeField()
-    date_withdrawn = models.DateTimeField(null=True, blank=True)
+    withdrawn_at = models.DateTimeField(null=True, blank=True)
     is_defeated = models.BooleanField()
     is_act = models.BooleanField()
     bill_type = models.ForeignKey(

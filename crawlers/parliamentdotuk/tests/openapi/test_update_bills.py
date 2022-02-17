@@ -80,7 +80,7 @@ class BillUpdateTests(LocalTestCase):
             bill.last_update,
             datetime(2012, 3, 28, 9, 58, 29),
         )
-        self.assertIsNone(bill.date_withdrawn)
+        self.assertIsNone(bill.withdrawn_at)
         self.assertFalse(bill.is_defeated)
         self.assertTrue(bill.is_act)
 

@@ -104,7 +104,7 @@ def _update_bill(data: dict, notification: Optional[TaskNotification]) -> None:
             "current_house": current_house,
             "originating_house": originating_house,
             "last_update": api_bill.lastUpdate,
-            "date_withdrawn": api_bill.billWithdrawn,
+            "withdrawn_at": api_bill.billWithdrawn,
             "is_defeated": api_bill.isDefeated,
             "is_act": api_bill.isAct,
             "bill_type": bill_type,

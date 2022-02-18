@@ -23,9 +23,7 @@ from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
 
 
 class ApiViewmodelTestCase(LocalTestCase):
-    """
-    Ensure data from the API constructs our models correctly.
-    """
+    """Ensure data from the API constructs our models correctly."""
 
     def test_lordsdivision_viewmodels(self):
         division = DivisionViewModel(**LORDS_DIVISION_DATA)

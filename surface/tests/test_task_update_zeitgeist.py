@@ -2,8 +2,13 @@ from basetest.test_util import create_sample_dates
 from basetest.testcase import LocalTestCase
 from repository.models import (
     Bill,
+    CommonsDivision,
+    House,
+    LordsDivision,
+    ParliamentarySession,
     Person,
 )
+from repository.models.bill import BillType, BillTypeCategory
 from repository.tests.data.create import (
     create_sample_bill,
     create_sample_commons_division,
@@ -93,9 +98,15 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
     def tearDown(self) -> None:
         self.delete_instances_of(
             Bill,
+            BillType,
+            BillTypeCategory,
             Comment,
             Comment,
+            CommonsDivision,
             FeaturedPerson,
+            House,
+            LordsDivision,
+            ParliamentarySession,
             Person,
             UserToken,
             Vote,

@@ -23,6 +23,11 @@ class DirtyTestException(Exception):
 class BaseTestCase(TestCase):
     maxDiff = None
 
+    def tearDown(self) -> None:
+        check_instances: bool = RUNTESTS_CLARGS.fragile
+        if check_instances:
+            self._check_cleanup()
+
     def delete_instances_of(
         self,
         *classList,

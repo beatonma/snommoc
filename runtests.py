@@ -21,7 +21,6 @@ import colorama
 import django
 from django.apps import apps
 from django.conf import settings
-
 # Not used here but needs to be initiated before nose runs (heh)
 from django_nose import BasicNoseRunner
 
@@ -106,18 +105,26 @@ class VerboseResult:
 
     def report(self, app_name) -> str:
         def report_all_passed(indent=2):
-            return f'{" " * indent}{_highlight_good("OK")}  [{_highlight_good(self.successful) if self.successful else _highlight_warning(self.successful)}] {app_name}'
+            return (
+                f'{" " * indent}{_highlight_good("OK")} '
+                f" [{_highlight_good(self.successful) if self.successful else _highlight_warning(self.successful)}]"
+                f" {app_name}"
+            )
 
         def report_success(indent=2):
             if not self.successful:
                 return ""
-            return f'{" " * indent}{_highlight_good(str(self.successful)).rjust(2)} passed\n'
+            return (
+                f'{" " * indent}{_highlight_good(str(self.successful)).rjust(2)}'
+                " passed\n"
+            )
 
         def report_errors(indent=2):
             if not self.errors:
                 return ""
             return (
-                f'{" " * indent}{_highlight_bad(str(len(self.errors)).rjust(2))} errors:\n'
+                f'{" " * indent}{_highlight_bad(str(len(self.errors)).rjust(2))}'
+                " errors:\n"
                 + "\n".join([f'{" " * indent * 3}{x.report()}' for x in self.errors])
                 + "\n"
             )
@@ -126,7 +133,8 @@ class VerboseResult:
             if not self.not_implemented:
                 return ""
             return (
-                f'{" " * indent}{_highlight_warning(str(len(self.not_implemented)).rjust(2))} not implemented:\n'
+                f'{" " * indent}{_highlight_warning(str(len(self.not_implemented)).rjust(2))}'
+                " not implemented:\n"
                 + "\n".join([f'{" " * indent * 3}{x}' for x in self.not_implemented])
                 + "\n"
             )
@@ -135,7 +143,8 @@ class VerboseResult:
             if not self.failures:
                 return ""
             return (
-                f'{" " * indent}{_highlight_bad(str(len(self.failures)).rjust(2))} failures:\n'
+                f'{" " * indent}{_highlight_bad(str(len(self.failures)).rjust(2))}'
+                " failures:\n"
                 + "\n".join([f'{" " * indent * 3}{x.report()}' for x in self.failures])
             )
 
@@ -259,7 +268,8 @@ def _compare_tests_with_previous(tests_run: int):
     previous_tests_run = _load_previous()
     if previous_tests_run > tests_run:
         _print_warning(
-            f"Previous run had {previous_tests_run} tests (vs {tests_run} now). Is everything okay?"
+            f"Previous run had {previous_tests_run} tests (vs {tests_run} now). Is"
+            " everything okay?"
         )
     else:
         _save_current()
@@ -297,7 +307,8 @@ def _print_results(
         _print_warning(f"{tests_passed}/{tests_run} tests passed{repetitions_text}")
 
     print(
-        f"Finished at {time_finished.strftime('%H:%M:%S')} [duration: {time_finished - time_started}]"
+        f"Finished at {time_finished.strftime('%H:%M:%S')} [duration:"
+        f" {time_finished - time_started}]"
     )
 
     _compare_tests_with_previous(tests_run)

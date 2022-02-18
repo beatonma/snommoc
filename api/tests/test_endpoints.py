@@ -11,12 +11,13 @@ from repository.models import (
     Constituency,
     Election,
     ElectionType,
+    House,
     LordsDivision,
     ParliamentarySession,
     Party,
     Person,
 )
-from repository.models.bill import BillType
+from repository.models.bill import BillType, BillTypeCategory
 from repository.tests.data.create import (
     create_constituency_result_detail,
     create_sample_bill,
@@ -177,10 +178,12 @@ class QueryEndpointTests(LocalApiTestCase):
             ApiKey,
             Bill,
             BillType,
+            BillTypeCategory,
             CommonsDivision,
             Constituency,
             Election,
             ElectionType,
+            House,
             LordsDivision,
             ParliamentarySession,
             Party,

@@ -20,7 +20,7 @@ from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_TYPE_DATA,
 )
 from notifications.models import TaskNotification
-from repository.models import House, Organisation, ParliamentarySession
+from repository.models import House, Organisation, ParliamentarySession, Person
 from repository.models.bill import (
     Bill,
     BillAgent,
@@ -165,5 +165,6 @@ class BillUpdateTests(LocalTestCase):
             House,
             Organisation,
             ParliamentarySession,
+            Person,
             TaskNotification,
         )

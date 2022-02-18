@@ -188,7 +188,8 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         machine_delta = DeclaredInterest.objects.get(parliamentdotuk=24419)
         self.assertEqual(
             machine_delta.description,
-            "Machine Delta (a division of Caspian Learning Ltd providing intelligent quality assurance using artificial intelligence)",
+            "Machine Delta (a division of Caspian Learning Ltd providing intelligent"
+            " quality assurance using artificial intelligence)",
         )
         self.assertEqual(
             machine_delta.created, datetime.date(year=2015, month=12, day=31)
@@ -304,7 +305,8 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         pm = GovernmentPost.objects.get(parliamentdotuk=661)
         self.assertEqual(
             pm.name,
-            "Prime Minister, First Lord of the Treasury and Minister for the Civil Service",
+            "Prime Minister, First Lord of the Treasury and Minister for the Civil"
+            " Service",
         )
         self.assertEqual(pm.hansard_name, "The Prime Minister")
 
@@ -400,8 +402,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         side_effect=lambda *args, **kwargs: SAMPLE_BIOGRAPHY_RESPONSE,
     )
     def test_update_active_member_details(self, *args, **kwargs):
-        """
-        Check that all of the update methods have been called.
+        """Check that all of the update methods have been called.
 
         The other tests here ensure the methods work correctly so we just need to
         check that the expected models were created to verify that the methods

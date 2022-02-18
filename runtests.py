@@ -21,6 +21,7 @@ import colorama
 import django
 from django.apps import apps
 from django.conf import settings
+
 # Not used here but needs to be initiated before nose runs (heh)
 from django_nose import BasicNoseRunner
 

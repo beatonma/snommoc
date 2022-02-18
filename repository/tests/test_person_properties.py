@@ -65,3 +65,8 @@ class PersonPropertyTests(LocalTestCase):
 
         active_mp = Person(name=values.EXAMPLE_NAME, active=True, house=commons)
         self.assertFalse(active_mp.is_lord)
+
+    def tearDown(self) -> None:
+        self.delete_instances_of(
+            House,
+        )

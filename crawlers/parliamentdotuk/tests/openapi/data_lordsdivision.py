@@ -1,4 +1,4 @@
-LORDS_DIVISION = {
+LORDS_DIVISION_DATA = {
     "divisionId": 2613,
     "date": "2021-11-16T00:00:00",
     "number": 2,

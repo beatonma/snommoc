@@ -65,7 +65,9 @@ class TaskNotification(models.Model):
             self.content = (
                 self.content or ""
             ) + f"\n{err}\n\n{traceback.format_exc(limit=20)}"
-            log.error(f"Task `{self.title} {self.pk}` failed: {err}")
+            log.error(
+                f"Task `{self.title} {self.pk}` failed: {err.__class__.__name__} {err}"
+            )
 
         self.failed = True
         self.finished_at = get_now()
@@ -74,11 +76,15 @@ class TaskNotification(models.Model):
     def append(self, content: str, loglevel: int = logging.INFO):
         if self.finished:
             log.warning(
-                f"Task marked as finished but still being appended to (complete={self.complete}, failed={self.failed})"
+                "Task marked as finished but still being appended to"
+                f" (complete={self.complete}, failed={self.failed})"
             )
         log.log(loglevel, content)
         self.content = (self.content or "") + "\n" + content
         self.save()
+
+    def info(self, content: str):
+        self.append(content, loglevel=logging.INFO)
 
     def warning(self, content: str):
         self.append(f"[warning] {content}", loglevel=logging.WARNING)
@@ -118,8 +124,9 @@ def task_notification(label, level=TaskNotification.LEVEL_INFO):
                     notification.mark_as_complete()
 
             except (Exception, KeyboardInterrupt) as e:
-                log.error(e)
+                print(f"DEBUG notification {e}")
                 notification.mark_as_failed(err=e)
+                raise e
 
             finally:
                 if is_root_task and not notification.finished:

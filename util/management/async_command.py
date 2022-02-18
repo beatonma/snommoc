@@ -18,12 +18,14 @@ class AsyncCommand(BaseCommand):
             "-force",
             action="store_true",
             default=False,
-            help="Tell the task not to skip the update of any items that we already know about.",
+            help=(
+                "Tell the task not to skip the update of any items that we "
+                "already know about."
+            ),
         )
 
     def handle_async(self, func, func_kwargs=None, **command_options):
-        """
-        Call from handle, passing the function along with the received options.
+        """Call from handle(), passing the function along with the received options.
 
         e.g.
         def handle(self, *args, **options):
@@ -33,6 +35,11 @@ class AsyncCommand(BaseCommand):
         """
         if func_kwargs is None:
             func_kwargs = dict()
+
+        assert hasattr(func, "delay"), (
+            "AsyncCommand.handle_async received a function that is not registered"
+            f"as a task: {func.__name__}"
+        )
 
         # Inject -force management argument to the receiving task as force_update.
         func_kwargs["force_update"] = command_options.get("force") or None

@@ -17,9 +17,7 @@ from util.time import get_today
 
 
 class ZeitgeistViewSet(KeyRequiredViewSet):
-    """
-    Trending/featured stuff.
-    """
+    """Trending/featured stuff."""
 
     def get_queryset(self):
         return ZeitgeistItem.objects.all()

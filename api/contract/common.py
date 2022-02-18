@@ -5,6 +5,8 @@ DESCRIPTION = "description"
 URL = "url"
 CATEGORY = "category"
 SUBJECT = "subject"
+TYPE = "type"
+LINKS = "links"
 
 # Parliamentary
 THEYWORKFORYOU = "theyworkforyou"

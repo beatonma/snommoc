@@ -15,7 +15,9 @@ EXAMPLE_RESPONSE = {
     "result": {
         "_about": "http://eldaddp.azurewebsites.net/constituencies.json",
         "definition": "http://eldaddp.azurewebsites.net/meta/constituencies.json",
-        "extendedMetadataVersion": "http://eldaddp.azurewebsites.net/constituencies.json?_metadata=all",
+        "extendedMetadataVersion": (
+            "http://eldaddp.azurewebsites.net/constituencies.json?_metadata=all"
+        ),
         "first": "http://eldaddp.azurewebsites.net/constituencies.json?_page=0",
         "hasPart": "http://eldaddp.azurewebsites.net/constituencies.json",
         "isPartOf": "http://eldaddp.azurewebsites.net/constituencies.json",
@@ -131,9 +133,7 @@ EXAMPLE_ITEM = {
 
 
 class LdaClientTests(LocalTestCase):
-    """
-    lda_client helper function tests.
-    """
+    """lda_client helper function tests."""
 
     def test_get_next_page_url(self):
         next_page_url = lda_client._get_next_page_url(EXAMPLE_RESPONSE)

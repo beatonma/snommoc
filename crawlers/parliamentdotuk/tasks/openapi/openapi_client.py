@@ -11,17 +11,22 @@ def _log_data(endpoint_url, **kwargs):
 
 def _apply_item_func(
     item: dict,
-    item_func: Callable[[Dict, Optional[TaskNotification]], None],
+    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     report: Callable[[], str],
+    func_kwargs: Optional[dict],
 ) -> bool:
     """
     :param report: A function that describes the item for useful error logging.
     :return: True if the caller should continue its task, False if the caller should halt the task.
              HttpError will log a warning but allow the caller to continue.
     """
+
     try:
-        item_func(item, notification)
+        if func_kwargs is None:
+            item_func(item, notification)
+        else:
+            item_func(item, notification, func_kwargs)
         return True
 
     except HttpError as e:
@@ -40,15 +45,26 @@ def _apply_item_func(
 
 def foreach(
     endpoint_url: str,
-    item_func: Callable[[Dict, Optional[TaskNotification]], None],
+    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     cache: Optional[JsonResponseCache],
+    items_key: str = "items",
     items_per_page: int = 25,
     max_items: Optional[int] = None,
+    func_kwargs: Optional[dict] = None,
 ):
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
     Paging is handled automatically until no more items are returned, or max_items count is reached (if specified).
+
+    Endpoints may return a JSON list of items, or a JSON object with an 'items' child list.
+
+    Handled responses:
+        - [...]
+        - {
+            "items": [...],
+            ...
+          }
     """
     item_count = 0
 
@@ -58,7 +74,7 @@ def foreach(
         return f"Item #{index} of {endpoint_url}?{params}"
 
     while True:
-        items = get_json(
+        data = get_json(
             endpoint_url,
             params={
                 "skip": item_count,
@@ -67,9 +83,16 @@ def foreach(
             cache=cache,
         )
 
+        if isinstance(data, dict):
+            # Unwrap the items list.
+            items = data.get(items_key)
+        else:
+            items = data
+
         if not isinstance(items, list):
             raise TypeError(
-                f"openapi_client.foreach expects a response with a list of items, got {items}"
+                "openapi_client.foreach expects a response with a list of items, got"
+                f" {data}"
             )
 
         if len(items) == 0:
@@ -81,6 +104,7 @@ def foreach(
                 item_func,
                 notification,
                 lambda: _item_notification_info(index),
+                func_kwargs,
             )
 
             item_count = item_count + 1
@@ -90,12 +114,17 @@ def foreach(
                         notification.append(f"max_items={max_items} limit reached.")
                     return
 
+        if "totalResults" not in data or "itemsPerPage" not in data:
+            # Exit if data is not paginated.
+            return
+
 
 def get(
     endpoint_url: str,
-    item_func: Callable[[Dict, Optional[TaskNotification]], None],
+    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
     notification: Optional[TaskNotification],
     cache: Optional[JsonResponseCache],
+    func_kwargs: Optional[dict] = None,
 ):
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.
@@ -115,4 +144,5 @@ def get(
         item_func,
         notification,
         lambda: endpoint_url,
+        func_kwargs,
     )

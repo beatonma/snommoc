@@ -1,5 +1,9 @@
+from datetime import datetime
+from io import StringIO
 from unittest import skipIf, skipUnless
+from unittest.mock import Mock, patch
 
+import django.core.management
 from django.db import OperationalError
 from django.http import HttpResponse
 from django.test import TestCase
@@ -7,6 +11,7 @@ from rest_framework import status
 
 from basetest.args import RUNTESTS_CLARGS
 from util.models.generics import BaseModelMixin, get_concrete_models
+from util.time import coerce_timezone
 
 
 class DirtyTestException(Exception):
@@ -17,6 +22,11 @@ class DirtyTestException(Exception):
 
 class BaseTestCase(TestCase):
     maxDiff = None
+
+    def tearDown(self) -> None:
+        check_instances: bool = RUNTESTS_CLARGS.fragile
+        if check_instances:
+            self._check_cleanup()
 
     def delete_instances_of(
         self,
@@ -39,22 +49,32 @@ class BaseTestCase(TestCase):
         Throws DirtyTestException if any instances are found."""
 
         all_models = get_concrete_models(BaseModelMixin)
+        existing_instances = []
         for M in all_models:
             try:
                 instances = M.objects.all()
-                if instances.count() > 0:
-                    raise DirtyTestException(
-                        f"Instance(s) of model {M} still exists! {instances}"
-                    )
+                count = instances.count()
+                if count > 0:
+                    existing_instances.append(M)
             except OperationalError:
                 # Model does not exist in the module under test
                 pass
+
+        if existing_instances:
+            _nl = "\n"
+            raise DirtyTestException(
+                "Model instances have not been cleaned up properly:"
+                f"\n{_nl.join([f'- {M}' for M in existing_instances])}"
+            )
 
     def assertEqualIgnoreCase(self, first: str, second: str, msg=None):
         self.assertEqual(first.lower(), second.lower(), msg=msg)
 
     def assertLengthEquals(self, collection, expected_length: int, msg=None):
         self.assertEqual(len(collection), expected_length, msg=msg)
+
+    def assertDateTimeEqual(self, actual: datetime, expected: datetime, msg=None):
+        self.assertEqual(actual, coerce_timezone(expected), msg=msg)
 
     def assertNoneCreated(self, model_class, msg=None):
         self.assertEqual(model_class.objects.all().count(), 0, msg=msg)
@@ -68,7 +88,8 @@ class BaseTestCase(TestCase):
 
         if len(first) != len(second):
             raise AssertionError(
-                f"assertContentsEqual failed: Lists have different lengths [{len(first)} != {len(second)}]"
+                "assertContentsEqual failed: Lists have different lengths"
+                f" [{len(first)} != {len(second)}]"
             )
 
         def appearances(item, lst) -> int:
@@ -130,6 +151,47 @@ class LocalApiTestCase(LocalTestCase):
 
     def assertIsJsonResponse(self, response: HttpResponse):
         self.assertEqual(response["Content-Type"], "application/json")
+
+
+class LocalManagementTestCase(LocalTestCase):
+    """Tests for manage.py commands."""
+
+    command = None
+
+    def call_command(self, *args, instant: bool = True, **kwargs) -> str:
+        from django.core.management import CommandError, call_command
+
+        if self.command is None:
+            raise NotImplementedError("LocalManagementTestCase must set self.command!")
+
+        print(
+            f"Running `manage.py {self.command} args={args} kwargs={kwargs}"
+            f" {'-instant' if instant else ''}`"
+        )
+
+        out = StringIO()
+        try:
+            # Bypass @lru_cache decorator on get_commands to make sure we can
+            # find commands for the current state of settings.INSTALLED_APPS.
+            with patch.object(
+                django.core.management,
+                "get_commands",
+                side_effect=Mock(wraps=django.core.management.get_commands.__wrapped__),
+            ):
+                call_command(
+                    self.command,
+                    *args,
+                    stdout=out,
+                    stderr=StringIO(),
+                    instant=instant,
+                    **kwargs,
+                )
+
+        except CommandError as e:
+            print(e)
+            raise e
+
+        return out.getvalue()
 
 
 @skipUnless(

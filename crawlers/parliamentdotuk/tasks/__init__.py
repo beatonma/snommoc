@@ -3,7 +3,6 @@ from celery import shared_task
 from notifications.models.task_notification import task_notification
 from repository.models import UnlinkedConstituency
 from .lda import (
-    update_bills,
     update_commons_divisions,
     update_constituencies,
     update_election_results,

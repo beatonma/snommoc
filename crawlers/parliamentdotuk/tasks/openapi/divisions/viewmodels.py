@@ -1,11 +1,71 @@
+"""
+Viewmodels for parsing responses from Division OpenAPI endpoints.
+"""
+
 from dataclasses import dataclass
+from datetime import date, datetime
 from typing import List, Optional
+
+from crawlers.parliamentdotuk.tasks.util.coercion import (
+    coerce_to_date,
+    coerce_to_datetime,
+)
+
+
+@dataclass
+class DivisionMemberViewModel:
+    """
+    Schema definition: MemberViewModel from https://lordsvotes-api.parliament.uk/index.html
+    """
+
+    memberId: int
+    name: Optional[str]
+
+    """
+    Sortable name
+    """
+    listAs: Optional[str]
+
+    """
+    Type of Lord e.g. 'Life peer', 'Bishops'
+    """
+    memberFrom: Optional[str]
+    party: Optional[str]
+    partyColour: Optional[str]
+    partyAbbreviation: Optional[str]
+    partyIsMainParty: bool
 
 
 class DivisionViewModel:
     """
     Schema definition: DivisionViewModel from https://lordsvotes-api.parliament.uk/index.html
     """
+
+    divisionId: int
+    date: date
+    number: int
+    notes: Optional[str]
+    title: Optional[str]
+    isWhipped: bool
+    isGovernmentContent: bool
+    authoritativeContentCount: int
+    authoritativeNotContentCount: int
+    divisionHadTellers: bool
+    tellerContentCount: int
+    tellerNotContentCount: int
+    memberContentCount: int
+    memberNotContentCount: int
+    sponsoringMemberId: Optional[int]
+    isHouse: Optional[bool]
+    amendmentMotionNotes: Optional[str]
+    isGovernmentWin: Optional[bool]
+    remoteVotingStart: Optional[datetime]
+    remoteVotingEnd: Optional[datetime]
+    divisionWasExclusivelyRemote: bool
+    contentTellers: Optional[List[DivisionMemberViewModel]]
+    notContentTellers: Optional[List[DivisionMemberViewModel]]
+    contents: Optional[List[DivisionMemberViewModel]]
+    notContents: Optional[List[DivisionMemberViewModel]]
 
     def __init__(
         self,
@@ -30,10 +90,10 @@ class DivisionViewModel:
         remoteVotingStart: Optional[str],
         remoteVotingEnd: Optional[str],
         divisionWasExclusivelyRemote: bool,
-        contentTellers: Optional[List["DivisionMemberViewModel"]],
-        notContentTellers: Optional[List["DivisionMemberViewModel"]],
-        contents: Optional[List["DivisionMemberViewModel"]],
-        notContents: Optional[List["DivisionMemberViewModel"]],
+        contentTellers: Optional[List[dict]],
+        notContentTellers: Optional[List[dict]],
+        contents: Optional[List[dict]],
+        notContents: Optional[List[dict]],
     ):
         """
         :param divisionId:
@@ -67,7 +127,7 @@ class DivisionViewModel:
         :param notContents:
         """
         self.divisionId = divisionId
-        self.date = date
+        self.date = coerce_to_date(date)
         self.number = number
         self.notes = notes
         self.title = title
@@ -84,8 +144,8 @@ class DivisionViewModel:
         self.isHouse = isHouse
         self.amendmentMotionNotes = amendmentMotionNotes
         self.isGovernmentWin = isGovernmentWin
-        self.remoteVotingStart = remoteVotingStart
-        self.remoteVotingEnd = remoteVotingEnd
+        self.remoteVotingStart = coerce_to_datetime(remoteVotingStart)
+        self.remoteVotingEnd = coerce_to_datetime(remoteVotingEnd)
         self.divisionWasExclusivelyRemote = divisionWasExclusivelyRemote
 
         self.contentTellers = [DivisionMemberViewModel(**x) for x in contentTellers]
@@ -94,27 +154,3 @@ class DivisionViewModel:
         ]
         self.contents = [DivisionMemberViewModel(**x) for x in contents]
         self.notContents = [DivisionMemberViewModel(**x) for x in notContents]
-
-
-@dataclass
-class DivisionMemberViewModel:
-    """
-    Schema definition: MemberViewModel from https://lordsvotes-api.parliament.uk/index.html
-    """
-
-    memberId: int
-    name: Optional[str]
-
-    """
-    Sortable name
-    """
-    listAs: Optional[str]
-
-    """
-    Type of Lord e.g. 'Life peer', 'Bishops'
-    """
-    memberFrom: Optional[str]
-    party: Optional[str]
-    partyColour: Optional[str]
-    partyAbbreviation: Optional[str]
-    partyIsMainParty: bool

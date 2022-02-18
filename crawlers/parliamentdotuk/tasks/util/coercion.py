@@ -6,9 +6,8 @@ from typing import Optional
 
 import dateutil
 from dateutil.parser import ParserError
-from django.utils import timezone
 
-from util.time import year_only_date
+from util.time import coerce_timezone, year_only_date
 
 
 def coerce_to_list(obj) -> list:
@@ -76,9 +75,6 @@ def coerce_to_date(value) -> Optional[datetime.date]:
 def coerce_to_datetime(value) -> Optional[datetime.datetime]:
     try:
         dt = dateutil.parser.parse(value)
-        if timezone.is_naive(dt):
-            return timezone.make_aware(dt, timezone.timezone.utc)
-        else:
-            return dt
+        return coerce_timezone(dt)
     except (AttributeError, OverflowError, ParserError, TypeError, ValueError):
         pass

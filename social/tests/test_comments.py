@@ -171,7 +171,9 @@ class CommentTests(SocialTestCase):
             reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: 'blah <a href="https://snommoc.org/">just the text</a><script>',
+                contract.COMMENT_TEXT: (
+                    'blah <a href="https://snommoc.org/">just the text</a><script>'
+                ),
             },
         )
 
@@ -185,14 +187,16 @@ class CommentTests(SocialTestCase):
             reverse(CommentTests.VIEW_NAME, kwargs={"pk": 4837}),
             {
                 contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: '<a href="https://snommoc.org/">This should be flagged for review</a><script>',
+                contract.COMMENT_TEXT: (
+                    '<a href="https://snommoc.org/">This should be flagged for'
+                    " review</a><script>"
+                ),
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         comment: Comment = Comment.objects.first()
-        print(comment)
         self.assertEqual(comment.flagged, True)
 
     def test_post_comment_with_no_html_is_not_flagged(self):

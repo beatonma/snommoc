@@ -6,7 +6,7 @@ from crawlers.parliamentdotuk.tasks import (
     update_member_portraits,
     update_profiles_for_active_members,
 )
-from crawlers.parliamentdotuk.tasks.openapi.bills import update_bills
+from crawlers.parliamentdotuk.tasks.openapi.bills.bills import update_bills
 from dashboard.views.dashboard import StaffView
 
 

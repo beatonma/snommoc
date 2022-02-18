@@ -70,7 +70,7 @@ class BillStageSitting(ParliamentDotUkMixin, BaseModel):
 
 
 class BillTypeCategory(BaseModel):
-    name = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -153,7 +153,7 @@ class BillPublication(ParliamentDotUkMixin, BaseModel):
         on_delete=models.CASCADE,
         related_name="+",
     )
-    title = models.CharField(max_length=255)
+    title = models.TextField()
     display_date = models.DateTimeField()
 
     def __str__(self):
@@ -167,7 +167,7 @@ class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
         related_name="links",
     )
 
-    title = models.CharField(max_length=255)
+    title = models.TextField()
     url = models.URLField()
     content_type = models.CharField(max_length=64)
 

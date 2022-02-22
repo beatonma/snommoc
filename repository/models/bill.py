@@ -168,8 +168,8 @@ class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
     )
 
     title = models.TextField()
-    url = models.URLField()
-    content_type = models.CharField(max_length=64)
+    url = models.URLField(max_length=500)
+    content_type = models.CharField(max_length=128)
 
     def __str__(self):
         return ellipsise(self.title)

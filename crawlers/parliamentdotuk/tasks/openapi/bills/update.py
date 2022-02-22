@@ -35,6 +35,10 @@ def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
     stage_type = BillStageType.objects.get(parliamentdotuk=stage.stageId)
     house, _ = House.objects.get_or_create(name=stage.house.name)
 
+    session, _ = ParliamentarySession.objects.get_or_create(
+        parliamentdotuk=stage.sessionId
+    )
+
     current_stage, _ = BillStage.objects.update_or_create(
         parliamentdotuk=stage.id,
         defaults={
@@ -42,7 +46,7 @@ def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
             "description": stage.description,
             "abbreviation": stage.abbreviation,
             "house": house,
-            "session_id": stage.sessionId,
+            "session": session,
             "sort_order": stage.sortOrder,
             "stage_type": stage_type,
         },
@@ -51,28 +55,50 @@ def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
 
 
 def _get_sponsors(api_bill: viewmodels.Bill) -> List[BillSponsor]:
-    sponsors = []
-    for sponsor in api_bill.sponsors:
-        organisation = None
-        if sponsor.organisation:
-            organisation, _ = Organisation.objects.update_or_create(
-                name=sponsor.organisation.name,
-                defaults={
-                    "url": sponsor.organisation.url,
-                },
-            )
+    return [
+        _get_sponsor(api_bill.billId, sponsor)
+        for sponsor in api_bill.sponsors
+        if sponsor is not None
+    ]
 
-        x, _ = BillSponsor.objects.update_or_create(
-            bill_id=api_bill.billId,
-            member_id=sponsor.member.memberId,
+
+def _get_sponsor(
+    bill_id: int, api_sponsor: viewmodels.Sponsor
+) -> Optional[BillSponsor]:
+    organisation = None
+    if api_sponsor.organisation:
+        organisation, _ = Organisation.objects.update_or_create(
+            name=api_sponsor.organisation.name,
             defaults={
-                "organisation": organisation,
-                "sort_order": sponsor.sortOrder,
+                "url": api_sponsor.organisation.url,
             },
         )
-        sponsors.append(x)
 
-    return sponsors
+    member_id = api_sponsor.member.memberId if api_sponsor.member else None
+    if member_id:
+        db_sponsor, _ = BillSponsor.objects.update_or_create(
+            member_id=member_id,
+            bill_id=bill_id,
+            defaults={
+                "organisation": organisation,
+                "sort_order": api_sponsor.sortOrder,
+            },
+        )
+
+    elif organisation:
+        db_sponsor, _ = BillSponsor.objects.update_or_create(
+            bill_id=bill_id,
+            organisation=organisation,
+            defaults={
+                "sort_order": api_sponsor.sortOrder,
+            },
+        )
+
+    else:
+        # Neither member nor organisation provided.
+        return None
+
+    return db_sponsor
 
 
 def _get_promoters(api_bill: viewmodels.Bill) -> List[Organisation]:
@@ -85,6 +111,7 @@ def _get_promoters(api_bill: viewmodels.Bill) -> List[Organisation]:
             },
         )
         promoters.append(organisation)
+
     return promoters
 
 

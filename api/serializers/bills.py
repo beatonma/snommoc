@@ -89,6 +89,7 @@ class _BillTypeSerializer(DetailedModelSerializer):
     class Meta:
         model = BillType
         fields = (
+            contract.PARLIAMENTDOTUK,
             contract.NAME,
             contract.DESCRIPTION,
             contract.CATEGORY,

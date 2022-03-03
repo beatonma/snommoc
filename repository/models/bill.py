@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 from phonenumber_field.modelfields import PhoneNumberField
 
 from repository.models.mixins import (
@@ -127,6 +128,14 @@ class BillSponsor(BaseModel):
 
     def __str__(self):
         return f"{self.member}|{self.organisation}: {self.bill}"
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=("bill", "member", "organisation"),
+                name="unique_billsponsor_per_bill",
+            )
+        ]
 
 
 class BillPublicationType(ParliamentDotUkMixin, BaseModel):

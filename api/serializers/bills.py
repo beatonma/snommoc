@@ -46,12 +46,14 @@ class InlineBillSerializer(InlineModelSerializer):
 
 
 class _BillSponsorSerializer(DetailedModelSerializer):
+    id = serializers.IntegerField(source="pk")
     profile = SimpleProfileSerializer(source="member")
     organisation = _OrganisationSerializer()
 
     class Meta:
         model = BillSponsor
         fields = (
+            contract.ID,
             contract.PROFILE,
             contract.ORGANISATION,
         )

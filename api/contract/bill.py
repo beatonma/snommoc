@@ -2,6 +2,7 @@ BILL_SITTINGS = "sittings"
 BILL_STAGES = "stages"
 BILL_SPONSORS = "sponsors"
 BILL_PUBLICATIONS = "publications"
+BILL_SITTING_LATEST = "sitting_latest"
 
 # New OpenAPI
 BILL_CURRENT_HOUSE = "current_house"

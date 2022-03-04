@@ -69,6 +69,9 @@ class BillStageSitting(ParliamentDotUkMixin, BaseModel):
     def __str__(self):
         return f"{self.stage} [{self.date}]"
 
+    class Meta:
+        ordering = ["-date"]
+
 
 class BillTypeCategory(BaseModel):
     name = models.CharField(max_length=255, unique=True)

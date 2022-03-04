@@ -102,9 +102,13 @@ class _BillStageSerializer(DetailedModelSerializer):
     sittings = serializers.SerializerMethodField()
     session = _SessionSerializer()
     house = serializers.CharField(source="house.name")
+    sitting_latest = serializers.SerializerMethodField()
 
     def get_sittings(self, stage: BillStage):
         return stage.sittings.values_list("date", flat=True)
+
+    def get_sitting_latest(self, stage: BillStage):
+        return stage.sittings.order_by("-date").first().date
 
     class Meta:
         model = BillStage
@@ -113,6 +117,7 @@ class _BillStageSerializer(DetailedModelSerializer):
             contract.DESCRIPTION,
             contract.HOUSE,
             contract.SESSION,
+            contract.BILL_SITTING_LATEST,
             contract.BILL_SITTINGS,
         )
 

@@ -105,10 +105,11 @@ class _BillStageSerializer(DetailedModelSerializer):
     sitting_latest = serializers.SerializerMethodField()
 
     def get_sittings(self, stage: BillStage):
-        return stage.sittings.values_list("date", flat=True)
+        sittings = stage.sittings.values_list("date", flat=True)
+        return map(lambda x: x.date(), sittings)
 
     def get_sitting_latest(self, stage: BillStage):
-        return stage.sittings.order_by("-date").first().date
+        return stage.sittings.order_by("-date").first().date.date()
 
     class Meta:
         model = BillStage

@@ -71,8 +71,11 @@ class _BillPublicationLinkSerializer(DetailedModelSerializer):
 
 class _BillPublicationSerializer(DetailedModelSerializer):
     links = _BillPublicationLinkSerializer(many=True)
-    date = serializers.DateTimeField(source="display_date")
+    date = serializers.SerializerMethodField()
     type = serializers.CharField(source="publication_type.name")
+
+    def get_date(self, publication: BillPublication):
+        return publication.display_date.date()
 
     class Meta:
         model = BillPublication

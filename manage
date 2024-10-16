@@ -1,0 +1,186 @@
+#!/usr/bin/env bash
+
+# cd into location of script to ensure relative paths resolve correctly.
+BASE_DIR="$(dirname "$0")"
+cd "$BASE_DIR" || exit 1
+
+flavor="$1"  # dev | production
+shift
+
+COMPOSE_PRODUCTION="compose.production.yml"
+COMPOSE_DEV="compose.dev.yml"
+
+DOT_ENV_PRODUCTION=".env"
+DOT_ENV_DEV=".dev.env"
+
+compose_file="NOT_SET"
+env_file="NOT_SET"
+
+log() {
+  echo "$*" >"$(tty)"
+}
+
+show_help() {
+  log './manage (dev | production | certbot)'
+  log ''
+  log 'dev ( build | up | down ) [CONTAINER]'
+  log 'production ( build | up | down ) [CONTAINER]'
+  log 'certbot ( init | renew )'
+}
+command_error() {
+  log "Unhandled arguments '$*'"
+  log ''
+  show_help
+  log ''
+  exit 1
+}
+
+run_command() {
+  log "COMMAND: '$*'"
+  "$@"
+}
+
+docker_compose() {
+  run_command docker compose --env-file "$env_file" -f "$compose_file" "$@"
+}
+
+docker_compose_build() {
+  docker_compose --progress=plain build "$@"
+}
+
+production_build() {
+  source "$DOT_ENV_PRODUCTION"
+  docker_compose_build \
+    --build-arg SITE_NAME="$SITE_NAME" \
+    "$@"
+}
+
+docker_certbot() {
+  run_command docker run --rm \
+    --name certbot_renew \
+    --volume letsencrypt_keys:/etc/letsencrypt:rw \
+    --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
+    --entrypoint "" \
+    -p 80:80 \
+    certbot/certbot:latest \
+    "$@"
+}
+certbot_init() {
+  # Run this before first run of production server
+  docker_certbot sh -c "certbot certonly --standalone $*"
+}
+certbot_renew() {
+  # Run this periodically to update.
+  # Server should be up for this but may need restarted once it's done
+  docker_certbot sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
+}
+certbot() {
+  source "$DOT_ENV_PRODUCTION"
+  certbot_args_list=(
+    "-d ${DOMAIN_NAME}"
+    "-d www.${DOMAIN_NAME}"
+    "--email ${DOMAIN_EMAIL}"
+    "--rsa-key-size 4096"
+    "--keep-until-expiring"
+    "--agree-tos"
+    "--non-interactive"
+  )
+  # Concat list to string
+  certbot_args=$(printf "%s " "${certbot_args_list[@]}")
+
+  command="$1"
+  shift
+  case "$command" in
+  "init")
+    certbot_init "$certbot_args"
+    exit 0
+    ;;
+  "renew")
+    certbot_renew "$certbot_args"
+    exit 0
+    ;;
+  *)
+    command_error "$*"
+    ;;
+  esac
+}
+
+create_superuser() {
+  container_name="NOT_SET"
+  if [ "$flavor" = "dev" ]; then
+    container_name="dev_django"
+  elif [ "$flavor" = "production" ]; then
+    container_name="django"
+  fi
+
+  run_command docker exec -it "$container_name" python manage.py createsuperuser
+}
+
+setenv() {
+  env_file="$*"
+  source "$env_file"
+}
+
+dev() {
+  setenv "$DOT_ENV_DEV"
+  case "$1" in
+  "up" | "down" | "--")
+#    (cd "$BASE_DIR/frontend" || exit 1; npm install)
+    docker_compose "$@"
+    exit 0
+    ;;
+  "build")
+#    (cd "$BASE_DIR/frontend" || exit 1; npm install)
+    shift
+    docker_compose_build "$@"
+    exit 0
+    ;;
+  "create_superuser")
+    create_superuser
+    exit 0
+    ;;
+  *)
+    command_error "$*"
+    ;;
+  esac
+}
+
+production() {
+  setenv "$DOT_ENV_PRODUCTION"
+  case "$1" in
+  "build")
+    production_build "$@"
+    exit 0
+    ;;
+  "up" | "down" | "--")
+    docker_compose "$@"
+    exit 0
+    ;;
+  "create_superuser")
+    create_superuser
+    exit 0
+    ;;
+  *)
+    command_error "$*"
+    ;;
+  esac
+}
+case $flavor in
+"production")
+  compose_file=$COMPOSE_PRODUCTION
+  production "$@"
+  exit 0
+  ;;
+"dev")
+  compose_file=$COMPOSE_DEV
+  dev "$@"
+  exit 0
+  ;;
+"certbot")
+  certbot "$@"
+  exit 0
+  ;;
+*)
+  command_error "$flavor"
+  ;;
+esac

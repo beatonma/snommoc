@@ -1,0 +1,17 @@
+*.gdignore
+*.gitbundle
+*.sqlite
+*.sqlite3
+.*.json
+*.tar.gz
+.coverage
+.idea/
+.sass-cache/
+/static/
+__pycache__/
+dashboard/webapp/
+env/
+raw_data/
+snommoc/local_*
+uwsgi.ini
+cache/

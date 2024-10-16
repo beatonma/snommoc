@@ -1,0 +1,50 @@
+name: snommoc
+
+x-common: &common
+  env_file:
+    - ".dev.env"
+  restart: unless-stopped
+
+x-dockerfile: &dockerfile
+  dockerfile: ./docker/Dockerfile.dev
+  context: .
+
+x-health: &healthcheck
+  start_period: 10s
+  interval: 30s
+  timeout: 5s
+  retries: 5
+
+volumes:
+    postgres_snommoc:
+        name: postgres_snommoc
+
+services:
+  postgres:
+    <<: *common
+    image: postgres:17-alpine
+    container_name: postgres_snommoc
+    volumes:
+      - postgres_snommoc:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: pg_isready
+      <<: *healthcheck
+
+  django:
+    <<: *common
+    build:
+      <<: *dockerfile
+      target: django
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/django:ro
+      - ./runtime-dev:/tmp/runtime:rw
+      - ./runtime-dev/log:/var/log/snommoc:rw
+      - ./runtime-dev/media:/var/www/media:rw
+      - ./runtime-dev/static:/var/www/static:rw

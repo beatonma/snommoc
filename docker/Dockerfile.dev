@@ -1,0 +1,14 @@
+ARG PYTHON_VERSION=3.12
+
+################################################################################
+FROM python:${PYTHON_VERSION}-alpine AS django
+ENV PYTHONBUFFERED 1
+
+WORKDIR /django/
+COPY ../backend/requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
+
+EXPOSE 8000
+COPY ./docker/django-entrypoint.dev.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

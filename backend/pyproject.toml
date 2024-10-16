@@ -1,0 +1,4 @@
+[tool.vulture]
+sort_by_size = true
+#min_confidence = 80
+ignore_names = ["Meta", "serializer_class", "get_object"]

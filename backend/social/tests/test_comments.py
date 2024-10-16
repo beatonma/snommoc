@@ -5,9 +5,8 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from django.urls import reverse
-from rest_framework import status
-
 from repository.models import Person
+from rest_framework import status
 from social.models import Comment
 from social.models.token import UserToken
 from social.tests.testcase import SocialTestCase
@@ -215,12 +214,6 @@ class CommentTests(SocialTestCase):
 
     def tearDown(self) -> None:
         self.delete_instances_of(
-            # ApiKey,
-            # Comment,
-            # Comment,
             Person,
             *SocialTestCase.social_models,
-            # UserToken,
-            # check_instances=False,
         )
-        # super().tearDown()

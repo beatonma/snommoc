@@ -3,18 +3,9 @@ import logging
 from abc import abstractmethod
 from typing import Dict
 
-from django.contrib.contenttypes.models import ContentType
-from django.http import (
-    HttpResponse,
-    JsonResponse,
-)
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-
 from api.views.viewsets import KeyRequiredViewSet
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponse, JsonResponse
 from repository.models import (
     Bill,
     CommonsDivision,
@@ -23,17 +14,16 @@ from repository.models import (
     LordsDivision,
     Person,
 )
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 from social.models import Comment
 from social.models.mixins import get_target_kwargs
 from social.models.token import UserToken
-from social.models.votes import (
-    Vote,
-    VoteType,
-)
-from social.serializers.comments import (
-    CommentSerializer,
-    PostCommentSerializer,
-)
+from social.models.votes import Vote, VoteType
+from social.serializers.comments import CommentSerializer, PostCommentSerializer
 from social.serializers.social import SocialSerializer
 from social.serializers.votes import PostVoteSerializer
 from social.views import contract
@@ -68,10 +58,6 @@ class _AbstractSocialViewSet(KeyRequiredViewSet, ModelViewSet):
 
     def get_queryset(self):
         return None
-
-    def get_serializer_class(self):
-        # TODO This should not be called but GET /comments/ does call it.
-        return CommentSerializer
 
     def get_queryset_for_target(self, Model):
         return Model.objects.filter(

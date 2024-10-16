@@ -1,29 +1,17 @@
 import os
 import uuid
-
 from datetime import timedelta
 
 import util.settings_contract as contract
+from snommoc.settings import INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF  # noqa
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
-NOSE_ARGS = [
-    "--with-spec",
-    "--spec-color",
-    "--logging-clear-handlers",
-    "--traverse-namespace",  # Required since Python 3.8
-    "--exe",
-]
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEST_RUNNER = "basetest.runner.PytestTestRunner"
 
 ALLOWED_HOSTS = ["localhost"]
-
+ADMIN_URL = "/test-admin/"
+DASHBOARD_URL = "/test-dashboard/"
 SECRET_KEY = "some-test-key"
-INSTALLED_APPS = [
-    "django.contrib.contenttypes",
-]
-
-MIDDLEWARE = []
 
 DATABASES = {
     "default": {
@@ -39,15 +27,12 @@ PASSWORD_HASHERS = [
 LANGUAGE_CODE = "en-gb"
 TIME_ZONE = "UTC"
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 TEST_API_KEY = uuid.uuid4()
 HTTP_REQUEST_HEADERS = {}
 HTTP_REQUEST_HEADERS_JSON = {}
 
-
-CRAWLER_CACHE_ROOT = "/tmp/snommoc/test/crawler_cache/"
 
 SNOMMOC = {
     contract.SOCIAL: {
@@ -65,5 +50,6 @@ SNOMMOC = {
     contract.CACHE: {
         contract.CACHE_CRAWLER_TTL: int(timedelta(days=10_000).total_seconds()),
         contract.CACHE_WIKI_TTL: int(timedelta(days=5).total_seconds()),
+        contract.CRAWLER_CACHE_ROOT: "/tmp/snommoc/test/crawler_cache/",
     },
 }

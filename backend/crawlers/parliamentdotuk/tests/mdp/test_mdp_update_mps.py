@@ -184,9 +184,9 @@ class ResponseDataTest(LocalTestCase):
     def test_nested_get_value(self):
         responsedata = ResponseData(EXAMPLE_JSON_SINGLE_MP)
 
-        self.assertEquals(responsedata._get_value("@Member_Id"), "172")
-        self.assertEquals(responsedata._get_value("Party.#text"), "Labour")
-        self.assertEquals(
+        self.assertEqual(responsedata._get_value("@Member_Id"), "172")
+        self.assertEqual(responsedata._get_value("Party.#text"), "Labour")
+        self.assertEqual(
             responsedata._get_value("CurrentStatus.StartDate"), "2019-12-12T00:00:00"
         )
         self.assertIsNone(responsedata._get_value("DateOfDeath"))
@@ -267,7 +267,7 @@ class MdpUpdateMpsTest(LocalTestCase):
 
         people = Person.objects.all()
 
-        self.assertEquals(len(people), 3)
+        self.assertEqual(len(people), 3)
         diane_abbot: Person = people.get(parliamentdotuk=172)
         self._assert_values_for_diane_abbott(diane_abbot)
 

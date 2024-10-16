@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 class AsyncCommand(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
-            "-instant",
+            "-sync",
             action="store_true",
             default=False,
             help="Run the task synchronously.",
@@ -44,7 +44,7 @@ class AsyncCommand(BaseCommand):
         # Inject -force management argument to the receiving task as force_update.
         func_kwargs["force_update"] = command_options.get("force") or None
 
-        if command_options["instant"]:
+        if command_options["sync"]:
             log.info(
                 f"Launching function `{func}` synchronously with kwargs={func_kwargs}."
             )

@@ -1,9 +1,3 @@
-from django.urls import (
-    include,
-    path,
-)
-from rest_framework.routers import SimpleRouter
-
 from api import endpoints
 from api.views import PingView
 from api.views.viewsets.bills import BillViewSet
@@ -11,15 +5,8 @@ from api.views.viewsets.constituency import (
     ConstituencyResultDetailViewSet,
     ConstituencyViewSet,
 )
-from api.views.viewsets.divisions import (
-    CommonsDivisionViewSet,
-    LordsDivisionViewSet,
-)
-from api.views.viewsets.member import (
-    MemberViewSet,
-    MemberVotesViewSet,
-    ProfileViewSet,
-)
+from api.views.viewsets.divisions import CommonsDivisionViewSet, LordsDivisionViewSet
+from api.views.viewsets.member import MemberViewSet, MemberVotesViewSet, ProfileViewSet
 from api.views.viewsets.party import PartyViewSet
 from api.views.viewsets.zeitgeist import ZeitgeistViewSet
 from common.network.routers import (
@@ -28,6 +15,11 @@ from common.network.routers import (
     ListOrDetailRouter,
     SingletonRouter,
 )
+from django.urls import include, path
+from ninja import NinjaAPI
+from rest_framework.routers import SimpleRouter
+
+ninja_api = NinjaAPI()
 
 
 def _register_all(router: SimpleRouter, views) -> SimpleRouter:
@@ -66,6 +58,7 @@ routers = [
 ]
 
 urlpatterns = [
+    path("v2/", ninja_api.urls),
     path(endpoints.PING, PingView.as_view(), name=endpoints.PING),
     path(
         endpoints.CONSTITUENCY_RESULTS,

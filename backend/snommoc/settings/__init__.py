@@ -51,10 +51,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# STATICFILES_DIRS = (
-#     os.path.join("rest_framework/static/"),
-#     os.path.join("dashboard/static/"),
-# )
 
 # Internal settings
 # API Crawler
@@ -85,4 +81,10 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "api.pagination.DefaultResultsSetPagination",
     "PAGE_SIZE": 100,
+}
+
+
+# Debug
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda request: environment.DEBUG and not environment.TEST,
 }

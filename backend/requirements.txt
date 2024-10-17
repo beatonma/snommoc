@@ -7,6 +7,7 @@ pytest-django
 nh3~=0.2
 celery~=5.4
 Django~=5.1
+django-debug-toolbar~=4.4
 django-extensions~=3.2
 django-filter~=24.3
 django-phonenumber-field~=8.0

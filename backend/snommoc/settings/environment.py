@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import sys
 from enum import StrEnum
 from pathlib import Path
 
@@ -47,10 +48,12 @@ class DatabaseEngine(StrEnum):
     SQLITE3 = "sqlite3"
 
 
+DEBUG: bool = _env_bool("DEBUG", False)
+TEST: bool = "test" in sys.argv
+
 # Core
 ADMIN_URL: str = _env_str("ADMIN_URL", "/dev-admin/")
 BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
-DEBUG: bool = _env_bool("DEBUG", False)
 SECRET_KEY: str = _env_str("SECRET_KEY")
 DOMAIN_NAME: str = _env_str("DOMAIN_NAME")  # example.org
 SITE_NAME: str = _env_str("SITE_NAME", DOMAIN_NAME or "untitled")

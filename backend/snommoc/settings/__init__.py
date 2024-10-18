@@ -83,6 +83,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
 }
 
+NINJA_PAGINATION_PER_PAGE = 25
+NINJA_PAGINATION_CLASS = "ninja.pagination.LimitOffsetPagination"
+
 
 # Debug
 DEBUG_TOOLBAR_CONFIG = {

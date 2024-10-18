@@ -1,4 +1,5 @@
 from api import endpoints
+from api.routers import members_router
 from api.views import PingView
 from api.views.viewsets.bills import BillViewSet
 from api.views.viewsets.constituency import (
@@ -20,6 +21,7 @@ from ninja import NinjaAPI
 from rest_framework.routers import SimpleRouter
 
 ninja_api = NinjaAPI()
+ninja_api.add_router("/members/", members_router)
 
 
 def _register_all(router: SimpleRouter, views) -> SimpleRouter:
@@ -65,4 +67,5 @@ urlpatterns = [
         ConstituencyResultDetailViewSet.as_view({"get": "retrieve"}),
         name=endpoints.endpoint_name(endpoints.CONSTITUENCY_RESULTS),
     ),
-] + [path("", include(router.urls)) for router in routers]
+    *(path("", include(router.urls)) for router in routers),
+]

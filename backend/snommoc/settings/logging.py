@@ -54,5 +54,6 @@ else:
         "loggers": {
             **{app: _logger(logging.WARNING) for app in INSTALLED_DJANGO_APPS},
             **{app: _logger(logging.INFO) for app in INSTALLED_PROJECT_APPS},
+            "crawlers.network": _logger(logging.INFO),
         },
     }

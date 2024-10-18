@@ -3,17 +3,12 @@ from typing import Optional, Union
 from urllib.parse import urlparse
 
 import requests
+from common.network.rate_limit import rate_limit
+from crawlers.network import JsonResponseCache
+from crawlers.network.exceptions import HttpClientError, HttpNoContent, HttpServerError
 from django.conf import settings
 from requests import sessions
 from rest_framework import status
-
-from common.network.rate_limit import rate_limit
-from crawlers.network import JsonResponseCache
-from crawlers.network.exceptions import (
-    HttpClientError,
-    HttpNoContent,
-    HttpServerError,
-)
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +46,7 @@ def get_json(
     else:
         log.warning(f"No cache specified for call to '{url}'")
 
-    log.info(f"[using network] {encoded_url}")
+    log.info(f"GET {encoded_url}")
     with sessions.Session() as session:
         response = session.send(r)
 

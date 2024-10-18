@@ -1,5 +1,6 @@
 from typing import Callable, Dict, Optional
 
+import requests
 from crawlers.network import JsonResponseCache, get_json
 from crawlers.network.exceptions import HttpError
 from notifications.models import TaskNotification
@@ -73,50 +74,55 @@ def foreach(
 
         return f"Item #{index} of {endpoint_url}?{params}"
 
-    while True:
-        data = get_json(
-            endpoint_url,
-            params={
-                "skip": item_count,
-                "take": items_per_page,
-            },
-            cache=cache,
-        )
-
-        if isinstance(data, dict):
-            # Unwrap the items list.
-            items = data.get(items_key)
-        else:
-            items = data
-
-        if not isinstance(items, list):
-            raise TypeError(
-                "openapi_client.foreach expects a response with a list of items, got"
-                f" {data}"
+    with requests.Session() as session:
+        while True:
+            data = get_json(
+                endpoint_url,
+                params={
+                    "skip": item_count,
+                    "take": items_per_page,
+                },
+                cache=cache,
+                session=session,
             )
 
-        if len(items) == 0:
-            break
+            if isinstance(data, dict):
+                # Unwrap the items list.
+                items = data.get(items_key)
+            else:
+                items = data
 
-        for index, item in enumerate(items):
-            _apply_item_func(
-                item,
-                item_func,
-                notification,
-                lambda: _item_notification_info(index),
-                func_kwargs,
-            )
+            if not isinstance(items, list):
+                raise TypeError(
+                    "openapi_client.foreach expects a response with a list of items, got"
+                    f" {data}"
+                )
 
-            item_count = item_count + 1
-            if max_items is not None:
-                if item_count >= max_items:
-                    if notification:
-                        notification.append(f"max_items={max_items} limit reached.")
-                    return
+            if len(items) == 0:
+                break
 
-        if "totalResults" not in data or "itemsPerPage" not in data:
-            # Exit if data is not paginated.
-            return
+            for index, item in enumerate(items):
+                _apply_item_func(
+                    item,
+                    item_func,
+                    notification,
+                    lambda: _item_notification_info(index),
+                    func_kwargs,
+                )
+
+                item_count += 1
+                if max_items is not None:
+                    if item_count >= max_items:
+                        if notification:
+                            notification.append(f"max_items={max_items} limit reached.")
+                        return
+
+            if "totalResults" not in data or "itemsPerPage" not in data:
+                # Exit if data is not paginated.
+                break
+
+            if item_count >= data["totalResults"] or len(items) < items_per_page:
+                break
 
 
 def get(

@@ -1,6 +1,6 @@
-from django.contrib import admin
-
 from common.admin import BaseAdmin, register_models_to_default_admin
+from django.contrib import admin
+from django.db.models import QuerySet
 from repository.apps import RepositoryConfig
 from repository.models import (
     Constituency,
@@ -38,22 +38,14 @@ class RepositoryAdmin(BaseAdmin):
         "url",
     ]
 
-    default_readonly_fields = BaseAdmin.default_readonly_fields + [
-        "name",
-        "title",
-        "parliamentdotuk",
-        "label",
-        "date",
-        "start",
-        "end",
-    ]
+    editable_fields = []
 
-
-class ReadOnlyRepositoryAdmin(RepositoryAdmin):
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
         fields = model._meta.fields
-        self.readonly_fields = [x.name for x in fields]
+        self.readonly_fields = [
+            x.name for x in fields if x.name not in self.editable_fields
+        ]
 
 
 @admin.register(
@@ -93,15 +85,27 @@ class PersonAdmin(RepositoryAdmin):
         "name",
         "party",
     ]
+    list_display = [
+        "__str__",
+        "house",
+        "active",
+        "party",
+    ]
+    editable_fields = [
+        "wikipedia",
+    ]
 
-    def __init__(self, model, admin_site):
-        super().__init__(model, admin_site)
-        self.list_display = [
-            "__str__",
-            "house",
-            "active",
+    def get_queryset(self, request):
+        qs = self.model._default_manager.get_queryset()
+        qs: QuerySet = qs.select_related(
             "party",
-        ]
+            "house",
+        )
+
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+        return qs
 
 
-register_models_to_default_admin(RepositoryConfig.name, ReadOnlyRepositoryAdmin)
+register_models_to_default_admin(RepositoryConfig.name, RepositoryAdmin)

@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from common.admin import BaseAdmin, register_models_to_default_admin
+from django.contrib import admin
 from social.apps import SocialConfig
 from social.models import Comment
 
@@ -19,17 +18,6 @@ class SocialAdmin(BaseAdmin):
 
     default_ordering = [
         "modified_on",
-    ]
-
-    default_readonly_fields = BaseAdmin.default_readonly_fields + [
-        "deletion_requested_at",
-        "user",
-        "vote_type",
-        "text",
-        "token",
-        "previous_name",
-        "new_name",
-        "provider",
     ]
 
 

@@ -1,11 +1,6 @@
 from django.db import models
 from django.db.models import UniqueConstraint
-
-from repository.models.mixins import (
-    PeriodMixin,
-    ParliamentDotUkMixin,
-    BaseModel,
-)
+from repository.models.mixins import BaseModel, ParliamentDotUkMixin, PeriodMixin
 
 
 class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
@@ -36,7 +31,7 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
     )
 
     def __str__(self):
-        return f"{self.name} [{self.parliamentdotuk}] {self.start} - {self.end}, mp={self.mp}"
+        return f"{self.name} [{self.parliamentdotuk}] {self.describe_timespan()}"
 
     class Meta:
         verbose_name_plural = "Constituencies"

@@ -2,13 +2,8 @@ import datetime
 
 from django.db import models
 from django.db.models import Q
-
 from util.models.generics import BaseModelMixin
-from util.time import (
-    get_now,
-    in_range,
-    is_current,
-)
+from util.time import get_now, in_range, is_current
 
 
 class BaseModel(models.Model, BaseModelMixin):
@@ -36,12 +31,18 @@ class PeriodMixin(models.Model):
     start = models.DateField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
 
-    @property
     def is_current(self) -> bool:
         return is_current(self.start, self.end)
 
     def contains(self, other_date: datetime.date) -> bool:
         return in_range(other_date, self.start, self.end)
+
+    def describe_timespan(self) -> str:
+        if self.start and self.end:
+            return f"{self.start} - {self.end}"
+        if self.start:
+            return f"since {self.start}"
+        return ""
 
     @classmethod
     def get_date_in_period_filter(cls, date):

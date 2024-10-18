@@ -2,31 +2,20 @@ from datetime import datetime
 
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import (
-    Bill,
-    BillPublication,
-    BillStageType,
-    BillSummary,
-    House,
-)
-from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
-    DivisionViewModel,
-)
+    Bill, BillPublication, BillStageType, BillSummary, House)
+from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import \
+    LordsDivisionViewModel
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
-    BILL_DATA,
-    BILL_PUBLICATION_DATA,
-    BILL_STAGE_TYPE_DATA,
-    BILL_SUMMARY_DATA,
-)
-from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
-    LORDS_DIVISION_DATA,
-)
+    BILL_DATA, BILL_PUBLICATION_DATA, BILL_STAGE_TYPE_DATA, BILL_SUMMARY_DATA)
+from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import \
+    LORDS_DIVISION_DATA
 
 
 class ApiViewmodelTestCase(LocalTestCase):
     """Ensure data from the API constructs our models correctly."""
 
     def test_lordsdivision_viewmodels(self):
-        division = DivisionViewModel(**LORDS_DIVISION_DATA)
+        division = LordsDivisionViewModel(**LORDS_DIVISION_DATA)
 
         self.assertEqual(2613, division.divisionId)
         self.assertEqual(3, len(division.contents))

@@ -3,7 +3,7 @@ from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
-    DivisionViewModel,
+    LordsDivisionViewModel,
 )
 from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models.lords_division import (
@@ -19,7 +19,7 @@ def update_lords_division(
     notification: TaskNotification | None,
 ) -> None:
     """Signature: openapi_client.ItemFunc"""
-    data = DivisionViewModel(**data_dict)
+    data = LordsDivisionViewModel(**data_dict)
 
     sponsor = (
         get_member(pk=data.sponsoringMemberId) if data.sponsoringMemberId else None

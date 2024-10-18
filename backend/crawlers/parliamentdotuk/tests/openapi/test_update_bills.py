@@ -9,9 +9,7 @@ from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
     _update_bill_stage_type,
 )
 from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import _update_bill_type
-from crawlers.parliamentdotuk.tasks.openapi.bills.update import (
-    _update_bill,
-)
+from crawlers.parliamentdotuk.tasks.openapi.bills.update import update_bill
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_DATA,
     BILL_PUBLICATION_DATA,
@@ -67,7 +65,7 @@ class BillUpdateTests(LocalTestCase):
         create_sample_bill_stage_type(parliamentdotuk=11)
         create_sample_person(parliamentdotuk=1414, name="Mr Mark Hoban")
 
-        _update_bill(BILL_DATA, notification=None)
+        update_bill(BILL_DATA, notification=None)
 
         bill = Bill.objects.get(pk=836)
 

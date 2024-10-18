@@ -17,6 +17,7 @@ def _update_bill_stage_type(
     data: dict,
     notification: Optional[TaskNotification],
 ) -> None:
+    """Signature: openapi_client.ItemFunc"""
     stage = viewmodels.BillStageType(**data)
     house, _ = House.objects.get_or_create(name=stage.house.name)
 

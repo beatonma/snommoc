@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
@@ -14,8 +13,9 @@ log = logging.getLogger(__name__)
 
 def _update_bill_type(
     data: dict,
-    notification: Optional[TaskNotification],
+    notification: TaskNotification | None,
 ) -> None:
+    """Signature: openapi_client.ItemFunc"""
     billtype = viewmodels.BillType(**data)
 
     category, _ = BillTypeCategory.objects.get_or_create(name=billtype.category.name)
@@ -33,8 +33,8 @@ def _update_bill_type(
 @task_notification(label="Update bill types")
 @json_cache(caches.BILLS)
 def update_bill_types(
-    cache: Optional[JsonResponseCache],
-    notification: Optional[TaskNotification],
+    cache: JsonResponseCache | None,
+    notification: TaskNotification | None,
 ) -> None:
     log.info("Updating BillTypes...")
     openapi_client.foreach(

@@ -1,4 +1,3 @@
-from typing import Optional
 from unittest.mock import Mock, patch
 
 from basetest.testcase import LocalTestCase, NetworkTestCase
@@ -22,7 +21,7 @@ def _patch_get_json(**kwargs):
     return patch.object(
         openapi_client,
         "get_json",
-        Mock(side_effect=lambda url, **kwargs: MOCK_RESPONSES.get(url)),
+        Mock(side_effect=lambda url, **kw: MOCK_RESPONSES.get(url)),
     )
 
 
@@ -32,9 +31,10 @@ class ClientTestCase(LocalTestCase):
         items_processed = 0
         division_id = None
 
-        def item_func(data: dict, _: Optional[TaskNotification]) -> None:
+        def item_func(data: dict, _: TaskNotification | None) -> None:
+            """Signature: openapi_client.ItemFunc"""
             nonlocal items_processed, division_id
-            items_processed = items_processed + 1
+            items_processed += 1
             division_id = data.get("divisionId")
 
         with _patch_get_json():
@@ -55,9 +55,9 @@ class ClientTestCase(LocalTestCase):
         items_processed = 0
         bill_id = None
 
-        def item_func(data: dict, _: Optional[TaskNotification]) -> None:
+        def item_func(data: dict, _: TaskNotification | None) -> None:
             nonlocal items_processed, bill_id
-            items_processed = items_processed + 1
+            items_processed += 1
             bill_id = data.get("billId")
 
         with _patch_get_json():
@@ -78,6 +78,7 @@ class ClientTestCase(LocalTestCase):
         publication_id = None
 
         def item_func(data: dict, _) -> None:
+            """Signature: openapi_client.ItemFunc"""
             nonlocal publication_id
             publication_id = data.get("id")
 
@@ -103,9 +104,10 @@ class LiveClientTestCase(NetworkTestCase):
         items_processed = 0
         division_id = None
 
-        def item_func(data: dict, _: Optional[TaskNotification]) -> None:
+        def item_func(data: dict, _: TaskNotification | None) -> None:
+            """Signature: openapi_client.ItemFunc"""
             nonlocal items_processed, division_id
-            items_processed = items_processed + 1
+            items_processed += 1
             division_id = data.get("divisionId")
 
         openapi_client.foreach(
@@ -128,9 +130,10 @@ class LiveClientTestCase(NetworkTestCase):
         items_processed = 0
         bill_id = None
 
-        def item_func(data: dict, _: Optional[TaskNotification]) -> None:
+        def item_func(data: dict, _: TaskNotification | None) -> None:
+            """Signature: openapi_client.ItemFunc"""
             nonlocal items_processed, bill_id
-            items_processed = items_processed + 1
+            items_processed += 1
             bill_id = data.get("billId")
 
         openapi_client.foreach(

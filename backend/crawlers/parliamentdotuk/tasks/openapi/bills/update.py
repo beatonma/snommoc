@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
 from notifications.models import TaskNotification
 from repository.models import House, Organisation, ParliamentarySession
@@ -13,7 +11,7 @@ from repository.models.bill import (
 )
 
 
-def _get_agent(api_bill: viewmodels.Bill) -> Optional[BillAgent]:
+def _get_agent(api_bill: viewmodels.Bill) -> BillAgent | None:
     agent = None
     if api_bill.agent is not None:
         _agent = api_bill.agent
@@ -54,7 +52,7 @@ def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
     return current_stage
 
 
-def _get_sponsors(api_bill: viewmodels.Bill) -> List[BillSponsor]:
+def _get_sponsors(api_bill: viewmodels.Bill) -> list[BillSponsor]:
     return [
         _get_sponsor(api_bill.billId, sponsor)
         for sponsor in api_bill.sponsors
@@ -62,9 +60,7 @@ def _get_sponsors(api_bill: viewmodels.Bill) -> List[BillSponsor]:
     ]
 
 
-def _get_sponsor(
-    bill_id: int, api_sponsor: viewmodels.Sponsor
-) -> Optional[BillSponsor]:
+def _get_sponsor(bill_id: int, api_sponsor: viewmodels.Sponsor) -> BillSponsor | None:
     organisation = None
     if api_sponsor.organisation:
         organisation, _ = Organisation.objects.update_or_create(
@@ -88,6 +84,7 @@ def _get_sponsor(
     elif organisation:
         db_sponsor, _ = BillSponsor.objects.update_or_create(
             bill_id=bill_id,
+            member_id=None,
             organisation=organisation,
             defaults={
                 "sort_order": api_sponsor.sortOrder,
@@ -101,7 +98,7 @@ def _get_sponsor(
     return db_sponsor
 
 
-def _get_promoters(api_bill: viewmodels.Bill) -> List[Organisation]:
+def _get_promoters(api_bill: viewmodels.Bill) -> list[Organisation]:
     promoters = []
     for promoter in api_bill.promoters:
         organisation, _ = Organisation.objects.update_or_create(
@@ -115,7 +112,8 @@ def _get_promoters(api_bill: viewmodels.Bill) -> List[Organisation]:
     return promoters
 
 
-def _update_bill(data: dict, notification: Optional[TaskNotification]) -> None:
+def update_bill(data: dict, notification: TaskNotification | None) -> None:
+    """Signature: openapi_client.ItemFunc"""
     api_bill = viewmodels.Bill(**data)
 
     current_house, _ = House.objects.get_or_create(name=api_bill.currentHouse.name)

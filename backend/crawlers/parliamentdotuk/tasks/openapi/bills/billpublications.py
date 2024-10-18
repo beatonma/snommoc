@@ -28,6 +28,7 @@ def _update_bill_publication(
     notification: Optional[TaskNotification],
     func_kwargs: dict,
 ):
+    """Signature: openapi_client.ItemFunc"""
     api_pub = viewmodels.BillPublication(**data)
     bill_id = func_kwargs["bill_id"]
 

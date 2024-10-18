@@ -1,21 +1,28 @@
-from typing import Callable, Dict, Optional
+from typing import Callable, Union
 
 import requests
 from crawlers.network import JsonResponseCache, get_json
 from crawlers.network.exceptions import HttpError
 from notifications.models import TaskNotification
 
-
-def _log_data(endpoint_url, **kwargs):
-    return endpoint_url
+"""
+ItemFunc receives:
+- a dict of data returned by an API call,
+- an TaskNotification which can be used to report progress or errors (may be None)
+- a dict of additional kwargs which provide context data (may be None, or missing)
+"""
+type ItemFunc = Union[
+    Callable[[dict, TaskNotification | None, dict | None], None],
+    Callable[[dict, TaskNotification | None], None],
+]
 
 
 def _apply_item_func(
     item: dict,
-    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
-    notification: Optional[TaskNotification],
+    item_func: ItemFunc,
+    notification: TaskNotification | None,
     report: Callable[[], str],
-    func_kwargs: Optional[dict],
+    func_kwargs: dict | None,
 ) -> bool:
     """
     :param report: A function that describes the item for useful error logging.
@@ -46,13 +53,13 @@ def _apply_item_func(
 
 def foreach(
     endpoint_url: str,
-    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
-    notification: Optional[TaskNotification],
-    cache: Optional[JsonResponseCache],
+    item_func: ItemFunc,
+    notification: TaskNotification | None,
+    cache: JsonResponseCache | None,
     items_key: str = "items",
     items_per_page: int = 25,
-    max_items: Optional[int] = None,
-    func_kwargs: Optional[dict] = None,
+    max_items: int | None = None,
+    func_kwargs: dict | None = None,
 ):
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
@@ -127,10 +134,10 @@ def foreach(
 
 def get(
     endpoint_url: str,
-    item_func: Callable[[Dict, Optional[TaskNotification], Optional[Dict]], None],
-    notification: Optional[TaskNotification],
-    cache: Optional[JsonResponseCache],
-    func_kwargs: Optional[dict] = None,
+    item_func: ItemFunc,
+    notification: TaskNotification | None,
+    cache: JsonResponseCache | None,
+    func_kwargs: dict | None = None,
 ):
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.

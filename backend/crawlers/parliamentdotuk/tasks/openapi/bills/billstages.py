@@ -11,6 +11,7 @@ from repository.models.bill import BillStage, BillStageSitting
 def _update_bill_stage(
     data: dict, notification: Optional[TaskNotification], func_kwargs: dict
 ):
+    """Signature: openapi_client.ItemFunc"""
     api_stage = StageSummary(**data)
     bill_id = func_kwargs["bill_id"]
 

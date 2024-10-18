@@ -1,23 +1,18 @@
-from typing import Optional
-
 from celery import shared_task
 from celery.utils import log as logging
-
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
-from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
-    fetch_and_update_bill_publications,
-)
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import (
-    fetch_and_update_bill_stages,
-)
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
-    update_bill_stage_types,
-)
-from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import update_bill_types
-from crawlers.parliamentdotuk.tasks.openapi.bills.update import _update_bill
+from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import \
+    fetch_and_update_bill_publications
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import \
+    fetch_and_update_bill_stages
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import \
+    update_bill_stage_types
+from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import \
+    update_bill_types
+from crawlers.parliamentdotuk.tasks.openapi.bills.update import update_bill
 from notifications.models import TaskNotification
 from notifications.models.task_notification import task_notification
 from repository.models import Bill
@@ -26,8 +21,8 @@ log = logging.get_logger(__name__)
 
 
 def _update_type_definitions(
-    cache: Optional[JsonResponseCache],
-    notification: Optional[TaskNotification],
+    cache: JsonResponseCache | None,
+    notification: TaskNotification | None,
 ):
     """Must be run before fetch_and_update_bill."""
     update_bill_types(cache=cache, notification=notification)
@@ -38,13 +33,13 @@ def _update_type_definitions(
 @json_cache(caches.BILLS)
 def fetch_and_update_bill(
     parliamentdotuk: int,
-    cache: Optional[JsonResponseCache],
-    notification: Optional[TaskNotification],
+    cache: JsonResponseCache | None,
+    notification: TaskNotification | None,
 ) -> None:
     log.info(f"Updating bill #{parliamentdotuk}")
     openapi_client.get(
         endpoints.bill(parliamentdotuk),
-        item_func=_update_bill,
+        item_func=update_bill,
         notification=notification,
         cache=cache,
     )
@@ -79,22 +74,24 @@ def _should_update(summary: viewmodels.BillSummary) -> bool:
 @task_notification(label="Update bills")
 @json_cache(caches.BILLS)
 def update_bills(
-    cache: Optional[JsonResponseCache],
-    notification: Optional[TaskNotification],
+    cache: JsonResponseCache | None,
+    notification: TaskNotification | None,
     force_update: bool = False,
 ) -> None:
     _update_type_definitions(cache, notification)
 
-    def _update_item_proxy(dict, notification) -> None:
+    def _update_item_proxy(data: dict, _notification: TaskNotification | None) -> None:
         """
+        Signature: openapi_client.ItemFunc
+
         endpoints.BILLS_ALL returns a list of viewmodels.BillSummary objects. We need the full Bill,
         so need to retrieve the billId and make another request.
         """
-        summary = viewmodels.BillSummary(**dict)
+        summary = viewmodels.BillSummary(**data)
 
         if force_update or _should_update(summary):
             fetch_and_update_bill(
-                summary.billId, cache=cache, notification=notification
+                summary.billId, cache=cache, notification=_notification
             )
 
     log.info("Updating all bills...")

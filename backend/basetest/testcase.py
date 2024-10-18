@@ -6,11 +6,9 @@ from unittest.mock import Mock, patch
 
 import django.core.management
 import pytest
-from django.db import OperationalError
 from django.http import HttpResponse
 from django.test import TestCase
 from rest_framework import status
-from util.models.generics import BaseModelMixin, get_concrete_models
 from util.time import coerce_timezone
 
 
@@ -23,15 +21,9 @@ class DirtyTestException(Exception):
 class BaseTestCase(TestCase):
     maxDiff = None
 
-    # def tearDown(self) -> None:
-    #     check_instances: bool = RUNTESTS_CLARGS.fragile
-    #     if check_instances:
-    #         self._check_cleanup()
-    #
     def delete_instances_of(
         self,
         *classList,
-        # check_instances: bool = RUNTESTS_CLARGS.fragile,
     ):
         """
         Delete any instances of the given model classes.
@@ -39,34 +31,6 @@ class BaseTestCase(TestCase):
         """
         for cls in classList:
             cls.objects.all().delete()
-
-        # if check_instances:
-        #     self._check_cleanup()
-
-    #
-    # def _check_cleanup(self):
-    #     """Check for any persisting instances of project database models.
-    #
-    #     Throws DirtyTestException if any instances are found."""
-    #
-    #     all_models = get_concrete_models(BaseModelMixin)
-    #     existing_instances = []
-    #     for M in all_models:
-    #         try:
-    #             instances = M.objects.all()
-    #             count = instances.count()
-    #             if count > 0:
-    #                 existing_instances.append(M)
-    #         except OperationalError:
-    #             # Model does not exist in the module under test
-    #             pass
-    #
-    #     if existing_instances:
-    #         _nl = "\n"
-    #         raise DirtyTestException(
-    #             "Model instances have not been cleaned up properly:"
-    #             f"\n{_nl.join([f'- {M}' for M in existing_instances])}"
-    #         )
 
     def assertEqualIgnoreCase(self, first: str, second: str, msg=None):
         self.assertEqual(first.lower(), second.lower(), msg=msg)
@@ -155,7 +119,7 @@ class LocalManagementTestCase(LocalTestCase):
 
     command = None
 
-    def call_command(self, *args, instant: bool = True, **kwargs) -> str:
+    def call_command(self, *args, sync: bool = True, **kwargs) -> str:
         from django.core.management import CommandError, call_command
 
         if self.command is None:
@@ -163,7 +127,7 @@ class LocalManagementTestCase(LocalTestCase):
 
         print(
             f"Running `manage.py {self.command} args={args} kwargs={kwargs}"
-            f" {'-instant' if instant else ''}`"
+            f" {'-sync' if sync else ''}`"
         )
 
         out = StringIO()
@@ -180,7 +144,7 @@ class LocalManagementTestCase(LocalTestCase):
                     *args,
                     stdout=out,
                     stderr=StringIO(),
-                    instant=instant,
+                    sync=sync,
                     **kwargs,
                 )
 

@@ -37,7 +37,7 @@ class ManagementCommandTests(LocalManagementTestCase):
         with patch.object(
             crawlers.parliamentdotuk.tasks.openapi.bills.bills.update_bills, "delay"
         ) as mocked_all_bills:
-            self.call_command(instant=False)
+            self.call_command(sync=False)
             self.assertTrue(mocked_all_bills.called)
 
     def test_should_update(self):

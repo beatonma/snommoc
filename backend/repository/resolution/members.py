@@ -2,7 +2,6 @@ import re
 from typing import Optional
 
 from django.db.models import Q, QuerySet
-
 from repository.models import Constituency, Election, Party, Person
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 
@@ -25,10 +24,21 @@ _honorifics = [
 ]
 _honorifics_regex = re.compile(rf"({'|'.join(_honorifics)})", re.IGNORECASE)
 
+# Default name for a member that is created from its parliamentdotuk ID with no other info available
+UNKNOWN_NAME = "__UNKNOWN_MEMBER__"
 
-def get_member(**kwargs) -> Optional[Person]:
+
+def get_member(pk: int) -> Optional[Person]:
     try:
-        return Person.objects.get(**kwargs)
+        person, _ = Person.objects.get_or_create(
+            pk=pk,
+            defaults={
+                "parliamentdotuk": pk,
+                "name": UNKNOWN_NAME,
+                "active": False,
+            },
+        )
+        return person
     except (Person.DoesNotExist, Person.MultipleObjectsReturned):
         pass
 

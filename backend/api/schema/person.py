@@ -3,9 +3,7 @@ from typing import List
 
 from api.schema.address import AddressSchema
 from api.schema.party import PartyMiniSchema
-from django.template.context_processors import static
 from ninja import Schema
-from ninja.schema import Resolver
 
 from .constituency import ConstituencyMiniSchema, HistoricalConstituencySchema
 from .types import FullSchema, MiniSchema, Name, ParliamentId, ParliamentSchema, alias

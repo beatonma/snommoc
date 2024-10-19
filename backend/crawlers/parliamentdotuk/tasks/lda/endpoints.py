@@ -5,10 +5,6 @@ COMMONS_DIVISIONS = "https://lda.data.parliament.uk/commonsdivisions.json"
 COMMONS_DIVISION = (
     "https://lda.data.parliament.uk/commonsdivisions/id/{parliamentdotuk}.json"
 )
-LORDS_DIVISIONS = "https://lda.data.parliament.uk/lordsdivisions.json"
-LORDS_DIVISION = (
-    "https://lda.data.parliament.uk/lordsdivisions/id/{parliamentdotuk}.json"
-)
 
 # e.g. https://lda.data.parliament.uk/electionresults/382387.json
 ELECTION_RESULTS = "https://lda.data.parliament.uk/electionresults.json"
@@ -27,10 +23,6 @@ MAX_PAGE_SIZE = 500
 
 def url_for_commons_division(parliamentdotuk: int) -> str:
     return COMMONS_DIVISION.format(parliamentdotuk=parliamentdotuk)
-
-
-def url_for_lords_division(parliamentdotuk: int) -> str:
-    return LORDS_DIVISION.format(parliamentdotuk=parliamentdotuk)
 
 
 def url_for_election_result(parliamentdotuk: int) -> str:

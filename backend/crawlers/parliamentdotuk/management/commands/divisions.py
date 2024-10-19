@@ -2,6 +2,7 @@
 Update Divisions with:
     python manage.py divisions
 """
+
 from typing import Optional
 
 from crawlers import caches
@@ -42,14 +43,21 @@ class Command(AsyncCommand):
             help="Update a specific division. Use -lords or -commons to define the correct house (Commons assumed by default)",
             default=None,
         )
+        parser.add_argument(
+            "--skip",
+            type=int,
+            help="Skip the first n items from the API. Useful if update stops part way through",
+            default=0,
+        )
 
     def handle(self, *args, **command_options):
-        id = command_options["id"]
+        parliamentdotuk = command_options.pop("id")
+
         house = self._get_house(**command_options)
 
-        if id is not None:
+        if parliamentdotuk is not None:
             func_kwargs = {
-                "parliamentdotuk": id,
+                "parliamentdotuk": parliamentdotuk,
             }
 
             if house == LORDS:
@@ -69,10 +77,15 @@ class Command(AsyncCommand):
             else:
                 func = update_all_divisions
 
-            self.handle_async(func, **command_options)
+            self.handle_async(
+                func,
+                func_kwargs={"skip": command_options.pop("skip")},
+                **command_options
+            )
 
-    def _get_house(self, **command_options) -> Optional[str]:
-        if command_options[COMMONS]:
+    @staticmethod
+    def _get_house(**command_options) -> Optional[str]:
+        if command_options.pop(COMMONS, None):
             return COMMONS
-        elif command_options[LORDS]:
+        elif command_options.pop(LORDS, None):
             return LORDS

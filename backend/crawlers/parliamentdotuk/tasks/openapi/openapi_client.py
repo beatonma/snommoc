@@ -60,6 +60,7 @@ def foreach(
     items_per_page: int = 25,
     max_items: int | None = None,
     func_kwargs: dict | None = None,
+    skip: int = 0,
 ):
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
@@ -74,12 +75,12 @@ def foreach(
             ...
           }
     """
-    item_count = 0
+    item_count = skip
 
-    def _item_notification_info(index: int):
+    def _item_notification_info(_index: int):
         params = f"skip={item_count}&take={items_per_page}"
 
-        return f"Item #{index} of {endpoint_url}?{params}"
+        return f"Item #{_index} of {endpoint_url}?{params}"
 
     with requests.Session() as session:
         while True:
@@ -92,8 +93,10 @@ def foreach(
                 cache=cache,
                 session=session,
             )
+            # Data may be an object including pagination data, or just a list of items
+            data_is_dict = isinstance(data, dict)
 
-            if isinstance(data, dict):
+            if data_is_dict:
                 # Unwrap the items list.
                 items = data.get(items_key)
             else:
@@ -124,12 +127,9 @@ def foreach(
                             notification.append(f"max_items={max_items} limit reached.")
                         return
 
-            if "totalResults" not in data or "itemsPerPage" not in data:
-                # Exit if data is not paginated.
-                break
-
-            if item_count >= data["totalResults"] or len(items) < items_per_page:
-                break
+            if data_is_dict:
+                if item_count >= data.get("totalResults", 0):
+                    break
 
 
 def get(
@@ -138,6 +138,7 @@ def get(
     notification: TaskNotification | None,
     cache: JsonResponseCache | None,
     func_kwargs: dict | None = None,
+    session: requests.Session | None = None,
 ):
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.
@@ -145,6 +146,7 @@ def get(
     item = get_json(
         endpoint_url,
         cache=cache,
+        session=session,
     )
 
     if not isinstance(item, dict):

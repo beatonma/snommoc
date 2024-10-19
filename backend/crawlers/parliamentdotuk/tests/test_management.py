@@ -4,7 +4,7 @@ from unittest.mock import patch
 import crawlers.parliamentdotuk.management.commands.bills as tasks
 import crawlers.parliamentdotuk.tasks.openapi.bills.bills
 from basetest.testcase import LocalManagementTestCase
-from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from crawlers.parliamentdotuk.tasks.openapi.bills.bills import _should_update
 from crawlers.parliamentdotuk.tests.openapi.data_bill import BILL_SUMMARY_DATA
 from repository.models import Bill, House, ParliamentarySession
@@ -41,7 +41,7 @@ class ManagementCommandTests(LocalManagementTestCase):
             self.assertTrue(mocked_all_bills.called)
 
     def test_should_update(self):
-        summary = viewmodels.BillSummary(**BILL_SUMMARY_DATA)
+        summary = schema.BillSummary(**BILL_SUMMARY_DATA)
         self.assertTrue(_should_update(summary))
 
         create_sample_bill(

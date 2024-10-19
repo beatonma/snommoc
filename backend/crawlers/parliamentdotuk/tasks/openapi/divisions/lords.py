@@ -2,9 +2,7 @@ from celery import shared_task
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
-from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import (
-    LordsDivisionViewModel,
-)
+from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
 from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models.lords_division import (
     DivisionVoteType,
@@ -19,7 +17,7 @@ def update_lords_division(
     notification: TaskNotification | None,
 ) -> None:
     """Signature: openapi_client.ItemFunc"""
-    data = LordsDivisionViewModel(**data_dict)
+    data = schema.LordsDivision(**data_dict)
 
     sponsor = (
         get_member(pk=data.sponsoringMemberId) if data.sponsoringMemberId else None
@@ -97,6 +95,7 @@ def fetch_and_update_lords_division(
 def update_lords_divisions(
     cache: JsonResponseCache | None,
     notification: TaskNotification | None,
+    skip: int = 0,
     **kwargs,
 ) -> None:
     openapi_client.foreach(
@@ -104,4 +103,5 @@ def update_lords_divisions(
         item_func=update_lords_division,
         cache=cache,
         notification=notification,
+        skip=skip,
     )

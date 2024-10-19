@@ -4,7 +4,7 @@ from crawlers.parliamentdotuk.tasks.types import CoercedDate, CoercedDateTime
 from pydantic import BaseModel as Schema
 
 
-class DivisionMemberViewModel(Schema):
+class DivisionMember(Schema):
     """
     Schema definition: https://lordsvotes-api.parliament.uk/index.html#model-MemberViewModel
     """
@@ -23,7 +23,7 @@ class DivisionMemberViewModel(Schema):
     partyIsMainParty: bool
 
 
-class LordsDivisionViewModel(Schema):
+class LordsDivision(Schema):
     """
     Schema definition: https://lordsvotes-api.parliament.uk/index.html#model-DivisionViewModel
     """
@@ -49,7 +49,7 @@ class LordsDivisionViewModel(Schema):
     remoteVotingStart: CoercedDateTime | None
     remoteVotingEnd: CoercedDateTime | None
     divisionWasExclusivelyRemote: bool
-    contentTellers: list[DivisionMemberViewModel] | None
-    notContentTellers: list[DivisionMemberViewModel] | None
-    contents: list[DivisionMemberViewModel] | None
-    notContents: list[DivisionMemberViewModel] | None
+    contentTellers: list[DivisionMember] | None
+    notContentTellers: list[DivisionMember] | None
+    contents: list[DivisionMember] | None
+    notContents: list[DivisionMember] | None

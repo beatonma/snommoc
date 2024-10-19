@@ -3,7 +3,7 @@ from celery.utils import log as logging
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
-from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import \
     fetch_and_update_bill_publications
 from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import \
@@ -50,7 +50,7 @@ def fetch_and_update_bill(
     log.info(f"Bill #{parliamentdotuk} updated successfully")
 
 
-def _should_update(summary: viewmodels.BillSummary) -> bool:
+def _should_update(summary: schema.BillSummary) -> bool:
     """Return True if last_update value differs from what we already have recorded"""
     _id = summary.billId
     try:
@@ -84,10 +84,10 @@ def update_bills(
         """
         Signature: openapi_client.ItemFunc
 
-        endpoints.BILLS_ALL returns a list of viewmodels.BillSummary objects. We need the full Bill,
+        endpoints.BILLS_ALL returns a list of schema.BillSummary objects. We need the full Bill,
         so need to retrieve the billId and make another request.
         """
-        summary = viewmodels.BillSummary(**data)
+        summary = schema.BillSummary(**data)
 
         if force_update or _should_update(summary):
             fetch_and_update_bill(

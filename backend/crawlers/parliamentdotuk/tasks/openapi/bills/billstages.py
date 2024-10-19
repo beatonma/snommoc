@@ -2,7 +2,7 @@ from typing import Optional
 
 from crawlers.network import JsonResponseCache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
-from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import StageSummary
+from crawlers.parliamentdotuk.tasks.openapi.bills.schema import StageSummary
 from notifications.models import TaskNotification
 from repository.models import House, ParliamentarySession
 from repository.models.bill import BillStage, BillStageSitting

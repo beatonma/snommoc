@@ -3,7 +3,7 @@ import logging
 from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
-from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
 from notifications.models.task_notification import task_notification
 from repository.models.bill import BillType, BillTypeCategory
@@ -16,7 +16,7 @@ def _update_bill_type(
     notification: TaskNotification | None,
 ) -> None:
     """Signature: openapi_client.ItemFunc"""
-    billtype = viewmodels.BillType(**data)
+    billtype = schema.BillType(**data)
 
     category, _ = BillTypeCategory.objects.get_or_create(name=billtype.category.name)
 

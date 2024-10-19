@@ -1,27 +1,36 @@
 from datetime import datetime
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.openapi.bills.viewmodels import (
-    Bill, BillPublication, BillStageType, BillSummary, House)
-from crawlers.parliamentdotuk.tasks.openapi.divisions.viewmodels import \
-    LordsDivisionViewModel
+from crawlers.parliamentdotuk.tasks.openapi.bills.schema import (
+    Bill,
+    BillPublication,
+    BillStageType,
+    BillSummary,
+    House,
+)
+from crawlers.parliamentdotuk.tasks.openapi.divisions.schema import LordsDivision
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
-    BILL_DATA, BILL_PUBLICATION_DATA, BILL_STAGE_TYPE_DATA, BILL_SUMMARY_DATA)
-from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import \
-    LORDS_DIVISION_DATA
+    BILL_DATA,
+    BILL_PUBLICATION_DATA,
+    BILL_STAGE_TYPE_DATA,
+    BILL_SUMMARY_DATA,
+)
+from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
+    LORDS_DIVISION_DATA,
+)
 
 
 class ApiViewmodelTestCase(LocalTestCase):
     """Ensure data from the API constructs our models correctly."""
 
-    def test_lordsdivision_viewmodels(self):
-        division = LordsDivisionViewModel(**LORDS_DIVISION_DATA)
+    def test_lordsdivision_schemas(self):
+        division = LordsDivision(**LORDS_DIVISION_DATA)
 
         self.assertEqual(2613, division.divisionId)
         self.assertEqual(3, len(division.contents))
         self.assertEqual("Lord Pendry", division.contents[0].name)
 
-    def test_billsummary_viewmodels(self):
+    def test_billsummary_schemas(self):
         bill = BillSummary(**BILL_SUMMARY_DATA)
 
         self.assertEqual(bill.billId, 512)
@@ -39,7 +48,7 @@ class ApiViewmodelTestCase(LocalTestCase):
 
         self.assertDateTimeEqual(sitting.date, datetime(2010, 4, 8))
 
-    def test_bill_viewmodels(self):
+    def test_bill_schemas(self):
         bill = Bill(**BILL_DATA)
 
         self.assertEqual(
@@ -149,14 +158,14 @@ class ApiViewmodelTestCase(LocalTestCase):
         )
         self.assertEqual(agent.website, "https://snommoc.org")
 
-    def test_billstage_viewmodels(self):
+    def test_billstage_schemas(self):
         stage = BillStageType(**BILL_STAGE_TYPE_DATA)
 
         self.assertEqual(stage.id, 42)
         self.assertEqual(stage.name, "Consideration of Lords message")
         self.assertEqual(stage.house, House.Commons)
 
-    def test_billpublication_viewmodels(self):
+    def test_billpublication_schemas(self):
         pub = BillPublication(**BILL_PUBLICATION_DATA)
 
         self.assertEqual(pub.id, 2716)

@@ -1,4 +1,4 @@
-from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
 from repository.models import House, Organisation, ParliamentarySession
 from repository.models.bill import (
@@ -11,7 +11,7 @@ from repository.models.bill import (
 )
 
 
-def _get_agent(api_bill: viewmodels.Bill) -> BillAgent | None:
+def _get_agent(api_bill: schema.Bill) -> BillAgent | None:
     agent = None
     if api_bill.agent is not None:
         _agent = api_bill.agent
@@ -28,7 +28,7 @@ def _get_agent(api_bill: viewmodels.Bill) -> BillAgent | None:
     return agent
 
 
-def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
+def _get_current_stage(api_bill: schema.Bill, db_bill: Bill) -> BillStage:
     stage = api_bill.currentStage
     stage_type = BillStageType.objects.get(parliamentdotuk=stage.stageId)
     house, _ = House.objects.get_or_create(name=stage.house.name)
@@ -52,7 +52,7 @@ def _get_current_stage(api_bill: viewmodels.Bill, db_bill: Bill) -> BillStage:
     return current_stage
 
 
-def _get_sponsors(api_bill: viewmodels.Bill) -> list[BillSponsor]:
+def _get_sponsors(api_bill: schema.Bill) -> list[BillSponsor]:
     return [
         _get_sponsor(api_bill.billId, sponsor)
         for sponsor in api_bill.sponsors
@@ -60,7 +60,7 @@ def _get_sponsors(api_bill: viewmodels.Bill) -> list[BillSponsor]:
     ]
 
 
-def _get_sponsor(bill_id: int, api_sponsor: viewmodels.Sponsor) -> BillSponsor | None:
+def _get_sponsor(bill_id: int, api_sponsor: schema.Sponsor) -> BillSponsor | None:
     organisation = None
     if api_sponsor.organisation:
         organisation, _ = Organisation.objects.update_or_create(
@@ -98,7 +98,7 @@ def _get_sponsor(bill_id: int, api_sponsor: viewmodels.Sponsor) -> BillSponsor |
     return db_sponsor
 
 
-def _get_promoters(api_bill: viewmodels.Bill) -> list[Organisation]:
+def _get_promoters(api_bill: schema.Bill) -> list[Organisation]:
     promoters = []
     for promoter in api_bill.promoters:
         organisation, _ = Organisation.objects.update_or_create(
@@ -114,7 +114,7 @@ def _get_promoters(api_bill: viewmodels.Bill) -> list[Organisation]:
 
 def update_bill(data: dict, notification: TaskNotification | None) -> None:
     """Signature: openapi_client.ItemFunc"""
-    api_bill = viewmodels.Bill(**data)
+    api_bill = schema.Bill(**data)
 
     current_house, _ = House.objects.get_or_create(name=api_bill.currentHouse.name)
     originating_house, _ = House.objects.get_or_create(

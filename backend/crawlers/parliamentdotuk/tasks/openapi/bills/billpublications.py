@@ -2,7 +2,7 @@ from typing import Optional
 
 from crawlers.network import JsonResponseCache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
-from crawlers.parliamentdotuk.tasks.openapi.bills import viewmodels
+from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
 from repository.models import House
 from repository.models.bill import (
@@ -12,7 +12,7 @@ from repository.models.bill import (
 )
 
 
-def _update_or_create_bill_type(data: viewmodels.BillPublicationType):
+def _update_or_create_bill_type(data: schema.BillPublicationType):
     pub_type, _ = BillPublicationType.objects.update_or_create(
         parliamentdotuk=data.id,
         defaults={
@@ -29,7 +29,7 @@ def _update_bill_publication(
     func_kwargs: dict,
 ):
     """Signature: openapi_client.ItemFunc"""
-    api_pub = viewmodels.BillPublication(**data)
+    api_pub = schema.BillPublication(**data)
     bill_id = func_kwargs["bill_id"]
 
     house, _ = House.objects.get_or_create(name=api_pub.house.name)

@@ -1,14 +1,9 @@
-import datetime
+from datetime import date, datetime
 from unittest.mock import patch
-
-from django.utils import timezone
 
 from basetest.testcase import LocalTestCase
 from repository.models import House
-from repository.models.houses import (
-    HOUSE_OF_COMMONS,
-    HOUSE_OF_LORDS,
-)
+from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.person import Person
 from repository.tests import values
 
@@ -19,17 +14,17 @@ class PersonPropertyTests(LocalTestCase):
     def test_person_age(self):
         living_person = Person(
             name=values.EXAMPLE_NAME,
-            date_of_birth=datetime.date(year=1973, month=6, day=10),
+            date_of_birth=date(1973, 6, 10),
         )
 
         dead_person = Person(
             name=values.EXAMPLE_NAME,
-            date_of_birth=datetime.date(year=1973, month=6, day=10),
-            date_of_death=datetime.date(year=2011, month=5, day=1),
+            date_of_birth=date(1973, 6, 10),
+            date_of_death=date(2011, 5, 1),
         )
 
         with patch("util.time.timezone") as mock_time:
-            mock_time.now.return_value = timezone.datetime(2021, 3, 5, 11, 13, 17)
+            mock_time.now = lambda: datetime(2021, 3, 5, 11, 13, 17)
 
             self.assertEqual(living_person.age, 47)
             self.assertEqual(dead_person.age, 37)

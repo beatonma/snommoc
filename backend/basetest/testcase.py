@@ -38,9 +38,6 @@ class BaseTestCase(TestCase):
     def assertLengthEquals(self, collection, expected_length: int, msg=None):
         self.assertEqual(len(collection), expected_length, msg=msg)
 
-    def assertDateTimeEqual(self, actual: datetime, expected: datetime, msg=None):
-        self.assertEqual(actual, coerce_timezone(expected), msg=msg)
-
     def assertNoneCreated(self, model_class, msg=None):
         self.assertEqual(model_class.objects.all().count(), 0, msg=msg)
 

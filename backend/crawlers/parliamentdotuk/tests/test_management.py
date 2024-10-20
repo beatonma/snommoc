@@ -10,6 +10,7 @@ from crawlers.parliamentdotuk.tests.openapi.data_bill import BILL_SUMMARY_DATA
 from repository.models import Bill, House, ParliamentarySession
 from repository.models.bill import BillType, BillTypeCategory
 from repository.tests.data.create import create_sample_bill
+from util.time import tzdatetime
 
 
 class ManagementCommandTests(LocalManagementTestCase):
@@ -46,12 +47,12 @@ class ManagementCommandTests(LocalManagementTestCase):
 
         create_sample_bill(
             parliamentdotuk=512,
-            last_update=datetime(2010, 7, 26, 16, 52, 10),
+            last_update=tzdatetime(2010, 7, 26, 16, 52, 10),
         )
         self.assertFalse(_should_update(summary))
 
         bill = Bill.objects.get(pk=512)
-        bill.last_update = datetime(2009, 7, 26, 16, 52, 10)
+        bill.last_update = tzdatetime(2009, 7, 26, 16, 52, 10)
         bill.save()
         self.assertTrue(_should_update(summary))
 

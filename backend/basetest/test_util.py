@@ -1,15 +1,13 @@
-import datetime
 import logging
 import math
 import random
 import uuid
+from datetime import datetime, timedelta
 from typing import List
 
 from django.contrib.auth.models import User
 from django.db.models import Model
-from django.utils import timezone
-
-from util.time import coerce_timezone
+from util.time import tzdatetime
 
 
 def create_sample_user(
@@ -44,9 +42,9 @@ def log_dump(obj, logger: logging.Logger):
 
 def create_sample_dates(
     count: int = 10,
-    start: datetime.datetime = timezone.datetime(2011, 5, 16),
-    end: datetime.datetime = timezone.datetime(2020, 5, 16),
-) -> List[datetime.datetime]:
+    start: datetime = tzdatetime(2011, 5, 16),
+    end: datetime = tzdatetime(2020, 5, 16),
+) -> List[datetime]:
     period = end - start
     max_step_size = max(1, math.ceil(period.days / count))
 
@@ -54,11 +52,9 @@ def create_sample_dates(
     previous = start
     for n in range(0, count):
         random.randrange(1, max_step_size)
-        previous = previous + datetime.timedelta(
-            days=random.randrange(1, max_step_size)
-        )
+        previous = previous + timedelta(days=random.randrange(1, max_step_size))
 
-        dates.append(coerce_timezone(previous))
+        dates.append(previous)
 
     return dates
 

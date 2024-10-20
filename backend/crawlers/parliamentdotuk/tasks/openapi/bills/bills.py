@@ -4,14 +4,16 @@ from crawlers import caches
 from crawlers.network import JsonResponseCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import \
-    fetch_and_update_bill_publications
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import \
-    fetch_and_update_bill_stages
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import \
-    update_bill_stage_types
-from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import \
-    update_bill_types
+from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
+    fetch_and_update_bill_publications,
+)
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import (
+    fetch_and_update_bill_stages,
+)
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
+    update_bill_stage_types,
+)
+from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import update_bill_types
 from crawlers.parliamentdotuk.tasks.openapi.bills.update import update_bill
 from notifications.models import TaskNotification
 from notifications.models.task_notification import task_notification

@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.bills.schema import (
     Bill,
@@ -18,6 +16,7 @@ from crawlers.parliamentdotuk.tests.openapi.data_bill import (
 from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
     LORDS_DIVISION_DATA,
 )
+from util.time import tzdatetime
 
 
 class ApiViewmodelTestCase(LocalTestCase):
@@ -46,7 +45,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(stage.description, "Royal Assent")
         self.assertEqual(stage.house, House.Unassigned)
 
-        self.assertDateTimeEqual(sitting.date, datetime(2010, 4, 8))
+        self.assertEqual(sitting.date, tzdatetime(2010, 4, 8))
 
     def test_bill_schemas(self):
         bill = Bill(**BILL_DATA)
@@ -116,7 +115,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(bill.shortTitle, "Appropriation Act 2011")
         self.assertEqual(bill.currentHouse, House.Unassigned)
         self.assertEqual(bill.originatingHouse, House.Commons)
-        self.assertDateTimeEqual(bill.lastUpdate, datetime(2012, 3, 28, 9, 58, 29))
+        self.assertEqual(bill.lastUpdate, tzdatetime(2012, 3, 28, 9, 58, 29))
         self.assertIsNone(bill.billWithdrawn)
         self.assertFalse(bill.isDefeated)
         self.assertEqual(bill.billTypeId, 4)
@@ -137,7 +136,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(sitting.stageId, 11)
         self.assertEqual(sitting.billStageId, 4181)
         self.assertEqual(sitting.billId, 836)
-        self.assertDateTimeEqual(sitting.date, datetime(2011, 3, 16))
+        self.assertEqual(sitting.date, tzdatetime(2011, 3, 16))
 
         agent = bill.agent
         self.assertEqual(
@@ -171,7 +170,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(pub.id, 2716)
         self.assertEqual(pub.house, House.Commons)
         self.assertTrue(pub.title.startswith("Public Administration "))
-        self.assertDateTimeEqual(pub.displayDate, datetime(2008, 6, 4, 0, 0, 0))
+        self.assertEqual(pub.displayDate, tzdatetime(2008, 6, 4))
 
         pub_type = pub.publicationType
         self.assertEqual(pub_type.id, 9)

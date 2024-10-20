@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from basetest.testcase import LocalTestCase
 from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
     _update_bill_publication,
@@ -39,6 +37,7 @@ from repository.tests.data.create import (
     create_sample_person,
     create_sample_session,
 )
+from util.time import tzdatetime
 
 
 class BillUpdateTests(LocalTestCase):
@@ -74,9 +73,9 @@ class BillUpdateTests(LocalTestCase):
         self.assertTrue(bill.summary.startswith("<p>The Bill provides "))
         self.assertEqual(bill.current_house.name, "Unassigned")
         self.assertEqual(bill.originating_house.name, "Commons")
-        self.assertDateTimeEqual(
+        self.assertEqual(
             bill.last_update,
-            datetime(2012, 3, 28, 9, 58, 29),
+            tzdatetime(2012, 3, 28, 9, 58, 29),
         )
         self.assertIsNone(bill.withdrawn_at)
         self.assertFalse(bill.is_defeated)
@@ -121,7 +120,7 @@ class BillUpdateTests(LocalTestCase):
 
         sitting = stage.sittings.first()
         self.assertEqual(sitting.pk, 3879)
-        self.assertDateTimeEqual(sitting.date, datetime(2011, 3, 2, 0, 0, 0))
+        self.assertEqual(sitting.date, tzdatetime(2011, 3, 2, 0, 0, 0))
 
     def test_update_bill_publication(self):
         create_sample_bill(parliamentdotuk=723)
@@ -134,7 +133,7 @@ class BillUpdateTests(LocalTestCase):
         self.assertEqual(pub.house.name, "Commons")
         self.assertEqual(pub.parliamentdotuk, 2716)
         self.assertTrue(pub.title.startswith("Public Administration "))
-        self.assertDateTimeEqual(pub.display_date, datetime(2008, 6, 4, 0, 0, 0))
+        self.assertEqual(pub.display_date, tzdatetime(2008, 6, 4))
 
         pub_type = pub.publication_type
         self.assertEqual(pub_type.parliamentdotuk, 9)

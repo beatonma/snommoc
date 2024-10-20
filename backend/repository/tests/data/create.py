@@ -2,38 +2,25 @@ import datetime
 import random
 from typing import Optional
 
-from django.utils import timezone
-
-from repository.models import (
-    CommonsDivision,
-    Constituency,
-    ConstituencyCandidate,
-    ConstituencyResult,
-    ConstituencyResultDetail,
-    Election,
-    ElectionType,
-    House,
-    LordsDivision,
-    ParliamentarySession,
-    Party,
-    Person,
-)
-from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
-from repository.tests.data.sample_bills import (
-    any_sample_bill_stage_type,
-    any_sample_bill_type,
-)
+from repository.models import (CommonsDivision, Constituency,
+                               ConstituencyCandidate, ConstituencyResult,
+                               ConstituencyResultDetail, Election,
+                               ElectionType, House, LordsDivision,
+                               ParliamentarySession, Party, Person)
+from repository.models.bill import (Bill, BillStageType, BillType,
+                                    BillTypeCategory)
+from repository.tests.data.sample_bills import (any_sample_bill_stage_type,
+                                                any_sample_bill_type)
 from repository.tests.data.sample_constituencies import (
-    SAMPLE_CONSTITUENCIES,
-    any_sample_constituency,
-)
-from repository.tests.data.sample_divisions import (
-    any_division_description,
-    any_division_title,
-)
-from repository.tests.data.sample_election import SAMPLE_ELECTIONS, any_sample_election
+    SAMPLE_CONSTITUENCIES, any_sample_constituency)
+from repository.tests.data.sample_divisions import (any_division_description,
+                                                    any_division_title)
+from repository.tests.data.sample_election import (SAMPLE_ELECTIONS,
+                                                   any_sample_election)
 from repository.tests.data.sample_members import any_sample_member
-from repository.tests.data.sample_parties import SAMPLE_PARTIES, any_sample_party
+from repository.tests.data.sample_parties import (SAMPLE_PARTIES,
+                                                  any_sample_party)
+from util.time import tzdatetime
 
 LOREM_IPSUM = (
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu hendrerit nunc,"
@@ -63,15 +50,13 @@ def _any_date() -> datetime.date:
 
 
 def _any_datetime() -> datetime.datetime:
-    return timezone.make_aware(
-        datetime.datetime(
-            year=random.randint(1990, 2025),
-            month=random.randint(1, 12),
-            day=random.randint(1, 28),
-            hour=random.randint(0, 23),
-            minute=random.randint(0, 59),
-            second=random.randint(0, 59),
-        )
+    return tzdatetime(
+        year=random.randint(1990, 2025),
+        month=random.randint(1, 12),
+        day=random.randint(1, 28),
+        hour=random.randint(0, 23),
+        minute=random.randint(0, 59),
+        second=random.randint(0, 59),
     )
 
 

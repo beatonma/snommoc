@@ -14,6 +14,14 @@ def get_today() -> date:
     return get_now().date()
 
 
+def tzdatetime(
+    year, month=None, day=None, hour=0, minute=0, second=0, microsecond=0
+) -> datetime:
+    return timezone.make_aware(
+        datetime(year, month, day, hour, minute, second, microsecond)
+    )
+
+
 def coerce_timezone(dt) -> datetime:
     """
     Convert a date or naive datetime to an aware datetime.
@@ -25,7 +33,7 @@ def coerce_timezone(dt) -> datetime:
             return timezone.make_aware(dt)
 
     elif isinstance(dt, date):
-        return timezone.make_aware(datetime(dt.year, dt.month, dt.day))
+        return tzdatetime(dt.year, dt.month, dt.day)
 
 
 def years_between(

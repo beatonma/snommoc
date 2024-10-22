@@ -1,22 +1,14 @@
 import datetime
+import logging
 from typing import Type
 
 from celery import shared_task
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-
-from notifications.models.task_notification import TaskNotification, task_notification
-from repository.models import (
-    Bill,
-    CommonsDivision,
-    LordsDivision,
-    Person,
-)
+from notifications.models.task_notification import task_notification
+from repository.models import Bill, CommonsDivision, LordsDivision, Person
 from repository.models.mixins import BaseModel
-from social.models import (
-    Comment,
-    Vote,
-)
+from social.models import Comment, Vote
 from surface.models import FeaturedPerson
 from surface.models.featured import (
     BaseFeatured,
@@ -38,7 +30,7 @@ ZEITGEIST_TARGET_MODELS = [
 
 
 @shared_task
-@task_notification(label="Update zeitgeist", level=TaskNotification.LEVEL_DEBUG)
+@task_notification(label="Update zeitgeist", level=logging.DEBUG)
 def update_zeitgeist(**kwargs):
     _reset_zeitgeist()
 

@@ -4,11 +4,13 @@ import uuid as uuid
 from functools import wraps
 
 from django.db import models
-
 from notifications import permissions
 from util.time import get_now
 
 log = logging.getLogger(__name__)
+
+
+_NOTIFICATION = "notification"
 
 
 class TaskNotification(models.Model):
@@ -24,11 +26,6 @@ class TaskNotification(models.Model):
             ),
         ]
 
-    LEVEL_VERBOSE = 0
-    LEVEL_DEBUG = 1
-    LEVEL_INFO = 2
-    LEVEL_WARN = 3
-
     created_on = models.DateTimeField(default=get_now)
     modified_on = models.DateTimeField(auto_now=True)
 
@@ -42,7 +39,7 @@ class TaskNotification(models.Model):
     complete = models.BooleanField(default=False)
     failed = models.BooleanField(default=False)
 
-    level = models.PositiveSmallIntegerField(default=LEVEL_INFO)
+    level = models.PositiveSmallIntegerField(default=logging.INFO)
 
     @property
     def finished(self):
@@ -93,7 +90,8 @@ class TaskNotification(models.Model):
     def create(cls, content: str, title: str = "Task notification"):
         return TaskNotification.objects.create(content=content, title=title)
 
-    def format_url(self, url, text=None):
+    @staticmethod
+    def html_link(url: str, text: str | None = None):
         if text is None:
             text = url
         return f'<a href="{url}">{text}</a>'
@@ -102,21 +100,22 @@ class TaskNotification(models.Model):
         return f"{self.title}"
 
 
-def task_notification(label, level=TaskNotification.LEVEL_INFO):
+def task_notification(label: str, level: int = logging.INFO):
     """Wrapper for a task. Creates a TaskNotification at start and updates it when task completes or fails."""
 
     def notification_decoration(func):
         @wraps(func)
         def create_notification(*args, **kwargs):
-            is_root_task = "notification" not in kwargs
+            is_root_task = _NOTIFICATION not in kwargs
 
             if not is_root_task:
-                notification = kwargs["notification"]
+                notification = kwargs[_NOTIFICATION]
             else:
                 notification = TaskNotification.objects.create(
-                    title=f"{label}", level=level
+                    title=f"{label}",
+                    level=level,
                 )
-                kwargs["notification"] = notification
+                kwargs[_NOTIFICATION] = notification
 
             try:
                 func(*args, **kwargs)
@@ -124,7 +123,6 @@ def task_notification(label, level=TaskNotification.LEVEL_INFO):
                     notification.mark_as_complete()
 
             except (Exception, KeyboardInterrupt) as e:
-                print(f"DEBUG notification {e}")
                 notification.mark_as_failed(err=e)
                 raise e
 

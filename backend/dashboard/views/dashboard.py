@@ -1,16 +1,16 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.shortcuts import render
-from django.views import View
-from rest_framework.viewsets import ModelViewSet
+import logging
 
 from dashboard.views.serializers.task_notifications import TaskNotificationSerializer
 from dashboard.views.serializers.unlinked_constituencies import (
     UnlinkedConstituencyDetailedSerializer,
     UnlinkedConstituencySerializer,
 )
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.shortcuts import render
+from django.views import View
 from notifications.models import TaskNotification
-
 from repository.models.constituency import UnlinkedConstituency
+from rest_framework.viewsets import ModelViewSet
 
 
 class StaffView(UserPassesTestMixin, View):
@@ -53,7 +53,7 @@ class UnlinkedConstituencyViewSet(StaffViewSet):
 
 
 class RecentNotificationsViewSet(StaffViewSet):
-    queryset = TaskNotification.objects.filter(
-        level__gte=TaskNotification.LEVEL_INFO
-    ).order_by("-created_on")[:50]
+    queryset = TaskNotification.objects.filter(level__gte=logging.INFO).order_by(
+        "-created_on"
+    )[:50]
     serializer_class = TaskNotificationSerializer

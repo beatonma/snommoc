@@ -1,22 +1,20 @@
-import datetime
 import hashlib
 import json
 import logging
 import os
+from datetime import datetime, timedelta
 from functools import wraps
 from typing import Optional
 
-from django.utils import timezone
-
 from util import settings_contract
 from util.settings import get_cache_settings
-from util.time import coerce_timezone, get_now
+from util.time import Now, coerce_timezone, get_now
 
 log = logging.getLogger(__name__)
 
 TIME_TO_LIVE_DEFAULT = get_cache_settings().get(
     settings_contract.CACHE_CRAWLER_TTL,
-    datetime.timedelta(days=4).total_seconds(),
+    timedelta(days=4).total_seconds(),
 )
 
 
@@ -30,7 +28,7 @@ def _url_to_filename(url: str) -> str:
     return f"{hashed}.json"
 
 
-class JsonResponseCache:
+class JsonCache:
     """
     Simple file cache for storing JSON data from network responses.
     """
@@ -39,7 +37,7 @@ class JsonResponseCache:
         self,
         name: str,
         time_to_live_seconds: int,
-        now: datetime.datetime,
+        now: datetime,
     ):
         root = get_cache_settings().get("CRAWLER_CACHE_ROOT")
         self.cache_dir = os.path.join(root, name)
@@ -69,7 +67,7 @@ class JsonResponseCache:
         with open(filepath, "w") as f:
             json.dump(json_data, f)
 
-    def finish(self, now=get_now):
+    def finish(self, now: Now = get_now):
         """Remember the timestamp so we can use time_to_live to determine whether
         we should use the cache next time."""
         if callable(now):
@@ -81,10 +79,10 @@ class JsonResponseCache:
     def _get_meta_filepath(self):
         return os.path.join(self.cache_dir, "cache.json")
 
-    def _get_filepath(self, url) -> str:
+    def _get_filepath(self, url: str) -> str:
         return os.path.join(self.cache_dir, _url_to_filename(url))
 
-    def _cache_is_expired(self, now: datetime.datetime) -> bool:
+    def _cache_is_expired(self, now: datetime) -> bool:
         """Return True if the previous cache timestamp is more than time_to_live seconds in the past"""
 
         try:
@@ -95,7 +93,7 @@ class JsonResponseCache:
             return True
 
         previous_timestamp = coerce_timezone(
-            timezone.datetime.fromisoformat(previous_timestamp_str)
+            datetime.fromisoformat(previous_timestamp_str)
         )
 
         delta = now - previous_timestamp
@@ -163,8 +161,8 @@ def create_json_cache(
     name: str,
     ttl_seconds: int = TIME_TO_LIVE_DEFAULT,
     now=get_now,
-) -> JsonResponseCache:
-    return JsonResponseCache(
+) -> JsonCache:
+    return JsonCache(
         name,
         ttl_seconds,
         now() if callable(now) else now,

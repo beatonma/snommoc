@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 
 from crawlers import caches
-from crawlers.network import JsonResponseCache, json_cache
+from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
@@ -33,7 +33,7 @@ def _update_bill_stage_type(
 @task_notification(label="Update bill stage types")
 @json_cache(caches.BILLS)
 def update_bill_stage_types(
-    cache: Optional[JsonResponseCache],
+    cache: Optional[JsonCache],
     notification: Optional[TaskNotification],
 ):
     log.info("Updating BillStageTypes...")

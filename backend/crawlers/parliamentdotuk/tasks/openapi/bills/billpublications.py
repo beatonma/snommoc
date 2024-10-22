@@ -1,6 +1,6 @@
 from typing import Optional
 
-from crawlers.network import JsonResponseCache
+from crawlers.network import JsonCache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
@@ -61,7 +61,7 @@ def _update_bill_publication(
 
 def fetch_and_update_bill_publications(
     bill_id: int,
-    cache: Optional[JsonResponseCache],
+    cache: Optional[JsonCache],
     notification: Optional[TaskNotification],
 ) -> None:
     openapi_client.foreach(

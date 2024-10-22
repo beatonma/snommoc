@@ -1,9 +1,9 @@
 from typing import Callable, Union
 
-import requests
-from crawlers.network import JsonResponseCache, get_json
+from crawlers.network import JsonCache, get_json
 from crawlers.network.exceptions import HttpError
 from notifications.models import TaskNotification
+from requests import Session
 
 """
 ItemFunc receives:
@@ -55,7 +55,7 @@ def foreach(
     endpoint_url: str,
     item_func: ItemFunc,
     notification: TaskNotification | None,
-    cache: JsonResponseCache | None,
+    cache: JsonCache | None,
     items_key: str = "items",
     items_per_page: int = 25,
     max_items: int | None = None,
@@ -82,7 +82,7 @@ def foreach(
 
         return f"Item #{_index} of {endpoint_url}?{params}"
 
-    with requests.Session() as session:
+    with Session() as session:
         while True:
             data = get_json(
                 endpoint_url,
@@ -136,9 +136,9 @@ def get(
     endpoint_url: str,
     item_func: ItemFunc,
     notification: TaskNotification | None,
-    cache: JsonResponseCache | None,
+    cache: JsonCache | None,
     func_kwargs: dict | None = None,
-    session: requests.Session | None = None,
+    session: Session | None = None,
 ):
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.

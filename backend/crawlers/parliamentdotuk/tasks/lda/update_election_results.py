@@ -1,22 +1,13 @@
 import logging
 
 from celery import shared_task
-
 from crawlers import caches
-from crawlers.network import JsonResponseCache, json_cache
-from crawlers.parliamentdotuk.tasks.lda import endpoints
-from crawlers.parliamentdotuk.tasks.lda.contract import electionresults as contract
-from crawlers.parliamentdotuk.tasks.lda.lazy_update import lazy_update
-from crawlers.parliamentdotuk.tasks.lda.lda_client import (
-    get_int,
-    get_item_data,
-    get_list,
-    get_parliamentdotuk_id,
-    get_str,
-    update_model,
-)
-from crawlers.parliamentdotuk.tasks.util.checks import check_required_fields
-from notifications.models.task_notification import task_notification
+from crawlers.context import TaskContext
+from crawlers.network import JsonCache, json_cache
+from crawlers.parliamentdotuk.tasks.lda import endpoints, lda_client
+from crawlers.parliamentdotuk.tasks.lda import schema as lda_schema
+from crawlers.parliamentdotuk.tasks.lda.lda_client import get_item_data
+from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models import (
     Constituency,
     ConstituencyCandidate,
@@ -24,36 +15,21 @@ from repository.models import (
     ConstituencyResultDetail,
     Election,
 )
-from repository.models.util.queryset import get_or_none
-from repository.resolution.members import (
-    get_member_for_election_result,
-    normalize_name,
-)
+from repository.resolution.members import get_member_for_election_result, normalize_name
 from repository.resolution.party import get_party_by_name
 
 log = logging.getLogger(__name__)
 
 
-def _create_election_result(parliamentdotuk, data):
-    check_required_fields(
-        data,
-        contract.CONSTITUENCY,
-        contract.ELECTION,
-        contract.RESULT_OF_ELECTION,
-        contract.MAJORITY,
+def _create_election_result(
+    parliamentdotuk: int, data: lda_schema.ElectionResultDetail
+):
+    constituency = Constituency.objects.get_or_none(
+        parliamentdotuk=data.constituency.parliamentdotuk
     )
-
-    log.info(f"Updating constituency result {parliamentdotuk}...")
-
-    constituency_id = get_parliamentdotuk_id(data, contract.CONSTITUENCY_ABOUT)
-    election_name = get_str(data, contract.ELECTION_NAME)
-
-    constituency = get_or_none(Constituency, parliamentdotuk=constituency_id)
     election, _ = Election.objects.get_or_create(
-        name=election_name,
-        defaults={
-            "parliamentdotuk": get_parliamentdotuk_id(data, contract.ELECTION_ABOUT)
-        },
+        name=data.election.name,
+        defaults={"parliamentdotuk": data.election.parliamentdotuk},
     )
 
     constituency_result, _ = ConstituencyResult.objects.get_or_create(
@@ -61,8 +37,8 @@ def _create_election_result(parliamentdotuk, data):
         constituency=constituency,
     )
 
-    electorate = get_int(data, contract.ELECTORATE)
-    turnout = get_int(data, contract.TURNOUT)
+    electorate = data.electorate
+    turnout = data.turnout
 
     if not electorate or not turnout:
         turnout_fraction = 0
@@ -74,49 +50,38 @@ def _create_election_result(parliamentdotuk, data):
         defaults={
             "constituency_result": constituency_result,
             "electorate": electorate,
-            "majority": get_int(data, contract.MAJORITY),
-            "result": get_str(data, contract.RESULT_OF_ELECTION),
+            "majority": data.majority,
+            "result": data.result_of_election,
             "turnout": turnout,
             "turnout_fraction": turnout_fraction,
         },
     )
 
-    candidates = get_list(data, contract.CANDIDATES)
-    for candidate in candidates:
+    for candidate in data.candidates:
         _create_candidate(result, candidate, constituency, election)
 
 
 def _create_candidate(
     election_result: ConstituencyResultDetail,
-    candidate,
+    candidate: lda_schema.ElectionCandidate,
     constituency: Constituency,
     election: Election,
 ):
-    check_required_fields(
-        candidate,
-        contract.CANDIDATE_NAME,
-        contract.CANDIDATE_PARTY,
-    )
-
-    name = get_str(candidate, contract.CANDIDATE_NAME)
     person = get_member_for_election_result(
-        normalize_name(name),
+        normalize_name(candidate.name),
         constituency,
         election,
     )
-    party_name = get_str(candidate, contract.CANDIDATE_PARTY)
+    party_name = candidate.party_name
     party = get_party_by_name(party_name)
-
-    votes = get_int(candidate, contract.CANDIDATE_VOTES)
-    order = get_int(candidate, contract.CANDIDATE_ORDINAL)
 
     ConstituencyCandidate.objects.update_or_create(
         election_result=election_result,
-        name=name,
+        name=candidate.name,
         defaults={
             "person": person,
-            "votes": votes,
-            "order": order,
+            "votes": candidate.number_of_votes,
+            "order": candidate.order,
             "party_name": party_name,
             "party": party,
         },
@@ -125,12 +90,12 @@ def _create_candidate(
 
 def fetch_and_create_election_result(
     parliamentdotuk: int,
-    cache: JsonResponseCache,
+    context: TaskContext,
 ) -> None:
-    url = endpoints.url_for_election_result(parliamentdotuk)
     data = get_item_data(
-        url,
-        cache=cache,
+        type=lda_schema.ElectionResultDetail,
+        endpoint=endpoints.url_for_election_result(parliamentdotuk),
+        context=context,
     )
 
     _create_election_result(parliamentdotuk, data)
@@ -139,19 +104,32 @@ def fetch_and_create_election_result(
 @shared_task
 @task_notification(label="Update constituency results")
 @json_cache(caches.ELECTION_RESULTS)
-def update_election_results(follow_pagination=True, **kwargs) -> None:
-    def update_result_details(json_data) -> None:
-        """Data does not require updates so we only need to fetch it if we don't already have it."""
-        lazy_update(
-            ConstituencyResultDetail,
-            fetch_and_create_election_result,
-            json_data,
-            **kwargs,
-        )
+def update_election_results(
+    follow_pagination=True,
+    cache: JsonCache | None = None,
+    notification: TaskNotification | None = None,
+    force_update: bool = False,
+) -> None:
+    context = TaskContext(notification=notification, cache=cache)
 
-    update_model(
+    def update_result_details(
+        data: lda_schema.ElectionResult, _context: TaskContext
+    ) -> None:
+        if (
+            not force_update
+            and ConstituencyResultDetail.objects.filter(
+                parliamentdotuk=data.parliamentdotuk
+            ).exists()
+        ):
+            # We already have the data
+            return
+
+        fetch_and_create_election_result(data.parliamentdotuk, context)
+
+    lda_client.foreach(
         endpoints.ELECTION_RESULTS,
-        update_item_func=update_result_details,
+        lda_schema.ElectionResult,
+        item_func=update_result_details,
+        context=context,
         follow_pagination=follow_pagination,
-        **kwargs,
     )

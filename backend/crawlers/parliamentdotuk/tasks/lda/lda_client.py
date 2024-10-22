@@ -1,148 +1,69 @@
-import datetime
-import re
-from typing import Any, Callable, Dict, Optional
+from typing import Callable, Type
 
 from celery.utils.log import get_task_logger
-
+from crawlers.context import TaskContext
 from crawlers.network import get_json
 from crawlers.network.exceptions import HttpError
-from crawlers.parliamentdotuk.tasks.lda import contract
-from crawlers.parliamentdotuk.tasks.lda.endpoints import (
-    MAX_PAGE_SIZE,
-    PARAM_PAGE,
-    PARAM_PAGE_SIZE,
-    debug_url,
-)
+from crawlers.parliamentdotuk.tasks.lda.endpoints import debug_url
+from crawlers.parliamentdotuk.tasks.lda.schema import Item, Page
 from crawlers.parliamentdotuk.tasks.util.checks import MissingFieldException
-from crawlers.parliamentdotuk.tasks.util.coercion import (
-    coerce_to_boolean,
-    coerce_to_date,
-    coerce_to_int,
-    coerce_to_list,
-    coerce_to_str,
-)
-from notifications.models import TaskNotification
+from pydantic import BaseModel as Schema
+
+PARAM_PAGE_SIZE = "_pageSize"
+PARAM_PAGE = "_page"
+MAX_PAGE_SIZE = 100
 
 log = get_task_logger(__name__)
 
 
-def get_value(data: Dict, key: str) -> Optional[Any]:
-    """
-    LDA data values are often but not always wrapped in a structure like
-    {
-      'label': {
-        '_value': 'actual value'
-      }
-    }
-
-    Similarly, some values are wrapped in a single-item list.
-    """
-    if "." in key:
-        v = _get_nested_value(data, key)
-    else:
-        v = data.get(key)
-
-    if v is None:
-        return None
-
-    if isinstance(v, str) or isinstance(v, int) or isinstance(v, bool):
-        return v
-
-    elif isinstance(v, dict):
-        if "_value" in v.keys():
-            return v.get("_value")
-        elif "label" in v.keys():
-            try:
-                return v["label"]["_value"]
-            except AttributeError:
-                return None
-
-    elif isinstance(v, list):
-        if len(v) == 1:
-            item = v[0]
-            if isinstance(item, dict):
-                return v[0].get("_value")
-            else:
-                return item
+type ItemFunc[T: Schema] = Callable[[T, TaskContext], None]
 
 
-def get_date(data: Dict, key: str) -> Optional[datetime.date]:
-    return coerce_to_date(get_value(data, key))
+def get_item_data[T: Schema](type: Type[T], endpoint: str, context: TaskContext) -> T:
+    data = get_json(endpoint, cache=context.cache, session=context.session)
+
+    return Item[type].model_validate(data).data
 
 
-def get_str(data, key, default=None) -> Optional[str]:
-    return coerce_to_str(get_value(data, key), default=default)
-
-
-def get_int(data, key, default=None) -> Optional[int]:
-    return coerce_to_int(get_value(data, key), default=default)
-
-
-def get_boolean(data, key, default=None) -> Optional[bool]:
-    result = coerce_to_boolean(get_value(data, key))
-    if result is None:
-        return default
-    else:
-        return result
-
-
-def get_list(data, key) -> list:
-    return coerce_to_list(data.get(key))
-
-
-def parse_parliamentdotuk_id(about_url: str) -> Optional[int]:
-    matches = re.findall(r".*?/([\d]+)$", about_url)
-    if matches:
-        return int(matches[0])
-
-
-def get_parliamentdotuk_id(obj: dict, key: str = contract.ABOUT) -> Optional[int]:
-    try:
-        return parse_parliamentdotuk_id(get_value(obj, key))
-    except Exception as e:
-        raise MissingFieldException(e)
-
-
-def get_item_data(endpoint: str, **kwargs) -> Optional[Dict]:
-    data = get_json(endpoint, **kwargs)
-    return data["result"]["primaryTopic"]
-
-
-def update_model(
+def foreach[
+    T: Schema
+](
     endpoint_url: str,
-    update_item_func: Callable[[Dict], None],
-    notification: TaskNotification,
+    item_schema_type: Type[T],
+    item_func: ItemFunc[T],
+    context: TaskContext,
     page_size=MAX_PAGE_SIZE,
     follow_pagination: bool = True,
-    **kwargs,
 ) -> None:
     """
-    Run [update_item_func] for every JSON item returned by [endpoint_url].
-
-    Depending on the endpoint response, [update_item_func] may make further API requests.
+    Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
+    Paging is handled automatically until no more items are returned, or max_items count is reached (if specified).
     """
     page_number = 0
     next_page = "no-next-page-placeholder"
 
-    def _item_notification_info(index: int):
+    notification = context.notification
+
+    def _item_notification_info(_index: int) -> str:
         url = debug_url(
             endpoint_url, **{PARAM_PAGE: page_number, PARAM_PAGE_SIZE: page_size}
         )
-        return f"Item #{index}: {notification.format_url(url)})"
+        return f"Item #{_index}: {context.notification.html_link(url)})"
 
     while next_page is not None:
-        data = _get_list_page_json(
+        data = get_json(
             endpoint_url,
-            page_number=page_number,
-            page_size=page_size,
-            **kwargs,
+            params={
+                PARAM_PAGE_SIZE: page_size,
+                PARAM_PAGE: page_number,
+            },
+            cache=context.cache,
         )
+        page = Page[item_schema_type].model_validate(data)
 
-        items = data["result"]["items"]
-
-        for index, item in enumerate(items):
+        for index, item in enumerate(page.items):
             try:
-                update_item_func(item)
+                item_func(item, context)
 
             except MissingFieldException as e:
                 notification.warning(
@@ -164,50 +85,4 @@ def update_model(
                 return
 
         page_number += 1
-        next_page = _get_next_page_url(data) if follow_pagination else None
-
-
-def _get_nested_value(obj: dict, key: str):
-    parts = key.split(".")
-    parent = obj
-    while len(parts) > 1:
-        parent = parent.get(parts.pop(0))
-        if parent is None or not isinstance(parent, dict):
-            return None
-
-    result = parent.get(parts.pop())
-    if _is_xml_null(result):
-        return None
-    return result
-
-
-def _is_xml_null(obj: dict) -> bool:
-    """Some values return an xml-schema-wrapped version of null.
-
-    Return True iff the given object is an instance of xml-wrapped null.
-    """
-    return isinstance(obj, dict) and obj.get("@xsi:nil", "").lower() == "true"
-
-
-def _get_next_page_url(json_response) -> Optional[str]:
-    try:
-        return json_response["result"]["next"]
-    except (KeyError, AttributeError) as e:
-        log.warning(e)
-        return None
-
-
-def _get_list_page_json(
-    endpoint: str,
-    page_number: int = 0,
-    page_size: int = MAX_PAGE_SIZE,
-    **kwargs,
-) -> dict:
-    return get_json(
-        endpoint,
-        params={
-            PARAM_PAGE_SIZE: page_size,
-            PARAM_PAGE: page_number,
-        },
-        **kwargs,
-    )
+        next_page = page.next_page_url if follow_pagination else None

@@ -1,5 +1,4 @@
 import re
-from typing import Optional
 
 from django.db.models import Q, QuerySet
 from repository.models import Constituency, Election, Party, Person
@@ -28,7 +27,7 @@ _honorifics_regex = re.compile(rf"({'|'.join(_honorifics)})", re.IGNORECASE)
 UNKNOWN_NAME = "__UNKNOWN_MEMBER__"
 
 
-def get_member(pk: int) -> Optional[Person]:
+def get_member(pk: int) -> Person | None:
     try:
         person, _ = Person.objects.get_or_create(
             pk=pk,
@@ -89,7 +88,7 @@ def normalize_name(raw_name: str) -> str:
         return normalised_whitespace
 
 
-def get_member_by_name(name: str) -> Optional[Person]:
+def get_member_by_name(name: str) -> Person | None:
     """
     Try to resolve the given name to a Person instance.
 
@@ -107,7 +106,7 @@ def get_member_for_election_result(
     name: str,
     constituency: Constituency,
     election: Election,
-) -> Optional[Person]:
+) -> Person | None:
     by_name = Person.objects.filter(
         Q(name__iexact=name) | Q(personalsoknownas__alias__iexact=name),
     )

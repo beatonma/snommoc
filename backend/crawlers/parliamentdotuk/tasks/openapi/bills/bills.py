@@ -1,19 +1,17 @@
 from celery import shared_task
 from celery.utils import log as logging
 from crawlers import caches
-from crawlers.network import JsonResponseCache, json_cache
+from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
-    fetch_and_update_bill_publications,
-)
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import (
-    fetch_and_update_bill_stages,
-)
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
-    update_bill_stage_types,
-)
-from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import update_bill_types
+from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import \
+    fetch_and_update_bill_publications
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import \
+    fetch_and_update_bill_stages
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import \
+    update_bill_stage_types
+from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import \
+    update_bill_types
 from crawlers.parliamentdotuk.tasks.openapi.bills.update import update_bill
 from notifications.models import TaskNotification
 from notifications.models.task_notification import task_notification
@@ -23,7 +21,7 @@ log = logging.get_logger(__name__)
 
 
 def _update_type_definitions(
-    cache: JsonResponseCache | None,
+    cache: JsonCache | None,
     notification: TaskNotification | None,
 ):
     """Must be run before fetch_and_update_bill."""
@@ -35,7 +33,7 @@ def _update_type_definitions(
 @json_cache(caches.BILLS)
 def fetch_and_update_bill(
     parliamentdotuk: int,
-    cache: JsonResponseCache | None,
+    cache: JsonCache | None,
     notification: TaskNotification | None,
 ) -> None:
     log.info(f"Updating bill #{parliamentdotuk}")
@@ -76,7 +74,7 @@ def _should_update(summary: schema.BillSummary) -> bool:
 @task_notification(label="Update bills")
 @json_cache(caches.BILLS)
 def update_bills(
-    cache: JsonResponseCache | None,
+    cache: JsonCache | None,
     notification: TaskNotification | None,
     force_update: bool = False,
 ) -> None:

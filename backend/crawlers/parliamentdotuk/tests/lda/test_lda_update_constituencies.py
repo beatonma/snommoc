@@ -6,6 +6,7 @@ from crawlers.parliamentdotuk.tasks.lda.update_constituencies import (
     update_constituencies,
 )
 from repository.models import Constituency
+
 from .data_lda_update_constituencies import EXAMPLE_RESPONSE
 
 
@@ -14,14 +15,10 @@ class UpdateConstituenciesTest(LocalTestCase):
         "crawlers.parliamentdotuk.tasks.lda.lda_client.get_json",
         side_effect=lambda *args, **kwargs: EXAMPLE_RESPONSE,
     )
-    @patch(
-        "crawlers.parliamentdotuk.tasks.lda.lda_client._get_next_page_url",
-        side_effect=lambda x: None,
-    )
     def test_update_constituencies(self, *args, **kwargs):
         self.assertEqual(len(Constituency.objects.all()), 0)
 
-        update_constituencies(cache=None)
+        update_constituencies(cache=None, follow_pagination=False)
 
         new_constituencies = Constituency.objects.all()
         self.assertEqual(len(new_constituencies), 10)
@@ -30,7 +27,7 @@ class UpdateConstituenciesTest(LocalTestCase):
         self.assertEqual(aberavon.name, "Aberavon")
         self.assertEqual(aberavon.constituency_type, "County")
         self.assertEqual(aberavon.gss_code, "W07000049")
-        self.assertEqual(aberavon.ordinance_survey_name, "")
+        self.assertEqual(aberavon.ordinance_survey_name, None)
         self.assertEqual(aberavon.start, datetime.date(year=2010, month=5, day=6))
         self.assertEqual(aberavon.end, None)
         self.assertEqual(aberavon.parliamentdotuk, 146747)
@@ -47,8 +44,8 @@ class UpdateConstituenciesTest(LocalTestCase):
         aberdare: Constituency = new_constituencies.get(parliamentdotuk=143467)
         self.assertEqual(aberdare.name, "Aberdare")
         self.assertEqual(aberdare.constituency_type, "Borough")
-        self.assertEqual(aberdare.gss_code, "")
-        self.assertEqual(aberdare.ordinance_survey_name, "")
+        self.assertEqual(aberdare.gss_code, None)
+        self.assertEqual(aberdare.ordinance_survey_name, None)
         self.assertEqual(aberdare.start, datetime.date(year=1974, month=2, day=28))
         self.assertEqual(aberdare.end, datetime.date(year=1983, month=6, day=9))
         self.assertEqual(aberdare.parliamentdotuk, 143467)

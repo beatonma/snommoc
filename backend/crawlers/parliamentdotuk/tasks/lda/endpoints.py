@@ -16,11 +16,6 @@ ELECTION_RESULT_DETAIL = (
 CALENDAR = "https://services.parliament.uk/calendar/all.rss"
 
 
-PARAM_PAGE_SIZE = "_pageSize"
-PARAM_PAGE = "_page"
-MAX_PAGE_SIZE = 500
-
-
 def url_for_commons_division(parliamentdotuk: int) -> str:
     return COMMONS_DIVISION.format(parliamentdotuk=parliamentdotuk)
 

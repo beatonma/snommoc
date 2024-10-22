@@ -1,6 +1,6 @@
 from celery import shared_task
 from crawlers import caches
-from crawlers.network import JsonResponseCache, json_cache
+from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
 from notifications.models.task_notification import TaskNotification, task_notification
@@ -79,7 +79,7 @@ def update_lords_division(
 @json_cache(caches.LORDS_DIVISIONS)
 def fetch_and_update_lords_division(
     parliamentdotuk: int,
-    cache: JsonResponseCache | None = None,
+    cache: JsonCache | None = None,
 ):
     openapi_client.get(
         endpoints.lords_division(parliamentdotuk),
@@ -93,7 +93,7 @@ def fetch_and_update_lords_division(
 @task_notification(label="Update Lords divisions")
 @json_cache(caches.LORDS_DIVISIONS)
 def update_lords_divisions(
-    cache: JsonResponseCache | None,
+    cache: JsonCache | None,
     notification: TaskNotification | None,
     skip: int = 0,
     **kwargs,

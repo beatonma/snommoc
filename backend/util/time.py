@@ -3,7 +3,11 @@ from typing import Callable
 
 from django.utils import timezone
 
-type _DefaultDate = Callable[[], date] | date
+# A specific date, or a callable which return a date
+type Today = Callable[[], date] | date
+
+# A specific datetime, or a callable which return a datetime
+type Now = Callable[[], datetime] | datetime
 
 
 def get_now() -> datetime:
@@ -22,7 +26,7 @@ def tzdatetime(
     )
 
 
-def coerce_timezone(dt) -> datetime:
+def coerce_timezone(dt: datetime | date) -> datetime:
     """
     Convert a date or naive datetime to an aware datetime.
     """
@@ -53,14 +57,14 @@ def years_between(
     return max(difference, 0)
 
 
-def years_since(dt: date | None, now: _DefaultDate = get_today) -> int:
+def years_since(dt: date | None, now: Today = get_today) -> int:
     if callable(now):
         now = now()
 
     return years_between(dt, now)
 
 
-def is_anniversary(dt: date | None, now: _DefaultDate = get_today) -> bool:
+def is_anniversary(dt: date | None, now: Today = get_today) -> bool:
     if callable(now):
         now = now()
 
@@ -91,9 +95,7 @@ def in_range(dt: date, start: date | None, end: date | None) -> bool:
     return start <= dt < end
 
 
-def is_current(
-    start: date | None, end: date | None, now: _DefaultDate = get_today
-) -> bool:
+def is_current(start: date | None, end: date | None, now: Today = get_today) -> bool:
     if callable(now):
         now = now()
 

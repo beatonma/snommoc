@@ -1,6 +1,6 @@
 from typing import Optional
 
-from crawlers.network import JsonResponseCache
+from crawlers.network import JsonCache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills.schema import StageSummary
 from notifications.models import TaskNotification
@@ -43,7 +43,7 @@ def _update_bill_stage(
 
 def fetch_and_update_bill_stages(
     bill_id: int,
-    cache: Optional[JsonResponseCache],
+    cache: Optional[JsonCache],
     notification: Optional[TaskNotification],
 ) -> None:
     openapi_client.foreach(

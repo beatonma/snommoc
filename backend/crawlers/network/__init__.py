@@ -1,2 +1,2 @@
-from .cache import JsonResponseCache, json_cache
+from .cache import JsonCache, json_cache
 from .network import *

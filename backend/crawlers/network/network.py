@@ -1,10 +1,10 @@
 import logging
-from typing import Dict, Optional, Tuple, Union
+from typing import Tuple
 from urllib.parse import urlparse
 
 import requests
 from common.network.rate_limit import rate_limit
-from crawlers.network import JsonResponseCache
+from crawlers.network import JsonCache
 from crawlers.network.exceptions import HttpClientError, HttpNoContent, HttpServerError
 from django.conf import settings
 from rest_framework import status
@@ -12,7 +12,7 @@ from rest_framework import status
 log = logging.getLogger(__name__)
 
 
-def _resolve_query(url: str, params: Dict | None) -> Tuple[str, Dict]:
+def _resolve_query(url: str, params: dict | None) -> Tuple[str, dict]:
     """Extract any existing params from `url` and add them to `params` for proper encoding"""
     query = {}
     params = params or {}
@@ -31,12 +31,12 @@ def _resolve_query(url: str, params: Dict | None) -> Tuple[str, Dict]:
 
 def get_json(
     url: str,
-    params: Optional[dict] = None,
-    cache: Optional[JsonResponseCache] = None,
+    params: dict | None = None,
+    cache: JsonCache | None = None,
     dangerous_encoded_params: bool = False,
     session: requests.Session = None,
     **kwargs,
-) -> Union[dict, list]:
+) -> dict | list:
     """
     If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().
     """

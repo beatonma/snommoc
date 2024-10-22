@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
@@ -6,35 +6,19 @@ from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.divisions import (
     _create_commons_division,
     _create_commons_vote,
-    _get_vote_commons_member_id,
-    _get_vote_lords_member_id,
     update_commons_divisions,
 )
 from crawlers.parliamentdotuk.tests.lda.data_lda_divisions import (
     EXAMPLE_COMMONS_DIVISION,
-    EXAMPLE_COMMONS_DIVISIONS_LIST,
     EXAMPLE_COMMONS_DIVISION_COMPLETE,
-    EXAMPLE_COMMONS_VOTE,
+    EXAMPLE_COMMONS_DIVISIONS_LIST,
     EXAMPLE_COMMONS_VOTE_AYE,
     EXAMPLE_COMMONS_VOTE_NO,
-    EXAMPLE_LORDS_VOTE,
 )
-from repository.models import (
-    CommonsDivision,
-    CommonsDivisionVote,
-    ParliamentarySession,
-)
+from repository.models import CommonsDivision, CommonsDivisionVote, ParliamentarySession
 
 
 class CommonsDivisionsTestCase(LocalTestCase):
-    def test_get_vote_commons_member_id(self):
-        data = EXAMPLE_COMMONS_VOTE
-        self.assertEqual(4443, _get_vote_commons_member_id(data))
-
-    def test_get_vote_lords_member_id(self):
-        data = EXAMPLE_LORDS_VOTE
-        self.assertEqual(3898, _get_vote_lords_member_id(data))
-
     def test_create_commons_vote_aye(self):
         data = EXAMPLE_COMMONS_VOTE_AYE
 
@@ -78,12 +62,13 @@ class CommonsDivisionsTestCase(LocalTestCase):
             division.title, "The Queen's Speech: Jeremy Corbyn's amendment (c) "
         )
         self.assertEqual(division.uin, "CD:2020-01-16:750")
-        self.assertEqual(division.date, datetime.date(year=2020, month=1, day=16))
+        self.assertEqual(division.date, date(year=2020, month=1, day=16))
 
         self.assertFalse(division.deferred_vote)
 
         self.assertLengthEquals(division.votes.all(), 55)
 
+    #
     def tearDown(self) -> None:
         self.delete_instances_of(
             CommonsDivision,
@@ -106,12 +91,8 @@ class MockCommonsDivisionTestCase(LocalTestCase):
         "crawlers.parliamentdotuk.tasks.lda.lda_client.get_json",
         side_effect=get_mock_divisions,
     )
-    @patch(
-        "crawlers.parliamentdotuk.tasks.lda.lda_client._get_next_page_url",
-        side_effect=lambda x: None,
-    )
     def test_update_commons_divisions(self, *args, **kwargs):
-        update_commons_divisions(cache=None)
+        update_commons_divisions(cache=None, follow_pagination=False)
         division = CommonsDivision.objects.first()
 
         self.assertEqual(
@@ -119,7 +100,7 @@ class MockCommonsDivisionTestCase(LocalTestCase):
             "Opposition day debate on tax avoidance and evasion: Mr Corbyn's motion ",
         )
         self.assertEqual(division.uin, "CD:2020-02-25:770")
-        self.assertEqual(division.date, datetime.date(year=2020, month=2, day=25))
+        self.assertEqual(division.date, date(year=2020, month=2, day=25))
 
         self.assertEqual(division.ayes, 236)
         self.assertEqual(division.noes, 322)

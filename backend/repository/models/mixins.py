@@ -1,9 +1,17 @@
 import datetime
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from util.models.generics import BaseModelMixin
 from util.time import get_now, in_range, is_current
+
+
+class BaseQuerySet(QuerySet):
+    def get_or_none(self, **kwargs):
+        try:
+            return self.get(**kwargs)
+        except self.model.DoesNotExist:
+            return None
 
 
 class BaseModel(models.Model, BaseModelMixin):
@@ -11,6 +19,7 @@ class BaseModel(models.Model, BaseModelMixin):
     Not a mixin as such. All concrete model implementations should extend from this.
     """
 
+    objects = BaseQuerySet.as_manager()
     created_on = models.DateTimeField(default=get_now)
     modified_on = models.DateTimeField(auto_now=True)
 

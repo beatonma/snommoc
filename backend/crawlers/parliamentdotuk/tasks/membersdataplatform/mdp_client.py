@@ -1,27 +1,50 @@
 import datetime
-from typing import (
-    Callable,
-    List,
-    Optional,
-    Type,
-)
+from typing import Callable, List, Optional, Type
 
-from crawlers.network import JsonResponseCache, get_json
+from crawlers.network import JsonCache, get_json
 from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     addresses as address_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     basic_details as basic_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     biography_entries as bio_entries_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     committees as committee_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     constituencies as constituencies_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     election as election_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     elections_contested as contested_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     experience as experience_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     houses as houses_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     interests as interests_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     maiden_speeches as speech_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     member as member_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     party as party_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     posts as posts_contract,
+)
+from crawlers.parliamentdotuk.tasks.membersdataplatform.contract import (
     status as status_contract,
 )
 from crawlers.parliamentdotuk.tasks.util.coercion import (
@@ -447,7 +470,7 @@ def update_members(
     update_member_func: Callable[[ResponseData], None],
     response_class: Type[ResponseData],
     notification: TaskNotification,
-    cache: Optional[JsonResponseCache] = None,
+    cache: Optional[JsonCache] = None,
     **kwargs,
 ) -> None:
     response = get_json(endpoint_url, cache=cache)
@@ -459,7 +482,7 @@ def update_members(
 
     except AttributeError as e:
         notification.warning(
-            f"Failed to read item list for url={notification.format_url(endpoint_url)}"
+            f"Failed to read item list for url={notification.html_link(endpoint_url)}"
         )
         notification.mark_as_failed(e)
         return
@@ -469,7 +492,7 @@ def update_members(
             update_member_func(response_class(member))
         except Exception as e:
             notification.warning(
-                f"Failed to update member=[{member}…][{notification.format_url(endpoint_url)}]: {e}"
+                f"Failed to update member=[{member}…][{notification.html_link(endpoint_url)}]: {e}"
             )
             notification.mark_as_failed(e)
             return

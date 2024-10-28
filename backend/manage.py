@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'snommoc.settings')
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "snommoc.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -17,5 +17,12 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    if "makemigrations" in sys.argv:
+        # Disable environment settings which have side effects, allowing
+        # `makemigrations` to be run without setting up a complete environment.
+        os.environ.setdefault("CREATE_ENVIRONMENT_PATHS", "False")
+        os.environ.setdefault("LOGGING_ENABLED", "False")
+        os.environ.setdefault("DATABASE_ENGINE", "none")
+
     main()

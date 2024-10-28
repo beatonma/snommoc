@@ -1,1 +1,0 @@
-ABOUT = "_about"

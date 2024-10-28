@@ -51,7 +51,7 @@ class BillStageSitting(Schema):
     stageId: int
     billStageId: int
     billId: int
-    date: CoercedDateTime | None
+    date: CoercedDateTime
 
 
 class StageSummary(Schema):
@@ -147,7 +147,7 @@ class BillSummary(Schema):
     currentHouse: House
     originatingHouse: House
     lastUpdate: CoercedDateTime
-    billWithdrawn: CoercedDateTime | None
+    billWithdrawn: CoercedDateTime
     isDefeated: bool
     billTypeId: int
     introducedSessionId: int

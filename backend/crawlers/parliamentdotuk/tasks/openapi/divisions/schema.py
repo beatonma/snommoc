@@ -46,8 +46,8 @@ class LordsDivision(Schema):
     isHouse: bool | None
     amendmentMotionNotes: str | None
     isGovernmentWin: bool | None
-    remoteVotingStart: CoercedDateTime | None
-    remoteVotingEnd: CoercedDateTime | None
+    remoteVotingStart: CoercedDateTime
+    remoteVotingEnd: CoercedDateTime
     divisionWasExclusivelyRemote: bool
     contentTellers: list[DivisionMember] | None
     notContentTellers: list[DivisionMember] | None

@@ -1,12 +1,11 @@
 """
 Functions for retrieving a specific type of data from data of some other type.
 """
-import datetime
-from typing import Optional
+
+from datetime import date, datetime
 
 import dateutil
 from dateutil.parser import ParserError
-
 from util.time import coerce_timezone, year_only_date
 
 
@@ -24,21 +23,21 @@ def coerce_to_list(obj) -> list:
         return [obj]
 
 
-def coerce_to_int(value, default=None) -> Optional[int]:
+def coerce_to_int(value, default=None) -> int | None:
     try:
         return int(value)
     except (TypeError, ValueError):
         return default
 
 
-def coerce_to_str(value, default=None) -> Optional[str]:
+def coerce_to_str(value, default=None) -> str | None:
     if value is None:
         return default
     else:
         return str(value)
 
 
-def coerce_to_boolean(value, default=None) -> Optional[bool]:
+def coerce_to_boolean(value, default=None) -> bool | None:
     if value is None:
         return default
 
@@ -51,7 +50,7 @@ def coerce_to_boolean(value, default=None) -> Optional[bool]:
     return bool(value)
 
 
-def coerce_to_date(value) -> Optional[datetime.date]:
+def coerce_to_date(value) -> date | None:
     try:
         return dateutil.parser.parse(value).date()
     except (AttributeError, OverflowError, ParserError, TypeError, ValueError):
@@ -67,12 +66,12 @@ def coerce_to_date(value) -> Optional[datetime.date]:
             if month is None or day is None:
                 return year_only_date(year)
             else:
-                return datetime.date(year=year, month=month, day=day)
+                return date(year=year, month=month, day=day)
         except (TypeError, ValueError):
             pass
 
 
-def coerce_to_datetime(value) -> Optional[datetime.datetime]:
+def coerce_to_datetime(value) -> datetime | None:
     try:
         dt = dateutil.parser.parse(value)
         return coerce_timezone(dt)

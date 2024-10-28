@@ -4,7 +4,6 @@ from celery.utils.log import get_task_logger
 from crawlers.context import TaskContext
 from crawlers.network import get_json
 from crawlers.network.exceptions import HttpError
-from crawlers.parliamentdotuk.tasks.lda.endpoints import debug_url
 from crawlers.parliamentdotuk.tasks.lda.schema import Item, Page
 from crawlers.parliamentdotuk.tasks.util.checks import MissingFieldException
 from pydantic import BaseModel as Schema
@@ -45,9 +44,9 @@ def foreach[
     notification = context.notification
 
     def _item_notification_info(_index: int) -> str:
-        url = debug_url(
-            endpoint_url, **{PARAM_PAGE: page_number, PARAM_PAGE_SIZE: page_size}
-        )
+        params = {PARAM_PAGE: page_number, PARAM_PAGE_SIZE: page_size}
+        param_str = "&".join(f"{key}={value}" for (key, value) in params.items())
+        url = f"{endpoint_url}?{param_str}"
         return f"Item #{_index}: {context.notification.html_link(url)})"
 
     while next_page is not None:

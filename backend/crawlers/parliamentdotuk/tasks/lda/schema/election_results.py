@@ -1,34 +1,34 @@
 from crawlers.parliamentdotuk.tasks.lda.schema import types
+from crawlers.parliamentdotuk.tasks.types import field
 from pydantic import BaseModel as Schema
-from pydantic import Field
 
 
 class ElectionCandidate(Schema):
-    name: types.NestedStr = Field(validation_alias="fullName")
-    number_of_votes: int = Field(validation_alias="numberOfVotes")
+    name: types.NestedStr = field("fullName")
+    number_of_votes: int = field("numberOfVotes")
     order: int
-    party_name: types.NestedStr = Field(validation_alias="party")
+    party_name: types.NestedStr = field("party")
 
 
 class ResultConstituency(Schema):
-    parliamentdotuk: types.ParliamentId = Field(validation_alias="_about")
-    name: types.NestedStr = Field(validation_alias="label")
+    parliamentdotuk: types.ParliamentId = field("_about")
+    name: types.NestedStr = field("label")
 
 
 class ResultElection(Schema):
-    parliamentdotuk: types.ParliamentId = Field(validation_alias="_about")
-    name: types.NestedStr = Field(validation_alias="label")
+    parliamentdotuk: types.ParliamentId = field("_about")
+    name: types.NestedStr = field("label")
 
 
 class ElectionResult(Schema):
-    parliamentdotuk: types.ParliamentId = Field(validation_alias="_about")
+    parliamentdotuk: types.ParliamentId = field("_about")
     constituency: ResultConstituency
     election: ResultElection
     electorate: int
     majority: int
     turnout: int
-    result_of_election: str = Field(validation_alias="resultOfElection")
+    result_of_election: str = field("resultOfElection")
 
 
 class ElectionResultDetail(ElectionResult):
-    candidates: list[ElectionCandidate] = Field(validation_alias="candidate")
+    candidates: list[ElectionCandidate] = field("candidate")

@@ -1,9 +1,10 @@
 import enum
 from typing import Annotated
 
+from crawlers.parliamentdotuk.tasks.types import field
 from ninja import Schema as NinjaSchema
 from pydantic import BaseModel as Schema
-from pydantic import BeforeValidator, Field
+from pydantic import BeforeValidator
 
 from . import types
 
@@ -61,29 +62,27 @@ type VoteMemberId = Annotated[
 
 
 class Vote(NinjaSchema):
-    member_parliamentdotuk: VoteMemberId = Field(validation_alias="member")
+    member_parliamentdotuk: VoteMemberId = field("member")
     type: VoteTypeType
 
 
 class CommonsDivisionItem(Schema):
-    parliamentdotuk: types.ParliamentId = Field(validation_alias="_about")
+    parliamentdotuk: types.ParliamentId = field("_about")
 
 
 class CommonsDivision(Schema):
-    parliamentdotuk: types.ParliamentId = Field(validation_alias="_about")
+    parliamentdotuk: types.ParliamentId = field("_about")
     date: types.NestedDate
     title: str
     uin: str
     session: SessionType
-    division_number: int = Field(validation_alias="divisionNumber")
-    deferred_vote: bool = Field(validation_alias="DeferredVote")
-    abstentions: types.VoteCount = Field(validation_alias="AbstainCount")
-    ayes: types.VoteCount = Field(validation_alias="AyesCount")
-    noes: types.VoteCount = Field(validation_alias="Noesvotecount")
-    did_not_vote: types.VoteCount = Field(validation_alias="Didnotvotecount")
-    non_eligible: types.VoteCount = Field(validation_alias="Noneligiblecount")
-    errors: types.VoteCount = Field(validation_alias="Errorvotecount")
-    suspended_or_expelled: types.VoteCount = Field(
-        validation_alias="Suspendedorexpelledvotescount"
-    )
-    votes: list[Vote] = Field(validation_alias="vote")
+    division_number: int = field("divisionNumber")
+    deferred_vote: bool = field("DeferredVote")
+    abstentions: types.VoteCount = field("AbstainCount")
+    ayes: types.VoteCount = field("AyesCount")
+    noes: types.VoteCount = field("Noesvotecount")
+    did_not_vote: types.VoteCount = field("Didnotvotecount")
+    non_eligible: types.VoteCount = field("Noneligiblecount")
+    errors: types.VoteCount = field("Errorvotecount")
+    suspended_or_expelled: types.VoteCount = field("Suspendedorexpelledvotescount")
+    votes: list[Vote] = field("vote")

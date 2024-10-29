@@ -4,76 +4,37 @@ Tasks for updating details on active members.
 Active members are of higher interest than historical ones so we maintain
 more details data about them.
 """
+
 import logging
-from typing import Callable, List, Optional, Tuple, Type
+from typing import Type
 
 from celery import shared_task
-from phonenumber_field.phonenumber import PhoneNumber
-from phonenumbers import NumberParseException
-
 from crawlers import caches
-from crawlers.network import json_cache
-from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints
-from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
-    AddressResponseData,
-    BasicInfoResponseData,
-    CommitteeResponseData,
-    ConstituencyResponseData,
-    ContestedElectionResponseData,
-    DeclaredInterestCategoryResponseData,
-    ElectionResponseData,
-    ExperiencesResponseData,
-    HouseMembershipResponseData,
-    MemberBiographyResponseData,
-    PartyResponseData,
-    PostResponseData,
-    SpeechResponseData,
-    SubjectsOfInterestResponseData,
-    update_members,
-)
-from notifications.models.task_notification import task_notification
-from repository.models import (
-    Committee,
-    CommitteeChair,
-    CommitteeMember,
-    ConstituencyResult,
-    ContestedElection,
-    Country,
-    DeclaredInterest,
-    DeclaredInterestCategory,
-    Election,
-    ElectionType,
-    Experience,
-    ExperienceCategory,
-    GovernmentPost,
-    GovernmentPostMember,
-    House,
-    HouseMembership,
-    MaidenSpeech,
-    OppositionPost,
-    OppositionPostMember,
-    ParliamentaryPost,
-    ParliamentaryPostMember,
-    PartyAssociation,
-    Person,
-    PhysicalAddress,
-    SubjectOfInterest,
-    SubjectOfInterestCategory,
-    Town,
-    UnlinkedConstituency,
-    WebAddress,
-)
-from repository.models.address import PHONE_NUMBER_REGION
+from crawlers.context import TaskContext
+from crawlers.network import JsonCache, json_cache
+from crawlers.parliamentdotuk.tasks.membersdataplatform import (endpoints,
+                                                                mdp_client)
+from notifications.models.task_notification import (TaskNotification,
+                                                    task_notification)
+from repository.models import (Committee, CommitteeChair, CommitteeMember,
+                               ConstituencyResult, ContestedElection, Country,
+                               DeclaredInterest, DeclaredInterestCategory,
+                               Election, ElectionType, Experience,
+                               ExperienceCategory, GovernmentPost,
+                               GovernmentPostMember, House, HouseMembership,
+                               MaidenSpeech, OppositionPost,
+                               OppositionPostMember, ParliamentaryPost,
+                               ParliamentaryPostMember, PartyAssociation,
+                               Person, PhysicalAddress, SubjectOfInterest,
+                               SubjectOfInterestCategory, Town,
+                               UnlinkedConstituency, WebAddress)
 from repository.models.party import get_or_create_party
-from repository.models.posts import (
-    BasePost,
-    BasePostMember,
-    get_current_post_for_person,
-)
-from repository.resolution.constituency import (
-    get_constituency_for_date,
-    get_current_constituency,
-)
+from repository.models.posts import (BasePost, BasePostMember,
+                                     get_current_post_for_person)
+from repository.resolution.constituency import (get_constituency_for_date,
+                                                get_current_constituency)
+
+from . import schema
 
 log = logging.getLogger(__name__)
 
@@ -82,8 +43,9 @@ log = logging.getLogger(__name__)
 @task_notification(label="Update active member details")
 @json_cache(caches.MEMBERS)
 def update_active_member_details(
-    debug_max_updates: Optional[int] = None,
-    **kwargs,
+    notification: TaskNotification,
+    cache: JsonCache | None = None,
+    debug_max_updates: int | None = None,
 ):
     """
     In development you may provide a value for debug_max_updates to avoid
@@ -95,22 +57,33 @@ def update_active_member_details(
     if debug_max_updates:
         members = members[:debug_max_updates]
 
-    _update_details_for_members(members, **kwargs)
+    _update_details_for_members(members, notification=notification, cache=cache)
 
 
 @shared_task
 @task_notification(label="Update all member details")
 @json_cache(caches.MEMBERS)
-def update_all_member_details(**kwargs):
-    _update_details_for_members(Person.objects.all(), **kwargs)
+def update_all_member_details(
+    notification: TaskNotification,
+    cache: JsonCache | None = None,
+):
+    _update_details_for_members(
+        Person.objects.all(), notification=notification, cache=cache
+    )
 
 
 @json_cache(caches.MEMBERS)
-def _update_details_for_members(members, **kwargs):
+def _update_details_for_members(
+    members,
+    notification: TaskNotification,
+    cache: JsonCache | None = None,
+):
     for member in members:
-        update_details_for_member(member.parliamentdotuk, **kwargs)
+        update_details_for_member(
+            member.parliamentdotuk, notification=notification, cache=cache
+        )
 
-        if kwargs["notification"].finished:
+        if notification.finished:
             log.warning("Exiting early - notification marked as finished")
             break
 
@@ -118,35 +91,37 @@ def _update_details_for_members(members, **kwargs):
 @shared_task
 @task_notification(label="Update details for single member")
 @json_cache(caches.MEMBERS)
-def update_details_for_member(member_id: int, **kwargs):
-    update_members(
-        endpoints.member_biography(member_id),
-        update_member_func=_update_member_biography,
-        response_class=MemberBiographyResponseData,
-        **kwargs,
+def update_details_for_member(
+    member_id: int,
+    notification: TaskNotification,
+    cache: JsonCache | None = None,
+):
+    context = TaskContext(cache=cache, notification=notification)
+    mdp_client.once(
+        url=endpoints.member_biography(member_id),
+        item_func=_update_member_biography,
+        context=context,
     )
 
 
-def _update_member_biography(data: MemberBiographyResponseData):
-    parliamentdotuk: int = data.get_parliament_id()
-
-    person = Person.objects.get(parliamentdotuk=parliamentdotuk)
+def _update_member_biography(data: schema.MemberFullBiog, context: TaskContext):
+    person = Person.objects.get(parliamentdotuk=data.parliamentdotuk)
     log.info(f"Updating detail for member: {person}")
 
-    _update_basic_details(person, data.get_basic_info())
-    _update_house_membership(person, data.get_house_memberships())
-    _update_historical_constituencies(person, data.get_constituencies())
-    _update_party_associations(person, data.get_parties())
-    _update_maiden_speeches(person, data.get_maiden_speeches())
-    _update_committees(person, data.get_committees())
-    _update_addresses(person, data.get_addresses())
-    _update_declared_interests(person, data.get_declared_interest_categories())
-    _update_experiences(person, data.get_experiences())
-    _update_subjects_of_interest(person, data.get_subjects_of_interest())
-    _update_government_posts(person, data.get_goverment_posts())
-    _update_parliamentary_posts(person, data.get_parliament_posts())
-    _update_opposition_posts(person, data.get_opposition_posts())
-    _update_elections_contested(person, data.get_contested_elections())
+    _update_basic_details(person, data.basic_info)
+    _update_house_membership(person, data.house_memberships)
+    _update_historical_constituencies(person, data.constituencies)
+    _update_party_associations(person, data.parties)
+    _update_maiden_speeches(person, data.maiden_speeches)
+    _update_committees(person, data.committees)
+    _update_addresses(person, data.addresses)
+    _update_declared_interests(person, data.declared_interests)
+    _update_experiences(person, data.experiences)
+    _update_subjects_of_interest(person, data.subjects)
+    _update_government_posts(person, data.government_posts)
+    _update_parliamentary_posts(person, data.parliament_posts)
+    _update_opposition_posts(person, data.opposition_posts)
+    _update_elections_contested(person, data.contested_elections)
 
     _postprocess_update(person)
 
@@ -157,34 +132,30 @@ def _postprocess_update(person: Person) -> None:
 
 
 def _get_or_create_election(
-    data: Optional[ElectionResponseData],
-) -> Tuple[Election, bool]:
+    data: schema.Election,
+) -> tuple[Election, bool]:
     """Convenience function as elections can be created via multiple routes
     including _update_historical_constituencies and _update_elections_contested."""
-    election_type, _ = ElectionType.objects.get_or_create(name=data.get_election_type())
+
+    election_type, _ = ElectionType.objects.get_or_create(name=data.type)
     election, created = Election.objects.get_or_create(
-        parliamentdotuk=data.get_election_id(),
+        parliamentdotuk=data.parliamentdotuk,
         defaults={
-            "name": data.get_election_name(),
+            "name": data.name,
             "election_type": election_type,
-            "date": data.get_election_date(),
+            "date": data.date,
         },
     )
     return election, created
 
 
-def _catch_item_errors(person: Person, items: List, func: Callable) -> None:
-    for item in items:
-        func(item)
+def _update_basic_details(person: Person, data: schema.BasicInfo):
+    person.given_name = data.first_name
+    person.additional_name = data.middle_names
+    person.family_name = data.family_name
 
-
-def _update_basic_details(person: Person, data: BasicInfoResponseData):
-    person.given_name = data.get_first_name()
-    person.additional_name = data.get_middle_names()
-    person.family_name = data.get_family_name()
-
-    town_name = data.get_town_of_birth()
-    country_name = data.get_country_of_birth()
+    town_name = data.town_of_birth
+    country_name = data.country_of_birth
     if country_name:
         person.country_of_birth, _ = Country.objects.get_or_create(name=country_name)
 
@@ -198,28 +169,28 @@ def _update_basic_details(person: Person, data: BasicInfoResponseData):
 
 
 def _update_house_membership(
-    person: Person, memberships: List[HouseMembershipResponseData]
+    person: Person,
+    memberships: list[schema.HouseMembership],
 ) -> None:
-    def _item_func(hm: HouseMembershipResponseData):
-        house, _ = House.objects.get_or_create(name=hm.get_house())
+    for hm in memberships:
+        house, _ = House.objects.get_or_create(name=hm.house)
         HouseMembership.objects.update_or_create(
             person=person,
             house=house,
-            start=hm.get_start_date(),
+            start=hm.start_date,
             defaults={
-                "end": hm.get_end_date(),
+                "end": hm.end_date,
             },
         )
 
-    _catch_item_errors(person, memberships, _item_func)
-
 
 def _update_historical_constituencies(
-    person: Person, historical_constituencies: List[ConstituencyResponseData]
+    person: Person,
+    historical_constituencies: list[schema.Constituency],
 ) -> None:
-    def _item_func(c: ConstituencyResponseData):
-        constituency_name = c.get_constituency_name()
-        election, _ = _get_or_create_election(c.get_election())
+    for c in historical_constituencies:
+        constituency_name = c.name
+        election, _ = _get_or_create_election(c.election)
 
         constituency = get_constituency_for_date(constituency_name, election.date)
 
@@ -243,232 +214,206 @@ def _update_historical_constituencies(
                 election=election,
                 defaults={
                     "mp": person,
-                    "start": c.get_start_date(),
-                    "end": c.get_end_date(),
+                    "start": c.start_date,
+                    "end": c.end_date,
                 },
             )
 
-    _catch_item_errors(person, historical_constituencies, _item_func)
-
 
 def _update_party_associations(
-    person: Person, historical_parties: List[PartyResponseData]
+    person: Person, historical_parties: list[schema.PartyMembership]
 ) -> None:
-    def _item_func(p):
-        party = get_or_create_party(p.get_party_id(), p.get_party_name())
+    for p in historical_parties:
+        party = get_or_create_party(p.parliamentdotuk, p.name)
 
         PartyAssociation.objects.update_or_create(
             person=person,
             party=party,
-            start=p.get_start_date(),
+            start=p.start_date,
             defaults={
-                "end": p.get_end_date(),
+                "end": p.end_date,
             },
         )
 
-    _catch_item_errors(person, historical_parties, _item_func)
 
-
-def _update_committees(person: Person, committees: List[CommitteeResponseData]) -> None:
-    def _item_func(c):
+def _update_committees(person: Person, committees: list[schema.Committee]) -> None:
+    for c in committees:
         committee, _ = Committee.objects.update_or_create(
-            parliamentdotuk=c.get_committee_id(),
+            parliamentdotuk=c.parliamentdotuk,
             defaults={
-                "name": c.get_committee_name(),
+                "name": c.name,
             },
         )
 
         committee_membership, _ = CommitteeMember.objects.update_or_create(
             person=person,
             committee=committee,
-            start=c.get_start_date(),
+            start=c.start_date,
             defaults={
-                "end": c.get_end_date(),
+                "end": c.end_date,
             },
         )
 
-        for chair in c.get_chair():
+        for chair in c.chair:
             CommitteeChair.objects.update_or_create(
                 member=committee_membership,
-                start=chair.get_start_date(),
+                start=chair.start_date,
                 defaults={
-                    "end": chair.get_end_date(),
+                    "end": chair.end_date,
                 },
             )
-
-    _catch_item_errors(person, committees, _item_func)
 
 
 def _update_posts(
     person: Person,
-    posts: List[PostResponseData],
+    posts: list[schema.Post],
     post_class: Type[BasePost],
     membership_class: Type[BasePostMember],
 ) -> None:
-    def _item_func(p):
+    for p in posts:
         post, _ = post_class.objects.update_or_create(
-            parliamentdotuk=p.get_post_id(),
+            parliamentdotuk=p.parliamentdotuk,
             defaults={
-                "name": p.get_post_name(),
-                "hansard_name": p.get_post_hansard_name(),
+                "name": p.name,
+                "hansard_name": p.hansard_name,
             },
         )
 
         membership_class.objects.update_or_create(
             person=person,
             post=post,
-            start=p.get_start_date(),
+            start=p.start_date,
             defaults={
-                "end": p.get_end_date(),
+                "end": p.end_date,
             },
         )
 
-    _catch_item_errors(person, posts, _item_func)
 
-
-def _update_government_posts(person: Person, posts: List[PostResponseData]) -> None:
+def _update_government_posts(person: Person, posts: list[schema.Post]) -> None:
     _update_posts(person, posts, GovernmentPost, GovernmentPostMember)
 
 
-def _update_parliamentary_posts(person: Person, posts: List[PostResponseData]) -> None:
+def _update_parliamentary_posts(person: Person, posts: list[schema.Post]) -> None:
     _update_posts(person, posts, ParliamentaryPost, ParliamentaryPostMember)
 
 
-def _update_opposition_posts(person: Person, posts: List[PostResponseData]) -> None:
+def _update_opposition_posts(person: Person, posts: list[schema.Post]) -> None:
     _update_posts(person, posts, OppositionPost, OppositionPostMember)
 
 
-def _update_addresses(person: Person, addresses: List[AddressResponseData]) -> None:
-    def _str_to_phonenumber(number: str):
-        try:
-            return PhoneNumber.from_string(number, region=PHONE_NUMBER_REGION)
-        except NumberParseException:
-            return None
-
-    def _item_func(a):
-        if a.get_is_physical():
-
+def _update_addresses(person: Person, addresses: list[schema.Address]) -> None:
+    for a in addresses:
+        if a.is_physical:
             PhysicalAddress.objects.update_or_create(
                 person=person,
-                description=a.get_type(),
+                description=a.type,
                 defaults={
-                    "address": a.get_address(),
-                    "postcode": a.get_postcode(),
-                    "phone": _str_to_phonenumber(a.get_phone()),
-                    "fax": _str_to_phonenumber(a.get_fax()),
-                    "email": a.get_email(),
+                    "address": a.address,
+                    "postcode": a.postcode,
+                    "phone": a.phone,
+                    "fax": a.fax,
+                    "email": a.email,
                 },
             )
         else:
             WebAddress.objects.update_or_create(
                 person=person,
-                description=a.get_type(),
+                description=a.type,
                 defaults={
-                    "url": a.get_address(),
+                    "url": a.address,
                 },
             )
 
-    _catch_item_errors(person, addresses, _item_func)
-
 
 def _update_maiden_speeches(
-    person: Person, maiden_speeches: List[SpeechResponseData]
+    person: Person, maiden_speeches: list[schema.MaidenSpeech]
 ) -> None:
-    def _item_func(speech):
-        house, _ = House.objects.get_or_create(name=speech.get_house())
+    for speech in maiden_speeches:
+        house, _ = House.objects.get_or_create(name=speech.house)
         MaidenSpeech.objects.update_or_create(
             person=person,
             house=house,
             defaults={
-                "date": speech.get_date(),
-                "subject": speech.get_subject(),
-                "hansard": speech.get_hansard(),
+                "date": speech.date,
+                "subject": speech.subject,
+                "hansard": speech.hansard,
             },
         )
-
-    _catch_item_errors(person, maiden_speeches, _item_func)
 
 
 def _update_declared_interests(
-    person: Person, interest_categories: List[DeclaredInterestCategoryResponseData]
+    person: Person,
+    interest_categories: list[schema.DeclaredInterest],
 ) -> None:
-    def _item_func(c):
+    for c in interest_categories:
         category, _ = DeclaredInterestCategory.objects.update_or_create(
-            parliamentdotuk=c.get_category_id(),
+            parliamentdotuk=c.category_id,
             defaults={
-                "name": c.get_category_name(),
+                "name": c.category_name,
             },
         )
 
-        interests = c.get_interests()
+        interests = c.interests
         for interest in interests:
             DeclaredInterest.objects.update_or_create(
                 person=person,
-                parliamentdotuk=interest.get_interest_id(),
+                parliamentdotuk=interest.parliamentdotuk,
                 defaults={
                     "category": category,
-                    "description": interest.get_title(),
-                    "created": interest.get_date_created(),
-                    "amended": interest.get_date_amended(),
-                    "deleted": interest.get_date_deleted(),
-                    "registered_late": interest.get_registered_late(),
+                    "description": interest.title,
+                    "created": interest.date_created,
+                    "amended": interest.date_amended,
+                    "deleted": interest.date_deleted,
+                    "registered_late": interest.is_registered_late,
                 },
             )
 
-    _catch_item_errors(person, interest_categories, _item_func)
-
 
 def _update_subjects_of_interest(
-    person: Person, subjects_of_interest: List[SubjectsOfInterestResponseData]
+    person: Person,
+    subjects_of_interest: list[schema.SubjectOfInterest],
 ) -> None:
-    def _item_func(interest):
+    for interest in subjects_of_interest:
         category, _ = SubjectOfInterestCategory.objects.get_or_create(
-            title=interest.get_category()
+            title=interest.category
         )
         SubjectOfInterest.objects.get_or_create(
-            person=person, category=category, subject=interest.get_entry()
+            person=person,
+            category=category,
+            subject=interest.entry,
         )
 
-    _catch_item_errors(person, subjects_of_interest, _item_func)
 
-
-def _update_experiences(
-    person: Person, experiences: List[ExperiencesResponseData]
-) -> None:
-    def _item_func(exp):
-        category, _ = ExperienceCategory.objects.get_or_create(name=exp.get_type())
+def _update_experiences(person: Person, experiences: list[schema.Experience]) -> None:
+    for exp in experiences:
+        category, _ = ExperienceCategory.objects.get_or_create(name=exp.type)
         Experience.objects.update_or_create(
             person=person,
-            organisation=exp.get_organisation(),
-            title=exp.get_title(),
+            organisation=exp.organisation,
+            title=exp.title,
             defaults={
                 "category": category,
-                "title": exp.get_title(),
-                "start": exp.get_start_date(),
-                "end": exp.get_end_date(),
+                "title": exp.title,
+                "start": exp.start_date,
+                "end": exp.end_date,
             },
         )
 
-    _catch_item_errors(person, experiences, _item_func)
-
 
 def _update_elections_contested(
-    person: Person, contested: List[ContestedElectionResponseData]
+    person: Person, contested: list[schema.ContestedElection]
 ) -> None:
-    def _item_func(c):
-        election, _ = _get_or_create_election(c.get_election())
+    for c in contested:
+        election, _ = _get_or_create_election(c.election)
 
-        constituency_name = c.get_constituency_name()
+        constituency_name = c.constituency_name
 
         # Find the constituency that was active at the date of the election
         # If we can't find one, use the most recent definition by that name.
-        constituency = (
-            get_constituency_for_date(
-                constituency_name,
-                election.date,
-            )
-            or get_current_constituency(constituency_name)
-        )
+        constituency = get_constituency_for_date(
+            constituency_name,
+            election.date,
+        ) or get_current_constituency(constituency_name)
 
         if constituency is None:
             UnlinkedConstituency.objects.get_or_create(
@@ -487,8 +432,6 @@ def _update_elections_contested(
                     "constituency": constituency,
                 },
             )
-
-    _catch_item_errors(person, contested, _item_func)
 
 
 def _postprocess_update_current_post(person: Person) -> None:

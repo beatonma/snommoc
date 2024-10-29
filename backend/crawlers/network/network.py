@@ -1,5 +1,4 @@
 import logging
-from typing import Tuple
 from urllib.parse import urlparse
 
 import requests
@@ -12,7 +11,7 @@ from rest_framework import status
 log = logging.getLogger(__name__)
 
 
-def _resolve_query(url: str, params: dict | None) -> Tuple[str, dict]:
+def _resolve_query(url: str, params: dict | None) -> tuple[str, dict]:
     """Extract any existing params from `url` and add them to `params` for proper encoding"""
     query = {}
     params = params or {}

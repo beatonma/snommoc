@@ -1,5 +1,0 @@
-PARLIAMENTDOTUK = '@Id'
-ELECTION = 'Election'
-NAME = 'Name'
-DATE = 'Date'
-TYPE = 'Type'

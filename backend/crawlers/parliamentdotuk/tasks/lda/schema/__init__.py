@@ -17,7 +17,6 @@ class Page[T: Schema](Schema):
     next_page_url: str | None = field("next", default=None)
 
     @model_validator(mode="before")
-    @classmethod
     def unwrap(cls, obj):
         return obj["result"]
 

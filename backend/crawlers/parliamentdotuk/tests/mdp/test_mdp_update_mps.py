@@ -2,13 +2,10 @@ import datetime
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
+from crawlers.parliamentdotuk.tasks.membersdataplatform import schema
 from crawlers.parliamentdotuk.tasks.membersdataplatform.all_members import (
     _update_member_basic_info,
     update_all_mps_basic_info,
-)
-from crawlers.parliamentdotuk.tasks.membersdataplatform.mdp_client import (
-    MemberResponseData,
-    ResponseData,
 )
 from repository.models import Constituency, House, Party
 from repository.models.person import Person
@@ -178,25 +175,6 @@ EXAMPLE_RESPONSE_MANY_MPS = {
 }
 
 
-class ResponseDataTest(LocalTestCase):
-    """Ensure that the ResponseData class exposes json properties correctly."""
-
-    def test_nested_get_value(self):
-        responsedata = ResponseData(EXAMPLE_JSON_SINGLE_MP)
-
-        self.assertEqual(responsedata._get_value("@Member_Id"), "172")
-        self.assertEqual(responsedata._get_value("Party.#text"), "Labour")
-        self.assertEqual(
-            responsedata._get_value("CurrentStatus.StartDate"), "2019-12-12T00:00:00"
-        )
-        self.assertIsNone(responsedata._get_value("DateOfDeath"))
-        self.assertIsNone(responsedata._get_value("CurrentStatus.Reason"))
-        self.assertIsNone(responsedata._get_value("Some nonsense"))
-        self.assertIsNone(responsedata._get_value("."))
-        self.assertIsNone(responsedata._get_value("....."))
-        self.assertIsNone(responsedata._get_value(""))
-
-
 class MdpUpdateMpsTest(LocalTestCase):
     def setUp(self) -> None:
         Constituency.objects.create(
@@ -289,7 +267,10 @@ class MdpUpdateMpsTest(LocalTestCase):
         }
         self.assertRaises(Person.DoesNotExist, get_person_func, **get_person_kwargs)
 
-        _update_member_basic_info(MemberResponseData(EXAMPLE_JSON_SINGLE_MP))
+        # _update_member_basic_info(MemberResponseData(EXAMPLE_JSON_SINGLE_MP))
+        _update_member_basic_info(
+            schema.Member.model_validate(EXAMPLE_JSON_SINGLE_MP), None
+        )
 
         person = get_person_func(**get_person_kwargs)
 

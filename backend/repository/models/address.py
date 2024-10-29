@@ -1,12 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
-from repository.models.mixins import (
-    BaseModel,
-    PersonMixin,
-)
-
-PHONE_NUMBER_REGION = "GB"
+from repository.models.mixins import BaseModel, PersonMixin
 
 
 class PhysicalAddress(PersonMixin, BaseModel):

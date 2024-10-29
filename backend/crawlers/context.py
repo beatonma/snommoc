@@ -12,4 +12,4 @@ class TaskContext:
     ):
         self.notification = notification
         self.cache = cache
-        self.session = session
+        self.session = session or Session()

@@ -33,12 +33,13 @@ def foreach[
     context: TaskContext,
     page_size=MAX_PAGE_SIZE,
     follow_pagination: bool = True,
+    skip: int = 0,
 ) -> None:
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
     Paging is handled automatically until no more items are returned, or max_items count is reached (if specified).
     """
-    page_number = 0
+    page_number = skip
     next_page = "no-next-page-placeholder"
 
     notification = context.notification

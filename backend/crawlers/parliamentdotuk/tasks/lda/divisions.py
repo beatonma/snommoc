@@ -6,10 +6,8 @@ from crawlers.context import TaskContext
 from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.lda_client import get_item_data
-from notifications.models.task_notification import (TaskNotification,
-                                                    task_notification)
-from repository.models import (CommonsDivision, CommonsDivisionVote,
-                               ParliamentarySession)
+from notifications.models.task_notification import TaskNotification, task_notification
+from repository.models import CommonsDivision, CommonsDivisionVote, ParliamentarySession
 
 from . import lda_client
 from . import schema as lda_schema
@@ -94,6 +92,7 @@ def update_commons_divisions(
     cache: JsonCache | None = None,
     notification: TaskNotification | None = None,
     force_update: bool = False,
+    skip: int = 0,
 ) -> None:
     context = TaskContext(notification=notification, cache=cache)
 
@@ -119,4 +118,5 @@ def update_commons_divisions(
         item_func=update_division,
         context=context,
         follow_pagination=follow_pagination,
+        skip=skip,
     )

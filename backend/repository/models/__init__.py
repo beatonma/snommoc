@@ -1,15 +1,6 @@
-from .address import (
-    PhysicalAddress,
-    WebAddress,
-)
-
+from .address import PhysicalAddress, WebAddress
 from .bill import Bill
-
-from .committees import (
-    Committee,
-    CommitteeChair,
-    CommitteeMember,
-)
+from .committees import Committee, CommitteeChair, CommitteeMember
 from .constituency import (
     Constituency,
     ConstituencyAlsoKnownAs,
@@ -17,40 +8,23 @@ from .constituency import (
     ConstituencyResult,
     UnlinkedConstituency,
 )
-from .declared_interests import (
-    DeclaredInterest,
-    DeclaredInterestCategory,
-)
+from .declared_interests import DeclaredInterest, DeclaredInterestCategory
 from .divisions import (
     CommonsDivision,
     CommonsDivisionVote,
+    DivisionVoteType,
+    LordsDivision,
+    LordsDivisionVote,
 )
 from .election import ContestedElection, Election, ElectionNationalResult, ElectionType
-from .election_result import (
-    ConstituencyCandidate,
-    ConstituencyResultDetail,
-)
-from .experiences import (
-    Experience,
-    ExperienceCategory,
-)
-from .geography import (
-    Country,
-    Town,
-)
-from .houses import (
-    House,
-    HouseMembership,
-)
-from .lords_division import DivisionVoteType, LordsDivision, LordsDivisionVote
+from .election_result import ConstituencyCandidate, ConstituencyResultDetail
+from .experiences import Experience, ExperienceCategory
+from .geography import Country, Town
+from .houses import House, HouseMembership
 from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech
 from .organisation import Organisation
-from .party import (
-    Party,
-    PartyAlsoKnownAs,
-    PartyAssociation,
-)
+from .party import Party, PartyAlsoKnownAs, PartyAssociation
 from .person import LifeEvent, Person, PersonAlsoKnownAs
 from .portrait import MemberPortrait
 from .posts import (
@@ -62,7 +36,4 @@ from .posts import (
     ParliamentaryPostMember,
 )
 from .session import ParliamentarySession
-from .subjects_of_interest import (
-    SubjectOfInterest,
-    SubjectOfInterestCategory,
-)
+from .subjects_of_interest import SubjectOfInterest, SubjectOfInterestCategory

@@ -4,7 +4,7 @@ from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
 from notifications.models.task_notification import TaskNotification, task_notification
-from repository.models.lords_division import (
+from repository.models.divisions import (
     DivisionVoteType,
     LordsDivision,
     LordsDivisionVote,

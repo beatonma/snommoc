@@ -1,13 +1,16 @@
 import datetime
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.openapi.divisions.lords import \
-    update_lords_division
-from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import \
-    LORDS_DIVISION_DATA
+from crawlers.parliamentdotuk.tasks.openapi.divisions.lords import update_lords_division
+from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
+    LORDS_DIVISION_DATA,
+)
 from repository.models import Person
-from repository.models.lords_division import (DivisionVoteType, LordsDivision,
-                                              LordsDivisionVote)
+from repository.models.divisions import (
+    DivisionVoteType,
+    LordsDivision,
+    LordsDivisionVote,
+)
 from repository.resolution.members import get_member
 from repository.tests.data.create import create_sample_person
 from util.time import tzdatetime
@@ -87,14 +90,14 @@ class UpdateLordsDivisionsTests(LocalTestCase):
 
     def test_division_votes_are_correct(self):
         division: LordsDivision = LordsDivision.objects.first()
-        votes = division.votes_redux
+        votes = division.votes
 
         self.assertEqual(votes.count(), 5)
         self.assertEqual(votes.filter(vote_type__name="content").count(), 3)
         self.assertEqual(votes.filter(vote_type__name="not_content").count(), 2)
 
     def test_person_votes_related_name_is_correct(self):
-        votes = get_member(pk=2758).lords_division_votes
+        votes = get_member(pk=2758).lords_votes
 
         self.assertEqual(votes.count(), 1)
         self.assertEqual(votes.first().vote_type.name, "content")

@@ -1,10 +1,9 @@
-from rest_framework import serializers
-
 from api import contract
 from api.serializers.base import DetailedModelSerializer
 from api.serializers.member import SimpleProfileSerializer
 from api.serializers.parties import InlinePartySerializer
 from repository.models import LordsDivision, LordsDivisionVote
+from rest_framework import serializers
 
 
 class _LordsDivisionVoteSerializer(DetailedModelSerializer):
@@ -26,7 +25,7 @@ class _LordsDivisionVoteSerializer(DetailedModelSerializer):
 class LordsDivisionSerializer(DetailedModelSerializer):
     description = serializers.CharField(source="amendment_motion_notes")
     house = serializers.ReadOnlyField(default=contract.HOUSE_LORDS)
-    votes = _LordsDivisionVoteSerializer(many=True, source="votes_redux")
+    votes = _LordsDivisionVoteSerializer(many=True)
     whipped_vote = serializers.BooleanField(source="is_whipped")
     sponsor = SimpleProfileSerializer(source="sponsoring_member")
 

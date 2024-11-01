@@ -181,22 +181,4 @@ class CommonsDivisionVote(
         person_related_name="commons_votes",
     )
 ):
-    # Temporary fields for migration
-    aye = models.BooleanField(default=False)
-    no = models.BooleanField(default=False)
-    abstention = models.BooleanField(default=False)
-    did_not_vote = models.BooleanField(default=False)
-    suspended_or_expelled = models.BooleanField(default=False)
-
-    @property
-    def depr__vote_type(self) -> str:
-        if self.aye:
-            return "AyeVote"
-        elif self.no:
-            return "NoVote"
-        elif self.abstention:
-            return "Abstains"
-        elif self.did_not_vote:
-            return "DidNotVote"
-        elif self.suspended_or_expelled:
-            return "SuspendedOrExpelledVote"
+    pass

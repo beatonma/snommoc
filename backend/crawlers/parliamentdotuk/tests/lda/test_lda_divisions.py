@@ -24,22 +24,14 @@ class CommonsDivisionsTestCase(LocalTestCase):
 
         _create_commons_vote(1171292, data)
         vote: CommonsDivisionVote = CommonsDivisionVote.objects.first()
-        self.assertTrue(vote.aye)
-        self.assertFalse(vote.no)
-        self.assertFalse(vote.suspended_or_expelled)
-        self.assertFalse(vote.did_not_vote)
-        self.assertFalse(vote.abstention)
+        self.assertEqual(vote.vote_type.name, "AyeVote")
 
     def test_create_commons_vote_no(self):
         data = EXAMPLE_COMMONS_VOTE_NO
 
         _create_commons_vote(1171292, data)
         vote: CommonsDivisionVote = CommonsDivisionVote.objects.first()
-        self.assertTrue(vote.no)
-        self.assertFalse(vote.aye)
-        self.assertFalse(vote.suspended_or_expelled)
-        self.assertFalse(vote.did_not_vote)
-        self.assertFalse(vote.abstention)
+        self.assertEqual(vote.vote_type.name, "NoVote")
 
     def test_create_commons_division(self):
         data = EXAMPLE_COMMONS_DIVISION

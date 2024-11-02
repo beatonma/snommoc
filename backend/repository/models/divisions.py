@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-from repository.models.mixins import BaseModel, ParliamentDotUkMixin
+from repository.models.mixins import BaseModel, BaseQuerySet, ParliamentDotUkMixin
 
 
 class DivisionSharedProperties:
@@ -125,6 +125,15 @@ class DivisionVoteType(BaseModel):
         return self.name
 
 
+class DivisionVoteQuerySet(BaseQuerySet):
+    def for_member(self, person):
+        return (
+            self.filter(person=person)
+            .select_related("division")
+            .order_by("division__date")
+        )
+
+
 def _base_DivisionVote(*, division_fk: str, person_related_name: str):
     """Generate abstract base class for CommonsDivisionVote,LordsDivisionVote
 
@@ -134,6 +143,8 @@ def _base_DivisionVote(*, division_fk: str, person_related_name: str):
     """
 
     class _DivisionVote(BaseModel):
+        objects = DivisionVoteQuerySet.as_manager()
+
         person = models.ForeignKey(
             "repository.Person",
             on_delete=models.CASCADE,

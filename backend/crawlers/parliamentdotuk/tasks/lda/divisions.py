@@ -7,7 +7,12 @@ from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.lda import endpoints
 from crawlers.parliamentdotuk.tasks.lda.lda_client import get_item_data
 from notifications.models.task_notification import TaskNotification, task_notification
-from repository.models import CommonsDivision, CommonsDivisionVote, ParliamentarySession
+from repository.models import (
+    CommonsDivision,
+    CommonsDivisionVote,
+    DivisionVoteType,
+    ParliamentarySession,
+)
 
 from . import lda_client
 from . import schema as lda_schema
@@ -30,17 +35,13 @@ def _create_commons_vote(division_id: int, vote: lda_schema.Vote):
     if not isinstance(vote, lda_schema.Vote):
         raise Exception(f"Not a Vote instance: {vote}")
 
-    vote_type = vote.type
+    vote_type, _ = DivisionVoteType.objects.get_or_create(name=vote.type)
+
     CommonsDivisionVote.objects.update_or_create(
         division_id=division_id,
         person_id=vote.member_parliamentdotuk,
         defaults={
-            "aye": vote_type == lda_schema.VoteType.AyeVote,
-            "no": vote_type == lda_schema.VoteType.NoVote,
-            "abstention": vote_type == lda_schema.VoteType.Abstains,
-            "did_not_vote": vote_type == lda_schema.VoteType.DidNotVote,
-            "suspended_or_expelled": vote_type
-            == lda_schema.VoteType.SuspendedOrExpelledVote,
+            "vote_type": vote_type,
         },
     )
 

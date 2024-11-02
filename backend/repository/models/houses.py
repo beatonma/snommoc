@@ -1,13 +1,11 @@
+from typing import Literal
+
 from django.db import models
+from repository.models.mixins import BaseModel, PeriodMixin, PersonMixin
 
-from repository.models.mixins import (
-    BaseModel,
-    PeriodMixin,
-    PersonMixin,
-)
-
-HOUSE_OF_COMMONS = "Commons"
-HOUSE_OF_LORDS = "Lords"
+type HouseType = Literal["Commons", "Lords"]
+HOUSE_OF_COMMONS: HouseType = "Commons"
+HOUSE_OF_LORDS: HouseType = "Lords"
 
 
 class House(BaseModel):

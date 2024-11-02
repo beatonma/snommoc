@@ -1,71 +1,58 @@
-from api import endpoints
-from api.routers import members_router
-from api.views import PingView
-from api.views.viewsets.bills import BillViewSet
-from api.views.viewsets.constituency import (
-    ConstituencyResultDetailViewSet,
-    ConstituencyViewSet,
+from api import status
+from api.auth import ApiKeyDisabled, ApiKeyDoesNotExist, ApiKeyException, ApiReadAuth
+from api.routers import (
+    bills_router,
+    constituency_router,
+    division_router,
+    election_router,
+    members_router,
+    party_router,
+    zeitgeist_router,
 )
-from api.views.viewsets.divisions import CommonsDivisionViewSet, LordsDivisionViewSet
-from api.views.viewsets.member import MemberViewSet, MemberVotesViewSet, ProfileViewSet
-from api.views.viewsets.party import PartyViewSet
-from api.views.viewsets.zeitgeist import ZeitgeistViewSet
-from common.network.routers import (
-    DetailOnlyRouter,
-    ListOnlyRouter,
-    ListOrDetailRouter,
-    SingletonRouter,
-)
-from django.urls import include, path
+from django.http import HttpRequest
+from django.urls import path
 from ninja import NinjaAPI
-from rest_framework.routers import SimpleRouter
 
-ninja_api = NinjaAPI()
+api_key_required = ApiReadAuth()
+
+ninja_api = NinjaAPI(
+    title="snommoc",
+    version="2.0",
+    docs_url="/docs/",
+    auth=api_key_required,
+)
 ninja_api.add_router("/members/", members_router)
+ninja_api.add_router("/bills/", bills_router)
+ninja_api.add_router("/constituencies/", constituency_router)
+ninja_api.add_router("/divisions/", division_router)
+ninja_api.add_router("/elections/", election_router)
+ninja_api.add_router("/parties/", party_router)
+ninja_api.add_router("/zeitgeist/", zeitgeist_router)
 
 
-def _register_all(router: SimpleRouter, views) -> SimpleRouter:
-    for endpoint, viewset in views:
-        router.register(endpoint, viewset, basename=endpoint)
-
-    return router
+@ninja_api.get("/ping/")
+def ping(request: HttpRequest):
+    return ninja_api.create_response(request, "OK", status=status.HTTP_200_OK)
 
 
-"""Views which return a list of simple items."""
-list_only_views = ((endpoints.MEMBER, MemberViewSet),)
+@ninja_api.exception_handler(ApiKeyDisabled)
+def disabled_api_key(request: HttpRequest, exception: Exception):
+    return ninja_api.create_response(
+        request,
+        {"message": "API key is not enabled."},
+        status=status.HTTP_401_UNAUTHORIZED,
+    )
 
-"""Views which may return a list of simple items, or a single detailed item."""
-list_or_detail_views = (
-    (endpoints.PARTY, PartyViewSet),
-    (endpoints.CONSTITUENCY, ConstituencyViewSet),
-)
 
-"""Views which can only return a single detailed view."""
-detail_only_views = (
-    (endpoints.BILL, BillViewSet),
-    (endpoints.DIVISION_COMMONS, CommonsDivisionViewSet),
-    (endpoints.DIVISION_LORDS, LordsDivisionViewSet),
-    (endpoints.MEMBER_FULL_PROFILE, ProfileViewSet),
-    (endpoints.MEMBER_VOTES, MemberVotesViewSet),
-)
+@ninja_api.exception_handler(ApiKeyDoesNotExist)
+def bad_api_key(request: HttpRequest, exception: Exception):
+    return ninja_api.create_response(
+        request,
+        {"message": "Bad API key."},
+        status=status.HTTP_401_UNAUTHORIZED,
+    )
 
-"""Detailed, but only one target object so no IDs necessary."""
-singleton_views = ((endpoints.ZEITGEIST, ZeitgeistViewSet),)
-
-routers = [
-    _register_all(ListOnlyRouter(), list_only_views),
-    _register_all(ListOrDetailRouter(), list_or_detail_views),
-    _register_all(DetailOnlyRouter(), detail_only_views),
-    _register_all(SingletonRouter(), singleton_views),
-]
 
 urlpatterns = [
-    path("v2/", ninja_api.urls),
-    path(endpoints.PING, PingView.as_view(), name=endpoints.PING),
-    path(
-        endpoints.CONSTITUENCY_RESULTS,
-        ConstituencyResultDetailViewSet.as_view({"get": "retrieve"}),
-        name=endpoints.endpoint_name(endpoints.CONSTITUENCY_RESULTS),
-    ),
-    *(path("", include(router.urls)) for router in routers),
+    path("", ninja_api.urls),
 ]

@@ -6,20 +6,14 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-
-from api.views.decorators import api_key_required
 from social.models.token import UserToken
-from social.validation.username import (
-    BlockedUsername,
-    is_username_blocked,
-)
+from social.validation.username import BlockedUsername, is_username_blocked
 from social.views import contract
 
 log = logging.getLogger(__name__)
 
 
 class UserAccountView(View):
-    @api_key_required
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)

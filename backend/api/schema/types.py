@@ -1,18 +1,21 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from ninja import Schema
 from pydantic import Field
 from pydantic.functional_validators import BeforeValidator
+from pydantic_core import PydanticUndefined
 
 
-def alias(name: str, default: any = None) -> Field:
+def field(name: str, *, default: Any = PydanticUndefined) -> Field:
     return Field(default=default, alias=name)
 
 
 type ParliamentId = int
 type Name = str
+type Title = str
 type EmailAddress = str
-type WebAddress = str
+type Url = str
+type WikipediaPath = str
 
 
 type PhoneNumber = Annotated[

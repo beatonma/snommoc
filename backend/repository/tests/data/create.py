@@ -2,24 +2,36 @@ import datetime
 import random
 from typing import Optional
 
-from repository.models import (CommonsDivision, Constituency,
-                               ConstituencyCandidate, ConstituencyResult,
-                               ConstituencyResultDetail, Election,
-                               ElectionType, House, LordsDivision,
-                               ParliamentarySession, Party, Person)
-from repository.models.bill import (Bill, BillStageType, BillType,
-                                    BillTypeCategory)
-from repository.tests.data.sample_bills import (any_sample_bill_stage_type,
-                                                any_sample_bill_type)
+from repository.models import (
+    CommonsDivision,
+    Constituency,
+    ConstituencyCandidate,
+    ConstituencyResult,
+    ConstituencyResultDetail,
+    Election,
+    ElectionType,
+    House,
+    LordsDivision,
+    ParliamentarySession,
+    Party,
+    Person,
+)
+from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
+from repository.tests.data.sample_bills import (
+    any_sample_bill_stage_type,
+    any_sample_bill_type,
+)
 from repository.tests.data.sample_constituencies import (
-    SAMPLE_CONSTITUENCIES, any_sample_constituency)
-from repository.tests.data.sample_divisions import (any_division_description,
-                                                    any_division_title)
-from repository.tests.data.sample_election import (SAMPLE_ELECTIONS,
-                                                   any_sample_election)
+    SAMPLE_CONSTITUENCIES,
+    any_sample_constituency,
+)
+from repository.tests.data.sample_divisions import (
+    any_division_description,
+    any_division_title,
+)
+from repository.tests.data.sample_election import SAMPLE_ELECTIONS, any_sample_election
 from repository.tests.data.sample_members import any_sample_member
-from repository.tests.data.sample_parties import (SAMPLE_PARTIES,
-                                                  any_sample_party)
+from repository.tests.data.sample_parties import SAMPLE_PARTIES, any_sample_party
 from util.time import tzdatetime
 
 LOREM_IPSUM = (
@@ -89,6 +101,7 @@ def create_sample_person(
         parliamentdotuk=m.pk,
         name=m.name,
         active=active,
+        house=_coerce_house(m.house),
         **kwargs,
     )
 

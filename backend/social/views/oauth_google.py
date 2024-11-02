@@ -1,28 +1,19 @@
 import logging
 
 from django.conf import settings
-from django.http import (
-    HttpResponseBadRequest,
-    JsonResponse,
-)
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from rest_framework import status
-
-from api.views.decorators import api_key_required
-from social.models.token import (
-    SignInServiceProvider,
-    UserToken,
-)
+from social.models.token import SignInServiceProvider, UserToken
 from social.views import contract
 
 log = logging.getLogger(__name__)
 
 
 class VerifyGoogleTokenView(View):
-    @api_key_required
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)

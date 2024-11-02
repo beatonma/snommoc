@@ -1,12 +1,21 @@
-from django.db import models
+from typing import Type
 
-from repository.models.mixins import BaseModel
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from repository.models.mixins import BaseModel, BaseQuerySet
 from social.models.mixins import GenericTargetMixin
+
+
+class ZeitgeistItemQuerySet(BaseQuerySet):
+    def for_target_type(self, model_class: Type[models.Model]):
+        return self.filter(target_type=ContentType.objects.get_for_model(model_class))
 
 
 class ZeitgeistItem(GenericTargetMixin, BaseModel):
     REASON_FEATURE = "feature"
     REASON_SOCIAL = "social"
+
+    objects = ZeitgeistItemQuerySet.as_manager()
 
     """
     Represents something that is important now, because of social interaction

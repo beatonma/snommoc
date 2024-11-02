@@ -1,13 +1,11 @@
-from django.contrib.auth.models import User
-from django.urls import reverse
+import uuid
 
-from api.models import (
-    ApiKey,
-    uuid,
-    grant_read_snommoc_api,
-)
+from api import permissions
+from api.models import ApiKey
 from basetest.test_util import create_sample_user
 from basetest.testcase import LocalTestCase
+from django.contrib.auth.models import User
+from django.urls import reverse
 from social.models.token import SignInServiceProvider, UserToken
 
 
@@ -25,7 +23,7 @@ class ApiKeyRequiredDecoratorTest(LocalTestCase):
             password="123456@abcdef",
             email="testuser2@snommoc.org",
         )
-        grant_read_snommoc_api(user_with_permission)
+        permissions.grant_read_snommoc_api(user_with_permission)
 
     def assert_status_with_args(self, params, expected_status: int):
         response = self.client.get(reverse("decorator_test_view"), data=params)

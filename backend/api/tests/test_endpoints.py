@@ -1,23 +1,9 @@
-from django.contrib.auth.models import User
-from django.urls import reverse
+from typing import Callable
 
-from api import endpoints
-from api.models import ApiKey, grant_read_snommoc_api
+from api import permissions, status
 from basetest.test_util import create_sample_user
-from basetest.testcase import LocalApiTestCase
-from repository.models import (
-    Bill,
-    CommonsDivision,
-    Constituency,
-    Election,
-    ElectionType,
-    House,
-    LordsDivision,
-    ParliamentarySession,
-    Party,
-    Person,
-)
-from repository.models.bill import BillType, BillTypeCategory
+from basetest.testcase import LocalTestCase
+from django.urls import reverse
 from repository.tests.data.create import (
     create_constituency_result_detail,
     create_sample_bill,
@@ -28,167 +14,165 @@ from repository.tests.data.create import (
     create_sample_party,
     create_sample_person,
 )
-from social.models.token import SignInServiceProvider, UserToken
 
 
-class EndpointTests(LocalApiTestCase):
-    """Ensure endpoints return expected status and content type."""
-
+class LocalApiTestCase(LocalTestCase):
     def setUp(self) -> None:
-        user_with_permission = create_sample_user(username="endpoints")
-        grant_read_snommoc_api(user_with_permission)
-        self.client.force_login(user_with_permission)
+        self.user_with_permission = create_sample_user(username="endpoints")
+        permissions.grant_read_snommoc_api(self.user_with_permission)
 
-    def test_ping(self):
-        response = self.client.get(reverse(endpoints.PING))
-        self.assertResponseOK(response)
+    def assertResponseOK(self, url: str):
+        self.assertResponseCode(url, status.HTTP_200_OK, msg=url)
 
-    def test_endpoint_zeitgeist(self):
-        response = self.client.get(reverse(endpoints.ZEITGEIST))
+    def assertResponseNotFound(self, url: str):
+        self.assertResponseCode(url, status.HTTP_404_NOT_FOUND, msg=url)
 
-        self.assertResponseOK(response)
-        self.assertIsJsonResponse(response)
+    def assertResponseUnauthorized(self, url: str):
+        self.assertResponseCode(url, status.HTTP_401_UNAUTHORIZED, msg=url)
 
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            ApiKey,
-            User,
-            SignInServiceProvider,
-            UserToken,
-        )
-
-
-class QueryEndpointTests(LocalApiTestCase):
-    """Query endpoints should return JSON content with status=200 when the requested object exists, otherwise 404."""
-
-    def setUp(self) -> None:
-        user_with_permission = create_sample_user(username="endpoints")
-        grant_read_snommoc_api(user_with_permission)
-        self.client.force_login(user_with_permission)
-
-    def _assert_response_json_ok(self, url):
-        """Assert that the given url returns a JSON body with status code 200."""
+    def assertResponseCode(self, url: str, expected_code: int, msg=""):
         response = self.client.get(url)
-
-        self.assertResponseOK(response)
-        self.assertIsJsonResponse(response)
-
-    def _assert_response_not_found(self, url):
-        """Assert that the given url returns a 404 status code."""
-        response = self.client.get(url)
-
-        self.assertResponseNotFound(response)
-
-    def test_endpoint_member_full_profile(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.MEMBER_FULL_PROFILE),
-            kwargs={"pk": 1423},
+        self.assertEqual(
+            response.status_code,
+            expected_code,
+            msg=f"Expected status={expected_code} {msg}",
         )
 
-        self._assert_response_not_found(url)
+    @staticmethod
+    def reverse(url_name: str, *args, **kwargs):
+        return reverse(f"api-2.0:{url_name}", args=args, kwargs=kwargs)
 
-        create_sample_person(parliamentdotuk=1423)
-        self._assert_response_json_ok(url)
 
-    def test_endpoint_member_votes(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.MEMBER_VOTES),
-            kwargs={"pk": 1423},
-        )
+def list_testcase(*, list_url: str, create_object: Callable):
+    """Test responses for an item list view, with and without auth."""
 
-        self._assert_response_not_found(url)
+    class _TestCase(LocalApiTestCase):
+        def test_list_without_auth(self):
+            self.client.logout()
+            self.assertResponseUnauthorized(list_url)
+            create_object()
+            self.assertResponseUnauthorized(list_url)
 
-        create_sample_person(parliamentdotuk=1423)
-        self._assert_response_json_ok(url)
+        def test_list_with_auth(self):
+            self.client.force_login(self.user_with_permission)
+            self.assertResponseOK(list_url)
+            create_object()
+            self.assertResponseOK(list_url)
 
-    def test_endpoint_constituency(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.CONSTITUENCY),
-            kwargs={"pk": 146380},
-        )
+    return _TestCase
 
-        self._assert_response_not_found(url)
 
-        create_sample_constituency(parliamentdotuk=146380)
-        self._assert_response_json_ok(url)
+def detail_testcase(*, detail_url: str, create_object: Callable):
+    class _TestCase(LocalApiTestCase):
+        """Test responses for an item detail view, with and without auth."""
 
-    def test_endpoint_constituency_results(self):
-        url = reverse(
-            endpoints.endpoint_name(endpoints.CONSTITUENCY_RESULTS),
-            kwargs={"pk": 16892, "election_id": 851},
-        )
+        def test_detail_without_auth(self):
+            self.client.logout()
+            self.assertResponseUnauthorized(detail_url)
+            create_object()
+            self.assertResponseUnauthorized(detail_url)
 
-        self._assert_response_not_found(url)
+        def test_detail_with_auth(self):
+            self.client.force_login(self.user_with_permission)
+            self.assertResponseNotFound(detail_url)
+            create_object()
+            self.assertResponseOK(detail_url)
 
-        create_constituency_result_detail(
+    return _TestCase
+
+
+def list_detail_testcase(*, list_url: str, detail_url: str, create_object: Callable):
+    class _TestCase(
+        list_testcase(list_url=list_url, create_object=create_object),
+        detail_testcase(detail_url=detail_url, create_object=create_object),
+    ):
+        pass
+
+    return _TestCase
+
+
+class MembersTests(
+    list_detail_testcase(
+        list_url=LocalApiTestCase.reverse("members"),
+        detail_url=LocalApiTestCase.reverse("member", 1423),
+        create_object=lambda: create_sample_person(1423),
+    )
+):
+    pass
+
+
+class MemberVotesTests(
+    detail_testcase(
+        detail_url=LocalApiTestCase.reverse("member_votes", parliamentdotuk=1423),
+        create_object=lambda: create_sample_person(1423),
+    )
+):
+    pass
+
+
+class ConstituencyResultsTests(
+    detail_testcase(
+        detail_url=LocalApiTestCase.reverse(
+            "constituency_election_result",
+            constituency_parliamentdotuk=16892,
+            election_parliamentdotuk=851,
+        ),
+        create_object=lambda: create_constituency_result_detail(
             constituency=create_sample_constituency(parliamentdotuk=16892),
             election=create_sample_election(parliamentdotuk=851),
             mp=create_sample_person(parliamentdotuk=1423),
             parliamentdotuk=5231,
-        )
-        self._assert_response_json_ok(url)
+        ),
+    )
+):
+    pass
 
-    def test_endpoint_party(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.PARTY),
-            kwargs={"pk": 15},
-        )
 
-        self._assert_response_not_found(url)
+class ConstituencyTests(
+    list_detail_testcase(
+        list_url=LocalApiTestCase.reverse("constituencies"),
+        detail_url=LocalApiTestCase.reverse("constituency", parliamentdotuk=146380),
+        create_object=lambda: create_sample_constituency(parliamentdotuk=146380),
+    )
+):
+    pass
 
-        create_sample_party(parliamentdotuk=15)
 
-        self._assert_response_json_ok(url)
+class PartyTests(
+    list_detail_testcase(
+        list_url=LocalApiTestCase.reverse("parties"),
+        detail_url=LocalApiTestCase.reverse("party", parliamentdotuk=15),
+        create_object=lambda: create_sample_party(parliamentdotuk=15),
+    )
+):
+    pass
 
-    def test_endpoint_division_commons(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.DIVISION_COMMONS),
-            kwargs={"pk": 1436},
-        )
 
-        self._assert_response_not_found(url)
+class CommonsDivisionTests(
+    list_detail_testcase(
+        list_url=LocalApiTestCase.reverse("commons_divisions"),
+        detail_url=LocalApiTestCase.reverse("commons_division", parliamentdotuk=1436),
+        create_object=lambda: create_sample_commons_division(parliamentdotuk=1436),
+    )
+):
+    pass
 
-        create_sample_commons_division(parliamentdotuk=1436)
-        self._assert_response_json_ok(url)
 
-    def test_endpoint_division_lords(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.DIVISION_LORDS),
-            kwargs={"pk": 6367},
-        )
+class LordsDivisionTests(
+    list_detail_testcase(
+        list_url=LocalApiTestCase.reverse("lords_divisions"),
+        detail_url=LocalApiTestCase.reverse("lords_division", parliamentdotuk=6367),
+        create_object=lambda: create_sample_lords_division(parliamentdotuk=6367),
+    )
+):
+    pass
 
-        self._assert_response_not_found(url)
 
-        create_sample_lords_division(parliamentdotuk=6367)
-        self._assert_response_json_ok(url)
-
-    def test_endpoint_bill(self):
-        url = reverse(
-            endpoints.endpoint_detail(endpoints.BILL),
-            kwargs={"pk": 2741},
-        )
-
-        self._assert_response_not_found(url)
-
-        create_sample_bill(parliamentdotuk=2741)
-        self._assert_response_json_ok(url)
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            ApiKey,
-            Bill,
-            BillType,
-            BillTypeCategory,
-            CommonsDivision,
-            Constituency,
-            Election,
-            ElectionType,
-            House,
-            LordsDivision,
-            ParliamentarySession,
-            Party,
-            Person,
-            User,
-            UserToken,
-            SignInServiceProvider,
-        )
+class BillsTests(
+    list_detail_testcase(
+        list_url=LocalApiTestCase.reverse("bills"),
+        detail_url=LocalApiTestCase.reverse("bill", parliamentdotuk=2741),
+        create_object=lambda: create_sample_bill(parliamentdotuk=2741),
+    )
+):
+    pass

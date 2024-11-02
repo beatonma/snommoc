@@ -1,15 +1,11 @@
 import sys
-from datetime import datetime
 from io import StringIO
 from unittest import skipIf
 from unittest.mock import Mock, patch
 
 import django.core.management
 import pytest
-from django.http import HttpResponse
 from django.test import TestCase
-from rest_framework import status
-from util.time import coerce_timezone
 
 
 class DirtyTestException(Exception):
@@ -27,7 +23,6 @@ class BaseTestCase(TestCase):
     ):
         """
         Delete any instances of the given model classes.
-        :param check_instances: If true, check for any persisting model instances that should have been deleted.
         """
         for cls in classList:
             cls.objects.all().delete()
@@ -91,24 +86,6 @@ class LocalTestCase(BaseTestCase):
     """
 
     pass
-
-
-class LocalApiTestCase(LocalTestCase):
-    def assertResponseOK(self, response: HttpResponse):
-        self.assertResponseCode(response, status.HTTP_200_OK)
-
-    def assertResponseNotFound(self, response: HttpResponse):
-        self.assertResponseCode(response, status.HTTP_404_NOT_FOUND, msg=f"{response}")
-
-    def assertResponseCode(self, response: HttpResponse, expected_code: int, msg=""):
-        self.assertEqual(
-            response.status_code,
-            expected_code,
-            msg=f"Expected status={expected_code} {msg}",
-        )
-
-    def assertIsJsonResponse(self, response: HttpResponse):
-        self.assertEqual(response["Content-Type"], "application/json")
 
 
 class LocalManagementTestCase(LocalTestCase):

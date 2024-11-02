@@ -1,4 +1,5 @@
 import datetime
+from datetime import date
 
 from django.db import models
 from django.db.models import Q, QuerySet
@@ -34,9 +35,18 @@ class PersonMixin(models.Model):
         abstract = True
 
 
+class PeriodQuerySet(BaseQuerySet):
+    def get_for_date(self, dt: date):
+        return self.filter(
+            (Q(start__isnull=True) | Q(start__lte=dt))
+            & (Q(end__isnull=True) | Q(end__gte=dt))
+        )
+
+
 class PeriodMixin(models.Model):
     """For models that represent something with a start/end date"""
 
+    objects = PeriodQuerySet.as_manager()
     start = models.DateField(null=True, blank=True)
     end = models.DateField(null=True, blank=True)
 

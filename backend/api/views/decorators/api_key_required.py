@@ -1,16 +1,11 @@
 import logging
 from functools import wraps
 
+from api.models import READ_SNOMMOC_API, ApiKey
+from api.permissions import has_read_snommoc_api_permission
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpRequest, HttpResponse
-
-from api import contract
-from api.models import (
-    ApiKey,
-    READ_SNOMMOC_API,
-)
-from api.models.permissions import has_read_snommoc_api_permission
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +33,7 @@ def api_key_required(f):
         try:
             if "key" not in request.GET:
                 return HttpResponse("API key required", status=400)
-            key = ApiKey.objects.get(key=request.GET.get(contract.API_KEY, ""))
+            key = ApiKey.objects.get(key=request.GET.get("key", ""))
             if key.enabled:
                 log.info(f"API Key verified for User='{key.user}'")
                 return f(view, request, *args, user=key.user, **kwargs)

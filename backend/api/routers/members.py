@@ -1,0 +1,36 @@
+from api.schema.member import MemberFullSchema, MemberVotesSchema
+from api.schema.mini import MemberMiniSchema
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
+from ninja import Router
+from ninja.pagination import paginate
+from repository.models import CommonsDivisionVote, LordsDivisionVote, Person
+
+router = Router(tags=["Members"])
+
+
+@router.get("/", response=list[MemberMiniSchema])
+@paginate
+def members(request: HttpRequest):
+    return Person.objects.all().select_related(
+        "party",
+        "constituency",
+    )
+
+
+@router.get("/{parliamentdotuk}/", response=MemberFullSchema)
+def member(request: HttpRequest, parliamentdotuk: int):
+    return get_object_or_404(Person, parliamentdotuk=parliamentdotuk)
+
+
+@router.get("/{parliamentdotuk}/votes/", response=MemberVotesSchema)
+def member_votes(request: HttpRequest, parliamentdotuk: int):
+    person = get_object_or_404(Person, parliamentdotuk=parliamentdotuk)
+
+    commons = CommonsDivisionVote.objects.for_member(person)
+    lords = LordsDivisionVote.objects.for_member(person)
+
+    return {
+        "commons": commons,
+        "lords": lords,
+    }

@@ -2,11 +2,7 @@ from typing import Optional
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-
-from repository.models.houses import (
-    HOUSE_OF_COMMONS,
-    HOUSE_OF_LORDS,
-)
+from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
@@ -153,11 +149,15 @@ class Person(
 
     @property
     def is_mp(self) -> bool:
-        return self.active and self.house.name == HOUSE_OF_COMMONS
+        if self.house:
+            return self.active and self.house.name == HOUSE_OF_COMMONS
+        return False
 
     @property
     def is_lord(self) -> bool:
-        return self.active and self.house.name == HOUSE_OF_LORDS
+        if self.house:
+            return self.active and self.house.name == HOUSE_OF_LORDS
+        return False
 
     @property
     def portrait_thumbnail_url(self) -> Optional[str]:

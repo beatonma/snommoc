@@ -1,13 +1,11 @@
 from functools import wraps
 
-from django.http import HttpResponse
-from django.views import View
-
-from api import contract as api_contract
 from api.models import ApiKey
 from api.views.decorators.api_key_required import api_key_required
 from basetest import test_settings_default
 from basetest.test_util import create_sample_user
+from django.http import HttpResponse
+from django.views import View
 from util.cleanup import unused
 
 
@@ -33,7 +31,7 @@ def with_api_key(f, key=test_settings_default.TEST_API_KEY, **kwargs):
         f(
             testcase,
             query={
-                api_contract.API_KEY: key,
+                "key": key,
             },
             **kwargs
         )

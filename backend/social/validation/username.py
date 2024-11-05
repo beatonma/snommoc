@@ -1,5 +1,4 @@
-from util.settings import get_social_settings
-import util.settings_contract as contract
+from util.settings import snommoc_settings
 
 
 class BlockedUsername(Exception):
@@ -10,19 +9,25 @@ class BlockedUsername(Exception):
         return f'BlockedUsername="{self.blocked_name}"'
 
 
-def is_username_blocked(name: str) -> bool:
-    settings = get_social_settings()
+def is_username_blocked(
+    name: str,
+    block_exact: list[str] | None = None,
+    block_substring: list[str] | None = None,
+) -> bool:
+    if block_exact is None:
+        block_exact = snommoc_settings.social.username_blocked_exact
+    if block_substring is None:
+        block_substring = snommoc_settings.social.username_blocked_substrings
+
     simple_name = "".join(c for c in name if c.isalpha()).lower()
 
     # Specific words that we want to reserve but may appear as a substring.
-    blocked_complete = settings.get(contract.SOCIAL_USERNAME_BLOCKED_EXACT, [])
-    for blocked in blocked_complete:
+    for blocked in block_exact:
         if blocked == simple_name:
             return True
 
     # Strings that must not appear anywhere in the name.
-    blocked_substrings = settings.get(contract.SOCIAL_USERNAME_BLOCKED_SUBSTRINGS, [])
-    for blocked in blocked_substrings:
+    for blocked in block_substring:
         if blocked in simple_name:
             return True
 

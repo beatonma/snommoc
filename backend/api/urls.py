@@ -12,14 +12,14 @@ from api.routers import (
 from django.http import HttpRequest
 from django.urls import path
 from ninja import NinjaAPI
-
-api_key_required = ApiReadAuth()
+from ninja.constants import NOT_SET
+from util.settings import snommoc_settings
 
 ninja_api = NinjaAPI(
     title="snommoc",
     version="2.0",
     docs_url="/docs/",
-    auth=api_key_required,
+    auth=ApiReadAuth() if snommoc_settings.auth.api_read_requires_auth else NOT_SET,
 )
 ninja_api.add_router("/members/", members_router)
 ninja_api.add_router("/bills/", bills_router)

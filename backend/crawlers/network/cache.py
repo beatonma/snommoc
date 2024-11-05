@@ -2,20 +2,16 @@ import hashlib
 import json
 import logging
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from functools import wraps
 from typing import Optional
 
-from util import settings_contract
-from util.settings import get_cache_settings
+from util.settings import snommoc_settings
 from util.time import Now, coerce_timezone, get_now
 
 log = logging.getLogger(__name__)
 
-TIME_TO_LIVE_DEFAULT = get_cache_settings().get(
-    settings_contract.CACHE_CRAWLER_TTL,
-    timedelta(days=4).total_seconds(),
-)
+TIME_TO_LIVE_DEFAULT = snommoc_settings.cache.crawler_ttl
 
 
 def _url_to_filename(url: str) -> str:
@@ -39,12 +35,11 @@ class JsonCache:
         time_to_live_seconds: int,
         now: datetime,
     ):
-        root = get_cache_settings().get("CRAWLER_CACHE_ROOT")
-        self.cache_dir = os.path.join(root, name)
+        self.cache_dir = snommoc_settings.cache.crawler_root / name
         self.time_to_live = time_to_live_seconds or TIME_TO_LIVE_DEFAULT
 
-        if not os.path.exists(self.cache_dir):
-            os.makedirs(self.cache_dir)
+        if not self.cache_dir.exists():
+            self.cache_dir.mkdir(parents=True)
 
         if self._cache_is_expired(now=now):
             self._flush()

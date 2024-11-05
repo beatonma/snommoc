@@ -2,15 +2,9 @@ import datetime
 import os
 import shutil
 
-from django.conf import settings
-
 from basetest.testcase import LocalTestCase
-from crawlers.network.cache import (
-    _url_to_filename,
-    create_json_cache,
-    json_cache,
-)
-from util.settings import get_cache_settings
+from crawlers.network.cache import _url_to_filename, create_json_cache, json_cache
+from util.settings import snommoc_settings
 from util.time import get_now
 
 
@@ -92,7 +86,7 @@ class JsonCacheTest(LocalTestCase):
         self.assertEqual(len(files), 0)
 
     def tearDown(self) -> None:
-        cache_dir = os.path.join(get_cache_settings().get("CRAWLER_CACHE_ROOT"), self.cache_name)
+        cache_dir = snommoc_settings.cache.crawler_root / self.cache_name
         if os.path.exists(cache_dir):
             shutil.rmtree(cache_dir)
 
@@ -116,12 +110,12 @@ class JsonCacheDecoratorTest(LocalTestCase):
         kwargs["cache"].remember(self.child_url, self.child_data)
 
     def _get_cache_path(self, name, url):
-        dir = os.path.join(get_cache_settings().get("CRAWLER_CACHE_ROOT"), name)
+        _dir = snommoc_settings.cache.crawler_root / name
         if not url:
-            return dir
+            return _dir
 
         filename = _url_to_filename(url)
-        return os.path.join(dir, filename)
+        return os.path.join(_dir, filename)
 
     def test_json_cache_decorator__data_is_retrievable(self):
         self.decorated_child()
@@ -140,8 +134,9 @@ class JsonCacheDecoratorTest(LocalTestCase):
 
     def tearDown(self) -> None:
         dirs = ["decorated-root", "decorated-child"]
+        cache_root = snommoc_settings.cache.crawler_root
 
         for d in dirs:
-            cache_dir = os.path.join(get_cache_settings().get("CRAWLER_CACHE_ROOT"), d)
+            cache_dir = cache_root / d
             if os.path.exists(cache_dir):
                 shutil.rmtree(cache_dir)

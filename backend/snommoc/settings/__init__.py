@@ -58,7 +58,10 @@ SNOMMOC = {
     "CACHE": {
         "CRAWLER_CACHE_TTL": int(timedelta(days=365).total_seconds()),
         "CRAWLER_CACHE_ROOT": "/tmp/snommoc/crawler_cache/",
-    }
+    },
+    "AUTH": {
+        "API_READ_REQUIRES_AUTH": True,
+    },
 }
 
 # User agent attached to requests made to 3rd party API services

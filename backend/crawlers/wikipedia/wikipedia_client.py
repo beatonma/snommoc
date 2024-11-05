@@ -1,12 +1,9 @@
-from typing import Callable, List, Tuple, TypeVar, Iterable
+from typing import Callable, Iterable, List, Tuple, TypeVar
 from urllib.parse import urlencode
 
-from crawlers.network import get_json
-
+from crawlers.network import get_json, json_cache
 from crawlers.wikipedia import endpoints
-from crawlers.network import json_cache
-from util import settings_contract
-from util.settings import get_cache_settings
+from util.settings import snommoc_settings
 
 """
 When making many queries, create batches to reduce number of requests:
@@ -70,7 +67,7 @@ def _chunks(lst: list, size: int):
 
 @json_cache(
     name="wikipedia",
-    ttl_seconds=get_cache_settings().get(settings_contract.CACHE_WIKI_TTL),
+    ttl_seconds=snommoc_settings.cache.wiki_ttl,
 )
 def _get_wikipedia_api(
     params,

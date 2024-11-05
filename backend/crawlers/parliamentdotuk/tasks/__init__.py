@@ -1,7 +1,7 @@
 from celery import shared_task
-
 from notifications.models.task_notification import task_notification
 from repository.models import UnlinkedConstituency
+
 from .lda import (
     update_commons_divisions,
     update_constituencies,
@@ -15,7 +15,7 @@ from .membersdataplatform import (
     update_member_portraits_wikipedia,
     update_missing_member_portraits_wikipedia,
 )
-from .openapi import update_lords_divisions
+from .openapi import update_bills, update_lords_divisions
 
 
 @shared_task

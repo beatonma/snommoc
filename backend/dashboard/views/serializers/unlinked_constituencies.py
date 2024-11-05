@@ -1,11 +1,10 @@
 from typing import List
 
-from django.urls import reverse
-from rest_framework import serializers
-
 from dashboard.views.scoring import get_similarity_score
-from repository.resolution.constituency import get_suggested_constituencies
+from django.urls import reverse
 from repository.models import Constituency, UnlinkedConstituency
+from repository.resolution.constituency import get_suggested_constituencies
+from rest_framework import serializers
 
 
 class UnlinkedConstituencySerializer(serializers.ModelSerializer):
@@ -20,7 +19,7 @@ class UnlinkedConstituencySerializer(serializers.ModelSerializer):
     def get_person(self, obj):
         return {
             "name": obj.person.name,
-            "url": reverse("member-detail", args=[obj.person.pk]),
+            "url": reverse("admin:repository_person_change", args=[obj.person.pk]),
         }
 
     def get_election(self, obj):
@@ -50,7 +49,7 @@ class UnlinkedConstituencyDetailedSerializer(UnlinkedConstituencySerializer):
             {
                 "id": x.pk,
                 "name": x.name,
-                "url": reverse("constituency-detail", args=[x.pk]),
+                "url": reverse("admin:repository_constituency_change", args=[x.pk]),
                 "start": x.start,
                 "end": x.end,
                 "score": get_similarity_score(obj.name, x.name),

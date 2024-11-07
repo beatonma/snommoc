@@ -8,6 +8,7 @@ from repository.models.mixins import (
     ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,
+    SocialMixin,
     TheyWorkForYouMixin,
     WikipediaMixin,
 )
@@ -17,6 +18,7 @@ NAME_MAX_LENGTH = 128
 
 
 class Person(
+    SocialMixin,
     ParliamentDotUkMixin,
     TheyWorkForYouMixin,
     WikipediaMixin,
@@ -172,6 +174,9 @@ class Person(
             return self.memberportrait.fullsize_url
         except (AttributeError, ObjectDoesNotExist):
             pass
+
+    def social_title(self) -> str:
+        return self.name
 
     def __str__(self):
         return f"{self.name} [{self.parliamentdotuk}]"

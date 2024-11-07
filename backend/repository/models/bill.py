@@ -1,11 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 from phonenumber_field.modelfields import PhoneNumberField
-
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-)
+from repository.models.mixins import BaseModel, ParliamentDotUkMixin, SocialMixin
 from util.strings import ellipsise
 
 
@@ -187,7 +183,7 @@ class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
         return ellipsise(self.title)
 
 
-class Bill(ParliamentDotUkMixin, BaseModel):
+class Bill(SocialMixin, ParliamentDotUkMixin, BaseModel):
     title = models.CharField(max_length=255)
     long_title = models.TextField(null=True, blank=True)
     summary = models.TextField(
@@ -244,6 +240,9 @@ class Bill(ParliamentDotUkMixin, BaseModel):
         "repository.Organisation",
         related_name="promoted_bills",
     )
+
+    def social_title(self) -> str:
+        return self.title
 
     def __str__(self):
         return self.title

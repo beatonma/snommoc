@@ -1,9 +1,14 @@
 from django.db import models
 from django.db.models import UniqueConstraint
-from repository.models.mixins import BaseModel, ParliamentDotUkMixin, PeriodMixin
+from repository.models.mixins import (
+    BaseModel,
+    ParliamentDotUkMixin,
+    PeriodMixin,
+    SocialMixin,
+)
 
 
-class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
+class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
     name = models.CharField(max_length=64)
     mp = models.OneToOneField(
         "Person",
@@ -29,6 +34,9 @@ class Constituency(ParliamentDotUkMixin, PeriodMixin, BaseModel):
         ],
         help_text="Borough, county...",
     )
+
+    def social_title(self) -> str:
+        return self.name
 
     def __str__(self):
         return f"{self.name} [{self.parliamentdotuk}] {self.describe_timespan()}"

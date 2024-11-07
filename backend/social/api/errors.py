@@ -1,0 +1,2 @@
+class BadUserToken(ValueError):
+    pass

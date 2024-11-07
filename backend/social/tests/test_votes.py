@@ -1,17 +1,12 @@
-import json
 import uuid
 
+from api import status
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from django.urls import reverse
-from rest_framework import status
-
 from repository.models import Person
-from social.models.votes import (
-    Vote,
-    VoteType,
-)
+from social.models.votes import Vote
 from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
 from social.views import contract
@@ -26,10 +21,15 @@ def _create_person_vote(user, vote_type, target_id=4837):
     )
 
 
+VIEWNAME_CREATE_VOTE = "social_api-2.0:create_vote"
+VIEWNAME_DELETE_VOTE = "social_api-2.0:delete_vote"
+
+VOTE_TYPE_AYE = Vote.VoteTypeChoices.AYE
+VOTE_TYPE_NO = Vote.VoteTypeChoices.NO
+
+
 class VoteTests(SocialTestCase):
     """Social votes tests."""
-
-    VIEW_NAME = "social-member-votes"
 
     def setUp(self) -> None:
         self.valid_token = uuid.uuid4()
@@ -44,18 +44,23 @@ class VoteTests(SocialTestCase):
             "VoteTests-username", self.valid_token
         )
 
+    def post_json(self, data: dict):
+        return self.client.post(
+            reverse("social_api-2.0:create_vote"), data, content_type="application/json"
+        )
+
     def test_post_vote_with_valid_user(self):
-        response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
+        response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.VOTE_TYPE: "aye",
+                "token": self.valid_token,
+                "vote": "aye",
+                "target": "person",
+                "target_id": 4837,
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        VoteType.objects.get(name="aye")  # Ensure VoteType was created
         self.assertLengthEquals(Vote.objects.all(), 1)
 
         # Ensure vote points to the correct target
@@ -65,62 +70,73 @@ class VoteTests(SocialTestCase):
         self.assertEqual(vote.target, self.target_person)
 
     def test_post_vote_with_invalid_user(self):
-        response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
-            {contract.USER_TOKEN: uuid.uuid4(), contract.VOTE_TYPE: "aye"},
+        response = self.post_json(
+            {
+                contract.USER_TOKEN: uuid.uuid4(),
+                "vote": "aye",
+                "target": "person",
+                "target_id": 4837,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertNoneCreated(Vote)
 
     def test_post_vote_with_no_user(self):
-        response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
-            {contract.VOTE_TYPE: "aye"},
+        response = self.post_json(
+            {
+                "vote": "aye",
+                "target": "person",
+                "target_id": 4837,
+            },
         )
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
         self.assertNoneCreated(Vote)
 
     def test_post_vote_with_invalid_target(self):
-        response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 3181}),
-            {contract.USER_TOKEN: self.valid_token, contract.VOTE_TYPE: "aye"},
+        response = self.post_json(
+            {
+                contract.USER_TOKEN: self.valid_token,
+                "vote": "aye",
+                "target": "person",
+                "target_id": 3181,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertNoneCreated(Vote)
 
     def test_post_vote_with_invalid_type(self):
-        response = self.client.post(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
+        response = self.post_json(
             {
                 contract.USER_TOKEN: self.valid_token,
-                contract.VOTE_TYPE: "a" * 20,  # Too long
+                "vote": "arbitrary invalid value",
+                "target": "person",
+                "target_id": 3181,
             },
         )
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_422_UNPROCESSABLE_ENTITY)
         self.assertNoneCreated(Vote)
 
     def test_votes_one_vote_per_user_per_target(self):
         """Ensure a user can only vote once for a given target object."""
-        vote_type_aye = VoteType.objects.create(name="aye")
-        vote_type_no = VoteType.objects.create(name="no")
+        target_type = ContentType.objects.get_for_model(Person)
 
         Vote.objects.create(
             user=self.valid_user,
-            target_type=ContentType.objects.get_for_model(Person),
+            target_type=target_type,
             target_id=4837,
-            vote_type=vote_type_aye,
+            vote_type=VOTE_TYPE_AYE,
         )
 
         # Different user
         Vote.objects.create(
             user=create_sample_usertoken(),
-            target_type=ContentType.objects.get_for_model(Person),
+            target_type=target_type,
             target_id=4837,
-            vote_type=vote_type_aye,
+            vote_type=VOTE_TYPE_AYE,
         )
 
         # User duplicate same target
@@ -129,61 +145,30 @@ class VoteTests(SocialTestCase):
                 IntegrityError,
                 lambda: Vote.objects.create(
                     user=self.valid_user,
-                    target_type=ContentType.objects.get_for_model(Person),
+                    target_type=target_type,
                     target_id=4837,
-                    vote_type=vote_type_no,
+                    vote_type=VOTE_TYPE_NO,
                 ),
             )
 
-    def test_get_votes(self):
-        vote_type_aye = VoteType.objects.create(name="aye")
-        vote_type_no = VoteType.objects.create(name="no")
-
-        _create_person_vote(self.valid_user, vote_type_aye)
-        _create_person_vote(create_sample_usertoken(), vote_type_aye)
-        _create_person_vote(create_sample_usertoken(), vote_type_aye)
-        _create_person_vote(create_sample_usertoken(), vote_type_no)
-        _create_person_vote(create_sample_usertoken(), vote_type_no)
-
-        # @api_key_required
-        response = self.client.get(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-        # Disable @api_key_required
-        settings.DEBUG = True
-        response = self.client.get(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 4837}),
-        )
-        settings.DEBUG = False
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        data = json.loads(response.content)
-
-        self.assertEqual(data["aye"], 3)
-        self.assertEqual(data["no"], 2)
-
     def test_delete_vote(self):
-        vote_type_aye = VoteType.objects.create(name="aye")
-        vote_type_no = VoteType.objects.create(name="no")
-
-        _create_person_vote(self.valid_user, vote_type_aye)
-        _create_person_vote(self.valid_user, vote_type_aye, target_id=1423)
-        _create_person_vote(create_sample_usertoken(), vote_type_aye)
-        _create_person_vote(create_sample_usertoken(), vote_type_aye)
-        _create_person_vote(create_sample_usertoken(), vote_type_no)
-        _create_person_vote(create_sample_usertoken(), vote_type_no)
+        _create_person_vote(self.valid_user, VOTE_TYPE_AYE)
+        _create_person_vote(self.valid_user, VOTE_TYPE_AYE, target_id=1423)
+        _create_person_vote(create_sample_usertoken(), VOTE_TYPE_AYE)
+        _create_person_vote(create_sample_usertoken(), VOTE_TYPE_AYE)
+        _create_person_vote(create_sample_usertoken(), VOTE_TYPE_NO)
+        _create_person_vote(create_sample_usertoken(), VOTE_TYPE_NO)
 
         self.assertLengthEquals(Vote.objects.all(), 6)
         self.assertLengthEquals(Vote.objects.filter(user=self.valid_user), 2)
 
         response = self.client.delete(
-            reverse(VoteTests.VIEW_NAME, kwargs={"pk": 1423}),
+            reverse(VIEWNAME_DELETE_VOTE),
             content_type="application/json",
             data={
                 contract.USER_TOKEN: self.valid_token.hex,
+                "target": "person",
+                "target_id": 1423,
             },
         )
 
@@ -200,13 +185,4 @@ class VoteTests(SocialTestCase):
             Person,
             ContentType,
             *SocialTestCase.social_models,
-            # check_instances=False,
         )
-        # super().tearDown()
-        # self.delete_instances_of(
-        #     Person,
-        #     Vote,
-        #     VoteType,
-        #     ContentType,
-        #     UserToken,
-        # )

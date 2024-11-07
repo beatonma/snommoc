@@ -1,3 +1,3 @@
 from .comments import Comment
-from .votes import Vote, VoteType
-from .token import UserToken, UsernameChanged, SignInServiceProvider
+from .token import SignInServiceProvider, UsernameChanged, UserToken
+from .votes import Vote

@@ -107,3 +107,10 @@ class WikipediaMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class SocialMixin:
+    def social_title(self) -> str:
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement method social_title()"
+        )

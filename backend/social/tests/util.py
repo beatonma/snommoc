@@ -1,12 +1,7 @@
 import uuid
 
 from django.db import models
-
-from social.models import (
-    Comment,
-    Vote,
-    VoteType,
-)
+from social.models import Comment, Vote
 from social.models.mixins import get_target_kwargs
 from social.models.token import UserToken
 
@@ -53,10 +48,9 @@ def create_sample_vote(
     vote_type_name: str,
     **kwargs,
 ) -> Vote:
-    vote_type, _ = VoteType.objects.get_or_create(name=vote_type_name)
     return Vote.objects.create(
         user=user,
         **get_target_kwargs(target),
-        vote_type=vote_type,
+        vote_type=vote_type_name,
         **kwargs,
     )

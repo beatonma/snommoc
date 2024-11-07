@@ -1,16 +1,24 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-from repository.models.mixins import BaseModel, BaseQuerySet, ParliamentDotUkMixin
+from repository.models.mixins import (
+    BaseModel,
+    BaseQuerySet,
+    ParliamentDotUkMixin,
+    SocialMixin,
+)
 
 
-class DivisionSharedProperties:
+class DivisionSharedProperties(SocialMixin):
     title: models.CharField
     date: models.DateField
     ayes: int
     noes: int
     passed: bool
     house: str
+
+    def social_title(self) -> str:
+        return str(self.title)
 
 
 class CommonsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel):

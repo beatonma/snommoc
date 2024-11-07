@@ -15,21 +15,14 @@ from repository.tests.data.create import (
     create_sample_lords_division,
     create_sample_person,
 )
-from social.models import (
-    Comment,
-    Vote,
-    VoteType,
-)
+from social.models import Comment, Vote
 from social.models.token import UserToken
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
     create_sample_vote,
 )
-from surface.models import (
-    FeaturedPerson,
-    ZeitgeistItem,
-)
+from surface.models import FeaturedPerson, ZeitgeistItem
 from surface.tasks import update_zeitgeist
 
 
@@ -110,6 +103,5 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
             Person,
             UserToken,
             Vote,
-            VoteType,
             ZeitgeistItem,
         )

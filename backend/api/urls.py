@@ -1,5 +1,5 @@
 from api import status
-from api.auth import ApiKeyDisabled, ApiKeyDoesNotExist, ApiKeyException, ApiReadAuth
+from api.auth import ApiKeyDisabled, ApiKeyDoesNotExist, ApiReadAuth
 from api.routers import (
     bills_router,
     constituency_router,
@@ -21,13 +21,13 @@ ninja_api = NinjaAPI(
     docs_url="/docs/",
     auth=ApiReadAuth() if snommoc_settings.auth.api_read_requires_auth else NOT_SET,
 )
-ninja_api.add_router("/members/", members_router)
-ninja_api.add_router("/bills/", bills_router)
-ninja_api.add_router("/constituencies/", constituency_router)
-ninja_api.add_router("/divisions/", division_router)
-ninja_api.add_router("/elections/", election_router)
-ninja_api.add_router("/parties/", party_router)
-ninja_api.add_router("/zeitgeist/", zeitgeist_router)
+ninja_api.add_router("members/", members_router)
+ninja_api.add_router("bills/", bills_router)
+ninja_api.add_router("constituencies/", constituency_router)
+ninja_api.add_router("divisions/", division_router)
+ninja_api.add_router("elections/", election_router)
+ninja_api.add_router("parties/", party_router)
+ninja_api.add_router("zeitgeist/", zeitgeist_router)
 
 
 @ninja_api.get("/ping/")

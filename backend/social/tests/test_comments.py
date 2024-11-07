@@ -39,8 +39,8 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_valid_user(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: _COMMENT,
+                "token": self.valid_token,
+                "text": _COMMENT,
                 "target": "person",
                 "target_id": 4837,
             },
@@ -63,20 +63,20 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_invalid_user(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: uuid.uuid4(),
-                contract.COMMENT_TEXT: _COMMENT,
+                "token": uuid.uuid4(),
+                "text": _COMMENT,
                 "target": "person",
                 "target_id": 4837,
             },
         )
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertNoneCreated(Comment)
 
     def test_post_comment_with_no_user(self):
         response = self.post_json(
             {
-                contract.COMMENT_TEXT: _COMMENT,
+                "text": _COMMENT,
                 "target": "person",
                 "target_id": 4837,
             },
@@ -88,8 +88,8 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_invalid_target(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: _COMMENT,
+                "token": self.valid_token,
+                "text": _COMMENT,
                 "target": "person",
                 "target_id": 101012,
             },
@@ -101,8 +101,8 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_invalid_comment(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: "a" * 300,  # Too long
+                "token": self.valid_token,
+                "text": "a" * 300,  # Too long
                 "target": "person",
                 "target_id": 4837,
             },
@@ -150,8 +150,8 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_html_is_stripped(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: (
+                "token": self.valid_token,
+                "text": (
                     'blah <a href="https://snommoc.org/">just the text</a><script>'
                 ),
                 "target": "person",
@@ -167,8 +167,8 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_html_is_flagged(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: (
+                "token": self.valid_token,
+                "text": (
                     '<a href="https://snommoc.org/">This should be flagged for'
                     " review</a><script>"
                 ),
@@ -185,8 +185,8 @@ class CommentTests(SocialTestCase):
     def test_post_comment_with_no_html_is_not_flagged(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
-                contract.COMMENT_TEXT: _COMMENT,
+                "token": self.valid_token,
+                "text": _COMMENT,
                 "target": "person",
                 "target_id": 4837,
             },

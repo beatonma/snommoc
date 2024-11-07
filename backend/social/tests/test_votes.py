@@ -72,14 +72,14 @@ class VoteTests(SocialTestCase):
     def test_post_vote_with_invalid_user(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: uuid.uuid4(),
+                "token": uuid.uuid4(),
                 "vote": "aye",
                 "target": "person",
                 "target_id": 4837,
             },
         )
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertNoneCreated(Vote)
 
     def test_post_vote_with_no_user(self):
@@ -97,7 +97,7 @@ class VoteTests(SocialTestCase):
     def test_post_vote_with_invalid_target(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
+                "token": self.valid_token,
                 "vote": "aye",
                 "target": "person",
                 "target_id": 3181,
@@ -110,7 +110,7 @@ class VoteTests(SocialTestCase):
     def test_post_vote_with_invalid_type(self):
         response = self.post_json(
             {
-                contract.USER_TOKEN: self.valid_token,
+                "token": self.valid_token,
                 "vote": "arbitrary invalid value",
                 "target": "person",
                 "target_id": 3181,
@@ -166,7 +166,7 @@ class VoteTests(SocialTestCase):
             reverse(VIEWNAME_DELETE_VOTE),
             content_type="application/json",
             data={
-                contract.USER_TOKEN: self.valid_token.hex,
+                "token": self.valid_token.hex,
                 "target": "person",
                 "target_id": 1423,
             },
@@ -180,7 +180,6 @@ class VoteTests(SocialTestCase):
         self.assertEqual(vote.target, self.target_person)
 
     def tearDown(self) -> None:
-        settings.DEBUG = False
         self.delete_instances_of(
             Person,
             ContentType,

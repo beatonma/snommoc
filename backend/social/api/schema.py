@@ -1,16 +1,17 @@
 from datetime import datetime
-from typing import Annotated, Any, Literal, Type
+from typing import Any, Literal, Type
+from uuid import UUID
 
-import nh3
 from django.shortcuts import get_object_or_404
 from ninja import Schema
-from pydantic import AfterValidator, Field
+from pydantic import Field
 from pydantic_core import PydanticUndefined
 from repository.models import Bill, CommonsDivision, Constituency, LordsDivision, Person
 from repository.models.mixins import SocialMixin
 from social.models import UserToken, Vote
 
 from ..models.mixins import GenericTargetMixin
+from . import types
 from .errors import BadUserToken
 
 
@@ -51,31 +52,26 @@ def resolve_target_or_404(target_model: InteractionTargetKey, target_id: int):
     )
 
 
-def resolve_user_token(token: str | None):
+def resolve_user_token(token: str | None, **kwargs):
     if token is None:
         return None
 
     try:
-        return UserToken.objects.get(token=token, enabled=True)
+        return UserToken.objects.get(token=token, enabled=True, **kwargs)
     except UserToken.DoesNotExist:
         raise BadUserToken()
 
 
-def sanitize_text(text: str) -> str:
-    return nh3.clean(text, tags=set(), attributes={}).strip()
+class UserTokenSchema(Schema):
+    private_user_token: str = field("token")
+
+    def resolve_user_token(self, **kwargs):
+        return resolve_user_token(self.private_user_token, **kwargs)
 
 
-type SanitizedText = Annotated[
-    str,
-    AfterValidator(sanitize_text),
-    Field(min_length=1, max_length=240),
-]
-
-
-class InteractionSchema(Schema):
+class InteractionSchema(UserTokenSchema):
     private_target_model: InteractionTargetKey = field("target")
     private_target_id: int = field("target_id")
-    private_user_token: str = field("token")
 
     def resolve_target_or_404(self):
         return resolve_target_or_404(
@@ -85,9 +81,6 @@ class InteractionSchema(Schema):
 
     def resolve_target_kwargs(self) -> dict:
         return GenericTargetMixin.get_target_kwargs(self.resolve_target_or_404())
-
-    def resolve_user_token(self):
-        return resolve_user_token(self.private_user_token)
 
 
 class CreateVote(InteractionSchema):
@@ -100,14 +93,10 @@ class DeleteVote(InteractionSchema):
 
 class CreateComment(InteractionSchema):
     private_dangerous_unsanitized_text: str = field("text")
-    text: SanitizedText
+    text: types.CommentText
 
     def is_flagged(self):
         return self.private_dangerous_unsanitized_text != self.text
-
-
-class Votes(Schema):
-    pass
 
 
 class Comment(Schema):
@@ -122,3 +111,16 @@ class SocialContent(Schema):
     comments: list[Comment]
     votes: dict[Vote.VoteTypeChoices, int]
     user_vote: Vote.VoteTypeChoices | None
+
+
+class UserAccount(Schema):
+    username: str
+
+
+class RenameAccount(UserTokenSchema):
+    username: str
+    new_username: types.NewUsername
+
+
+class DeleteAccount(UserTokenSchema):
+    pass

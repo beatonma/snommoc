@@ -1,4 +1,3 @@
-import json
 import uuid
 
 from django.urls import reverse
@@ -63,9 +62,7 @@ class GetSocialAllTests(SocialTestCase):
 
     def test_get_all_empty(self):
         response = self.client.get(
-            reverse(
-                VIEWNAME_GET,
-            ),
+            reverse(VIEWNAME_GET),
             data={
                 "target": "person",
                 "target_id": 1423,
@@ -74,8 +71,8 @@ class GetSocialAllTests(SocialTestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertJSONEqual(
-            response.content,
+        self.assertDictEqual(
+            response.json(),
             {
                 "title": "Boris Johnson",
                 "comments": [],
@@ -158,14 +155,11 @@ class GetSocialAllTests(SocialTestCase):
         expected_comments should be a list of (comment_text, username) tuples.
         """
 
-        data = json.loads(response.content)
+        data = response.json()
 
         # Replace timestamped comments with (text,username) tuples.
         actual_comments = [[x["text"], x["username"]] for x in data.get("comments")]
         data["comments"] = actual_comments
-
-        print(json.dumps(data, indent=1))
-        print(json.dumps(expected, indent=1))
 
         self.assertDictEqual(
             data,

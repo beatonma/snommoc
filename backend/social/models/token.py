@@ -2,7 +2,6 @@ import uuid
 
 from django.core.validators import RegexValidator
 from django.db import models
-
 from repository.models.mixins import BaseModel
 from social.models.mixins import DeletionPendingMixin
 
@@ -19,6 +18,15 @@ class SignInServiceProvider(BaseModel):
 
 
 class UserToken(DeletionPendingMixin, BaseModel):
+    @staticmethod
+    def username_validator():
+        return RegexValidator(
+            regex=r"^[0-9a-zA-Z][0-9a-zA-Z-_.]{2,}[0-9a-zA-Z]$",
+            message="Must start and end with alphanumerics. "
+            "Otherwise also allow dash, underscore, dot. "
+            "Minimum 4 characters.",
+        )
+
     provider = models.ForeignKey(
         "SignInServiceProvider",
         on_delete=models.SET_NULL,
@@ -36,12 +44,7 @@ class UserToken(DeletionPendingMixin, BaseModel):
         default=_create_default_username,
         unique=True,
         validators=[
-            RegexValidator(
-                regex=r"^[0-9a-zA-Z][0-9a-zA-Z-_.]{2,}[0-9a-zA-Z]$",
-                message="Must start and end with alphanumerics. "
-                "Otherwise also allow dash, underscore, dot. "
-                "Minimum 4 characters.",
-            )
+            username_validator(),
         ],
     )
     enabled = models.BooleanField(default=True)

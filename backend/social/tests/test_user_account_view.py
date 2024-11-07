@@ -1,19 +1,15 @@
 """
 Tests for user account management.
 """
+
 import json
 import uuid
 from typing import List
 
-from django.urls import reverse
-from rest_framework import status
-
+from api import status
 from basetest.testcase import LocalTestCase
-from social.models.token import (
-    SignInServiceProvider,
-    UserToken,
-    UsernameChanged,
-)
+from django.urls import reverse
+from social.models.token import SignInServiceProvider, UsernameChanged, UserToken
 from social.views import contract
 
 

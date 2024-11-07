@@ -1,10 +1,10 @@
 from api.schema.mini import PartyMiniSchema
 from api.schema.party import PartyFullSchema
 from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
 from repository.models import Party
-from rest_framework.generics import get_object_or_404
 
 router = Router(tags=["Parties"])
 

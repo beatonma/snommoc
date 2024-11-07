@@ -74,18 +74,6 @@ HTTP_REQUEST_HEADERS_JSON = {
     "Accept": "application/json",
 }
 
-REST_FRAMEWORK = {
-    "DEFAULT_RENDERER_CLASSES": (
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ),
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-    ],
-    "DEFAULT_PAGINATION_CLASS": "api.pagination.DefaultResultsSetPagination",
-    "PAGE_SIZE": 100,
-}
-
 NINJA_PAGINATION_PER_PAGE = 25
 NINJA_PAGINATION_CLASS = "ninja.pagination.LimitOffsetPagination"
 

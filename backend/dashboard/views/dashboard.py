@@ -1,16 +1,6 @@
-import logging
-
-from dashboard.views.serializers.task_notifications import TaskNotificationSerializer
-from dashboard.views.serializers.unlinked_constituencies import (
-    UnlinkedConstituencyDetailedSerializer,
-    UnlinkedConstituencySerializer,
-)
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import render
 from django.views import View
-from notifications.models import TaskNotification
-from repository.models.constituency import UnlinkedConstituency
-from rest_framework.viewsets import ModelViewSet
 
 
 class StaffView(UserPassesTestMixin, View):
@@ -19,19 +9,6 @@ class StaffView(UserPassesTestMixin, View):
     def test_func(self):
         return self.request.user.is_staff
 
-    class Meta:
-        abstract = True
-
-
-class StaffViewSet(UserPassesTestMixin, ModelViewSet):
-    """Dashboard is only viewable by staff accounts."""
-
-    def test_func(self):
-        return self.request.user.is_staff
-
-    class Meta:
-        abstract = True
-
 
 class DashboardView(StaffView):
     def get(self, request):
@@ -39,21 +16,3 @@ class DashboardView(StaffView):
             request,
             "dashboard.html",
         )
-
-
-class UnlinkedConstituencyViewSet(StaffViewSet):
-    queryset = UnlinkedConstituency.objects.all().order_by("name", "election__date")
-    serializer_class = UnlinkedConstituencySerializer
-
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return UnlinkedConstituencyDetailedSerializer
-        else:
-            return UnlinkedConstituencySerializer
-
-
-class RecentNotificationsViewSet(StaffViewSet):
-    queryset = TaskNotification.objects.filter(level__gte=logging.INFO).order_by(
-        "-created_on"
-    )[:50]
-    serializer_class = TaskNotificationSerializer

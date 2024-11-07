@@ -13,7 +13,6 @@ INSTALLED_THIRD_PARTY_APPS = [
     "django_filters",
     "django_extensions",
     "phonenumber_field",
-    "rest_framework",
 ]
 
 INSTALLED_PROJECT_APPS = [

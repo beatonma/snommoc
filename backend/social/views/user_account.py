@@ -1,11 +1,11 @@
 import json
 import logging
 
+from api import status
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import status
 from social.models.token import UserToken
 from social.validation.username import BlockedUsername, is_username_blocked
 from social.views import contract

@@ -1,10 +1,10 @@
 import uuid
 
+from api import status
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from django.urls import reverse
 from repository.models import Person
-from rest_framework import status
 from social.models import Comment
 from social.models.token import UserToken
 from social.tests.testcase import SocialTestCase

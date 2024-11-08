@@ -3,20 +3,19 @@ import uuid
 from api import status
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
-from django.urls import reverse
 from repository.models import Person
 from social.models import Comment
 from social.models.token import UserToken
+from social.tests import reverse_api
 from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
-from social.views import contract
 
 _COMMENT = "This is a simple comment"
 _TEST_USERNAME = "testuser-comments"
 
 
-VIEWNAME_CREATE_COMMENT = "social_api-2.0:create_comment"
-VIEWNAME_DELETE_COMMENT = "social_api-2.0:delete_comment"
+VIEWNAME_CREATE_COMMENT = reverse_api("create_comment")
+VIEWNAME_DELETE_COMMENT = reverse_api("delete_comment")
 
 
 class CommentTests(SocialTestCase):
@@ -24,7 +23,7 @@ class CommentTests(SocialTestCase):
 
     def post_json(self, data: dict):
         return self.client.post(
-            reverse(VIEWNAME_CREATE_COMMENT),
+            VIEWNAME_CREATE_COMMENT,
             data,
             content_type="application/json",
         )

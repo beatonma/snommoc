@@ -1,15 +1,13 @@
 import uuid
 
 from api import status
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
-from django.urls import reverse
 from repository.models import Person
 from social.models.votes import Vote
+from social.tests import reverse_api
 from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
-from social.views import contract
 
 
 def _create_person_vote(user, vote_type, target_id=4837):
@@ -21,8 +19,8 @@ def _create_person_vote(user, vote_type, target_id=4837):
     )
 
 
-VIEWNAME_CREATE_VOTE = "social_api-2.0:create_vote"
-VIEWNAME_DELETE_VOTE = "social_api-2.0:delete_vote"
+VIEWNAME_CREATE_VOTE = reverse_api("create_vote")
+VIEWNAME_DELETE_VOTE = reverse_api("delete_vote")
 
 VOTE_TYPE_AYE = Vote.VoteTypeChoices.AYE
 VOTE_TYPE_NO = Vote.VoteTypeChoices.NO
@@ -46,7 +44,9 @@ class VoteTests(SocialTestCase):
 
     def post_json(self, data: dict):
         return self.client.post(
-            reverse("social_api-2.0:create_vote"), data, content_type="application/json"
+            VIEWNAME_CREATE_VOTE,
+            data,
+            content_type="application/json",
         )
 
     def test_post_vote_with_valid_user(self):
@@ -163,7 +163,7 @@ class VoteTests(SocialTestCase):
         self.assertLengthEquals(Vote.objects.filter(user=self.valid_user), 2)
 
         response = self.client.delete(
-            reverse(VIEWNAME_DELETE_VOTE),
+            VIEWNAME_DELETE_VOTE,
             content_type="application/json",
             data={
                 "token": self.valid_token.hex,

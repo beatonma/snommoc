@@ -3,6 +3,7 @@ import uuid
 from django.urls import reverse
 from repository.models import Person
 from social.models.token import UserToken
+from social.tests import reverse_api
 from social.tests.testcase import SocialTestCase
 from social.tests.util import (
     create_sample_comment,
@@ -12,7 +13,7 @@ from social.tests.util import (
 
 _VALID_USER = "get-social-valid-user"
 
-VIEWNAME_GET = "social_api-2.0:get_social_content"
+VIEWNAME_GET = reverse_api("get_social_content")
 
 
 class GetSocialAllTests(SocialTestCase):
@@ -33,9 +34,10 @@ class GetSocialAllTests(SocialTestCase):
             active=True,
         )
 
-        self.valid_user, _ = UserToken.objects.get_or_create(
-            token=self.valid_token,
+        self.valid_user = create_sample_usertoken(
             username=_VALID_USER,
+            token=self.valid_token,
+            enabled=True,
         )
 
     def create_sample_data(self):
@@ -62,7 +64,7 @@ class GetSocialAllTests(SocialTestCase):
 
     def test_get_all_empty(self):
         response = self.client.get(
-            reverse(VIEWNAME_GET),
+            VIEWNAME_GET,
             data={
                 "target": "person",
                 "target_id": 1423,
@@ -84,9 +86,7 @@ class GetSocialAllTests(SocialTestCase):
     def test_get_all_with_content_no_user_token(self):
         self.create_sample_data()
         response = self.client.get(
-            reverse(
-                VIEWNAME_GET,
-            ),
+            VIEWNAME_GET,
             data={
                 "target": "person",
                 "target_id": 4837,
@@ -117,7 +117,7 @@ class GetSocialAllTests(SocialTestCase):
         self.create_sample_data()
 
         response = self.client.get(
-            reverse(VIEWNAME_GET),
+            VIEWNAME_GET,
             data={
                 "token": self.valid_token,
                 "target": "person",

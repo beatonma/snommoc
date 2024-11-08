@@ -16,6 +16,7 @@ from .email import (
 from .environment import (
     DEBUG,
     DOMAIN_NAME,
+    G_CLIENT_ID,
     MEDIA_ROOT,
     SECRET_KEY,
     STATIC_ROOT,

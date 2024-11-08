@@ -1,11 +1,9 @@
-import os
 import uuid
 from datetime import timedelta
 
 import util.settings_contract as contract
 from snommoc.settings import INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF  # noqa
 
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEST_RUNNER = "basetest.runner.PytestTestRunner"
 
 ALLOWED_HOSTS = ["localhost"]
@@ -53,3 +51,5 @@ SNOMMOC = {
         contract.CRAWLER_CACHE_ROOT: "/tmp/snommoc/test/crawler_cache/",
     },
 }
+
+G_CLIENT_ID = "localhost"

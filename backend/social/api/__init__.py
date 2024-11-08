@@ -15,8 +15,8 @@ from .errors import BadUserToken
 
 api = NinjaAPI(urls_namespace=f"social_api-{__version__}", version=__version__)
 
-api.add_router("auth/", auth_router)
 api.add_router("account/", account_router)
+api.add_router("auth/", auth_router)
 api.add_router("", interactions_router)
 
 

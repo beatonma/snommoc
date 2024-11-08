@@ -14,7 +14,7 @@ router = Router()
 
 
 @router.post("votes/", response={201: None})
-def create_vote(request: HttpRequest, data: schema.CreateVote):
+def create_vote(request: HttpRequest, data: schema.CreateVoteRequest):
     vote, _ = Vote.objects.update_or_create(
         **data.resolve_target_kwargs(),
         user=data.resolve_user_token(),
@@ -26,7 +26,7 @@ def create_vote(request: HttpRequest, data: schema.CreateVote):
 
 
 @router.post("comments/", response={201: None})
-def create_comment(request: HttpRequest, data: schema.CreateComment):
+def create_comment(request: HttpRequest, data: schema.CreateCommentRequest):
     comment, _ = Comment.objects.get_or_create(
         **data.resolve_target_kwargs(),
         user=data.resolve_user_token(),
@@ -37,7 +37,7 @@ def create_comment(request: HttpRequest, data: schema.CreateComment):
 
 
 @router.delete("votes/", response={204: None})
-def delete_vote(request: HttpRequest, data: schema.DeleteVote):
+def delete_vote(request: HttpRequest, data: schema.DeleteVoteRequest):
     Vote.objects.get(
         **data.resolve_target_kwargs(),
         user=data.resolve_user_token(),
@@ -46,7 +46,7 @@ def delete_vote(request: HttpRequest, data: schema.DeleteVote):
     return status.HTTP_204_NO_CONTENT, None
 
 
-@router.get("", response=schema.SocialContent)
+@router.get("", response=schema.SocialContentResponse)
 def get_social_content(
     request: HttpRequest,
     target: schema.InteractionTargetKey,

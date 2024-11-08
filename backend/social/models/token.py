@@ -2,7 +2,7 @@ import uuid
 
 from django.core.validators import RegexValidator
 from django.db import models
-from repository.models.mixins import BaseModel
+from repository.models.mixins import BaseModel, BaseQuerySet
 from social.models.mixins import DeletionPendingMixin
 
 
@@ -10,11 +10,32 @@ def _create_default_username() -> str:
     return uuid.uuid4().hex[:10]
 
 
-class SignInServiceProvider(BaseModel):
-    name = models.CharField(max_length=50)
+class OAuthQuerySet(BaseQuerySet):
+    def create_default(self, username: str):
+        try:
+            return self.create(provider="snommoc", user_id=username)
+        except InterruptedError:
+            return self.create(
+                provider="snommoc",
+                user_id=f"{username}-{uuid.uuid4().hex[:6]}",
+            )
+
+
+class OAuthToken(BaseModel):
+    objects = OAuthQuerySet.as_manager()
+    provider = models.CharField(max_length=50)
+    user_id = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name
+        return f"{self.provider}:{self.user_id[:6]}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["provider", "user_id"],
+                name="unique_provider_user_id_per_provider",
+            )
+        ]
 
 
 class UserToken(DeletionPendingMixin, BaseModel):
@@ -27,17 +48,8 @@ class UserToken(DeletionPendingMixin, BaseModel):
             "Minimum 4 characters.",
         )
 
-    provider = models.ForeignKey(
-        "SignInServiceProvider",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    provider_account_id = models.CharField(
-        max_length=100,
-        unique=True,
-        editable=False,
-    )
+    oauth_session = models.OneToOneField("social.OAuthToken", on_delete=models.CASCADE)
+
     token = models.UUIDField(default=uuid.uuid4)
     username = models.CharField(
         max_length=16,

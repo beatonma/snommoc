@@ -16,7 +16,7 @@ def get_account(request: HttpRequest, token: str):
 
 
 @router.post("/", response=schema.UserAccount)
-def rename_account(request: HttpRequest, data: schema.RenameAccount):
+def rename_account(request: HttpRequest, data: schema.RenameAccountRequest):
     user = data.resolve_user_token(username=data.username)
     if data.username != data.new_username:
         user.username = data.new_username
@@ -27,7 +27,7 @@ def rename_account(request: HttpRequest, data: schema.RenameAccount):
 
 
 @router.delete("/", response={202: None})
-def delete_account(request: HttpRequest, data: schema.DeleteAccount):
+def delete_account(request: HttpRequest, data: schema.DeleteAccountRequest):
     user = data.resolve_user_token()
     user.mark_pending_deletion()
     user.save()

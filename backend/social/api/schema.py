@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Any, Literal, Type
-from uuid import UUID
 
 from django.shortcuts import get_object_or_404
 from ninja import Schema
@@ -15,7 +14,7 @@ from . import types
 from .errors import BadUserToken
 
 
-def field(
+def _field(
     alias: str,
     *,
     default: Any = PydanticUndefined,
@@ -62,16 +61,16 @@ def resolve_user_token(token: str | None, **kwargs):
         raise BadUserToken()
 
 
-class UserTokenSchema(Schema):
-    private_user_token: str = field("token")
+class _UserTokenSchema(Schema):
+    private_user_token: str = _field("token")
 
     def resolve_user_token(self, **kwargs):
         return resolve_user_token(self.private_user_token, **kwargs)
 
 
-class InteractionSchema(UserTokenSchema):
-    private_target_model: InteractionTargetKey = field("target")
-    private_target_id: int = field("target_id")
+class _InteractionSchema(_UserTokenSchema):
+    private_target_model: InteractionTargetKey = _field("target")
+    private_target_id: int = _field("target_id")
 
     def resolve_target_or_404(self):
         return resolve_target_or_404(
@@ -83,16 +82,16 @@ class InteractionSchema(UserTokenSchema):
         return GenericTargetMixin.get_target_kwargs(self.resolve_target_or_404())
 
 
-class CreateVote(InteractionSchema):
-    vote_type: Vote.VoteTypeChoices = field("vote")
+class CreateVoteRequest(_InteractionSchema):
+    vote_type: Vote.VoteTypeChoices = _field("vote")
 
 
-class DeleteVote(InteractionSchema):
+class DeleteVoteRequest(_InteractionSchema):
     pass
 
 
-class CreateComment(InteractionSchema):
-    private_dangerous_unsanitized_text: str = field("text")
+class CreateCommentRequest(_InteractionSchema):
+    private_dangerous_unsanitized_text: str = _field("text")
     text: types.CommentText
 
     def is_flagged(self):
@@ -100,13 +99,13 @@ class CreateComment(InteractionSchema):
 
 
 class Comment(Schema):
-    username: str = field("user.username")
+    username: str = _field("user.username")
     text: str
     created_on: datetime
     modified_on: datetime
 
 
-class SocialContent(Schema):
+class SocialContentResponse(Schema):
     title: str
     comments: list[Comment]
     votes: dict[Vote.VoteTypeChoices, int]
@@ -117,10 +116,31 @@ class UserAccount(Schema):
     username: str
 
 
-class RenameAccount(UserTokenSchema):
+class RenameAccountRequest(_UserTokenSchema):
     username: str
     new_username: types.NewUsername
 
 
-class DeleteAccount(UserTokenSchema):
+class DeleteAccountRequest(_UserTokenSchema):
     pass
+
+
+class GoogleAuthRequest(Schema):
+    """Received from a client who wants to sign in using Google oauth2"""
+
+    encoded_oauth_token: str
+
+
+class JsonWebToken(Schema):
+    audience: str = _field("aud")
+    issuer: str = _field("iss")
+    user_id: str = _field("sub")
+    expires_at: datetime = _field("exp")
+    not_before: datetime = _field("nbf")
+    issued_at: datetime = _field("iat")
+
+
+class UserLoginResponse(UserAccount):
+    """When user signs in successfully, return their basic account info and UserToken"""
+
+    token: str

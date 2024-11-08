@@ -1,14 +1,8 @@
 from basetest.test_util import create_sample_user
-from social.models import Comment
-from social.models.token import (
-    SignInServiceProvider,
-    UserToken,
-)
+from social.models import Comment, OAuthToken
+from social.models.token import UserToken
 from social.tests.testcase import SocialTestCase
-from social.tests.util import (
-    create_sample_comment,
-    create_sample_usertoken,
-)
+from social.tests.util import create_sample_comment, create_sample_usertoken
 from util.time import get_now
 
 
@@ -18,7 +12,7 @@ class SocialSignalTest(SocialTestCase):
     def test_create_usertoken_on_user_created_is_correct(self):
         create_sample_user(username="SocialSignalTest")
 
-        self.assertEqual(SignInServiceProvider.objects.first().name, "snommoc.org")
+        self.assertEqual(OAuthToken.objects.first().provider, "snommoc")
         token = UserToken.objects.first()
         self.assertEqual(token.username, "SocialSignalTest")
 
@@ -50,12 +44,3 @@ class SocialSignalTest(SocialTestCase):
         self.assertNotEqual(created_on, now)
         self.assertEqual(placeholder_comment.created_on, created_on)
         self.assertEqual(placeholder_comment.modified_on.date(), now.date())
-
-    # def tearDown(self) -> None:
-    #     self.delete_instances_of(
-    #         ApiKey,
-    #         Comment,
-    #         SignInServiceProvider,
-    #         User,
-    #         UserToken,
-    #     )

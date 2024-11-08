@@ -91,3 +91,6 @@ LOGGING_ENABLED: bool = _env_bool("LOGGING_ENABLED", True)
 DJANGO_LOGGING_DIR: Path = _env_path("DJANGO_LOGGING_DIR", f"/var/log/{PROJECT_ID}")
 MEDIA_ROOT: Path = _env_path("MEDIA_ROOT", "/var/www/media")
 STATIC_ROOT: Path = _env_path("STATIC_ROOT", "/var/www/static")
+
+# OAuth
+G_CLIENT_ID: str = _env_str("G_CLIENT_ID", "")

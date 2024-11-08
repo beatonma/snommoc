@@ -7,19 +7,17 @@ from typing import List
 
 from api import status
 from basetest.testcase import LocalTestCase
-from django.urls import reverse
-from social.models.token import SignInServiceProvider, UsernameChanged, UserToken
-from social.views import contract
+from social.models.token import UsernameChanged, UserToken
+from social.tests import reverse_api
+from social.tests.util import create_sample_usertoken
 
-VIEWNAME_GET = "social_api-2.0:get_account"
-VIEWNAME_RENAME = "social_api-2.0:rename_account"
-VIEWNAME_DELETE = "social_api-2.0:delete_account"
+VIEWNAME_GET = reverse_api("get_account")
+VIEWNAME_RENAME = reverse_api("rename_account")
+VIEWNAME_DELETE = reverse_api("delete_account")
 
 
 class UserAccountViewTests(LocalTestCase):
     """Tests for user account management."""
-
-    # VIEW_NAME = "social-account-view"
 
     def setUp(self) -> None:
         valid_user_token = uuid.uuid4()
@@ -27,22 +25,15 @@ class UserAccountViewTests(LocalTestCase):
         self.valid_google_id = str(uuid.uuid4().hex)
         self.original_username = "useraccount-username"
 
-        self.provider = SignInServiceProvider.objects.create(
-            name="fake-provider",
-        )
-
-        UserToken.objects.create(
-            provider=self.provider,
-            provider_account_id=self.valid_google_id,
+        create_sample_usertoken(
+            username=self.original_username,
             token=valid_user_token,
             enabled=True,
-            username=self.original_username,
         )
 
     def tearDown(self) -> None:
         self.delete_instances_of(
             UsernameChanged,
-            SignInServiceProvider,
             UserToken,
         )
 
@@ -50,7 +41,7 @@ class UserAccountViewTests(LocalTestCase):
 class GetUserAccountTests(UserAccountViewTests):
     def test_get_account(self):
         response = self.client.get(
-            reverse(VIEWNAME_GET),
+            VIEWNAME_GET,
             data={"token": self.valid_user_token},
         )
 
@@ -59,7 +50,7 @@ class GetUserAccountTests(UserAccountViewTests):
 
     def test_get_invalid_account(self):
         response = self.client.get(
-            reverse(VIEWNAME_GET),
+            VIEWNAME_GET,
             data={"token": uuid.uuid4().hex},
         )
 
@@ -71,7 +62,7 @@ class UserAccountViewPostTests(UserAccountViewTests):
 
     def _check_response_code(self, newname: str, expected_status_code: int):
         response = self.client.post(
-            reverse(VIEWNAME_RENAME),
+            VIEWNAME_RENAME,
             {
                 "token": self.valid_user_token,
                 "username": self.original_username,
@@ -193,7 +184,7 @@ class UserAccountViewDeleteTests(UserAccountViewTests):
 
     def test_delete_account_with_valid_token(self):
         response = self.client.delete(
-            reverse(VIEWNAME_DELETE),
+            VIEWNAME_DELETE,
             data={
                 "token": self.valid_user_token,
             },
@@ -204,7 +195,7 @@ class UserAccountViewDeleteTests(UserAccountViewTests):
 
     def test_delete_account_with_missing_usertoken(self):
         response = self.client.delete(
-            reverse(VIEWNAME_DELETE),
+            VIEWNAME_DELETE,
             data={},
             content_type="application/json",
         )
@@ -213,7 +204,7 @@ class UserAccountViewDeleteTests(UserAccountViewTests):
 
     def test_delete_account_with_nonexistent_account(self):
         response = self.client.delete(
-            reverse(VIEWNAME_DELETE),
+            VIEWNAME_DELETE,
             data={
                 "token": str(uuid.uuid4().hex),
             },

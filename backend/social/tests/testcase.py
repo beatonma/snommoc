@@ -2,7 +2,7 @@ from api.models import ApiKey
 from basetest.testcase import LocalTestCase
 from django.contrib.auth.models import User
 from social.models import Comment, Vote
-from social.models.token import SignInServiceProvider, UserToken
+from social.models.token import UserToken
 
 
 class SocialTestCase(
@@ -12,7 +12,6 @@ class SocialTestCase(
         ApiKey,
         Comment,
         Comment,
-        SignInServiceProvider,
         User,
         UserToken,
         Vote,

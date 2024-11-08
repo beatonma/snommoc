@@ -6,7 +6,7 @@ from basetest.test_util import create_sample_user
 from basetest.testcase import LocalTestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
-from social.models.token import SignInServiceProvider, UserToken
+from social.models.token import UserToken
 
 
 class ApiKeyRequiredDecoratorTest(LocalTestCase):
@@ -65,5 +65,4 @@ class ApiKeyRequiredDecoratorTest(LocalTestCase):
             ApiKey,
             User,
             UserToken,
-            SignInServiceProvider,
         )

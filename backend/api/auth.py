@@ -4,6 +4,7 @@ from api import permissions
 from api.models import ApiKey
 from api.permissions import has_read_snommoc_api_permission
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from ninja.security import APIKeyQuery
 
@@ -22,6 +23,10 @@ class ApiKeyDisabled(ApiKeyException):
     pass
 
 
+class ApiKeyInvalid(ApiKeyException):
+    pass
+
+
 class ApiReadAuth(APIKeyQuery):
     param_name = "key"
 
@@ -34,6 +39,12 @@ class ApiReadAuth(APIKeyQuery):
             log.info(f"User '{user}' has permission '{permissions.READ_SNOMMOC_API}'")
             return user
 
+        if not key:
+            try:
+                key = request.headers["Authorization"]
+            except KeyError:
+                pass
+
         try:
             api_key = ApiKey.objects.get(key=key)
             if api_key.enabled:
@@ -45,3 +56,6 @@ class ApiReadAuth(APIKeyQuery):
 
         except ApiKey.DoesNotExist:
             raise ApiKeyDoesNotExist()
+
+        except ValidationError:
+            raise ApiKeyInvalid()

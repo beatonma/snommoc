@@ -1,5 +1,5 @@
 from api import status
-from api.auth import ApiKeyDisabled, ApiKeyDoesNotExist, ApiReadAuth
+from api.auth import ApiKeyDisabled, ApiKeyDoesNotExist, ApiKeyInvalid, ApiReadAuth
 from api.routers import (
     bills_router,
     constituency_router,
@@ -45,6 +45,7 @@ def disabled_api_key(request: HttpRequest, exception: Exception):
 
 
 @ninja_api.exception_handler(ApiKeyDoesNotExist)
+@ninja_api.exception_handler(ApiKeyInvalid)
 def bad_api_key(request: HttpRequest, exception: Exception):
     return ninja_api.create_response(
         request,

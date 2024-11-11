@@ -24,21 +24,19 @@ export default async function Page({
   return <MemberProfile {...response.data} />;
 }
 
-type Member = api.components["schemas"]["MemberFullSchema"];
+type Member = api.components["schemas"]["MemberProfile"];
 const MemberProfile = (props: Member) => {
-  const { profile } = props;
-
   return (
     <div>
       <Image
         loading="lazy"
         className="aspect-square w-32 rounded-lg bg-gray-800"
-        src={profile.portrait ?? "/default-member-profile.svg"}
-        alt={`Portait of ${profile.name}`}
+        src={props.portrait ?? "/default-member-portrait.svg"}
+        alt={`Portrait of ${props.name}`}
         width={32}
         height={32}
       />
-      <h1>{profile.name}</h1>
+      <h1>{props.name}</h1>
     </div>
   );
 };

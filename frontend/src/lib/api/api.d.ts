@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/members/{parliamentdotuk}/history/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Member History */
+        get: operations["api_routers_members_member_history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/members/{parliamentdotuk}/votes/": {
         parameters: {
             query?: never;
@@ -385,6 +402,72 @@ export interface components {
             /** End */
             end: string | null;
         };
+        EmailAddress: string;
+        /** MemberProfile */
+        MemberProfile: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Current Post */
+            current_post: string | null;
+            party: components["schemas"]["PartyMiniSchema"] | null;
+            constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
+            /** Portrait */
+            portrait?: string | null;
+            /** Full Title */
+            full_title: string | null;
+            given_name: components["schemas"]["Name"] | null;
+            family_name: components["schemas"]["Name"] | null;
+            /** Active */
+            active: boolean;
+            /** House */
+            house?: string | null;
+            /** Date Of Birth */
+            date_of_birth: string | null;
+            /** Date Of Death */
+            date_of_death: string | null;
+            /** Age */
+            age: number;
+            /** Gender */
+            gender: string | null;
+            place_of_birth: components["schemas"]["TownSchema"] | null;
+            /** Current Committees */
+            current_committees: components["schemas"]["CommitteeMemberSchema"][];
+            address: components["schemas"]["AddressSchema"];
+            /** Subjects Of Interest */
+            subjects_of_interest: components["schemas"]["SubjectOfInterestSchema"][];
+        };
+        PhoneNumber: string;
+        /** PhysicalAddressSchema */
+        PhysicalAddressSchema: {
+            /** Description */
+            description?: string | null;
+            /** Address */
+            address?: string | null;
+            /** Postcode */
+            postcode?: string | null;
+            phone: components["schemas"]["PhoneNumber"] | null;
+            fax: components["schemas"]["PhoneNumber"] | null;
+            email?: components["schemas"]["EmailAddress"] | null;
+        };
+        /** SubjectOfInterestSchema */
+        SubjectOfInterestSchema: {
+            /** Category */
+            category: string;
+            /** Subject */
+            subject: string;
+        };
+        /** TownSchema */
+        TownSchema: {
+            town: components["schemas"]["Name"];
+            country: components["schemas"]["Name"];
+        };
+        Url: string;
+        /** WebAddressSchema */
+        WebAddressSchema: {
+            url: components["schemas"]["Url"];
+            /** Description */
+            description: string | null;
+        };
         /** DeclaredInterestsSchema */
         DeclaredInterestsSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -410,7 +493,6 @@ export interface components {
             /** Election Type */
             election_type: string;
         };
-        EmailAddress: string;
         /** ExperienceSchema */
         ExperienceSchema: {
             /** Category */
@@ -458,10 +540,8 @@ export interface components {
             /** Hansard */
             hansard: string | null;
         };
-        /** MemberFullSchema */
-        MemberFullSchema: {
-            profile: components["schemas"]["MemberProfileSchema"];
-            address: components["schemas"]["AddressSchema"];
+        /** MemberHistory */
+        MemberHistory: {
             posts: components["schemas"]["PostsSchema"];
             /** Parties */
             parties: components["schemas"]["PartyAffiliationSchema"][];
@@ -477,38 +557,6 @@ export interface components {
             interests: components["schemas"]["DeclaredInterestsSchema"][];
             /** Speeches */
             speeches: components["schemas"]["MaidenSpeechSchema"][];
-            /** Subjects */
-            subjects: components["schemas"]["SubjectOfInterestSchema"][];
-        };
-        /** MemberProfileSchema */
-        MemberProfileSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            name: components["schemas"]["Name"];
-            /** Current Post */
-            current_post: string | null;
-            party: components["schemas"]["PartyMiniSchema"] | null;
-            constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
-            /** Portrait */
-            portrait?: string | null;
-            /** Full Title */
-            full_title: string | null;
-            given_name: components["schemas"]["Name"] | null;
-            family_name: components["schemas"]["Name"] | null;
-            /** Active */
-            active: boolean;
-            /** Is Mp */
-            is_mp: boolean;
-            /** Is Lord */
-            is_lord: boolean;
-            /** Date Of Birth */
-            date_of_birth: string | null;
-            /** Date Of Death */
-            date_of_death: string | null;
-            /** Age */
-            age: number;
-            /** Gender */
-            gender: string | null;
-            place_of_birth: components["schemas"]["TownSchema"] | null;
         };
         /** PartyAffiliationSchema */
         PartyAffiliationSchema: {
@@ -517,19 +565,6 @@ export interface components {
             start: string | null;
             /** End */
             end: string | null;
-        };
-        PhoneNumber: string;
-        /** PhysicalAddressSchema */
-        PhysicalAddressSchema: {
-            /** Description */
-            description?: string | null;
-            /** Address */
-            address?: string | null;
-            /** Postcode */
-            postcode?: string | null;
-            phone: components["schemas"]["PhoneNumber"] | null;
-            fax: components["schemas"]["PhoneNumber"] | null;
-            email?: components["schemas"]["EmailAddress"] | null;
         };
         /** PostSchema */
         PostSchema: {
@@ -550,25 +585,6 @@ export interface components {
             parliamentary: components["schemas"]["PostSchema"][];
             /** Opposition */
             opposition: components["schemas"]["PostSchema"][];
-        };
-        /** SubjectOfInterestSchema */
-        SubjectOfInterestSchema: {
-            /** Category */
-            category: string;
-            /** Subject */
-            subject: string;
-        };
-        /** TownSchema */
-        TownSchema: {
-            town: components["schemas"]["Name"];
-            country: components["schemas"]["Name"];
-        };
-        Url: string;
-        /** WebAddressSchema */
-        WebAddressSchema: {
-            url: components["schemas"]["Url"];
-            /** Description */
-            description: string | null;
         };
         /** DivisionMiniSchema */
         DivisionMiniSchema: {
@@ -993,7 +1009,29 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MemberFullSchema"];
+                    "application/json": components["schemas"]["MemberProfile"];
+                };
+            };
+        };
+    };
+    api_routers_members_member_history: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                parliamentdotuk: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberHistory"];
                 };
             };
         };

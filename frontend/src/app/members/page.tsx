@@ -3,7 +3,7 @@ import api from "@/lib/api/api";
 import Image from "next/image";
 import { Optional } from "@/components/optional";
 
-export default async () => {
+export default async function Page() {
   const response = await client.GET("/api/members/");
   const data = response.data;
   const members = data?.items;
@@ -19,7 +19,7 @@ export default async () => {
       ))}
     </div>
   );
-};
+}
 
 type MemberSchema = api.components["schemas"]["MemberMiniSchema"];
 const Member = (props: MemberSchema) => {
@@ -31,8 +31,8 @@ const Member = (props: MemberSchema) => {
       <Image
         loading="lazy"
         className="aspect-square w-16 rounded-lg bg-gray-800"
-        src={props.portrait ?? "/default-member-profile.svg"}
-        alt={`Portait of ${props.name}`}
+        src={props.portrait ?? "/default-member-portrait.svg"}
+        alt={`Portrait of ${props.name}`}
         width={16}
         height={16}
       />
@@ -40,11 +40,11 @@ const Member = (props: MemberSchema) => {
         <h1 className="text-md font-semibold">{props.name}</h1>
         <Optional
           condition={props.current_post}
-          children={(it) => <div className="text-xs">{it}</div>}
+          content={(it) => <div className="text-xs">{it}</div>}
         />
         <Optional
           condition={props.constituency?.name}
-          children={(it) => <div className="text-xs">{`MP for ${it}`}</div>}
+          content={(it) => <div className="text-xs">{`MP for ${it}`}</div>}
         />
       </div>
     </a>

@@ -110,6 +110,15 @@ class MemberVotesTests(
     pass
 
 
+class MemberHistoryTests(
+    detail_testcase(
+        detail_url=LocalApiTestCase.reverse("member_career", parliamentdotuk=1423),
+        create_object=lambda: create_sample_person(1423),
+    )
+):
+    pass
+
+
 class ConstituencyResultsTests(
     detail_testcase(
         detail_url=LocalApiTestCase.reverse(

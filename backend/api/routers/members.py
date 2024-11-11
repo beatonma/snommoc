@@ -1,4 +1,4 @@
-from api.schema.member import MemberFullSchema, MemberVotesSchema
+from api.schema.member import MemberCareerHistory, MemberProfile, MemberVotesSchema
 from api.schema.mini import MemberMiniSchema
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -18,8 +18,13 @@ def members(request: HttpRequest):
     )
 
 
-@router.get("/{parliamentdotuk}/", response=MemberFullSchema)
+@router.get("/{parliamentdotuk}/", response=MemberProfile)
 def member(request: HttpRequest, parliamentdotuk: int):
+    return get_object_or_404(Person, parliamentdotuk=parliamentdotuk)
+
+
+@router.get("/{parliamentdotuk}/career/", response=MemberCareerHistory)
+def member_career(request: HttpRequest, parliamentdotuk: int):
     return get_object_or_404(Person, parliamentdotuk=parliamentdotuk)
 
 

@@ -16,7 +16,8 @@ from .types import (
 )
 
 __all__ = [
-    "MemberFullSchema",
+    "MemberCareerHistory",
+    "MemberProfile",
 ]
 
 
@@ -119,7 +120,7 @@ class PostsSchema(Schema):
     opposition: list[PostSchema] = field("oppositionpostmember_set")
 
 
-class MemberProfileSchema(ParliamentSchema):
+class MemberProfile(ParliamentSchema):
     name: Name
     current_post: str | None
     party: PartyMiniSchema | None
@@ -129,20 +130,27 @@ class MemberProfileSchema(ParliamentSchema):
     given_name: Name | None
     family_name: Name | None
     active: bool
-    is_mp: bool
-    is_lord: bool
+    house: str | None = field("house.name", default=None)
     date_of_birth: date | None
     date_of_death: date | None
     age: int
     gender: str | None
     place_of_birth: TownSchema | None = field("town_of_birth")
-
-
-class MemberFullSchema(FullSchema):
-    profile: MemberProfileSchema
+    current_committees: list[CommitteeMemberSchema]
     address: AddressSchema
-    posts: PostsSchema
+    subjects_of_interest: list[SubjectOfInterestSchema] = field("subjectofinterest_set")
 
+    @staticmethod
+    def resolve_current_committees(obj):
+        return obj.committeemember_set.filter(end=None).order_by("-start")
+
+    @staticmethod
+    def resolve_address(obj):
+        return obj
+
+
+class MemberCareerHistory(FullSchema):
+    posts: PostsSchema
     parties: list[PartyAffiliationSchema]
     constituencies: list[HistoricalConstituencySchema] = field("constituencyresult_set")
     committees: list[CommitteeMemberSchema] = field("committeemember_set")
@@ -150,15 +158,6 @@ class MemberFullSchema(FullSchema):
     houses: list[HouseMembershipSchema] = field("housemembership_set")
     interests: list[DeclaredInterestsSchema] = field("declaredinterest_set")
     speeches: list[MaidenSpeechSchema] = field("maidenspeech_set")
-    subjects: list[SubjectOfInterestSchema] = field("subjectofinterest_set")
-
-    @staticmethod
-    def resolve_profile(obj):
-        return obj
-
-    @staticmethod
-    def resolve_address(obj):
-        return obj
 
     @staticmethod
     def resolve_posts(obj):

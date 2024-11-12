@@ -55,15 +55,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/members/{parliamentdotuk}/history/": {
+    "/api/members/{parliamentdotuk}/career/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Member History */
-        get: operations["api_routers_members_member_history"];
+        /** Member Career */
+        get: operations["api_routers_members_member_career"];
         put?: never;
         post?: never;
         delete?: never;
@@ -376,6 +376,18 @@ export interface components {
         PartyMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
+            theme: components["schemas"]["PartyThemeSchema"] | null;
+        };
+        /** PartyThemeSchema */
+        PartyThemeSchema: {
+            /** Primary */
+            primary: string;
+            /** On Primary */
+            on_primary: string;
+            /** Accent */
+            accent: string;
+            /** On Accent */
+            on_accent: string;
         };
         /** AddressSchema */
         AddressSchema: {
@@ -540,8 +552,8 @@ export interface components {
             /** Hansard */
             hansard: string | null;
         };
-        /** MemberHistory */
-        MemberHistory: {
+        /** MemberCareerHistory */
+        MemberCareerHistory: {
             posts: components["schemas"]["PostsSchema"];
             /** Parties */
             parties: components["schemas"]["PartyAffiliationSchema"][];
@@ -897,6 +909,7 @@ export interface components {
             /** Year Founded */
             year_founded: number | null;
             wikipedia: components["schemas"]["WikipediaPath"] | null;
+            theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         WikipediaPath: string;
         /** Motd */
@@ -1014,7 +1027,7 @@ export interface operations {
             };
         };
     };
-    api_routers_members_member_history: {
+    api_routers_members_member_career: {
         parameters: {
             query?: never;
             header?: never;
@@ -1031,7 +1044,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MemberHistory"];
+                    "application/json": components["schemas"]["MemberCareerHistory"];
                 };
             };
         };

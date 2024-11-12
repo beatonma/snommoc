@@ -15,6 +15,7 @@ __all__ = [
 
 class PartyMiniSchema(ParliamentSchema):
     name: Name
+    logo: str | None
     theme: PartyThemeSchema | None
 
     @staticmethod

@@ -376,6 +376,8 @@ export interface components {
         PartyMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
+            /** Logo */
+            logo: string | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         /** PartyThemeSchema */
@@ -909,6 +911,8 @@ export interface components {
             /** Year Founded */
             year_founded: number | null;
             wikipedia: components["schemas"]["WikipediaPath"] | null;
+            /** Logo */
+            logo: string | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         WikipediaPath: string;

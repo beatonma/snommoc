@@ -56,7 +56,11 @@ class RepositoryAdmin(BaseAdmin):
     PartyTheme,
 )
 class DefaultEditableAdmin(RepositoryAdmin):
-    pass
+    def __init__(self, model, admin_site):
+        super().__init__(model, admin_site)
+        readonly_fields = ["parliamentdotuk", "created_on", "modified_on"]
+        fields = model._meta.fields
+        self.readonly_fields = [x.name for x in fields if x.name in readonly_fields]
 
 
 @admin.register(Constituency)

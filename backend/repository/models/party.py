@@ -2,8 +2,6 @@ import logging
 from typing import Optional
 
 from django.db import models
-from django.db.models import DO_NOTHING
-
 from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
@@ -91,29 +89,30 @@ class PartyAssociation(PeriodMixin, BaseModel):
 
 class PartyTheme(BaseModel):
     TEXT_COLOR_OPTIONS = [
-        ("light", "light"),
-        ("dark", "dark"),
+        ("#ffffff", "light"),
+        ("#000000", "dark"),
     ]
 
     party = models.OneToOneField(
         Party,
-        on_delete=DO_NOTHING,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="theme",
     )
 
-    primary_color = models.CharField(max_length=6, help_text="Hex color code")
-    accent_color = models.CharField(max_length=6, help_text="Hex color code")
-    primary_text_color = models.CharField(
-        max_length=5,
+    primary = models.CharField(max_length=10, help_text="Hex color code")
+    on_primary = models.CharField(
+        max_length=10,
         choices=TEXT_COLOR_OPTIONS,
-        help_text="Color for text that overlays primary_color",
+        help_text="Color for text that overlays primary",
     )
-    accent_text_color = models.CharField(
-        max_length=5,
+
+    accent = models.CharField(max_length=10, help_text="Hex color code")
+    on_accent = models.CharField(
+        max_length=10,
         choices=TEXT_COLOR_OPTIONS,
-        help_text="Color for text that overlays accent_color",
+        help_text="Color for text that overlays accent",
     )
 
     def __str__(self):

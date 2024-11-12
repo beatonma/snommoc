@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from api.schema.party import PartyThemeSchema
 from api.schema.types import MiniSchema, Name, ParliamentSchema, field
 from repository.models.houses import HouseType
 
@@ -14,6 +15,15 @@ __all__ = [
 
 class PartyMiniSchema(ParliamentSchema):
     name: Name
+    theme: PartyThemeSchema | None
+
+    @staticmethod
+    def resolve_theme(obj):
+        try:
+            return obj.theme
+        except AttributeError:
+            # One-to-one rel Does not exist
+            pass
 
 
 class ConstituencyMiniSchema(MiniSchema, ParliamentSchema):

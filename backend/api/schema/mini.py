@@ -16,7 +16,12 @@ __all__ = [
 class PartyMiniSchema(ParliamentSchema):
     name: Name
     logo: str | None
+    logo_mask: str | None
     theme: PartyThemeSchema | None
+
+    @staticmethod
+    def resolve_name(obj):
+        return obj.short_name or obj.name
 
     @staticmethod
     def resolve_theme(obj):

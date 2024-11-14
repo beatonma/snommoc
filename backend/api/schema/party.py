@@ -19,6 +19,7 @@ class PartyFullSchema(FullSchema, ParliamentSchema):
     year_founded: int | None
     wikipedia: WikipediaPath | None
     logo: str | None
+    logo_mask: str | None
     theme: PartyThemeSchema | None
 
     @staticmethod

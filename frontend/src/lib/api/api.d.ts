@@ -338,7 +338,7 @@ export interface components {
         Input: {
             /**
              * Limit
-             * @default 25
+             * @default 24
              */
             limit: number;
             /**
@@ -378,6 +378,8 @@ export interface components {
             name: components["schemas"]["Name"];
             /** Logo */
             logo: string | null;
+            /** Logo Mask */
+            logo_mask: string | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         /** PartyThemeSchema */
@@ -913,6 +915,8 @@ export interface components {
             wikipedia: components["schemas"]["WikipediaPath"] | null;
             /** Logo */
             logo: string | null;
+            /** Logo Mask */
+            logo_mask: string | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         WikipediaPath: string;

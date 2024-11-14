@@ -36,6 +36,7 @@ class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
     homepage = models.URLField(null=True, blank=True)
     year_founded = models.PositiveSmallIntegerField(default=0)
     logo = models.FileField(upload_to="party_logo", null=True, blank=True)
+    logo_mask = models.FileField(upload_to="party_logo_mask", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Parties"

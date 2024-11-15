@@ -1,52 +1,72 @@
-import client from "@/lib/api";
-import api from "@/lib/api/api";
-import Image from "next/image";
-import { Optional } from "@/components/optional";
+import { OptionalDiv } from "@/components/optional";
+import { MemberPortrait } from "@/components/member-portrait";
+import React from "react";
+import Link from "next/link";
+import { PartyIconBackground } from "@/components/themed/party";
+import type { Metadata } from "next";
+import { getMembers, MemberMiniSchema } from "@/api";
+import ErrorMessage from "@/components/error";
+import { resolveUrl } from "@/env";
+
+export const metadata: Metadata = {
+  title: "Members",
+  description: "Members list",
+};
 
 export default async function Page() {
-  const response = await client.GET("/api/members/");
-  const data = response.data;
-  const members = data?.items;
-  const error = response.error;
-  if (error) {
-    return <pre>{JSON.stringify(error)}</pre>;
-  }
+  const response = await getMembers();
+  const members = response.data?.items;
+
+  if (!members) return <ErrorMessage />;
 
   return (
-    <div className="m-2 grid grid-cols-[repeat(auto-fit,minmax(120px,360px))] justify-center gap-0.5">
-      {members?.map((member) => (
-        <Member key={member.parliamentdotuk} {...member} />
-      ))}
-    </div>
+    <main>
+      <a href={resolveUrl("/api/members/")} target="_blank">
+        api
+      </a>
+
+      <div className="m-2 mb-96 grid grid-cols-[repeat(auto-fit,minmax(300px,400px))] justify-center gap-x-12 gap-y-4">
+        {members.map((member) => (
+          <Member key={member.parliamentdotuk} {...member} />
+        ))}
+      </div>
+    </main>
   );
 }
 
-type MemberSchema = api.components["schemas"]["MemberMiniSchema"];
-const Member = (props: MemberSchema) => {
+const Member = (props: MemberMiniSchema) => {
   return (
-    <a
-      href={`${props.parliamentdotuk}/`}
-      className="flex gap-2 bg-slate-700 p-3 text-white"
+    <Link
+      href={`/members/${props.parliamentdotuk}/`}
+      className="flex overflow-hidden sm:rounded-lg"
     >
-      <Image
-        loading="lazy"
-        className="aspect-square w-16 rounded-lg bg-gray-800"
-        src={props.portrait ?? "/default-member-portrait.svg"}
-        alt={`Portrait of ${props.name}`}
-        width={16}
-        height={16}
-      />
-      <div>
-        <h1 className="text-md font-semibold">{props.name}</h1>
-        <Optional
-          condition={props.current_post}
-          content={(it) => <div className="text-xs">{it}</div>}
+      <PartyIconBackground party={props.party} className="flex grow gap-3 p-3">
+        <MemberPortrait
+          name={props.name}
+          src={props.portrait}
+          className="w-16 shrink-0 rounded-md bg-primary-900"
         />
-        <Optional
-          condition={props.constituency?.name}
-          content={(it) => <div className="text-xs">{`MP for ${it}`}</div>}
-        />
-      </div>
-    </a>
+        <div className="flex flex-col gap-0.5 [&>div]:text-sm">
+          <h2 className="text-xl font-semibold">{props.name}</h2>
+          <OptionalDiv
+            title="Current post"
+            condition={props.current_post}
+            className="line-clamp-1"
+          />
+          <div className="separated flex">
+            <OptionalDiv
+              title="Party"
+              condition={props.party?.name}
+              className="line-clamp-1"
+            />
+            <OptionalDiv
+              title="Constituency"
+              condition={props.constituency?.name}
+              className="line-clamp-1"
+            />
+          </div>
+        </div>
+      </PartyIconBackground>
+    </Link>
   );
 };

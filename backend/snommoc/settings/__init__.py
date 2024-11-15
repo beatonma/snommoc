@@ -75,9 +75,8 @@ HTTP_REQUEST_HEADERS_JSON = {
     "Accept": "application/json",
 }
 
-NINJA_PAGINATION_PER_PAGE = 25
+NINJA_PAGINATION_PER_PAGE = 24
 NINJA_PAGINATION_CLASS = "ninja.pagination.LimitOffsetPagination"
-
 
 # Debug
 DEBUG_TOOLBAR_CONFIG = {

@@ -4,7 +4,36 @@
   img {
     @apply object-cover;
   }
+
+  address {
+    @apply not-italic;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+
+  section:not(:last-child) {
+    @apply pb-16;
+  }
 }
 
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  /**
+   * Insert a dash between child items.
+   * Intended for use in flex-row.
+   */
+  .separated {
+    > :not(:last-child)::after {
+      content: "-";
+      margin-inline: 0.25em;
+      color: currentColor;
+    }
+  }
+}

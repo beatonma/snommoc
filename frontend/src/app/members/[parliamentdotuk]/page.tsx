@@ -63,7 +63,7 @@ const MemberCard = (props: MemberComponentProps) => {
     <section className={classes(className, "flex-col")} {...rest}>
       <PartyIconBackground
         party={member.party}
-        className="flex min-w-full flex-col gap-4 p-2 sm:w-max sm:min-w-[60vw] sm:flex-row sm:rounded-lg sm:p-4"
+        className="flex min-w-full flex-col gap-4 p-2 sm:min-w-[60vw] sm:max-w-[80vw] sm:flex-row sm:rounded-lg sm:p-4"
       >
         <MemberPortrait
           name={member.name}

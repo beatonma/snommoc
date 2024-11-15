@@ -10,7 +10,7 @@ export const TextButton = (props: ButtonProps) => {
     <BaseButton
       className={classes(
         className,
-        "rounded font-bold tracking-tight hover:bg-surface-50/10 hover:px-2",
+        "rounded font-bold tracking-tight hover:bg-surface-50/15",
       )}
       {...rest}
     />
@@ -50,7 +50,7 @@ const ButtonContent = (
       className={classes(className, "line-clamp-1 flex items-center gap-1")}
       {...rest}
     >
-      <Icon icon={icon} />
+      <Icon icon={icon} className="fill-current opacity-90" />
       {children}
     </div>
   );

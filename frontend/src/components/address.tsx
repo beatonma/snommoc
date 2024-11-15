@@ -74,13 +74,18 @@ interface WebHost {
 const Username = "{username}";
 const WebHosts: WebHost[] = [
   {
-    pattern: /twitter\.com\/(?<username>\w+)/g,
+    pattern: /(https:\/\/)?(www\.)?(x|twitter)\.com\/(?<username>\w+)/g,
     icon: "Twitter",
     displayText: Username,
   },
   {
-    pattern: /facebook\.com\/(?<username>\w+)/g,
+    pattern: /(https:\/\/)?(www\.)?facebook\.com\/(?<username>\w+)/g,
     icon: "Facebook",
+    displayText: Username,
+  },
+  {
+    pattern: /(https:\/\/)?(www\.)?instagram\.com\/(?<username>\w+)/g,
+    icon: "Instagram",
     displayText: Username,
   },
 ];

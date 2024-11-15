@@ -1,5 +1,4 @@
 import { ConstituencyMini, MemberProfile, type Party } from "@/api";
-import { resolveUrl } from "@/env";
 import { PhysicalAddress, WebAddress } from "@/components/address";
 import React, { ComponentPropsWithoutRef } from "react";
 import { PartyIconBackground } from "@/components/themed/party";
@@ -30,7 +29,10 @@ export async function generateMetadata(
 
 export default async function Page({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const member = (await getMember(parliamentdotuk)).data;
+  const response = await getMember(parliamentdotuk);
+  const member = response.data;
+
+  console.log(`member: ${member} | ${response.error}`);
 
   if (!member) return <ErrorMessage />;
 
@@ -43,10 +45,7 @@ export default async function Page({ params }: PageProps) {
         <MemberCareer member={member} className="p-2" />
       </main>
 
-      <a
-        href={resolveUrl(`/api/members/${member.parliamentdotuk}/`)}
-        target="_blank"
-      >
+      <a href={`/api/members/${member.parliamentdotuk}/`} target="_blank">
         api
       </a>
     </div>

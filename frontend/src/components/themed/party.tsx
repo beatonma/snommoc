@@ -2,7 +2,6 @@ import type { Party } from "@/api";
 import { ComponentPropsWithoutRef } from "react";
 import { classes } from "@/util/react";
 import { ThemedDiv } from "@/components/themed/themed-div";
-import { resolveUrl } from "@/env";
 
 interface PartyProps {
   party: Party | null;
@@ -89,7 +88,7 @@ export const PartyIconBackground = (
         <div
           className="inset-0 h-full w-full translate-x-1/2 bg-black opacity-[0.08] [mask-position:center] [mask-repeat:no-repeat] [mask-size:100%_auto]"
           style={{
-            maskImage: `url('${resolveUrl(party.logo_mask ?? party.logo)}')`,
+            maskImage: `url('${party.logo_mask ?? party.logo}')`,
           }}
         />
       </div>

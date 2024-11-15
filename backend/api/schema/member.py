@@ -18,6 +18,7 @@ from .types import (
 __all__ = [
     "MemberCareerHistory",
     "MemberProfile",
+    "MemberVotesSchema",
 ]
 
 

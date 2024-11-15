@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
-import { resolveUrl } from "@/env";
 import { ReactNode } from "react";
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ export default function RootLayout({
         </div>
 
         <footer className="bottom-0 flex w-full flex-row justify-center gap-2 p-8 [&>a]:p-4">
-          <a href={resolveUrl("/admin/")} target="_blank">
+          <a href={"/admin/"} target="_blank">
             admin
           </a>
           <a href="https://tailwindcss.com/docs/" target="_blank">

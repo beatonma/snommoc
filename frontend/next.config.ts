@@ -1,7 +1,29 @@
 import type { NextConfig } from "next";
 
+const SERVER = process.env.SERVER;
 const nextConfig: NextConfig = {
   trailingSlash: true,
+  async redirects() {
+    return [
+      {
+        source: "/admin/",
+        destination: `${SERVER}/admin/`,
+        permanent: true,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*/",
+        destination: `${SERVER}/api/:path*/`,
+      },
+      {
+        source: "/media/:path*",
+        destination: `${SERVER}/media/:path*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

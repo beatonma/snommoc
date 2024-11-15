@@ -993,6 +993,7 @@ export interface operations {
     api_routers_members_members: {
         parameters: {
             query?: {
+                query?: string;
                 limit?: number;
                 offset?: number;
             };

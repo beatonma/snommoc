@@ -67,10 +67,11 @@ const MemberCard = (props: MemberComponentProps) => {
       >
         <MemberPortrait
           name={member.name}
-          src={member.portrait}
+          src={member.portrait?.wide}
           aspectClassName="aspect-[3/2]"
           className="[:has(>img)]:w-full h-[220px] self-center overflow-hidden rounded-lg bg-surface-900/10 sm:w-auto"
         />
+
         <div className="flex flex-col gap-1">
           <h1 className="sm:w-max">{member.name}</h1>
 

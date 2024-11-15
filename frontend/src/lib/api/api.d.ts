@@ -427,8 +427,7 @@ export interface components {
             current_post: string | null;
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
-            /** Portrait */
-            portrait?: string | null;
+            portrait?: components["schemas"]["PortraitSchema"] | null;
             /** Full Title */
             full_title: string | null;
             given_name: components["schemas"]["Name"] | null;
@@ -464,6 +463,17 @@ export interface components {
             phone: components["schemas"]["PhoneNumber"] | null;
             fax: components["schemas"]["PhoneNumber"] | null;
             email?: components["schemas"]["EmailAddress"] | null;
+        };
+        /** PortraitSchema */
+        PortraitSchema: {
+            /** Full */
+            full?: string | null;
+            /** Square */
+            square?: string | null;
+            /** Wide */
+            wide?: string | null;
+            /** Tall */
+            tall?: string | null;
         };
         /** SubjectOfInterestSchema */
         SubjectOfInterestSchema: {

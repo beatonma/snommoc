@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import MembersList from "@/app/members/[parliamentdotuk]/members";
+import MembersList from "@/app/members/members";
 
 export const metadata: Metadata = {
   title: "Members",

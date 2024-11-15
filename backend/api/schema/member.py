@@ -121,12 +121,19 @@ class PostsSchema(Schema):
     opposition: list[PostSchema] = field("oppositionpostmember_set")
 
 
+class PortraitSchema(Schema):
+    full: str | None = field("fullsize_url", default=None)
+    square: str | None = field("square_url", default=None)
+    wide: str | None = field("wide_url", default=None)
+    tall: str | None = field("tall_url", default=None)
+
+
 class MemberProfile(ParliamentSchema):
     name: Name
     current_post: str | None
     party: PartyMiniSchema | None
     constituency: ConstituencyMiniSchema | None
-    portrait: str | None = field("memberportrait.wide_url", default=None)
+    portrait: PortraitSchema | None = field("memberportrait", default=None)
     full_title: str | None
     given_name: Name | None
     family_name: Name | None

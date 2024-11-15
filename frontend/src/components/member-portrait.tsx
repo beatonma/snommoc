@@ -21,7 +21,13 @@ export const MemberPortrait = (props: PortraitProps) => {
       )}
     >
       {src ? (
-        <Image fill loading="lazy" src={src} alt={`Portrait of ${name}`} />
+        <Image
+          fill
+          loading="lazy"
+          src={src}
+          alt={`Portrait of ${name}`}
+          sizes="260px" // Size from api source
+        />
       ) : (
         <CommonsIcon className="size-full" />
       )}

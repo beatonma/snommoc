@@ -48,3 +48,20 @@ services:
       - ./runtime-dev/log:/var/log/snommoc:rw
       - ./runtime-dev/media:/var/www/media:rw
       - ./runtime-dev/static:/var/www/static:rw
+    healthcheck:
+      test: curl --header --fail http://localhost:8000/api/ping/ || exit 1
+      <<: *healthcheck
+
+  next:
+    <<: *common
+    build:
+      <<: *dockerfile
+      target: next
+    depends_on:
+      django:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/frontend
+    entrypoint: "npm run dev"

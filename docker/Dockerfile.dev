@@ -11,4 +11,11 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 EXPOSE 8000
 COPY ./docker/django-entrypoint.dev.sh /entrypoint.sh
 
+RUN apk add curl
+
 ENTRYPOINT ["/entrypoint.sh"]
+
+################################################################################
+FROM node:23-alpine AS next
+
+WORKDIR /frontend/

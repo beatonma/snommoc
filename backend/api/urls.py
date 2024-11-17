@@ -11,7 +11,7 @@ from api.routers import (
 )
 from django.http import HttpRequest
 from django.urls import path
-from ninja import NinjaAPI
+from ninja import NinjaAPI, Router
 from ninja.constants import NOT_SET
 from util.settings import snommoc_settings
 
@@ -19,15 +19,22 @@ ninja_api = NinjaAPI(
     title="snommoc",
     version="2.0",
     docs_url="/docs/",
+)
+
+# No auth on root API so we can allow /ping/ to be always accessible.
+# All data routers go through proxy_router to respect auth settings.
+proxy_router = Router(
     auth=ApiReadAuth() if snommoc_settings.auth.api_read_requires_auth else NOT_SET,
 )
-ninja_api.add_router("members/", members_router)
-ninja_api.add_router("bills/", bills_router)
-ninja_api.add_router("constituencies/", constituency_router)
-ninja_api.add_router("divisions/", division_router)
-ninja_api.add_router("elections/", election_router)
-ninja_api.add_router("parties/", party_router)
-ninja_api.add_router("zeitgeist/", zeitgeist_router)
+proxy_router.add_router("members/", members_router)
+proxy_router.add_router("bills/", bills_router)
+proxy_router.add_router("constituencies/", constituency_router)
+proxy_router.add_router("divisions/", division_router)
+proxy_router.add_router("elections/", election_router)
+proxy_router.add_router("parties/", party_router)
+proxy_router.add_router("zeitgeist/", zeitgeist_router)
+
+ninja_api.add_router("", proxy_router)
 
 
 @ninja_api.get("/ping/")

@@ -1,12 +1,12 @@
 import React from "react";
 import { Metadata } from "next";
-import MembersListPage from "@/app/members/members";
+import PartyListPage from "@/app/parties/parties";
 
 export const metadata: Metadata = {
-  title: "Members",
-  description: "Members list",
+  title: "Parties",
+  description: "Party list",
 };
 
 export default async function Page() {
-  return <MembersListPage />;
+  return <PartyListPage />;
 }

@@ -1,71 +1,22 @@
 "use client";
-import { InfiniteScroll, PaginationLoader } from "@/components/pagination";
-import { getMembers, MemberMiniSchema } from "@/api";
+import { getMembers, type MemberMiniSchema } from "@/api";
 import Link from "next/link";
 import { PartyIconBackground } from "@/components/themed/party";
 import { MemberPortrait } from "@/components/member-portrait";
 import { OptionalDiv } from "@/components/optional";
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-
-const QueryParam = "query";
+import React from "react";
+import { SearchListPage } from "@/components/page/list-page";
 
 export default function MembersList() {
-  const router = useRouter();
-  const search = useSearchParams();
-  const [query, setQuery] = useState<string>(search.get(QueryParam) ?? "");
-  const activeQuery = useRef(query);
-  const [resetFlag, setResetFlag] = useState<boolean>();
-
-  useEffect(() => {
-    const q = search.get(QueryParam) ?? "";
-    if (q === activeQuery.current) return;
-    setQuery(q);
-    activeQuery.current = q;
-    setResetFlag((it) => !it);
-  }, [search]);
-
   return (
-    <div>
-      <form
-        className="flex justify-center gap-2 p-4"
-        action={() => {
-          activeQuery.current = query;
-          router.push(`?${QueryParam}=${query}`);
-          setResetFlag((it) => !it);
-        }}
-      >
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
-
-      <PaginatedMembersList
-        loader={(offset) => getMembers(offset, activeQuery.current)}
-        resetFlag={resetFlag}
-      />
-    </div>
-  );
-}
-
-const PaginatedMembersList = (props: {
-  loader: PaginationLoader<MemberMiniSchema>;
-  resetFlag?: boolean;
-}) => {
-  return (
-    <InfiniteScroll
-      loader={props.loader}
-      resetFlag={props.resetFlag}
-      className="m-2 mb-96 grid grid-cols-[repeat(auto-fit,minmax(300px,400px))] justify-center gap-x-12 gap-y-4"
+    <SearchListPage
+      loader={getMembers}
       itemComponent={(member) => (
         <Member key={member.parliamentdotuk} {...member} />
       )}
     />
   );
-};
+}
 
 const Member = (props: MemberMiniSchema) => {
   return (

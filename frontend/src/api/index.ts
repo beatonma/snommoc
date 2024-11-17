@@ -31,10 +31,14 @@ export const getParty = async (
   });
 
 export type Party = components["schemas"]["PartyMiniSchema"];
-export const getParties = async (offset?: number): ApiPaginatedPromise<Party> =>
+export type PartyTheme = components["schemas"]["PartyThemeSchema"];
+export const getParties = async (
+  offset?: number,
+  query?: string,
+): ApiPaginatedPromise<Party> =>
   client.GET("/api/parties/", {
     params: {
-      query: { offset: offset },
+      query: { offset: offset, query: query },
     },
   });
 
@@ -61,4 +65,25 @@ export const getMembers = async (
     },
   });
 
+export type Constituency = components["schemas"]["ConstituencyFullSchema"];
+export const getConstituency = async (
+  parliamentdotuk: number,
+): ApiPromise<Constituency> =>
+  client.GET("/api/constituencies/{parliamentdotuk}/", {
+    params: {
+      path: {
+        parliamentdotuk: parliamentdotuk,
+      },
+    },
+  });
+
 export type ConstituencyMini = components["schemas"]["ConstituencyMiniSchema"];
+export const getConstituencies = async (
+  offset?: number,
+  query?: string,
+): ApiPaginatedPromise<ConstituencyMini> =>
+  client.GET("/api/constituencies/", {
+    params: {
+      query: { offset: offset, query: query },
+    },
+  });

@@ -9,6 +9,7 @@ import { getMember } from "@/api";
 import { TextButton } from "@/components/button";
 import { classes } from "@/util/react";
 import { OptionalDiv } from "@/components/optional";
+import { DetailPage } from "@/components/page/detail-page";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -32,23 +33,15 @@ export default async function Page({ params }: PageProps) {
   const response = await getMember(parliamentdotuk);
   const member = response.data;
 
-  console.log(`member: ${member} | ${response.error}`);
-
   if (!member) return <ErrorMessage />;
 
   return (
-    <div>
-      <main className="flex flex-col">
-        <MemberCard member={member} className="flex items-center" />
+    <DetailPage>
+      <MemberCard member={member} className="flex items-center" />
 
-        <MemberDetail member={member} className="p-2" />
-        <MemberCareer member={member} className="p-2" />
-      </main>
-
-      <a href={`/api/members/${member.parliamentdotuk}/`} target="_blank">
-        api
-      </a>
-    </div>
+      <MemberDetail member={member} className="p-2" />
+      <MemberCareer member={member} className="p-2" />
+    </DetailPage>
   );
 }
 

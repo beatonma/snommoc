@@ -1,6 +1,7 @@
 from api.schema.constituency import ConstituencyFullSchema, ConstituencyResultSchema
 from api.schema.mini import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
+from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -16,8 +17,13 @@ router = Router(tags=["Constituencies"])
     description="List of currently active constituencies",
 )
 @paginate
-def constituencies(request: HttpRequest):
-    return Constituency.objects.filter(end__isnull=True)
+def constituencies(request: HttpRequest, query: str = None):
+    qs = Constituency.objects.all()
+
+    if query:
+        return qs.filter(Q(name__icontains=query) | Q(mp__name__icontains=query))
+
+    return qs.filter(end__isnull=True)
 
 
 @router.get("/{parliamentdotuk}/", response=ConstituencyFullSchema)

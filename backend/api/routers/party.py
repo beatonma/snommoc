@@ -1,5 +1,6 @@
 from api.schema.mini import PartyMiniSchema
 from api.schema.party import PartyFullSchema
+from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -11,8 +12,17 @@ router = Router(tags=["Parties"])
 
 @router.get("/", response=list[PartyMiniSchema])
 @paginate
-def parties(request: HttpRequest):
-    return Party.objects.all()
+def parties(request: HttpRequest, query: str = None):
+    qs = Party.objects.all()
+
+    if query:
+        return qs.filter(
+            Q(name__icontains=query)
+            | Q(short_name__icontains=query)
+            | Q(long_name__icontains=query)
+        )
+
+    return qs
 
 
 @router.get("/{parliamentdotuk}/", response=PartyFullSchema)

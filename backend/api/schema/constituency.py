@@ -6,14 +6,12 @@ from .election import ElectionSchema
 from .mini import ConstituencyMiniSchema, MemberMiniSchema, PartyMiniSchema
 from .types import FullSchema, Name, ParliamentSchema, field
 
-__all__ = [
-    "ConstituencyFullSchema",
-]
+__all__ = ["ConstituencyFullSchema", "ConstituencyResultSchema"]
 
 
 class ResultsSchema(Schema):
     election: ElectionSchema
-    mp: MemberMiniSchema
+    mp: MemberMiniSchema | None
 
 
 class BoundarySchema(Schema):
@@ -35,7 +33,7 @@ class ConstituencyFullSchema(FullSchema, ParliamentSchema):
 
 class ConstituencyCandidateSchema(Schema):
     name: Name
-    profile: MemberMiniSchema | None = field("person")
+    profile: MemberMiniSchema | None = field("person", default=None)
     party_name: Name
     party: PartyMiniSchema | None
     order: int

@@ -1,4 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
+import { classes } from "@/util/react";
 
 interface ElementTheme {
   backgroundColor: string | undefined;
@@ -8,18 +9,26 @@ export interface ThemeProps {
   theme?: ElementTheme | undefined;
 }
 export const ThemedDiv = (
-  props: ThemeProps & Omit<ComponentPropsWithoutRef<"div">, "color">,
+  props: ThemeProps & ComponentPropsWithoutRef<"div">,
 ) => {
-  const { theme, children, ...rest } = props;
+  const { theme, className, ...rest } = props;
 
-  const style = {
-    backgroundColor: theme?.backgroundColor ?? "inherit",
-    color: theme?.color ?? "inherit",
-  };
+  if (theme?.color && theme?.backgroundColor) {
+    const style = {
+      backgroundColor: theme.backgroundColor,
+      color: theme.color,
+    };
+
+    return <div style={style} className={className} {...rest} />;
+  }
 
   return (
-    <div style={style} {...rest}>
-      {children}
-    </div>
+    <div
+      className={classes(
+        className,
+        "bg-default_party-700 text-default_party-50",
+      )}
+      {...rest}
+    />
   );
 };

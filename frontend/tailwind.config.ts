@@ -13,6 +13,7 @@ export default {
         surface: colors.neutral,
         primary: colors.slate,
         accent: colors.amber,
+        default_party: colors.stone,
         house: {
           commons: {
             DEFAULT: "#006e46",

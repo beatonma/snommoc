@@ -20,6 +20,7 @@ class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
     ordinance_survey_name = models.CharField(max_length=64, null=True, blank=True)
     gss_code = models.CharField(
         max_length=12,
+        unique=True,
         null=True,
         blank=True,
         help_text="Government Statistical Service ID",

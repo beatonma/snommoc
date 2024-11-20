@@ -1,8 +1,8 @@
 from social.tasks import delete_expired_models
-from util.management.async_command import AsyncCommand
+from util.management.task_command import TaskCommand
 
 
-class Command(AsyncCommand):
+class Command(TaskCommand):
     def handle(self, *args, **options):
         func = delete_expired_models
 

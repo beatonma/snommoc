@@ -1,8 +1,8 @@
 from surface.tasks import update_zeitgeist
-from util.management.async_command import AsyncCommand
+from util.management.task_command import TaskCommand
 
 
-class Command(AsyncCommand):
+class Command(TaskCommand):
     def handle(self, *args, **options):
         func = update_zeitgeist
 

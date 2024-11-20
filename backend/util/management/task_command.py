@@ -5,7 +5,9 @@ from django.core.management import BaseCommand
 log = logging.getLogger(__name__)
 
 
-class AsyncCommand(BaseCommand):
+class TaskCommand(BaseCommand):
+    """Use with `@task_context`-decorated tasks to correctly handle arguments"""
+
     def add_arguments(self, parser):
         parser.add_argument(
             "-sync",
@@ -24,8 +26,15 @@ class AsyncCommand(BaseCommand):
             ),
         )
 
-        parser.add_argument("--skip_items", type=int, default=0)
-        parser.add_argument("--max_items", type=int, default=None)
+        parser.add_argument(
+            "--skip_items", type=int, default=0, help="Skip the first items of a task."
+        )
+        parser.add_argument(
+            "--max_items",
+            type=int,
+            default=None,
+            help="Stop a task after processing this many items.",
+        )
 
     def handle_async(self, func, func_kwargs: dict | None = None, **command_options):
         """Call from handle(), passing the function along with the received options.

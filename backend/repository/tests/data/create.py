@@ -208,15 +208,12 @@ def create_constituency_result_detail(
     constituency: Constituency,
     election: Election,
     mp: Person,
-    parliamentdotuk: int | None = None,
     electorate: int | None = None,
     turnout: int | None = None,
     majority: int | None = None,
     result: str = "Party hold",
 ) -> ConstituencyResultDetail:
     """Create a ConstituencyResultDetail with custom data."""
-    if not parliamentdotuk:
-        parliamentdotuk = _any_id()
 
     if not electorate:
         electorate = _any_int(10_000)
@@ -233,11 +230,9 @@ def create_constituency_result_detail(
     constituency_result = create_constituency_result(constituency, election, mp)
 
     return ConstituencyResultDetail.objects.create(
-        parliamentdotuk=parliamentdotuk,
         constituency_result=constituency_result,
         electorate=electorate,
         turnout=turnout,
-        turnout_fraction=turnout / electorate,
         majority=majority,
         result=result,
     )

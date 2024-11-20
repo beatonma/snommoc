@@ -145,7 +145,6 @@ class ConstituencyResultsTests(
             constituency=create_sample_constituency(parliamentdotuk=16892),
             election=create_sample_election(parliamentdotuk=851),
             mp=create_sample_person(parliamentdotuk=1423),
-            parliamentdotuk=5231,
         ),
     )
 ):

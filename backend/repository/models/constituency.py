@@ -25,15 +25,6 @@ class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
         blank=True,
         help_text="Government Statistical Service ID",
     )
-    constituency_type = models.CharField(
-        max_length=10,
-        null=True,
-        choices=[
-            ("county", "County"),
-            ("borough", "Borough"),
-        ],
-        help_text="Borough, county...",
-    )
 
     def social_title(self) -> str:
         return self.name
@@ -124,11 +115,7 @@ class ConstituencyBoundary(BaseModel):
         Constituency,
         on_delete=models.CASCADE,
     )
-    boundary_kml = models.TextField(help_text="KML file content")
-    center_latitude = models.CharField(max_length=24)
-    center_longitude = models.CharField(max_length=24)
-    area = models.CharField(max_length=24)
-    boundary_length = models.CharField(max_length=24)
+    geo_json = models.JSONField()
 
     def __str__(self):
         return self.constituency.name

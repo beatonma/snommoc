@@ -1,8 +1,7 @@
 from datetime import date
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.lda.schema import Page, types
-from crawlers.parliamentdotuk.tasks.lda.schema.constituency import Constituency
+from crawlers.parliamentdotuk.tasks.lda.schema import types
 from crawlers.parliamentdotuk.tasks.lda.schema.division import CommonsDivision
 from pydantic import BaseModel
 
@@ -10,14 +9,6 @@ from . import testdata
 
 
 class TestSchema(LocalTestCase):
-    def test_page(self):
-        page = Page[Constituency].model_validate_json(testdata.PAGE)
-
-        self.assertEqual(page.items[0].parliamentdotuk, 146744)
-        self.assertEqual(len(page.items), 7)
-        self.assertTrue(page.prev_page_url.endswith("page=386"))
-        self.assertEqual(page.next_page_url, None)
-
     def test_date(self):
         class Schema(BaseModel):
             date: types.NestedDate

@@ -2,9 +2,7 @@ from crawlers.parliamentdotuk.tasks.types import field
 from pydantic import BaseModel as Schema
 from pydantic import model_validator
 
-from .constituency import Constituency
 from .division import CommonsDivision, CommonsDivisionItem, Vote, VoteType
-from .election_results import ElectionCandidate, ElectionResult, ElectionResultDetail
 
 
 class Page[T: Schema](Schema):

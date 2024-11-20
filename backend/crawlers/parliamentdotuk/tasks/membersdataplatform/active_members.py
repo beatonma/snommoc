@@ -12,27 +12,49 @@ from celery import shared_task
 from crawlers import caches
 from crawlers.context import TaskContext
 from crawlers.network import JsonCache, json_cache
-from crawlers.parliamentdotuk.tasks.membersdataplatform import (endpoints,
-                                                                mdp_client)
-from notifications.models.task_notification import (TaskNotification,
-                                                    task_notification)
-from repository.models import (Committee, CommitteeChair, CommitteeMember,
-                               ConstituencyResult, ContestedElection, Country,
-                               DeclaredInterest, DeclaredInterestCategory,
-                               Election, ElectionType, Experience,
-                               ExperienceCategory, GovernmentPost,
-                               GovernmentPostMember, House, HouseMembership,
-                               MaidenSpeech, OppositionPost,
-                               OppositionPostMember, ParliamentaryPost,
-                               ParliamentaryPostMember, PartyAssociation,
-                               Person, PhysicalAddress, SubjectOfInterest,
-                               SubjectOfInterestCategory, Town,
-                               UnlinkedConstituency, WebAddress)
+from crawlers.parliamentdotuk.tasks.membersdataplatform import endpoints, mdp_client
+from notifications.models.task_notification import TaskNotification, task_notification
+from repository.models import (
+    Committee,
+    CommitteeChair,
+    CommitteeMember,
+    ConstituencyResult,
+    ContestedElection,
+    Country,
+    DeclaredInterest,
+    DeclaredInterestCategory,
+    Election,
+    ElectionType,
+    Experience,
+    ExperienceCategory,
+    GovernmentPost,
+    GovernmentPostMember,
+    House,
+    HouseMembership,
+    MaidenSpeech,
+    OppositionPost,
+    OppositionPostMember,
+    ParliamentaryPost,
+    ParliamentaryPostMember,
+    PartyAssociation,
+    Person,
+    PhysicalAddress,
+    SubjectOfInterest,
+    SubjectOfInterestCategory,
+    Town,
+    UnlinkedConstituency,
+    WebAddress,
+)
 from repository.models.party import get_or_create_party
-from repository.models.posts import (BasePost, BasePostMember,
-                                     get_current_post_for_person)
-from repository.resolution.constituency import (get_constituency_for_date,
-                                                get_current_constituency)
+from repository.models.posts import (
+    BasePost,
+    BasePostMember,
+    get_current_post_for_person,
+)
+from repository.resolution.constituency import (
+    get_constituency_for_date,
+    get_current_constituency,
+)
 
 from . import schema
 

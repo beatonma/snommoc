@@ -110,10 +110,13 @@ class PartyTheme(BaseModel):
         help_text="Color for text that overlays primary",
     )
 
-    accent = models.CharField(max_length=10, help_text="Hex color code")
+    accent = models.CharField(
+        max_length=10, help_text="Hex color code", default="#ffffff"
+    )
     on_accent = models.CharField(
         max_length=10,
         choices=TEXT_COLOR_OPTIONS,
+        default="#000000",
         help_text="Color for text that overlays accent",
     )
 

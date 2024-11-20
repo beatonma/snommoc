@@ -3,9 +3,15 @@ from typing import Optional
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-from repository.models.mixins import (BaseModel, ParliamentDotUkMixin,
-                                      PeriodMixin, PersonMixin, SocialMixin,
-                                      TheyWorkForYouMixin, WikipediaMixin)
+from repository.models.mixins import (
+    BaseModel,
+    ParliamentDotUkMixin,
+    PeriodMixin,
+    PersonMixin,
+    SocialMixin,
+    TheyWorkForYouMixin,
+    WikipediaMixin,
+)
 from util import time as timeutil
 
 NAME_MAX_LENGTH = 128

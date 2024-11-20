@@ -110,13 +110,15 @@ def foreach(
             break
 
         for index, item in enumerate(items):
-            _apply_item_func(
+            should_continue = _apply_item_func(
                 item,
                 item_func,
                 context,
                 lambda: _item_notification_info(index),
                 func_kwargs,
             )
+            if not should_continue:
+                return
 
             item_count += 1
             if context.limit_reached(item_count):

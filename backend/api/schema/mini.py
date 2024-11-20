@@ -35,6 +35,8 @@ class PartyMiniSchema(ParliamentSchema):
 
 class ConstituencyMiniSchema(MiniSchema, ParliamentSchema):
     name: Name
+    start: date | None
+    end: date | None
 
 
 class MemberMiniSchema(MiniSchema, ParliamentSchema):

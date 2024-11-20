@@ -14,20 +14,12 @@ class ResultsSchema(Schema):
     mp: MemberMiniSchema | None
 
 
-class BoundarySchema(Schema):
-    kml: str = field("boundary_kml")
-    center_latitude: str
-    center_longitude: str
-    area: str
-    boundary_length: str
-
-
 class ConstituencyFullSchema(FullSchema, ParliamentSchema):
     name: Name
     start: date | None
     end: date | None
     mp: MemberMiniSchema | None
-    boundary: BoundarySchema | None = field("constituencyboundary", default=None)
+    boundary: dict | None = field("constituencyboundary.geo_json", default=None)
     results: list[ResultsSchema] = field("constituencyresult_set")
 
 
@@ -40,10 +32,9 @@ class ConstituencyCandidateSchema(Schema):
     votes: int
 
 
-class ConstituencyResultSchema(ParliamentSchema):
+class ConstituencyResultSchema(Schema):
     electorate: int
     turnout: int
-    turnout_fraction: float
     result: str
     majority: int
     constituency: ConstituencyMiniSchema = field("constituency_result.constituency")

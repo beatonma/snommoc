@@ -14,6 +14,25 @@ BILL_PUBLICATIONS = (
     "https://bills-api.parliament.uk/api/v1/Bills/{bill_id}/Publications"
 )
 
+CONSTITUENCIES = "https://members-api.parliament.uk/api/Location/Constituency/Search"
+CONSTITUENCY_BOUNDARY = "https://members-api.parliament.uk/api/Location/Constituency/{constituency_id}/Geometry"
+CONSTITUENCY_RESULTS = "https://members-api.parliament.uk/api/Location/Constituency/{constituency_id}/ElectionResults"
+CONSTITUENCY_RESULTS_FULL = "https://members-api.parliament.uk/api/Location/Constituency/{constituency_id}/ElectionResult/{election_id}"
+
+
+def constituency_boundary(constituency_id: int) -> str:
+    return CONSTITUENCY_BOUNDARY.format(constituency_id=constituency_id)
+
+
+def constituency_election_results(constituency_id: int) -> str:
+    return CONSTITUENCY_RESULTS.format(constituency_id=constituency_id)
+
+
+def constituency_election_results_detail(constituency_id: int, election_id: int) -> str:
+    return CONSTITUENCY_RESULTS_FULL.format(
+        constituency_id=constituency_id, election_id=election_id
+    )
+
 
 def lords_division(division_id: int) -> str:
     return LORDS_DIVISION_SINGLE.format(division_id=division_id)

@@ -1,6 +1,7 @@
 from unittest.mock import Mock, patch
 
 from basetest.testcase import LocalTestCase, NetworkTestCase
+from crawlers.context import TaskContext
 from crawlers.network.cache import create_json_cache
 from crawlers.parliamentdotuk.tasks.openapi import openapi_client
 from crawlers.parliamentdotuk.tests.openapi.data_response import (
@@ -25,13 +26,21 @@ def _patch_get_json(**kwargs):
     )
 
 
+TASK_CONTEXT = TaskContext(
+    create_json_cache("openapi-tests"),
+    TaskNotification(title="ClientTestCase"),
+    max_items=1,
+    items_per_page=1,
+)
+
+
 class ClientTestCase(LocalTestCase):
     def test_client_foreach_with_list_response(self):
         """Test foreach when the endpoint returns an unwrapped list of items."""
         items_processed = 0
         division_id = None
 
-        def item_func(data: dict, _: TaskNotification | None) -> None:
+        def item_func(data: dict, _: TaskContext) -> None:
             """Signature: openapi_client.ItemFunc"""
             nonlocal items_processed, division_id
             items_processed += 1
@@ -40,11 +49,8 @@ class ClientTestCase(LocalTestCase):
         with _patch_get_json():
             openapi_client.foreach(
                 "https://lordsvotes-api.parliament.uk/data/Divisions/search",
-                cache=create_json_cache("openapi-tests"),
-                notification=TaskNotification(title="ClientTestCase"),
+                context=TASK_CONTEXT,
                 item_func=item_func,
-                items_per_page=1,
-                max_items=1,
             )
 
         self.assertEqual(items_processed, 1)
@@ -55,7 +61,7 @@ class ClientTestCase(LocalTestCase):
         items_processed = 0
         bill_id = None
 
-        def item_func(data: dict, _: TaskNotification | None) -> None:
+        def item_func(data: dict, _: TaskContext) -> None:
             nonlocal items_processed, bill_id
             items_processed += 1
             bill_id = data.get("billId")
@@ -63,11 +69,8 @@ class ClientTestCase(LocalTestCase):
         with _patch_get_json():
             openapi_client.foreach(
                 "https://bills-api.parliament.uk/api/v1/Bills",
-                cache=create_json_cache("openapi-tests"),
-                notification=TaskNotification(title="ClientTestCase"),
+                context=TASK_CONTEXT,
                 item_func=item_func,
-                items_per_page=1,
-                max_items=1,
             )
 
         self.assertEqual(items_processed, 1)
@@ -85,12 +88,9 @@ class ClientTestCase(LocalTestCase):
         with _patch_get_json():
             openapi_client.foreach(
                 "https://bills-api.parliament.uk/api/v1/Bills/512/Publications",
-                cache=create_json_cache("openapi-tests"),
-                notification=TaskNotification(title="ClientTestCase"),
+                context=TASK_CONTEXT,
                 items_key="publications",
                 item_func=item_func,
-                items_per_page=1,
-                max_items=1,
             )
 
         self.assertEqual(publication_id, 2716)
@@ -104,7 +104,7 @@ class LiveClientTestCase(NetworkTestCase):
         items_processed = 0
         division_id = None
 
-        def item_func(data: dict, _: TaskNotification | None) -> None:
+        def item_func(data: dict, _: TaskContext) -> None:
             """Signature: openapi_client.ItemFunc"""
             nonlocal items_processed, division_id
             items_processed += 1
@@ -112,11 +112,8 @@ class LiveClientTestCase(NetworkTestCase):
 
         openapi_client.foreach(
             "https://lordsvotes-api.parliament.uk/data/Divisions/search",
-            cache=create_json_cache("openapi-tests"),
-            notification=TaskNotification(title="ClientTestCase"),
+            context=TASK_CONTEXT,
             item_func=item_func,
-            items_per_page=1,
-            max_items=1,
         )
 
         self.assertEqual(items_processed, 1)
@@ -130,7 +127,7 @@ class LiveClientTestCase(NetworkTestCase):
         items_processed = 0
         bill_id = None
 
-        def item_func(data: dict, _: TaskNotification | None) -> None:
+        def item_func(data: dict, _: TaskContext) -> None:
             """Signature: openapi_client.ItemFunc"""
             nonlocal items_processed, bill_id
             items_processed += 1
@@ -138,11 +135,8 @@ class LiveClientTestCase(NetworkTestCase):
 
         openapi_client.foreach(
             "https://bills-api.parliament.uk/api/v1/Bills",
-            cache=create_json_cache("openapi-tests"),
-            notification=TaskNotification(title="ClientTestCase"),
+            context=TASK_CONTEXT,
             item_func=item_func,
-            items_per_page=1,
-            max_items=1,
         )
 
         self.assertEqual(items_processed, 1)

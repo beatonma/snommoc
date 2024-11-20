@@ -1,9 +1,9 @@
 from typing import Callable, Union
 
-from crawlers.network import JsonCache, get_json
+from crawlers.context import TaskContext
+from crawlers.network import get_json
 from crawlers.network.exceptions import HttpError
-from notifications.models import TaskNotification
-from requests import Session
+from pydantic import ValidationError
 
 """
 ItemFunc receives:
@@ -12,15 +12,15 @@ ItemFunc receives:
 - a dict of additional kwargs which provide context data (may be None, or missing)
 """
 type ItemFunc = Union[
-    Callable[[dict, TaskNotification | None, dict | None], None],
-    Callable[[dict, TaskNotification | None], None],
+    Callable[[dict, TaskContext, dict | None], None],
+    Callable[[dict, TaskContext], None],
 ]
 
 
 def _apply_item_func(
     item: dict,
     item_func: ItemFunc,
-    notification: TaskNotification | None,
+    context: TaskContext,
     report: Callable[[], str],
     func_kwargs: dict | None,
 ) -> bool:
@@ -32,35 +32,31 @@ def _apply_item_func(
 
     try:
         if func_kwargs is None:
-            item_func(item, notification)
+            item_func(item, context)
         else:
-            item_func(item, notification, func_kwargs)
+            item_func(item, context, func_kwargs)
         return True
 
     except HttpError as e:
-        if notification:
-            notification.warning(
-                f"Item response failed with status={e.status_code}: {report()}"
-            )
+        context.warning(f"Item response failed with status={e.status_code}: {report()}")
         return True
 
+    except ValidationError as e:
+        context.error(e, "Schema validation failed")
+        raise e
+
     except Exception as e:
-        if notification:
-            notification.warning(f"Failed to read item: {report()}")
-            notification.mark_as_failed(e)
+        context.warning(f"Failed to read item: {report()}")
+        context.mark_as_failed(e)
         return False
 
 
 def foreach(
     endpoint_url: str,
     item_func: ItemFunc,
-    notification: TaskNotification | None,
-    cache: JsonCache | None,
+    context: TaskContext,
     items_key: str = "items",
-    items_per_page: int = 25,
-    max_items: int | None = None,
     func_kwargs: dict | None = None,
-    skip: int = 0,
 ):
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
@@ -75,78 +71,75 @@ def foreach(
             ...
           }
     """
-    item_count = skip
+    item_count = context.skip_items
+    items_per_page = context.items_per_page
 
     def _item_notification_info(_index: int):
         params = f"skip={item_count}&take={items_per_page}"
 
         return f"Item #{_index} of {endpoint_url}?{params}"
 
-    with Session() as session:
-        while True:
-            data = get_json(
-                endpoint_url,
-                params={
-                    "skip": item_count,
-                    "take": items_per_page,
-                },
-                cache=cache,
-                session=session,
+    while True:
+        if context.is_finished():
+            return
+        data = get_json(
+            endpoint_url,
+            params={
+                "skip": item_count,
+                "take": items_per_page,
+            },
+            cache=context.cache,
+            session=context.session,
+        )
+        # Data may be an object including pagination data, or just a list of items
+        data_is_dict = isinstance(data, dict)
+
+        if data_is_dict:
+            # Unwrap the items list.
+            items = data.get(items_key)
+        else:
+            items = data
+
+        if not isinstance(items, list):
+            raise TypeError(
+                "openapi_client.foreach expects a response with a list of items, got"
+                f" {data}"
             )
-            # Data may be an object including pagination data, or just a list of items
-            data_is_dict = isinstance(data, dict)
 
-            if data_is_dict:
-                # Unwrap the items list.
-                items = data.get(items_key)
-            else:
-                items = data
+        if len(items) == 0:
+            break
 
-            if not isinstance(items, list):
-                raise TypeError(
-                    "openapi_client.foreach expects a response with a list of items, got"
-                    f" {data}"
-                )
+        for index, item in enumerate(items):
+            _apply_item_func(
+                item,
+                item_func,
+                context,
+                lambda: _item_notification_info(index),
+                func_kwargs,
+            )
 
-            if len(items) == 0:
+            item_count += 1
+            if context.limit_reached(item_count):
+                return
+
+        if data_is_dict:
+            if item_count >= data.get("totalResults", 0):
                 break
-
-            for index, item in enumerate(items):
-                _apply_item_func(
-                    item,
-                    item_func,
-                    notification,
-                    lambda: _item_notification_info(index),
-                    func_kwargs,
-                )
-
-                item_count += 1
-                if max_items is not None:
-                    if item_count >= max_items:
-                        if notification:
-                            notification.append(f"max_items={max_items} limit reached.")
-                        return
-
-            if data_is_dict:
-                if item_count >= data.get("totalResults", 0):
-                    break
 
 
 def get(
     endpoint_url: str,
     item_func: ItemFunc,
-    notification: TaskNotification | None,
-    cache: JsonCache | None,
+    context: TaskContext,
     func_kwargs: dict | None = None,
-    session: Session | None = None,
 ):
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.
     """
     item = get_json(
         endpoint_url,
-        cache=cache,
-        session=session,
+        cache=context.cache,
+        session=context.session,
     )
 
     if not isinstance(item, dict):
@@ -157,7 +150,7 @@ def get(
     _apply_item_func(
         item,
         item_func,
-        notification,
+        context,
         lambda: endpoint_url,
         func_kwargs,
     )

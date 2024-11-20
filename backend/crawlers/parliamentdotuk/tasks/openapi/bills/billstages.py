@@ -1,16 +1,11 @@
-from typing import Optional
-
-from crawlers.network import JsonCache
+from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills.schema import StageSummary
-from notifications.models import TaskNotification
 from repository.models import House, ParliamentarySession
 from repository.models.bill import BillStage, BillStageSitting
 
 
-def _update_bill_stage(
-    data: dict, notification: Optional[TaskNotification], func_kwargs: dict
-):
+def _update_bill_stage(data: dict, context: TaskContext, func_kwargs: dict):
     """Signature: openapi_client.ItemFunc"""
     api_stage = StageSummary(**data)
     bill_id = func_kwargs["bill_id"]
@@ -41,16 +36,11 @@ def _update_bill_stage(
         )
 
 
-def fetch_and_update_bill_stages(
-    bill_id: int,
-    cache: Optional[JsonCache],
-    notification: Optional[TaskNotification],
-) -> None:
+def fetch_and_update_bill_stages(bill_id: int, context: TaskContext) -> None:
     openapi_client.foreach(
         endpoints.bill_stages(bill_id),
         item_func=_update_bill_stage,
-        cache=cache,
-        notification=notification,
+        context=context,
         func_kwargs={
             "bill_id": bill_id,
         },

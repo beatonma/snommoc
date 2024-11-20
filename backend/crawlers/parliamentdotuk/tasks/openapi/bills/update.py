@@ -1,5 +1,5 @@
+from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from notifications.models import TaskNotification
 from repository.models import House, Organisation, ParliamentarySession
 from repository.models.bill import (
     Bill,
@@ -112,7 +112,7 @@ def _get_promoters(api_bill: schema.Bill) -> list[Organisation]:
     return promoters
 
 
-def update_bill(data: dict, notification: TaskNotification | None) -> None:
+def update_bill(data: dict, context: TaskContext) -> None:
     """Signature: openapi_client.ItemFunc"""
     api_bill = schema.Bill(**data)
 

@@ -117,13 +117,14 @@ def json_cache(
     Apply the @json_cache decoration to a function to define the name of the cache used by
     any network calls spawned from it.
     """
+    if ttl_seconds is None:
+        ttl_seconds = TIME_TO_LIVE_DEFAULT
 
     def cached_call(func):
         @wraps(func)
         def using_cache(*args, **kwargs):
             # Check if a cache is already in use by caller
             is_root = "cache" not in kwargs
-            result = None
 
             if is_root:
                 cache = create_json_cache(
@@ -135,9 +136,6 @@ def json_cache(
 
             try:
                 result = func(*args, **kwargs)
-
-            except Exception as e:
-                raise e
 
             finally:
                 if is_root:

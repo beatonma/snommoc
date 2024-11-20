@@ -1,9 +1,6 @@
-from typing import Optional
-
-from crawlers.network import JsonCache
+from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from notifications.models import TaskNotification
 from repository.models import House
 from repository.models.bill import (
     BillPublication,
@@ -25,7 +22,7 @@ def _update_or_create_bill_type(data: schema.BillPublicationType):
 
 def _update_bill_publication(
     data: dict,
-    notification: Optional[TaskNotification],
+    context: TaskContext,
     func_kwargs: dict,
 ):
     """Signature: openapi_client.ItemFunc"""
@@ -59,17 +56,12 @@ def _update_bill_publication(
         )
 
 
-def fetch_and_update_bill_publications(
-    bill_id: int,
-    cache: Optional[JsonCache],
-    notification: Optional[TaskNotification],
-) -> None:
+def fetch_and_update_bill_publications(bill_id: int, context: TaskContext) -> None:
     openapi_client.foreach(
         endpoints.bill_publications(bill_id),
         items_key="publications",
         item_func=_update_bill_publication,
-        cache=cache,
-        notification=notification,
+        context=context,
         func_kwargs={
             "bill_id": bill_id,
         },

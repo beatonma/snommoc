@@ -24,7 +24,10 @@ class AsyncCommand(BaseCommand):
             ),
         )
 
-    def handle_async(self, func, func_kwargs=None, **command_options):
+        parser.add_argument("--skip_items", type=int, default=0)
+        parser.add_argument("--max_items", type=int, default=None)
+
+    def handle_async(self, func, func_kwargs: dict | None = None, **command_options):
         """Call from handle(), passing the function along with the received options.
 
         e.g.
@@ -33,18 +36,23 @@ class AsyncCommand(BaseCommand):
 
         Any arguments for the func should be in func_kwargs, not command_options.
         """
-        if func_kwargs is None:
-            func_kwargs = dict()
 
         assert hasattr(func, "delay"), (
-            "AsyncCommand.handle_async received a function that is not registered"
+            "AsyncCommand.handle_async received a function that is not registered "
             f"as a task: {func.__name__}"
         )
 
-        # Inject -force management argument to the receiving task as force_update.
-        func_kwargs["force_update"] = command_options.get("force") or None
+        if func_kwargs is None:
+            func_kwargs = dict()
 
-        if command_options["sync"]:
+        sync = command_options.pop("sync")
+
+        # Inject management arguments to the receiving task context.
+        func_kwargs["force_update"] = command_options.pop("force")
+        func_kwargs["skip_items"] = command_options.pop("skip_items", 0)
+        func_kwargs["max_items"] = command_options.pop("max_items", None)
+
+        if sync:
             log.info(
                 f"Launching function `{func}` synchronously with kwargs={func_kwargs}."
             )

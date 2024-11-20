@@ -1,6 +1,7 @@
 import datetime
 
 from basetest.testcase import LocalTestCase
+from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi.divisions.lords import update_lords_division
 from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
     LORDS_DIVISION_DATA,
@@ -14,6 +15,8 @@ from repository.models.divisions import (
 from repository.resolution.members import get_member
 from repository.tests.data.create import create_sample_person
 from util.time import tzdatetime
+
+CONTEXT = TaskContext(None, None)
 
 
 class UpdateLordsDivisionsTests(LocalTestCase):
@@ -44,7 +47,7 @@ class UpdateLordsDivisionsTests(LocalTestCase):
         )
         data = LORDS_DIVISION_DATA
 
-        update_lords_division(data, notification=None)
+        update_lords_division(data, context=CONTEXT)
 
     def test_division_is_created(self):
         self.assertEqual(LordsDivision.objects.count(), 1)

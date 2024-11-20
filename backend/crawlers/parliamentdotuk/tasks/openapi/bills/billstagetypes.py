@@ -2,21 +2,18 @@ import logging
 from typing import Optional
 
 from crawlers import caches
-from crawlers.network import JsonCache, json_cache
+from crawlers.context import TaskContext, task_context
+from crawlers.network import JsonCache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
-from notifications.models.task_notification import task_notification
 from repository.models import House
 from repository.models.bill import BillStageType
 
 log = logging.getLogger(__name__)
 
 
-def _update_bill_stage_type(
-    data: dict,
-    notification: Optional[TaskNotification],
-) -> None:
+def _update_bill_stage_type(data: dict, context: TaskContext) -> None:
     """Signature: openapi_client.ItemFunc"""
     stage = schema.BillStageType(**data)
     house, _ = House.objects.get_or_create(name=stage.house.name)
@@ -30,17 +27,16 @@ def _update_bill_stage_type(
     )
 
 
-@task_notification(label="Update bill stage types")
-@json_cache(caches.BILLS)
+@task_context(cache_name=caches.BILLS, label="Update bill stage types")
 def update_bill_stage_types(
     cache: Optional[JsonCache],
     notification: Optional[TaskNotification],
 ):
+    context = TaskContext(cache, notification)
     log.info("Updating BillStageTypes...")
     openapi_client.foreach(
         endpoints.BILL_STAGE_DEFINITIONS,
         item_func=_update_bill_stage_type,
-        cache=cache,
-        notification=notification,
+        context=context,
     )
     log.info("BillStageTypes updated successfully")

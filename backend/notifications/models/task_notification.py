@@ -70,7 +70,7 @@ class TaskNotification(models.Model):
         self.finished_at = get_now()
         self.save()
 
-    def append(self, content: str, loglevel: int = logging.INFO):
+    def _append(self, content: str, loglevel: int = logging.INFO):
         if self.finished:
             log.warning(
                 "Task marked as finished but still being appended to"
@@ -81,10 +81,14 @@ class TaskNotification(models.Model):
         self.save()
 
     def info(self, content: str):
-        self.append(content, loglevel=logging.INFO)
+        self._append(content, loglevel=logging.INFO)
 
     def warning(self, content: str):
-        self.append(f"[warning] {content}", loglevel=logging.WARNING)
+        self._append(f"[warning] {content}", loglevel=logging.WARNING)
+
+    def error(self, error: Exception, content: str):
+        self._append(f"[error] {content}", loglevel=logging.ERROR)
+        self.mark_as_failed(error)
 
     @classmethod
     def create(cls, content: str, title: str = "Task notification"):

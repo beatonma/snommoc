@@ -1,4 +1,5 @@
 from basetest.testcase import LocalTestCase
+from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
     _update_bill_publication,
 )
@@ -39,10 +40,12 @@ from repository.tests.data.create import (
 )
 from util.time import tzdatetime
 
+CONTEXT = TaskContext(None, None)
+
 
 class BillUpdateTests(LocalTestCase):
     def test_update_bill_type(self):
-        _update_bill_type(BILL_TYPE_DATA, notification=None)
+        _update_bill_type(BILL_TYPE_DATA, context=CONTEXT)
 
         billtype = BillType.objects.get(parliamentdotuk=4)
         self.assertEqual(billtype.category.name, "Hybrid")
@@ -52,7 +55,7 @@ class BillUpdateTests(LocalTestCase):
         )
 
     def test_update_bill_stage_type(self):
-        _update_bill_stage_type(BILL_STAGE_TYPE_DATA, notification=None)
+        _update_bill_stage_type(BILL_STAGE_TYPE_DATA, context=CONTEXT)
 
         stage = BillStageType.objects.get(parliamentdotuk=42)
         self.assertEqual(stage.name, "Consideration of Lords message")
@@ -64,7 +67,7 @@ class BillUpdateTests(LocalTestCase):
         create_sample_bill_stage_type(parliamentdotuk=11)
         create_sample_person(parliamentdotuk=1414, name="Mr Mark Hoban")
 
-        update_bill(BILL_DATA, notification=None)
+        update_bill(BILL_DATA, context=CONTEXT)
 
         bill = Bill.objects.get(pk=836)
 
@@ -126,7 +129,7 @@ class BillUpdateTests(LocalTestCase):
         create_sample_bill(parliamentdotuk=723)
 
         _update_bill_publication(
-            BILL_PUBLICATION_DATA, notification=None, func_kwargs={"bill_id": 723}
+            BILL_PUBLICATION_DATA, context=CONTEXT, func_kwargs={"bill_id": 723}
         )
 
         pub = BillPublication.objects.first()

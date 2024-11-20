@@ -1,9 +1,8 @@
-from celery import shared_task
 from crawlers import caches
+from crawlers.context import TaskContext, task_context
 from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
-from notifications.models.task_notification import TaskNotification, task_notification
 from repository.models.divisions import (
     DivisionVoteType,
     LordsDivision,
@@ -12,10 +11,7 @@ from repository.models.divisions import (
 from repository.resolution.members import get_member
 
 
-def update_lords_division(
-    data_dict: dict,
-    notification: TaskNotification | None,
-) -> None:
+def update_lords_division(data_dict: dict, context: TaskContext) -> None:
     """Signature: openapi_client.ItemFunc"""
     data = schema.LordsDivision(**data_dict)
 
@@ -72,8 +68,8 @@ def update_lords_division(
             },
         )
 
-    if created and notification:
-        notification.append(f"Created LordsDivision '{division}'")
+    if created:
+        context.info(f"Created LordsDivision '{division}'")
 
 
 @json_cache(caches.LORDS_DIVISIONS)
@@ -81,27 +77,20 @@ def fetch_and_update_lords_division(
     parliamentdotuk: int,
     cache: JsonCache | None = None,
 ):
+    context = TaskContext(cache=cache, notification=None)
     openapi_client.get(
         endpoints.lords_division(parliamentdotuk),
         update_lords_division,
-        notification=None,
-        cache=cache,
+        context=context,
     )
 
 
-@shared_task
-@task_notification(label="Update Lords divisions")
-@json_cache(caches.LORDS_DIVISIONS)
+@task_context(cache_name=caches.LORDS_DIVISIONS)
 def update_lords_divisions(
-    cache: JsonCache | None,
-    notification: TaskNotification | None,
-    skip: int = 0,
-    **kwargs,
+    context: TaskContext,
 ) -> None:
     openapi_client.foreach(
         endpoints.LORDS_DIVISIONS_ALL,
         item_func=update_lords_division,
-        cache=cache,
-        notification=notification,
-        skip=skip,
+        context=context,
     )

@@ -1,52 +1,42 @@
-from celery import shared_task
 from celery.utils import log as logging
 from crawlers import caches
-from crawlers.network import JsonCache, json_cache
+from crawlers.context import TaskContext, task_context
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import \
-    fetch_and_update_bill_publications
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import \
-    fetch_and_update_bill_stages
-from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import \
-    update_bill_stage_types
-from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import \
-    update_bill_types
+from crawlers.parliamentdotuk.tasks.openapi.bills.billpublications import (
+    fetch_and_update_bill_publications,
+)
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstages import (
+    fetch_and_update_bill_stages,
+)
+from crawlers.parliamentdotuk.tasks.openapi.bills.billstagetypes import (
+    update_bill_stage_types,
+)
+from crawlers.parliamentdotuk.tasks.openapi.bills.billtypes import update_bill_types
 from crawlers.parliamentdotuk.tasks.openapi.bills.update import update_bill
-from notifications.models import TaskNotification
-from notifications.models.task_notification import task_notification
 from repository.models import Bill
 
 log = logging.get_logger(__name__)
 
 
-def _update_type_definitions(
-    cache: JsonCache | None,
-    notification: TaskNotification | None,
-):
+def update_billtype_definitions(context: TaskContext):
     """Must be run before fetch_and_update_bill."""
-    update_bill_types(cache=cache, notification=notification)
-    update_bill_stage_types(cache=cache, notification=notification)
+    update_bill_types(context=context)
+    update_bill_stage_types(context=context)
 
 
-@task_notification(label="Update individual bill")
-@json_cache(caches.BILLS)
-def fetch_and_update_bill(
-    parliamentdotuk: int,
-    cache: JsonCache | None,
-    notification: TaskNotification | None,
-) -> None:
+@task_context(cache_name=caches.BILLS, label="Update individual bill")
+def fetch_and_update_bill(parliamentdotuk: int, context: TaskContext) -> None:
     log.info(f"Updating bill #{parliamentdotuk}")
     openapi_client.get(
         endpoints.bill(parliamentdotuk),
         item_func=update_bill,
-        notification=notification,
-        cache=cache,
+        context=context,
     )
 
     # Update related data for this bill
-    fetch_and_update_bill_stages(parliamentdotuk, cache, notification)
-    fetch_and_update_bill_publications(parliamentdotuk, cache, notification)
+    fetch_and_update_bill_stages(parliamentdotuk, context)
+    fetch_and_update_bill_publications(parliamentdotuk, context)
     log.info(f"Bill #{parliamentdotuk} updated successfully")
 
 
@@ -70,17 +60,14 @@ def _should_update(summary: schema.BillSummary) -> bool:
     return True
 
 
-@shared_task
-@task_notification(label="Update bills")
-@json_cache(caches.BILLS)
-def update_bills(
-    cache: JsonCache | None,
-    notification: TaskNotification | None,
-    force_update: bool = False,
-) -> None:
-    _update_type_definitions(cache, notification)
+@task_context(cache_name=caches.BILLS, label="Update bills")
+def update_bills(context: TaskContext) -> None:
+    update_billtype_definitions(context)
 
-    def _update_item_proxy(data: dict, _notification: TaskNotification | None) -> None:
+    def _update_item_proxy(
+        data: dict,
+        _context: TaskContext,
+    ) -> None:
         """
         Signature: openapi_client.ItemFunc
 
@@ -89,16 +76,13 @@ def update_bills(
         """
         summary = schema.BillSummary(**data)
 
-        if force_update or _should_update(summary):
-            fetch_and_update_bill(
-                summary.billId, cache=cache, notification=_notification
-            )
+        if _context.force_update or _should_update(summary):
+            fetch_and_update_bill(summary.billId, context=_context)
 
     log.info("Updating all bills...")
     openapi_client.foreach(
         endpoints.BILLS_ALL,
         item_func=_update_item_proxy,
-        cache=cache,
-        notification=notification,
+        context=context,
     )
     log.info("All bills updated successfully")

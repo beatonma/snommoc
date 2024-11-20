@@ -13,7 +13,7 @@ class _ChildException(Exception):
 @task_notification(label="root-task")
 def my_root_task(succeed, child_succeed, **kwargs):
     if succeed:
-        kwargs["notification"].append("root-task succeeds")
+        kwargs["notification"].info("root-task succeeds")
     else:
         raise _ParentException("root task fails")
 
@@ -23,7 +23,7 @@ def my_root_task(succeed, child_succeed, **kwargs):
 @task_notification(label="child-task")
 def my_child_task(succeed, **kwargs):
     if succeed:
-        kwargs["notification"].append("child-task succeeds")
+        kwargs["notification"].info("child-task succeeds")
 
     else:
         raise _ChildException("child-task fails")

@@ -1,20 +1,17 @@
 import logging
 
 from crawlers import caches
-from crawlers.network import JsonCache, json_cache
+from crawlers.context import TaskContext, task_context
+from crawlers.network import JsonCache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
 from notifications.models import TaskNotification
-from notifications.models.task_notification import task_notification
 from repository.models.bill import BillType, BillTypeCategory
 
 log = logging.getLogger(__name__)
 
 
-def _update_bill_type(
-    data: dict,
-    notification: TaskNotification | None,
-) -> None:
+def _update_bill_type(data: dict, context: TaskContext) -> None:
     """Signature: openapi_client.ItemFunc"""
     billtype = schema.BillType(**data)
 
@@ -30,17 +27,16 @@ def _update_bill_type(
     )
 
 
-@task_notification(label="Update bill types")
-@json_cache(caches.BILLS)
+@task_context(cache_name=caches.BILLS)
 def update_bill_types(
     cache: JsonCache | None,
     notification: TaskNotification | None,
 ) -> None:
+    context = TaskContext(cache, notification)
     log.info("Updating BillTypes...")
     openapi_client.foreach(
         endpoint_url=endpoints.BILL_TYPE_DEFINITIONS,
         item_func=_update_bill_type,
-        notification=notification,
-        cache=cache,
+        context=context,
     )
     log.info("BillTypes updated successfully")

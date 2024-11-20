@@ -3,15 +3,9 @@ from typing import Optional
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-    PeriodMixin,
-    PersonMixin,
-    SocialMixin,
-    TheyWorkForYouMixin,
-    WikipediaMixin,
-)
+from repository.models.mixins import (BaseModel, ParliamentDotUkMixin,
+                                      PeriodMixin, PersonMixin, SocialMixin,
+                                      TheyWorkForYouMixin, WikipediaMixin)
 from util import time as timeutil
 
 NAME_MAX_LENGTH = 128
@@ -83,14 +77,6 @@ class Person(
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-    )
-
-    constituency = models.ForeignKey(
-        "Constituency",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        default=None,
     )
 
     lords_type = models.ForeignKey(

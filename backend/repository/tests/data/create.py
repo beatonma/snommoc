@@ -1,6 +1,5 @@
 import datetime
 import random
-from typing import Optional
 
 from repository.models import (
     CommonsDivision,
@@ -81,8 +80,8 @@ def _any_str(max_length: int = 32) -> str:
 
 
 def create_sample_person(
-    parliamentdotuk: Optional[int] = None,
-    name: Optional[str] = None,
+    parliamentdotuk: int | None = None,
+    name: str | None = None,
     active: bool = True,
     randomise: bool = True,
     **kwargs,
@@ -107,10 +106,10 @@ def create_sample_person(
 
 
 def create_sample_constituency(
-    name: Optional[str] = None,
-    parliamentdotuk: Optional[int] = None,
-    start: Optional[datetime.date] = None,
-    end: Optional[datetime.date] = None,
+    name: str | None = None,
+    parliamentdotuk: int | None = None,
+    start: datetime.date | None = None,
+    end: datetime.date | None = None,
     randomise: bool = True,
 ) -> Constituency:
     c = any_sample_constituency()
@@ -149,9 +148,9 @@ def create_sample_constituencies():
 
 
 def create_sample_election(
-    name: Optional[str] = None,
-    parliamentdotuk: Optional[int] = None,
-    date: Optional[datetime.date] = None,
+    name: str | None = None,
+    parliamentdotuk: int | None = None,
+    date: datetime.date | None = None,
     type: str = "General Election",
     randomise: bool = True,
 ) -> Election:
@@ -209,10 +208,10 @@ def create_constituency_result_detail(
     constituency: Constituency,
     election: Election,
     mp: Person,
-    parliamentdotuk: Optional[int] = None,
-    electorate: Optional[int] = None,
-    turnout: Optional[int] = None,
-    majority: Optional[int] = None,
+    parliamentdotuk: int | None = None,
+    electorate: int | None = None,
+    turnout: int | None = None,
+    majority: int | None = None,
     result: str = "Party hold",
 ) -> ConstituencyResultDetail:
     """Create a ConstituencyResultDetail with custom data."""
@@ -245,10 +244,10 @@ def create_constituency_result_detail(
 
 
 def create_sample_party(
-    name: Optional[str] = None,
-    parliamentdotuk: Optional[int] = None,
-    homepage: Optional[str] = None,
-    wikipedia: Optional[str] = None,
+    name: str | None = None,
+    parliamentdotuk: int | None = None,
+    homepage: str | None = None,
+    wikipedia: str | None = None,
     year_founded: int = 0,
     randomise: bool = True,
 ) -> Party:
@@ -279,9 +278,9 @@ def create_sample_parties():
 
 def create_sample_session(
     name: str = "2017-2019",
-    parliamentdotuk: Optional[int] = None,
-    start: Optional[datetime.date] = None,
-    end: Optional[datetime.date] = None,
+    parliamentdotuk: int | None = None,
+    start: datetime.date | None = None,
+    end: datetime.date | None = None,
 ) -> ParliamentarySession:
     """Create a ParliamentarySession with custom data."""
     if not parliamentdotuk:
@@ -296,7 +295,7 @@ def create_sample_session(
 
 
 def create_sample_commons_division(
-    parliamentdotuk: Optional[int] = None,
+    parliamentdotuk: int | None = None,
     title: str = None,
     abstentions: int = None,
     ayes: int = None,
@@ -307,7 +306,7 @@ def create_sample_commons_division(
     suspended_or_expelled: int = None,
     date: datetime.date = None,
     deferred_vote: bool = _any_bool(),
-    session: Optional[ParliamentarySession] = None,
+    session: ParliamentarySession | None = None,
     uin: str = "CD:2015-03-26:188",
     division_number: int = None,
 ) -> CommonsDivision:
@@ -366,7 +365,7 @@ def create_sample_commons_division(
     )
 
 
-def _coerce_house(house: Optional[str]) -> House:
+def _coerce_house(house: str | None) -> House:
     if house is None:
         house, _ = House.objects.get_or_create(name="Commons")
 
@@ -379,7 +378,7 @@ def _coerce_house(house: Optional[str]) -> House:
     return house
 
 
-def create_sample_house(name: Optional[str] = None) -> House:
+def create_sample_house(name: str | None = None) -> House:
     if name is None:
         name = random.choice(["Commons", "Lords", "Unassigned"])
 
@@ -389,7 +388,7 @@ def create_sample_house(name: Optional[str] = None) -> House:
 
 
 def create_sample_lords_division(
-    parliamentdotuk: Optional[int] = None,
+    parliamentdotuk: int | None = None,
     title: str = None,
     date: datetime.date = None,
     ayes: int = 121,
@@ -445,9 +444,9 @@ def create_sample_lords_division(
 
 
 def create_sample_bill_stage_type(
-    parliamentdotuk: Optional[int] = None,
-    name: Optional[str] = None,
-    house: Optional[str] = None,
+    parliamentdotuk: int | None = None,
+    name: str | None = None,
+    house: str | None = None,
 ) -> BillStageType:
     sample = any_sample_bill_stage_type()
 
@@ -467,10 +466,10 @@ def create_sample_bill_stage_type(
 
 
 def create_sample_bill_type(
-    parliamentdotuk: Optional[int] = None,
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    category: Optional[BillTypeCategory] = None,
+    parliamentdotuk: int | None = None,
+    name: str | None = None,
+    description: str | None = None,
+    category: BillTypeCategory | None = None,
 ) -> BillType:
     sample = any_sample_bill_type()
 
@@ -500,11 +499,11 @@ def create_sample_bill_type(
 
 
 def create_sample_bill(
-    parliamentdotuk: Optional[int] = None,
-    title: Optional[str] = None,
-    long_title: Optional[str] = None,
-    last_update: Optional[datetime.datetime] = None,
-    bill_type: Optional[BillType] = None,
+    parliamentdotuk: int | None = None,
+    title: str | None = None,
+    long_title: str | None = None,
+    last_update: datetime.datetime | None = None,
+    bill_type: BillType | None = None,
 ) -> Bill:
     if not parliamentdotuk:
         parliamentdotuk = _any_id()
@@ -542,12 +541,12 @@ def create_sample_bill(
 
 
 def create_sample_constituency_candidate(
-    name: Optional[str] = None,
-    constituency_result_detail: Optional[ConstituencyResultDetail] = None,
-    party_name: Optional[str] = None,
-    order: Optional[int] = None,
-    votes: Optional[int] = None,
-    party: Optional[Party] = any_sample_party(),
+    name: str | None = None,
+    constituency_result_detail: ConstituencyResultDetail | None = None,
+    party_name: str | None = None,
+    order: int | None = None,
+    votes: int | None = None,
+    party: Party | None = any_sample_party(),
 ) -> ConstituencyCandidate:
     if not constituency_result_detail:
         constituency_result_detail = create_constituency_result_detail(

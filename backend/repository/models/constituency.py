@@ -13,7 +13,6 @@ class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
     mp = models.OneToOneField(
         "Person",
         on_delete=models.SET_NULL,
-        related_name="+",
         null=True,
         help_text="Current representative",
     )

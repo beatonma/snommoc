@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from api.schema.party import PartyThemeSchema
 from api.schema.types import MiniSchema, Name, ParliamentSchema, field
+from repository.models import Constituency
 from repository.models.houses import HouseType
 
 __all__ = [
@@ -42,6 +43,13 @@ class MemberMiniSchema(MiniSchema, ParliamentSchema):
     party: PartyMiniSchema | None
     constituency: ConstituencyMiniSchema | None
     portrait: str | None = field("memberportrait.square_url", default=None)
+
+    @staticmethod
+    def resolve_constituency(obj):
+        try:
+            return obj.constituency
+        except Constituency.DoesNotExist:
+            pass
 
 
 class DivisionMiniSchema(MiniSchema, ParliamentSchema):

@@ -1,6 +1,7 @@
 from datetime import date
 
 from ninja import Schema
+from repository.models import Constituency
 
 from .election import ElectionSchema
 from .mini import ConstituencyMiniSchema, DivisionMiniSchema, PartyMiniSchema
@@ -155,6 +156,13 @@ class MemberProfile(ParliamentSchema):
     @staticmethod
     def resolve_address(obj):
         return obj
+
+    @staticmethod
+    def resolve_constituency(obj):
+        try:
+            return obj.constituency
+        except Constituency.DoesNotExist:
+            pass
 
 
 class MemberCareerHistory(FullSchema):

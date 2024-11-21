@@ -30,7 +30,7 @@ class PostTests(LocalTestCase):
 
         Person.objects.create(
             parliamentdotuk=3,
-            active=True,
+            is_active=True,
             house_id=1,
             name="Mr Mp",
         )

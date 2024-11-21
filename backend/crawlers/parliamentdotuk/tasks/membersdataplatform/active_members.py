@@ -74,7 +74,7 @@ def update_active_member_details(
     updating hundreds of profiles unnecessarily.
     """
 
-    members = Person.objects.filter(active=True)
+    members = Person.objects.filter(is_active=True)
 
     if debug_max_updates:
         members = members[:debug_max_updates]
@@ -131,19 +131,19 @@ def _update_member_biography(data: schema.MemberFullBiog, context: TaskContext):
     log.info(f"Updating detail for member: {person}")
 
     _update_basic_details(person, data.basic_info)
-    _update_house_membership(person, data.house_memberships)
-    _update_historical_constituencies(person, data.constituencies)
-    _update_party_associations(person, data.parties)
+    _update_house_membership(person, data.house_memberships)  #
+    _update_historical_constituencies(person, data.constituencies)  #
+    _update_party_associations(person, data.parties)  #
     _update_maiden_speeches(person, data.maiden_speeches)
-    _update_committees(person, data.committees)
-    _update_addresses(person, data.addresses)
-    _update_declared_interests(person, data.declared_interests)
-    _update_experiences(person, data.experiences)
-    _update_subjects_of_interest(person, data.subjects)
-    _update_government_posts(person, data.government_posts)
-    _update_parliamentary_posts(person, data.parliament_posts)
-    _update_opposition_posts(person, data.opposition_posts)
-    _update_elections_contested(person, data.contested_elections)
+    _update_committees(person, data.committees)  #
+    _update_addresses(person, data.addresses)  #
+    _update_declared_interests(person, data.declared_interests)  #
+    _update_experiences(person, data.experiences)  #
+    _update_subjects_of_interest(person, data.subjects)  #
+    _update_government_posts(person, data.government_posts)  #
+    _update_parliamentary_posts(person, data.parliament_posts)  #
+    _update_opposition_posts(person, data.opposition_posts)  #
+    _update_elections_contested(person, data.contested_elections)  #
 
     _postprocess_update(person)
 

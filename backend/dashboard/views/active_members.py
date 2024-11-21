@@ -21,7 +21,7 @@ class ActiveMembersView(StaffView):
                         "wikipedia": m.wikipedia,
                         "party": m.party.name if m.party else None,
                         "house": m.house.name,
-                        "has_portrait": m.portrait_fullsize_url is not None,
+                        "has_portrait": m.portrait_fullsize_url() is not None,
                     }
                     for m in members
                 ]

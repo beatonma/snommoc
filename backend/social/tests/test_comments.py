@@ -31,7 +31,7 @@ class CommentTests(SocialTestCase):
     def setUp(self, *args, **kwargs) -> None:
         self.valid_token = uuid.uuid4()
 
-        Person.objects.create(parliamentdotuk=4837, name="Aaron Bell", active=True)
+        Person.objects.create(parliamentdotuk=4837, name="Aaron Bell", is_active=True)
 
         create_sample_usertoken(_TEST_USERNAME, token=self.valid_token)
 

@@ -25,13 +25,13 @@ class GetSocialAllTests(SocialTestCase):
         self.target_person_one, _ = Person.objects.get_or_create(
             parliamentdotuk=4837,
             name="Aaron Bell",
-            active=True,
+            is_active=True,
         )
 
         self.target_person_two, _ = Person.objects.get_or_create(
             parliamentdotuk=1423,
             name="Boris Johnson",
-            active=True,
+            is_active=True,
         )
 
         self.valid_user = create_sample_usertoken(

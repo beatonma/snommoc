@@ -33,10 +33,12 @@ class VoteTests(SocialTestCase):
         self.valid_token = uuid.uuid4()
 
         self.target_person = Person.objects.create(
-            parliamentdotuk=4837, name="Aaron Bell", active=True
+            parliamentdotuk=4837, name="Aaron Bell", is_active=True
         )
 
-        Person.objects.create(parliamentdotuk=1423, name="Boris Johnson", active=True)
+        Person.objects.create(
+            parliamentdotuk=1423, name="Boris Johnson", is_active=True
+        )
 
         self.valid_user = create_sample_usertoken(
             "VoteTests-username", self.valid_token

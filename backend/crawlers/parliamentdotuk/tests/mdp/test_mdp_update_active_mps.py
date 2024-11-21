@@ -61,7 +61,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         self.person = Person.objects.create(
             parliamentdotuk=965,  # ID for Lord Wrigglesworth, used in SAMPLE_BIOGRAPHY_RESPONSE
             name=values.EXAMPLE_NAME,
-            active=True,
+            is_active=True,
             house=commons,
         )
 

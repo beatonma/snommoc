@@ -43,7 +43,7 @@ class PersonQuerySet(BaseQuerySet):
         return cast("PersonQuerySet", super().filter(*args, **kwargs))
 
     def active(self) -> "PersonQuerySet":
-        return self.filter(active=True)
+        return self.filter(is_active=True)
 
     def commons(self) -> "PersonQuerySet":
         return self.filter(house__name=HOUSE_OF_COMMONS)
@@ -135,8 +135,7 @@ class Person(
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        help_text="Current party membership. Historic memberships can be "
-        "retrieved via PartyAssociation model.",
+        help_text="Current party membership. Historic memberships can be retrieved via PartyAssociation model.",
     )
 
     house = models.ForeignKey(
@@ -145,17 +144,7 @@ class Person(
         null=True,
         blank=True,
     )
-    date_entered_house = models.DateField(
-        default=None,
-        null=True,
-        blank=True,
-    )
-    date_left_house = models.DateField(
-        default=None,
-        null=True,
-        blank=True,
-    )
-    active = models.BooleanField(
+    is_active = models.BooleanField(
         default=False,
         help_text="Whether this person currently has a seat in parliament.",
     )
@@ -167,37 +156,31 @@ class Person(
         default=None,
     )
 
-    @property
     def age(self) -> int:
         if self.date_of_death:
             return timeutil.years_between(self.date_of_birth, self.date_of_death)
         else:
             return timeutil.years_since(self.date_of_birth)
 
-    @property
     def is_birthday(self) -> bool:
         return timeutil.is_anniversary(self.date_of_birth)
 
-    @property
     def is_mp(self) -> bool:
         if self.house:
-            return self.active and self.house.name == HOUSE_OF_COMMONS
+            return self.is_active and self.house.name == HOUSE_OF_COMMONS
         return False
 
-    @property
     def is_lord(self) -> bool:
         if self.house:
-            return self.active and self.house.name == HOUSE_OF_LORDS
+            return self.is_active and self.house.name == HOUSE_OF_LORDS
         return False
 
-    @property
     def portrait_thumbnail_url(self) -> Optional[str]:
         try:
             return self.memberportrait.square_url
         except (AttributeError, ObjectDoesNotExist):
             pass
 
-    @property
     def portrait_fullsize_url(self) -> Optional[str]:
         try:
             return self.memberportrait.fullsize_url

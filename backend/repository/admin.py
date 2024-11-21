@@ -85,14 +85,14 @@ class ConstituencyAdmin(RepositoryAdmin):
 @admin.register(Person)
 class PersonAdmin(RepositoryAdmin):
     ordering = [
-        "-active",
+        "-is_active",
         "name",
         "party",
     ]
     list_display = [
         "__str__",
         "house",
-        "active",
+        "is_active",
         "party",
     ]
     editable_fields = [

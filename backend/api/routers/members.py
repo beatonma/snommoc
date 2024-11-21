@@ -18,9 +18,9 @@ def members(request: HttpRequest, query: str = None):
     qs = Person.objects.all().select_related("party", "constituency")
 
     if not query:
-        return qs.filter(active=True)
+        return qs.filter(is_active=True)
 
-    return qs.filter(name__icontains=query).order_by("active", "-pk")
+    return qs.filter(name__icontains=query).order_by("is_active", "-pk")
 
 
 @router.get("/{parliamentdotuk}/", response=MemberProfile)

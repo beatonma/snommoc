@@ -99,7 +99,7 @@ def create_sample_person(
     return Person.objects.create(
         parliamentdotuk=m.pk,
         name=m.name,
-        active=active,
+        is_active=active,
         house=_coerce_house(m.house),
         **kwargs,
     )

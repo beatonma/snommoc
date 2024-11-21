@@ -33,7 +33,7 @@ else:
                 "class": "rich.logging.RichHandler",
                 "level": logging.DEBUG if environment.DEBUG else logging.INFO,
                 "rich_tracebacks": True,
-                "markup": True,
+                "markup": False,
             },
             "file": {
                 "class": "logging.handlers.RotatingFileHandler",

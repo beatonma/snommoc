@@ -62,7 +62,7 @@ def get_json(
     if cache:
         cached = cache.get_json(encoded_url)
         if cached:
-            log.info(f"[cached] {encoded_url}")
+            log.info(rf"\[[cyan]cache[/]] {encoded_url}", extra={"markup": True})
             return cached
     else:
         log.warning(f"No cache specified for call to '{url}'")

@@ -85,7 +85,7 @@ def task_context(
                 TaskContext(
                     cache=cache,
                     notification=notification,
-                    # AsyncCommand kwargs
+                    # TaskCommand kwargs
                     force_update=kwargs.pop("force_update", False),
                     skip_items=kwargs.pop("skip_items", 0),
                     max_items=kwargs.pop("max_items", None),

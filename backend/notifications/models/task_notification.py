@@ -77,17 +77,18 @@ class TaskNotification(models.Model):
                 f" (complete={self.complete}, failed={self.failed})"
             )
         log.log(loglevel, content)
-        self.content = (self.content or "") + "\n" + content
+        content = f"[{logging.getLevelName(loglevel).lower()}] {content}"
+        self.content = "\n".join(x for x in [self.content, content] if x)
         self.save()
 
     def info(self, content: str):
         self._append(content, loglevel=logging.INFO)
 
     def warning(self, content: str):
-        self._append(f"[warning] {content}", loglevel=logging.WARNING)
+        self._append(content, loglevel=logging.WARNING)
 
     def error(self, error: Exception, content: str):
-        self._append(f"[error] {content}", loglevel=logging.ERROR)
+        self._append(content, loglevel=logging.ERROR)
         self.mark_as_failed(error)
 
     @classmethod

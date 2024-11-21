@@ -19,6 +19,10 @@ CONSTITUENCY_BOUNDARY = "https://members-api.parliament.uk/api/Location/Constitu
 CONSTITUENCY_RESULTS = "https://members-api.parliament.uk/api/Location/Constituency/{constituency_id}/ElectionResults"
 CONSTITUENCY_RESULTS_FULL = "https://members-api.parliament.uk/api/Location/Constituency/{constituency_id}/ElectionResult/{election_id}"
 
+MEMBER_PORTRAIT_URL = (
+    "https://members-api.parliament.uk/api/Members/{member_id}/PortraitUrl"
+)
+
 
 def constituency_boundary(constituency_id: int) -> str:
     return CONSTITUENCY_BOUNDARY.format(constituency_id=constituency_id)
@@ -60,3 +64,7 @@ def bill_publications(bill_id: int) -> str:
     Sample: https://bills-api.parliament.uk/api/v1/Bills/512/Publications
     """
     return BILL_PUBLICATIONS.format(bill_id=bill_id)
+
+
+def member_portrait(member_id: int) -> str:
+    return MEMBER_PORTRAIT_URL.format(member_id=member_id)

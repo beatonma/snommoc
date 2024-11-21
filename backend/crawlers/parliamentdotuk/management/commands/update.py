@@ -2,7 +2,8 @@ import sys
 from argparse import ArgumentParser
 from typing import Callable
 
-from crawlers.parliamentdotuk import tasks
+from crawlers import tasks as multi_source
+from crawlers.parliamentdotuk import tasks as parliament
 from util.management.task_command import TaskCommand
 
 
@@ -42,7 +43,7 @@ class Command(TaskCommand):
         if command == "constituencies":
             func = self.handle_constituencies(**kwargs)
         elif command == "bills":
-            func = tasks.update_bills
+            func = parliament.update_bills
         elif command == "divisions":
             func = self.handle_divisions(**kwargs)
         elif command == "members":
@@ -57,21 +58,21 @@ class Command(TaskCommand):
     @staticmethod
     def handle_constituencies(scope: str, **kwargs) -> Callable:
         return {
-            "elections": tasks.update_election_results,
-            "boundaries": tasks.update_constituency_boundaries,
-        }.get(scope, tasks.update_constituencies)
+            "elections": parliament.update_election_results,
+            "boundaries": parliament.update_constituency_boundaries,
+        }.get(scope, parliament.update_constituencies)
 
     @staticmethod
     def handle_divisions(scope: str, **kwargs) -> Callable:
         return {
-            "commons": tasks.update_commons_divisions,
-            "lords": tasks.update_lords_divisions,
+            "commons": parliament.update_commons_divisions,
+            "lords": parliament.update_lords_divisions,
         }.get(scope, None)
 
     @staticmethod
     def handle_members(scope: str, **kwargs) -> Callable:
         return {
-            "active": tasks.update_active_member_details,
-            "all": tasks.update_all_members_basic_info,
-            "portraits": tasks.update_member_portraits,
-        }.get(scope, tasks.update_active_member_details)
+            "active": parliament.update_active_member_details,
+            "all": parliament.update_all_members_basic_info,
+            "portraits": multi_source.update_member_portraits,
+        }.get(scope, parliament.update_active_member_details)

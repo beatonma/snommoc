@@ -2,7 +2,6 @@ from .lda import update_commons_divisions
 from .membersdataplatform import (
     update_active_member_details,
     update_all_members_basic_info,
-    update_member_portraits,
 )
 from .openapi import (
     update_bills,

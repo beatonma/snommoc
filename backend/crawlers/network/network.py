@@ -1,5 +1,5 @@
 import logging
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlunparse
 
 import requests
 from api import status
@@ -32,14 +32,10 @@ def get_json(
     url: str,
     params: dict | None = None,
     cache: JsonCache | None = None,
-    dangerous_encoded_params: bool = False,
+    dangerous_encoded_params: str | None = None,
     session: requests.Session = None,
     **kwargs,
 ) -> dict | list:
-    """
-    If `params` is not a dict, `dangerous_encoded_params` must also be True to avoid re-encoding by requests.Request.prepare().
-    """
-
     if kwargs:
         log.warning(f"get_json: Unhandled kwargs {kwargs}")
 
@@ -53,9 +49,11 @@ def get_json(
     )
     r = req.prepare()
 
-    if dangerous_encoded_params is True and isinstance(params, str):
-        encoded_url = urlparse(r.url)
-        r.url = encoded_url.geturl().replace(encoded_url.query, params)
+    if isinstance(dangerous_encoded_params, str):
+        scheme, netloc, url, params, query, fragment = urlparse(r.url)
+        r.url = urlunparse(
+            [scheme, netloc, url, params, dangerous_encoded_params, fragment]
+        )
 
     encoded_url = r.url
 

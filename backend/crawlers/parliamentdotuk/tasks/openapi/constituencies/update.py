@@ -33,7 +33,7 @@ def update_constituency_boundaries(context: TaskContext):
             endpoint_url=endpoints.constituency_boundary(constituency.parliamentdotuk),
             item_func=_update_boundary,
             context=context,
-            func_kwargs={"constituency": constituency.parliamentdotuk},
+            func_kwargs={"constituency_id": constituency.parliamentdotuk},
         )
 
 

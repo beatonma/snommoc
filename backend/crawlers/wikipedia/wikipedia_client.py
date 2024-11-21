@@ -1,9 +1,10 @@
-from typing import Callable, Iterable, List, Tuple, TypeVar
+from typing import Callable, Type
 from urllib.parse import urlencode
 
-from crawlers.network import get_json, json_cache
+from crawlers.context import TaskContext
+from crawlers.network import get_json
 from crawlers.wikipedia import endpoints
-from util.settings import snommoc_settings
+from crawlers.wikipedia.tasks import schema
 
 """
 When making many queries, create batches to reduce number of requests:
@@ -18,72 +19,44 @@ default_params = {
     "maxlag": 2,
 }
 
-T = TypeVar("T")
 
-
-def for_each_page(
-    page_titles: List[str],
-    block: Callable[[str, dict], None],
+def for_each_page[
+    T
+](
+    page_titles: list[str],
+    block: Callable[[str, T], None],
+    page_class: Type[T],
+    context: TaskContext,
     batch_size: int = BATCH_SIZE,
     **params,
 ):
     """
     Run the given [block] on the API response retrieved for the given page titles.
     """
+    item_count = 0
     for batch in _chunks(page_titles, batch_size):
-        normalized, pages = _get_batch_pages(batch, **params)
+        normalized, pages = _get_batch_pages(batch, page_class, context, **params)
 
         for page in pages:
-            t = page["title"]
+            t = page.title
             title = normalized[t] if t in normalized else t
 
             block(title, page)
 
-
-def map_pages(
-    page_titles: List[str],
-    block: Callable[[str, dict], T],
-    batch_size: int = BATCH_SIZE,
-    **params,
-) -> Iterable[T]:
-    """
-    Yield the results of running the given [block] on the API response retrieved for the given page titles.
-    """
-    for batch in _chunks(page_titles, batch_size):
-        normalized, pages = _get_batch_pages(batch, **params)
-
-        for page in pages:
-            t = page["title"]
-            title = normalized[t] if t in normalized else t
-
-            yield block(title, page)
+            item_count += 1
+            if context.limit_reached(item_count):
+                return
 
 
-def _chunks(lst: list, size: int):
+def _chunks(lst: list[str], size: int):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), size):
         yield lst[i : i + size]
 
 
-@json_cache(
-    name="wikipedia",
-    ttl_seconds=snommoc_settings.cache.wiki_ttl,
-)
-def _get_wikipedia_api(
-    params,
-    dangerous_encoded_params: bool = False,
-    **kwargs,
-) -> dict:
-    """Return JSON data from the requested Wikipedia API page."""
-    return get_json(
-        endpoints.WIKIPEDIA_API,
-        params=params,
-        dangerous_encoded_params=dangerous_encoded_params,
-        **kwargs,
-    )
-
-
-def _get_batch_pages(batch, **params) -> Tuple[dict, list]:
+def _get_batch_pages[
+    T: schema.Page
+](batch, t: Type[T], context: TaskContext, **params) -> tuple[dict, list[T]]:
     """
     Get data for a batch of page titles.
     Returns a dictionary with corrected page titles, and the list of page data.
@@ -95,15 +68,22 @@ def _get_batch_pages(batch, **params) -> Tuple[dict, list]:
         safe=r"|",
     )
 
-    data = _get_wikipedia_api(
-        encoded_params,
-        dangerous_encoded_params=True,
-    )["query"]
-    normalized = _map_normalized(data["normalized"])
-    pages = list(data["pages"].values())
+    response = get_json(
+        endpoints.WIKIPEDIA_API,
+        dangerous_encoded_params=encoded_params,
+        cache=context.cache,
+        session=context.session,
+    )
+    data = schema.BatchResponse[t].model_validate(response).query
 
-    return (normalized, pages)
+    normalized = _map_normalized(data.normalized)
+    pages = list(data.pages.values())
+
+    return normalized, pages
 
 
-def _map_normalized(normalized: list) -> dict:
-    return {item["to"]: item["from"] for item in normalized}
+def _map_normalized(normalized: list[schema.Normalized] | None) -> dict[str, str]:
+    if normalized:
+        return {item.to: item.original for item in normalized}
+    else:
+        return {}

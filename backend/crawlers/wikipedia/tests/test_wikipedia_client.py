@@ -1,7 +1,11 @@
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
+from crawlers.context import TaskContext
 from crawlers.wikipedia import wikipedia_client
+from crawlers.wikipedia.tasks import schema
+
+CONTEXT = TaskContext(None, None)
 
 _SAMPLE = {
     "batchcomplete": "",
@@ -35,24 +39,29 @@ _SAMPLE = {
 }
 
 
+def _patch():
+    return patch(
+        "crawlers.wikipedia.wikipedia_client.get_json",
+        side_effect=lambda *a, **kw: _SAMPLE,
+    )
+
+
 class WikipediaClientTests(LocalTestCase):
     """"""
 
     def test_for_pages(self):
         results = {}
 
-        with patch(
-            "crawlers.wikipedia.wikipedia_client._get_wikipedia_api",
-            side_effect=lambda *a, **kw: _SAMPLE,
-        ):
+        with _patch():
 
             def _block(t, x):
-                print("_block", t)
-                results[t] = x["pageid"]
+                results[t] = x.pageid
 
             wikipedia_client.for_each_page(
                 ["Boris_Johnson", "Keir Starmer"],
                 block=_block,
+                page_class=schema.Page,
+                context=CONTEXT,
                 prop="pageimages",
             )
 
@@ -63,28 +72,3 @@ class WikipediaClientTests(LocalTestCase):
                 "Keir Starmer": 18681487,
             },
         )
-
-    def test_get_for_pages(self):
-        with patch(
-            "crawlers.wikipedia.wikipedia_client._get_wikipedia_api",
-            side_effect=lambda *a, **kw: _SAMPLE,
-        ):
-
-            def _block(t, x):
-                return (t, x["pageid"])
-
-            results = list(
-                wikipedia_client.map_pages(
-                    ["Boris_Johnson", "Keir Starmer"],
-                    block=_block,
-                    prop="pageimages",
-                )
-            )
-
-            self.assertContentsEqual(
-                results,
-                [
-                    ("Boris_Johnson", 19065304),
-                    ("Keir Starmer", 18681487),
-                ],
-            )

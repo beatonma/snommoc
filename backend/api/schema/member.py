@@ -4,10 +4,14 @@ from ninja import Schema
 from repository.models import Constituency
 
 from .election import ElectionSchema
-from .mini import ConstituencyMiniSchema, DivisionMiniSchema, PartyMiniSchema
+from .mini import (
+    ConstituencyMiniSchema,
+    DivisionMiniSchema,
+    MemberMiniSchema,
+    PartyMiniSchema,
+)
 from .types import (
     EmailAddress,
-    FullSchema,
     Name,
     ParliamentId,
     ParliamentSchema,
@@ -110,16 +114,17 @@ class SubjectOfInterestSchema(Schema):
 
 class PostSchema(ParliamentSchema):
     parliamentdotuk: ParliamentId = field("post.parliamentdotuk")
+    type: str = field("post.type")
     name: Name = field("post.name")
     hansard: str | None = field("post.hansard_name")
     start: date | None
     end: date | None
 
 
-class PostsSchema(Schema):
-    governmental: list[PostSchema] = field("governmentpostmember_set")
-    parliamentary: list[PostSchema] = field("parliamentarypostmember_set")
-    opposition: list[PostSchema] = field("oppositionpostmember_set")
+# class PostsSchema(Schema):
+#     governmental: list[PostSchema] = field("governmentpostholder_set")
+#     opposition: list[PostSchema] = field("oppositionpostholder_set")
+#     other: list[PostSchema] = field("otherpostholder_set")
 
 
 class PortraitSchema(Schema):
@@ -129,16 +134,16 @@ class PortraitSchema(Schema):
     tall: str | None = field("tall_url", default=None)
 
 
-class MemberProfile(ParliamentSchema):
+class MemberProfile(MemberMiniSchema, ParliamentSchema):
     name: Name
-    current_post: str | None
+    current_posts: list[str]
     party: PartyMiniSchema | None
     constituency: ConstituencyMiniSchema | None
     portrait: PortraitSchema | None = field("memberportrait", default=None)
     full_title: str | None
     given_name: Name | None
     family_name: Name | None
-    active: bool
+    is_active: bool
     house: str | None = field("house.name", default=None)
     date_of_birth: date | None
     date_of_death: date | None
@@ -157,16 +162,20 @@ class MemberProfile(ParliamentSchema):
     def resolve_address(obj):
         return obj
 
-    @staticmethod
-    def resolve_constituency(obj):
-        try:
-            return obj.constituency
-        except Constituency.DoesNotExist:
-            pass
+    # @staticmethod
+    # def resolve_constituency(obj):
+    #     try:
+    #         return obj.constituency
+    #     except Constituency.DoesNotExist:
+    #         pass
+    #
+    # @staticmethod
+    # def resolve_current_posts(obj):
+    #     return obj.current_posts().values_list("post__name", flat=True)
 
 
-class MemberCareerHistory(FullSchema):
-    posts: PostsSchema
+class MemberCareerHistory(Schema):
+    posts: list[PostSchema]
     parties: list[PartyAffiliationSchema]
     constituencies: list[HistoricalConstituencySchema] = field("constituencyresult_set")
     committees: list[CommitteeMemberSchema] = field("committeemember_set")
@@ -174,10 +183,6 @@ class MemberCareerHistory(FullSchema):
     houses: list[HouseMembershipSchema] = field("housemembership_set")
     interests: list[DeclaredInterestsSchema] = field("declaredinterest_set")
     speeches: list[MaidenSpeechSchema] = field("maidenspeech_set")
-
-    @staticmethod
-    def resolve_posts(obj):
-        return obj
 
 
 class VoteSchema(Schema):

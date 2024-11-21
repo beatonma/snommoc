@@ -149,12 +149,12 @@ class Person(
         help_text="Whether this person currently has a seat in parliament.",
     )
 
-    current_post = models.CharField(
-        max_length=512,
-        null=True,
-        blank=True,
-        default=None,
-    )
+    def current_posts(self):
+        from repository.models.posts import PostHolder
+
+        return PostHolder.objects.filter(person=self, end__isnull=True).order_by(
+            "-start"
+        )
 
     def age(self) -> int:
         if self.date_of_death:

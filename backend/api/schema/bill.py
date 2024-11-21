@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from api.schema.mini import MemberMiniSchema
-from api.schema.types import FullSchema, ParliamentSchema, Url, field
+from api.schema.types import ParliamentSchema, Url, field
 from ninja import Schema
 from repository.models.bill import BillStage
 from repository.models.houses import HouseType
@@ -60,7 +60,7 @@ class Stage(Schema):
         return stage.sittings.order_by("-date").first().date
 
 
-class BillFullSchema(FullSchema, ParliamentSchema):
+class BillFullSchema(ParliamentSchema):
     title: str
     description: str | None = field("summary", default=None)
     type: BillType = field("bill_type")

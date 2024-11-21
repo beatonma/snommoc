@@ -4,7 +4,7 @@ from ninja import Schema
 
 from .election import ElectionSchema
 from .mini import ConstituencyMiniSchema, MemberMiniSchema, PartyMiniSchema
-from .types import FullSchema, Name, ParliamentSchema, field
+from .types import Name, ParliamentSchema, field
 
 __all__ = ["ConstituencyFullSchema", "ConstituencyResultSchema"]
 
@@ -14,7 +14,7 @@ class ResultsSchema(Schema):
     mp: MemberMiniSchema | None
 
 
-class ConstituencyFullSchema(FullSchema, ParliamentSchema):
+class ConstituencyFullSchema(ParliamentSchema):
     name: Name
     start: date | None
     end: date | None

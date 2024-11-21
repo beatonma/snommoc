@@ -1,95 +1,59 @@
+from datetime import date
+
 from basetest.testcase import LocalTestCase
-from repository.models import (
-    GovernmentPost,
-    GovernmentPostMember,
-    House,
-    OppositionPost,
-    ParliamentaryPost,
-    Person,
-)
-from repository.models.posts import (
-    OppositionPostMember,
-    ParliamentaryPostMember,
-    get_current_post_for_person,
-)
-from util.time import get_today
+from repository.models import Post, PostHolder
+from repository.tests.data.create import create_sample_person
 
 
 class PostTests(LocalTestCase):
     def setUp(self) -> None:
-        GovernmentPost.objects.create(
-            name="governmental", hansard_name="governmental", parliamentdotuk=1234
+        self.governmental = Post.objects.create(
+            type="governmental",
+            name="governmental",
+            hansard_name="governmental",
+            parliamentdotuk=1234,
         )
-        ParliamentaryPost.objects.create(
-            name="parliamentary", hansard_name="parliamentary", parliamentdotuk=2345
+        self.opposition = Post.objects.create(
+            type="opposition",
+            name="opposition",
+            hansard_name="opposition",
+            parliamentdotuk=3456,
         )
-        OppositionPost.objects.create(
-            name="opposition", hansard_name="opposition", parliamentdotuk=3456
-        )
-        House.objects.create(name="Commons")
-
-        Person.objects.create(
-            parliamentdotuk=3,
-            is_active=True,
-            house_id=1,
-            name="Mr Mp",
-        )
-
-    def test_get_current_post_for_person__governmental(self):
-        person = Person.objects.first()
-        GovernmentPostMember.objects.create(
-            post_id=1234, person=person, start=get_today()
+        self.other = Post.objects.create(
+            type="other",
+            name="other",
+            hansard_name="parliamentary",
+            parliamentdotuk=2345,
         )
 
-        post = get_current_post_for_person(person)
-        self.assertEqual(post.person, person)
-        self.assertEqual(post.post.name, "governmental")
+        self.person = create_sample_person()
 
-    def test_get_current_post_for_person__parliamentary(self):
-        person = Person.objects.first()
-        ParliamentaryPostMember.objects.create(
-            post_id=2345, person=person, start=get_today()
+        # Unrelated data which should not be included in queries
+        PostHolder.objects.create(
+            post=self.governmental,
+            person=create_sample_person(),
+            start=date(2020, 1, 5),
         )
 
-        post = get_current_post_for_person(person)
-        self.assertEqual(post.person, person)
-        self.assertEqual(post.post.name, "parliamentary")
-
-    def test_get_current_post_for_person__opposition(self):
-        person = Person.objects.first()
-        OppositionPostMember.objects.create(
-            post_id=3456, person=person, start=get_today()
+    def test_get_current_posts(self):
+        PostHolder.objects.create(
+            post=self.governmental,
+            person=self.person,
+            start=date(2020, 1, 5),
+            end=date(2021, 3, 6),
         )
 
-        post = get_current_post_for_person(person)
-        self.assertEqual(post.person, person)
-        self.assertEqual(post.post.name, "opposition")
+        self.assertQuerysetSize(self.person.current_posts(), 0)
 
-    def test_get_current_post_for_person__any(self):
-        person = Person.objects.first()
-        GovernmentPostMember.objects.create(
-            post_id=1234, person=person, start=get_today()
-        )
-        ParliamentaryPostMember.objects.create(
-            post_id=1234, person=person, start=get_today()
-        )
-        OppositionPostMember.objects.create(
-            post_id=1234, person=person, start=get_today()
+        PostHolder.objects.create(
+            post=self.opposition,
+            person=self.person,
+            start=date(2023, 1, 5),
         )
 
-        post = get_current_post_for_person(person)
-        self.assertIsNotNone(post)
-        self.assertEqual(post.person, person)
-        self.assertIn(post.post.name, ["governmental", "opposition", "parliamentary"])
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            GovernmentPost,
-            GovernmentPostMember,
-            ParliamentaryPost,
-            ParliamentaryPostMember,
-            OppositionPost,
-            OppositionPostMember,
-            Person,
-            House,
+        PostHolder.objects.create(
+            post=self.other,
+            person=self.person,
+            start=date(2023, 1, 5),
         )
+        self.assertQuerysetSize(self.person.current_posts(), 2)

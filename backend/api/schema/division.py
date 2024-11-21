@@ -1,7 +1,7 @@
 from datetime import date
 
 from api.schema.mini import MemberMiniSchema, PartyMiniSchema
-from api.schema.types import FullSchema, Name, ParliamentId, ParliamentSchema, field
+from api.schema.types import Name, ParliamentId, ParliamentSchema, field
 from repository.models.houses import HouseType
 
 __all__ = [
@@ -17,7 +17,7 @@ class CommonsVoteSchema(ParliamentSchema):
     party: PartyMiniSchema = field("person.party")
 
 
-class CommonsDivisionSchema(FullSchema, ParliamentSchema):
+class CommonsDivisionSchema(ParliamentSchema):
     title: str
     date: date
     house: HouseType
@@ -40,7 +40,7 @@ class LordsVoteSchema(ParliamentSchema):
     party: PartyMiniSchema = field("person.party")
 
 
-class LordsDivisionSchema(FullSchema, ParliamentSchema):
+class LordsDivisionSchema(ParliamentSchema):
     title: str
     date: date
     house: HouseType

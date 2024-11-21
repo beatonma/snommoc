@@ -1,4 +1,4 @@
-from api.schema.types import FullSchema, Name, ParliamentSchema, Url, WikipediaPath
+from api.schema.types import Name, ParliamentSchema, Url, WikipediaPath
 from ninja import Schema
 
 __all__ = ["PartyFullSchema", "PartyThemeSchema"]
@@ -11,7 +11,7 @@ class PartyThemeSchema(Schema):
     on_accent: str
 
 
-class PartyFullSchema(FullSchema, ParliamentSchema):
+class PartyFullSchema(ParliamentSchema):
     name: Name
     short_name: Name | None
     long_name: Name | None

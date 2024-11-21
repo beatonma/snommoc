@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from api.schema.party import PartyThemeSchema
-from api.schema.types import MiniSchema, Name, ParliamentSchema, field
+from api.schema.types import Name, ParliamentSchema, field
 from repository.models import Constituency
 from repository.models.houses import HouseType
 
@@ -33,15 +33,15 @@ class PartyMiniSchema(ParliamentSchema):
             pass
 
 
-class ConstituencyMiniSchema(MiniSchema, ParliamentSchema):
+class ConstituencyMiniSchema(ParliamentSchema):
     name: Name
     start: date | None
     end: date | None
 
 
-class MemberMiniSchema(MiniSchema, ParliamentSchema):
+class MemberMiniSchema(ParliamentSchema):
     name: Name
-    current_post: str | None
+    current_posts: list[str]
     party: PartyMiniSchema | None
     constituency: ConstituencyMiniSchema | None
     portrait: str | None = field("memberportrait.square_url", default=None)
@@ -53,15 +53,19 @@ class MemberMiniSchema(MiniSchema, ParliamentSchema):
         except Constituency.DoesNotExist:
             pass
 
+    @staticmethod
+    def resolve_current_posts(obj):
+        return obj.current_posts().values_list("post__name", flat=True)
 
-class DivisionMiniSchema(MiniSchema, ParliamentSchema):
+
+class DivisionMiniSchema(ParliamentSchema):
     title: str
     date: date
     house: HouseType
     passed: bool
 
 
-class BillMiniSchema(MiniSchema, ParliamentSchema):
+class BillMiniSchema(ParliamentSchema):
     title: str
     description: str | None = field("summary", default=None)
     last_update: datetime

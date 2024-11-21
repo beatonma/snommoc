@@ -27,13 +27,6 @@ from .organisation import Organisation
 from .party import Party, PartyAlsoKnownAs, PartyAssociation
 from .person import LifeEvent, Person, PersonAlsoKnownAs
 from .portrait import MemberPortrait
-from .posts import (
-    GovernmentPost,
-    GovernmentPostMember,
-    OppositionPost,
-    OppositionPostMember,
-    ParliamentaryPost,
-    ParliamentaryPostMember,
-)
+from .posts import Post, PostHolder
 from .session import ParliamentarySession
 from .subjects_of_interest import SubjectOfInterest, SubjectOfInterestCategory

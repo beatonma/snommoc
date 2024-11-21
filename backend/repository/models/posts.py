@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.translation import gettext_lazy as _
 from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
@@ -8,7 +8,13 @@ from repository.models.mixins import (
 )
 
 
-class BasePost(ParliamentDotUkMixin, BaseModel):
+class Post(ParliamentDotUkMixin, BaseModel):
+    class PostType(models.TextChoices):
+        GOVERNMENT = "government", _("Government")
+        OPPOSITION = "opposition", _("Opposition")
+        OTHER = "other", _("Other")
+
+    type = models.CharField(max_length=24, choices=PostType.choices)
     name = models.CharField(max_length=512)
     hansard_name = models.CharField(
         max_length=512,
@@ -19,65 +25,13 @@ class BasePost(ParliamentDotUkMixin, BaseModel):
     def __str__(self):
         return self.name
 
-    class Meta:
-        abstract = True
 
+class PostHolder(PersonMixin, PeriodMixin, BaseModel):
+    """Base class representing a period of tenancy where the person held the post."""
 
-class GovernmentPost(BasePost):
-    pass
-
-
-class ParliamentaryPost(BasePost):
-    pass
-
-
-class OppositionPost(BasePost):
-    pass
-
-
-class BasePostMember(PersonMixin, PeriodMixin, BaseModel):
-    class Meta:
-        abstract = True
-
-
-class GovernmentPostMember(BasePostMember):
+    person = models.ForeignKey("Person", on_delete=models.CASCADE, related_name="posts")
     post = models.ForeignKey(
-        "GovernmentPost",
+        "Post",
         on_delete=models.CASCADE,
+        related_name="holders",
     )
-
-    def __str__(self):
-        return f"{self.person}: {self.post}"
-
-
-class ParliamentaryPostMember(BasePostMember):
-    post = models.ForeignKey(
-        "ParliamentaryPost",
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return f"{self.person}: {self.post}"
-
-
-class OppositionPostMember(BasePostMember):
-    post = models.ForeignKey(
-        "OppositionPost",
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return f"{self.person}: {self.post}"
-
-
-def get_current_post_for_person(person):
-    kw = {
-        "person": person,
-        "start__isnull": False,
-        "end__isnull": True,
-    }
-
-    for model in [GovernmentPostMember, ParliamentaryPostMember, OppositionPostMember]:
-        result = model.objects.filter(**kw).first()
-        if result is not None:
-            return result

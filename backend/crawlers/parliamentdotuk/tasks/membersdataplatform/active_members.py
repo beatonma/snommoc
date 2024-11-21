@@ -27,15 +27,9 @@ from repository.models import (
     ElectionType,
     Experience,
     ExperienceCategory,
-    GovernmentPost,
-    GovernmentPostMember,
     House,
     HouseMembership,
     MaidenSpeech,
-    OppositionPost,
-    OppositionPostMember,
-    ParliamentaryPost,
-    ParliamentaryPostMember,
     PartyAssociation,
     Person,
     PhysicalAddress,
@@ -46,11 +40,7 @@ from repository.models import (
     WebAddress,
 )
 from repository.models.party import get_or_create_party
-from repository.models.posts import (
-    BasePost,
-    BasePostMember,
-    get_current_post_for_person,
-)
+from repository.models.posts import Post, PostHolder
 from repository.resolution.constituency import (
     get_constituency_for_date,
     get_current_constituency,
@@ -131,26 +121,19 @@ def _update_member_biography(data: schema.MemberFullBiog, context: TaskContext):
     log.info(f"Updating detail for member: {person}")
 
     _update_basic_details(person, data.basic_info)
-    _update_house_membership(person, data.house_memberships)  #
-    _update_historical_constituencies(person, data.constituencies)  #
-    _update_party_associations(person, data.parties)  #
+    _update_house_membership(person, data.house_memberships)
+    _update_historical_constituencies(person, data.constituencies)
+    _update_party_associations(person, data.parties)
     _update_maiden_speeches(person, data.maiden_speeches)
-    _update_committees(person, data.committees)  #
-    _update_addresses(person, data.addresses)  #
-    _update_declared_interests(person, data.declared_interests)  #
-    _update_experiences(person, data.experiences)  #
-    _update_subjects_of_interest(person, data.subjects)  #
-    _update_government_posts(person, data.government_posts)  #
-    _update_parliamentary_posts(person, data.parliament_posts)  #
-    _update_opposition_posts(person, data.opposition_posts)  #
-    _update_elections_contested(person, data.contested_elections)  #
-
-    _postprocess_update(person)
-
-
-def _postprocess_update(person: Person) -> None:
-    """Update any values that need to be calculated after API data is stored."""
-    _postprocess_update_current_post(person)
+    _update_committees(person, data.committees)
+    _update_addresses(person, data.addresses)
+    _update_declared_interests(person, data.declared_interests)
+    _update_experiences(person, data.experiences)
+    _update_subjects_of_interest(person, data.subjects)
+    _update_posts(person, data.government_posts, "government")
+    _update_posts(person, data.parliament_posts, "parliament")
+    _update_posts(person, data.opposition_posts, "other")
+    _update_elections_contested(person, data.contested_elections)
 
 
 def _get_or_create_election(
@@ -289,19 +272,19 @@ def _update_committees(person: Person, committees: list[schema.Committee]) -> No
 def _update_posts(
     person: Person,
     posts: list[schema.Post],
-    post_class: Type[BasePost],
-    membership_class: Type[BasePostMember],
+    post_type: str,
 ) -> None:
     for p in posts:
-        post, _ = post_class.objects.update_or_create(
+        post, _ = Post.objects.update_or_create(
             parliamentdotuk=p.parliamentdotuk,
             defaults={
+                "type": post_type,
                 "name": p.name,
                 "hansard_name": p.hansard_name,
             },
         )
 
-        membership_class.objects.update_or_create(
+        PostHolder.objects.update_or_create(
             person=person,
             post=post,
             start=p.start_date,
@@ -309,18 +292,6 @@ def _update_posts(
                 "end": p.end_date,
             },
         )
-
-
-def _update_government_posts(person: Person, posts: list[schema.Post]) -> None:
-    _update_posts(person, posts, GovernmentPost, GovernmentPostMember)
-
-
-def _update_parliamentary_posts(person: Person, posts: list[schema.Post]) -> None:
-    _update_posts(person, posts, ParliamentaryPost, ParliamentaryPostMember)
-
-
-def _update_opposition_posts(person: Person, posts: list[schema.Post]) -> None:
-    _update_posts(person, posts, OppositionPost, OppositionPostMember)
 
 
 def _update_addresses(person: Person, addresses: list[schema.Address]) -> None:
@@ -454,14 +425,3 @@ def _update_elections_contested(
                     "constituency": constituency,
                 },
             )
-
-
-def _postprocess_update_current_post(person: Person) -> None:
-    current_post_membership = get_current_post_for_person(person)
-
-    if current_post_membership is None:
-        person.current_post = None
-    else:
-        person.current_post = current_post_membership.post.name
-
-    person.save()

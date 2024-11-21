@@ -14,14 +14,14 @@ from repository.models import (
     Experience,
     ExperienceCategory,
     GovernmentPost,
-    GovernmentPostMember,
+    GovernmentPostHolder,
     House,
     HouseMembership,
     MaidenSpeech,
     OppositionPost,
-    OppositionPostMember,
-    ParliamentaryPost,
-    ParliamentaryPostMember,
+    OppositionPostHolder,
+    OtherPost,
+    OtherPostHolder,
     ParliamentarySession,
     Party,
     PartyAssociation,
@@ -174,14 +174,14 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
 
         self.assertLengthEquals(OppositionPost.objects.all(), 4)
         self.assertLengthEquals(
-            OppositionPostMember.objects.filter(person=self.person), 4
+            OppositionPostHolder.objects.filter(person=self.person), 4
         )
 
         shadow_home_secretary = OppositionPost.objects.get(parliamentdotuk=1171)
         self.assertEqual(shadow_home_secretary.name, "Shadow Home Secretary")
         self.assertEqual(shadow_home_secretary.hansard_name, "Shadow Home Secretary")
 
-        membership = OppositionPostMember.objects.get(post=shadow_home_secretary)
+        membership = OppositionPostHolder.objects.get(post=shadow_home_secretary)
         self.assertEqual(membership.person, self.person)
         self.assertEqual(membership.start, date(year=2016, month=10, day=6))
         self.assertIsNone(membership.end)
@@ -192,18 +192,16 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         ]
         active_members._update_parliamentary_posts(self.person, parliamentary_posts)
 
-        self.assertLengthEquals(ParliamentaryPost.objects.all(), 1)
-        self.assertLengthEquals(
-            ParliamentaryPostMember.objects.filter(person=self.person), 1
-        )
+        self.assertLengthEquals(OtherPost.objects.all(), 1)
+        self.assertLengthEquals(OtherPostHolder.objects.filter(person=self.person), 1)
 
-        labour_nec = ParliamentaryPost.objects.get(parliamentdotuk=803)
+        labour_nec = OtherPost.objects.get(parliamentdotuk=803)
         self.assertEqual(
             labour_nec.name, "Member, Labour Party National Executive Committee"
         )
         self.assertIsNone(labour_nec.hansard_name)
 
-        member = ParliamentaryPostMember.objects.get(post=labour_nec)
+        member = OtherPostHolder.objects.get(post=labour_nec)
         self.assertEqual(member.person, self.person)
         self.assertEqual(member.start, date(year=1994, month=1, day=1))
         self.assertEqual(member.end, date(year=1997, month=1, day=1))
@@ -224,7 +222,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         )
         self.assertEqual(pm.hansard_name, "The Prime Minister")
 
-        pm_member = GovernmentPostMember.objects.get(post=pm)
+        pm_member = GovernmentPostHolder.objects.get(post=pm)
         self.assertEqual(pm_member.start, date(year=2019, month=7, day=24))
         self.assertIsNone(pm_member.end)
 
@@ -237,7 +235,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             "Secretary of State for Foreign and Commonwealth Affairs",
         )
 
-        sec_of_state_member = GovernmentPostMember.objects.get(post=sec_of_state)
+        sec_of_state_member = GovernmentPostHolder.objects.get(post=sec_of_state)
         self.assertEqual(sec_of_state_member.start, date(year=2016, month=7, day=13))
         self.assertEqual(sec_of_state_member.end, date(year=2018, month=7, day=9))
         self.assertEqual(sec_of_state_member.person, self.person)
@@ -420,13 +418,13 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
         self.assertQuerysetSize(person.subjectofinterest_set, 3)
 
         # Government posts
-        self.assertQuerysetSize(person.governmentpostmember_set, 2)
+        self.assertQuerysetSize(person.governmentpostholder_set, 2)
 
         # Parliamentary posts
-        self.assertQuerysetSize(person.parliamentarypostmember_set, 1)
+        self.assertQuerysetSize(person.otherpostholder_set, 1)
 
         # Opposition posts
-        self.assertQuerysetSize(person.oppositionpostmember_set, 4)
+        self.assertQuerysetSize(person.oppositionpostholder_set, 4)
 
         # Elections contested
         self.assertQuerysetSize(person.contestedelection_set, 1)
@@ -449,7 +447,7 @@ class MdpUpdateActiveMpsTest(LocalTestCase):
             HouseMembership,
             MaidenSpeech,
             OppositionPost,
-            ParliamentaryPost,
+            OtherPost,
             ParliamentarySession,
             Party,
             Person,

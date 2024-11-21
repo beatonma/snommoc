@@ -1,17 +1,15 @@
 import logging
 
-from django.http import HttpResponse, JsonResponse
-
 from dashboard.views.dashboard import StaffView
+from django.http import HttpResponse, JsonResponse
 from repository.models import Person
-from repository.resolution import get_active_members
 
 log = logging.getLogger(__name__)
 
 
 class ActiveMembersView(StaffView):
     def get(self, request, *args, **kwargs):
-        members = get_active_members()
+        members = Person.objects.active()
 
         return JsonResponse(
             {

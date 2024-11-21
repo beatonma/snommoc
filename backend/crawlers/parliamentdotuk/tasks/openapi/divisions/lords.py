@@ -3,12 +3,12 @@ from crawlers.context import TaskContext, task_context
 from crawlers.network import JsonCache, json_cache
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
+from repository.models import Person
 from repository.models.divisions import (
     DivisionVoteType,
     LordsDivision,
     LordsDivisionVote,
 )
-from repository.resolution.members import get_member
 
 
 def update_lords_division(data_dict: dict, context: TaskContext) -> None:
@@ -16,7 +16,9 @@ def update_lords_division(data_dict: dict, context: TaskContext) -> None:
     data = schema.LordsDivision(**data_dict)
 
     sponsor = (
-        get_member(pk=data.sponsoringMemberId) if data.sponsoringMemberId else None
+        Person.objects.get_member(data.sponsoringMemberId)
+        if data.sponsoringMemberId
+        else None
     )
 
     division, created = LordsDivision.objects.update_or_create(
@@ -49,7 +51,7 @@ def update_lords_division(data_dict: dict, context: TaskContext) -> None:
     not_content, _ = DivisionVoteType.objects.get_or_create(name="not_content")
 
     for vote in data.contents + data.contentTellers:
-        person = get_member(pk=vote.memberId)
+        person = Person.objects.get_member(vote.memberId, name=vote.name)
         LordsDivisionVote.objects.update_or_create(
             person=person,
             division=division,
@@ -59,7 +61,7 @@ def update_lords_division(data_dict: dict, context: TaskContext) -> None:
         )
 
     for vote in data.notContents + data.notContentTellers:
-        person = get_member(pk=vote.memberId)
+        person = Person.objects.get_member(vote.memberId, name=vote.name)
         LordsDivisionVote.objects.update_or_create(
             person=person,
             division=division,

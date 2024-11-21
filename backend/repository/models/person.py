@@ -1,10 +1,12 @@
-from typing import Optional
+from typing import Optional, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import (
     BaseModel,
+    BaseQuerySet,
     ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,
@@ -17,6 +19,39 @@ from util import time as timeutil
 NAME_MAX_LENGTH = 128
 
 
+class PersonQuerySet(BaseQuerySet):
+    def get_member(
+        self,
+        parliamentdotuk: int,
+        name: str | None = None,
+        defaults: dict | None = None,
+    ):
+        """Safely get the member with the given parliamentdotuk ID, or create
+        it with given data if it does not already exist."""
+        member, _ = self.get_or_create(
+            parliamentdotuk=parliamentdotuk,
+            defaults={"name": name or "__UNKNOWN_MEMBER__", **(defaults or {})},
+        )
+        return member
+
+    def filter_name(self, name: str):
+        return self.filter(
+            Q(name__iexact=name) | Q(personalsoknownas__alias__iexact=name)
+        )
+
+    def filter(self, *args, **kwargs) -> "PersonQuerySet":
+        return cast("PersonQuerySet", super().filter(*args, **kwargs))
+
+    def active(self) -> "PersonQuerySet":
+        return self.filter(active=True)
+
+    def commons(self) -> "PersonQuerySet":
+        return self.filter(house__name=HOUSE_OF_COMMONS)
+
+    def lords(self) -> "PersonQuerySet":
+        return self.filter(house__name=HOUSE_OF_LORDS)
+
+
 class Person(
     SocialMixin,
     ParliamentDotUkMixin,
@@ -24,6 +59,7 @@ class Person(
     WikipediaMixin,
     BaseModel,
 ):
+    objects = PersonQuerySet.as_manager()
     name = models.CharField(
         max_length=NAME_MAX_LENGTH,
         help_text="Canonical name for this person.",
@@ -120,6 +156,7 @@ class Person(
         blank=True,
     )
     active = models.BooleanField(
+        default=False,
         help_text="Whether this person currently has a seat in parliament.",
     )
 

@@ -12,7 +12,6 @@ from repository.models.divisions import (
     LordsDivision,
     LordsDivisionVote,
 )
-from repository.resolution.members import get_member
 from repository.tests.data.create import create_sample_person
 from util.time import tzdatetime
 
@@ -100,7 +99,7 @@ class UpdateLordsDivisionsTests(LocalTestCase):
         self.assertEqual(votes.filter(vote_type__name="not_content").count(), 2)
 
     def test_person_votes_related_name_is_correct(self):
-        votes = get_member(pk=2758).lords_votes
+        votes = Person.objects.get_member(2758).lords_votes
 
         self.assertEqual(votes.count(), 1)
         self.assertEqual(votes.first().vote_type.name, "content")

@@ -1,8 +1,7 @@
 import re
 
-from django.db.models import Q, QuerySet
-from repository.models import Constituency, Election, Party, Person
-from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
+from django.db.models import Q
+from repository.models import Constituency, Election, Person
 
 """
 Titles and honorifics that may need to be stripped from a name when trying to resolve a Person.
@@ -23,52 +22,6 @@ _honorifics = [
 ]
 _honorifics_regex = re.compile(rf"({'|'.join(_honorifics)})", re.IGNORECASE)
 
-# Default name for a member that is created from its parliamentdotuk ID with no other info available
-UNKNOWN_NAME = "__UNKNOWN_MEMBER__"
-
-
-def get_member(pk: int) -> Person | None:
-    try:
-        person, _ = Person.objects.get_or_create(
-            pk=pk,
-            defaults={
-                "parliamentdotuk": pk,
-                "name": UNKNOWN_NAME,
-                "active": False,
-            },
-        )
-        return person
-    except (Person.DoesNotExist, Person.MultipleObjectsReturned):
-        pass
-
-
-def get_members(**kwargs) -> QuerySet[Person]:
-    return Person.objects.filter(**kwargs)
-
-
-def get_active_members(**kwargs) -> QuerySet[Person]:
-    return get_members(active=True, **kwargs)
-
-
-def get_active_mps(**kwargs) -> QuerySet[Person]:
-    return get_active_members(house__name=HOUSE_OF_COMMONS, **kwargs)
-
-
-def get_active_lords(**kwargs) -> QuerySet[Person]:
-    return get_active_members(house__name=HOUSE_OF_LORDS, **kwargs)
-
-
-def get_active_party_members(party: Party, **kwargs) -> QuerySet[Person]:
-    return get_active_members(party=party, **kwargs)
-
-
-def get_party_mps(party: Party, **kwargs) -> QuerySet[Person]:
-    return get_active_party_members(party=party, house__name=HOUSE_OF_COMMONS, **kwargs)
-
-
-def get_party_lords(party: Party, **kwargs) -> QuerySet[Person]:
-    return get_active_party_members(party=party, house__name=HOUSE_OF_LORDS, **kwargs)
-
 
 def normalize_name(raw_name: str) -> str:
     """
@@ -80,7 +33,7 @@ def normalize_name(raw_name: str) -> str:
     """
     without_honorifics = re.sub(_honorifics_regex, "", raw_name, re.IGNORECASE)
 
-    normalised_whitespace = " ".join([x for x in without_honorifics.split(" ") if x])
+    normalised_whitespace = " ".join(x for x in without_honorifics.split(" ") if x)
     if "," in normalised_whitespace:
         parts = [x.strip() for x in normalised_whitespace.split(",")]
         return f"{' '.join(parts[1:])} {parts[0]}"
@@ -88,28 +41,12 @@ def normalize_name(raw_name: str) -> str:
         return normalised_whitespace
 
 
-def get_member_by_name(name: str) -> Person | None:
-    """
-    Try to resolve the given name to a Person instance.
-
-    If the name came from a 3rd party API, consider passing it through normalize_name first.
-    """
-    by_name = Person.objects.filter(
-        Q(name__iexact=name) | Q(personalsoknownas__alias__iexact=name),
-    )
-
-    if by_name.count() == 1:
-        return by_name.first()
-
-
 def get_member_for_election_result(
     name: str,
     constituency: Constituency,
     election: Election,
 ) -> Person | None:
-    by_name = Person.objects.filter(
-        Q(name__iexact=name) | Q(personalsoknownas__alias__iexact=name),
-    )
+    by_name = Person.objects.filter_name(name)
 
     if by_name.count() == 1:
         return by_name.first()

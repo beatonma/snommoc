@@ -6,7 +6,7 @@ from repository.models import (
     Person,
     PersonAlsoKnownAs,
 )
-from repository.resolution.members import get_member_for_election_result, normalize_name
+from repository.resolution.members import normalize_name
 from repository.tests.data.create import (
     create_constituency_result,
     create_sample_constituencies,
@@ -35,48 +35,6 @@ class MemberResolutionTest(LocalTestCase):
         self.constituency.save()
 
         create_constituency_result(self.constituency, self.election, self.mp)
-
-    def test_get_member_for_election_result__single_possibility(self):
-        result = get_member_for_election_result(
-            "Drew Hendry",
-            self.constituency,
-            self.election,
-        )
-
-        self.assertEqual(result, self.mp)
-
-    def test_get_member_for_election_result__via_personalsoknownas(self):
-        PersonAlsoKnownAs.objects.create(
-            alias="Andrew Hendry",
-            person=self.mp,
-        )
-
-        result = get_member_for_election_result(
-            "Andrew Hendry",
-            self.constituency,
-            self.election,
-        )
-
-        self.assertEqual(result, self.mp)
-
-    def test_get_member_for_election_result__multiple_mps_with_same_name(self):
-        c = Constituency.objects.get(pk=145020, name="Inverness, Nairn & Lochaber")
-        c.mp = create_sample_person(pk=104467, name="Drew Hendry")
-        c.save()
-        c = Constituency.objects.get(pk=145915, name="Ross, Skye & Inverness West")
-        c.mp = create_sample_person(
-            pk=1004467,
-            name="Drew Hendry",
-        )
-        c.save()
-
-        result = get_member_for_election_result(
-            "Drew Hendry",
-            self.constituency,
-            self.election,
-        )
-
-        self.assertEqual(result, self.mp)
 
     def test_get_normalized_name__removes_honorifics(self):
         self.assertEqual(normalize_name("Rt Hon Alistair Darling"), "Alistair Darling")

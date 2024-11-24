@@ -1,14 +1,14 @@
 from django.db import models
-
 from repository.models.mixins import (
     BaseModel,
+    ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,
 )
 
 
-class ExperienceCategory(BaseModel):
-    name = models.CharField(max_length=128)
+class ExperienceCategory(ParliamentDotUkMixin, BaseModel):
+    name = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
         return self.name
@@ -17,13 +17,23 @@ class ExperienceCategory(BaseModel):
         verbose_name_plural = "Experience categories"
 
 
-class Experience(PersonMixin, PeriodMixin, BaseModel):
+class Experience(PersonMixin, PeriodMixin, ParliamentDotUkMixin, BaseModel):
+    person = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        related_name="experiences",
+    )
     category = models.ForeignKey(
         "ExperienceCategory",
         on_delete=models.CASCADE,
     )
 
-    organisation = models.CharField(max_length=512, null=True, blank=True)
+    organisation = models.ForeignKey(
+        "Organisation",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     title = models.CharField(max_length=512)
 
     def __str__(self):

@@ -34,11 +34,7 @@ def get_json(
     cache: JsonCache | None = None,
     dangerous_encoded_params: str | None = None,
     session: requests.Session = None,
-    **kwargs,
 ) -> dict | list:
-    if kwargs:
-        log.warning(f"get_json: Unhandled kwargs {kwargs}")
-
     url, params = _resolve_query(url, params)
 
     req = requests.Request(
@@ -51,8 +47,10 @@ def get_json(
 
     if isinstance(dangerous_encoded_params, str):
         scheme, netloc, url, params, query, fragment = urlparse(r.url)
-        r.url = urlunparse(
-            [scheme, netloc, url, params, dangerous_encoded_params, fragment]
+        r.url = str(
+            urlunparse(
+                [scheme, netloc, url, params, dangerous_encoded_params, fragment]
+            )
         )
 
     encoded_url = r.url

@@ -40,7 +40,7 @@ from repository.tests.data.create import (
 )
 from util.time import tzdatetime
 
-CONTEXT = TaskContext(None, None)
+CONTEXT = TaskContext(None, TaskNotification())
 
 
 class BillUpdateTests(LocalTestCase):

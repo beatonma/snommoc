@@ -66,7 +66,7 @@ class PartyAlsoKnownAs(BaseModel):
         return f"{self.alias} -> {self.canonical}"
 
 
-class PartyAssociation(PeriodMixin, BaseModel):
+class PartyAffiliation(PeriodMixin, BaseModel):
     """Allow tracking of people that have moved between different parties."""
 
     party = models.ForeignKey(
@@ -77,7 +77,7 @@ class PartyAssociation(PeriodMixin, BaseModel):
     person = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
-        related_name="parties",
+        related_name="party_affiliations",
     )
 
     def __str__(self):

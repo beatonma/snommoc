@@ -1,2 +1,2 @@
 from .cache import JsonCache, json_cache
-from .network import *
+from .network import get_json

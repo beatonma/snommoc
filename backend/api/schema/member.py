@@ -1,9 +1,7 @@
 from datetime import date
 
 from ninja import Schema
-from repository.models import Constituency
 
-from .election import ElectionSchema
 from .mini import (
     ConstituencyMiniSchema,
     DivisionMiniSchema,
@@ -42,8 +40,8 @@ class WebAddressSchema(Schema):
 
 
 class AddressSchema(Schema):
-    physical: list[PhysicalAddressSchema] = field("physicaladdress_set")
-    web: list[WebAddressSchema] = field("webaddress_set")
+    physical: list[PhysicalAddressSchema] = field("physical_addresses")
+    web: list[WebAddressSchema] = field("web_addresses")
 
 
 class TownSchema(Schema):
@@ -51,9 +49,8 @@ class TownSchema(Schema):
     country: Name
 
 
-class HistoricalConstituencySchema(Schema):
+class ConstituencyRepresentation(Schema):
     constituency: ConstituencyMiniSchema
-    election: ElectionSchema
     start: date
     end: date | None
 
@@ -66,15 +63,9 @@ class ExperienceSchema(Schema):
     end: date | None
 
 
-class CommitteeChairSchema(Schema):
-    start: date | None
-    end: date | None
-
-
 class CommitteeMemberSchema(ParliamentSchema):
     parliamentdotuk: ParliamentId = field("committee.parliamentdotuk")
     name: Name = field("committee.name")
-    chair: list[CommitteeChairSchema] = field("committeechair_set")
     start: date | None
     end: date | None
 
@@ -94,13 +85,6 @@ class DeclaredInterestsSchema(ParliamentSchema):
     registered_late: bool
 
 
-class MaidenSpeechSchema(Schema):
-    house: str = field("house.name")
-    date: date
-    subject: str | None
-    hansard: str | None
-
-
 class PartyAffiliationSchema(Schema):
     party: PartyMiniSchema
     start: date | None
@@ -109,7 +93,7 @@ class PartyAffiliationSchema(Schema):
 
 class SubjectOfInterestSchema(Schema):
     category: str = field("category.title")
-    subject: str
+    description: str
 
 
 class PostSchema(ParliamentSchema):
@@ -119,12 +103,6 @@ class PostSchema(ParliamentSchema):
     hansard: str | None = field("post.hansard_name")
     start: date | None
     end: date | None
-
-
-# class PostsSchema(Schema):
-#     governmental: list[PostSchema] = field("governmentpostholder_set")
-#     opposition: list[PostSchema] = field("oppositionpostholder_set")
-#     other: list[PostSchema] = field("otherpostholder_set")
 
 
 class PortraitSchema(Schema):
@@ -152,37 +130,25 @@ class MemberProfile(MemberMiniSchema, ParliamentSchema):
     place_of_birth: TownSchema | None = field("town_of_birth")
     current_committees: list[CommitteeMemberSchema]
     address: AddressSchema
-    subjects_of_interest: list[SubjectOfInterestSchema] = field("subjectofinterest_set")
+    subjects_of_interest: list[SubjectOfInterestSchema] = field("subjects_of_interest")
 
     @staticmethod
     def resolve_current_committees(obj):
-        return obj.committeemember_set.filter(end=None).order_by("-start")
+        return obj.committees.filter(end=None).order_by("-start")
 
     @staticmethod
     def resolve_address(obj):
         return obj
 
-    # @staticmethod
-    # def resolve_constituency(obj):
-    #     try:
-    #         return obj.constituency
-    #     except Constituency.DoesNotExist:
-    #         pass
-    #
-    # @staticmethod
-    # def resolve_current_posts(obj):
-    #     return obj.current_posts().values_list("post__name", flat=True)
-
 
 class MemberCareerHistory(Schema):
     posts: list[PostSchema]
-    parties: list[PartyAffiliationSchema]
-    constituencies: list[HistoricalConstituencySchema] = field("constituencyresult_set")
-    committees: list[CommitteeMemberSchema] = field("committeemember_set")
-    experiences: list[ExperienceSchema] = field("experience_set")
-    houses: list[HouseMembershipSchema] = field("housemembership_set")
-    interests: list[DeclaredInterestsSchema] = field("declaredinterest_set")
-    speeches: list[MaidenSpeechSchema] = field("maidenspeech_set")
+    parties: list[PartyAffiliationSchema] = field("party_affiliations")
+    constituencies: list[ConstituencyRepresentation] = field("constituencies")
+    committees: list[CommitteeMemberSchema] = field("committees")
+    experiences: list[ExperienceSchema] = field("experiences")
+    houses: list[HouseMembershipSchema] = field("house_memberships")
+    interests: list[DeclaredInterestsSchema] = field("registered_interests")
 
 
 class VoteSchema(Schema):

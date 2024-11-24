@@ -3,7 +3,8 @@ import re
 from typing import Optional
 
 from crawlers.context import TaskContext
-from crawlers.network import HttpNoContent, get_json
+from crawlers.network import get_json
+from crawlers.network.exceptions import HttpNoContent
 from crawlers.parliamentdotuk.tasks.openapi import endpoints
 from django.db.models import QuerySet
 from repository.models import Person

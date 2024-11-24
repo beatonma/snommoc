@@ -7,7 +7,7 @@ from django.db import models
 from notifications import permissions
 from util.time import get_now
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("task")
 
 
 _NOTIFICATION = "notification"

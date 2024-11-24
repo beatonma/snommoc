@@ -1,8 +1,5 @@
 import re
 
-from django.db.models import Q
-from repository.models import Constituency, Election, Person
-
 """
 Titles and honorifics that may need to be stripped from a name when trying to resolve a Person.
 
@@ -39,25 +36,3 @@ def normalize_name(raw_name: str) -> str:
         return f"{' '.join(parts[1:])} {parts[0]}"
     else:
         return normalised_whitespace
-
-
-def get_member_for_election_result(
-    name: str,
-    constituency: Constituency,
-    election: Election,
-) -> Person | None:
-    by_name = Person.objects.filter_name(name)
-
-    if by_name.count() == 1:
-        return by_name.first()
-
-    by_constituency = by_name.filter(
-        Q(constituency=constituency)
-        | (
-            Q(contestedelection__constituency=constituency)
-            & Q(contestedelection__election=election)
-        )
-    )
-
-    if by_constituency.count() == 1:
-        return by_constituency.first()

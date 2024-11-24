@@ -6,6 +6,7 @@ from crawlers.parliamentdotuk.tasks.openapi.divisions.lords import update_lords_
 from crawlers.parliamentdotuk.tests.openapi.data_lordsdivision import (
     LORDS_DIVISION_DATA,
 )
+from notifications.models import TaskNotification
 from repository.models import Person
 from repository.models.divisions import (
     DivisionVoteType,
@@ -15,7 +16,7 @@ from repository.models.divisions import (
 from repository.tests.data.create import create_sample_person
 from util.time import tzdatetime
 
-CONTEXT = TaskContext(None, None)
+CONTEXT = TaskContext(None, TaskNotification())
 
 
 class UpdateLordsDivisionsTests(LocalTestCase):

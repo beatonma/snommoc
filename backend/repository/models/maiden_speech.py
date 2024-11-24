@@ -1,12 +1,9 @@
 from django.db import models
-
-from repository.models.mixins import (
-    BaseModel,
-    PersonMixin,
-)
+from repository.models.mixins import BaseModel, PersonMixin
+from util.cleanup import Deprecated
 
 
-class MaidenSpeech(PersonMixin, BaseModel):
+class MaidenSpeech(Deprecated, PersonMixin, BaseModel):
     date = models.DateField()
     house = models.ForeignKey(
         "House",

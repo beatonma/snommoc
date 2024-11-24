@@ -1,11 +1,12 @@
 from django.db import models
-from django.db.models import UniqueConstraint
 from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
     PeriodMixin,
+    PersonMixin,
     SocialMixin,
 )
+from util.cleanup import Deprecated
 
 
 class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
@@ -36,7 +37,37 @@ class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
         verbose_name_plural = "Constituencies"
 
 
-class ConstituencyResult(PeriodMixin, BaseModel):
+class ConstituencyBoundary(BaseModel):
+    constituency = models.OneToOneField(
+        "Constituency",
+        on_delete=models.CASCADE,
+    )
+    geo_json = models.JSONField()
+
+    def __str__(self):
+        return self.constituency.name
+
+    class Meta:
+        verbose_name_plural = "Constituency Boundaries"
+
+
+class ConstituencyRepresentative(PersonMixin, PeriodMixin, BaseModel):
+    person = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        related_name="constituencies",
+    )
+    constituency = models.ForeignKey(
+        "Constituency",
+        on_delete=models.CASCADE,
+        related_name="mps",
+    )
+
+    def __str__(self):
+        return f"{self.constituency.name} {self.describe_timespan()}"
+
+
+class ConstituencyResult(Deprecated, PeriodMixin, BaseModel):
     """
     Track which MP won in this constituency at this election.
     """
@@ -64,7 +95,7 @@ class ConstituencyResult(PeriodMixin, BaseModel):
 
     class Meta:
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=["election", "constituency", "mp"],
                 name="unique_constituency_result",
             )
@@ -72,7 +103,7 @@ class ConstituencyResult(PeriodMixin, BaseModel):
         ordering = ["constituency", "election"]
 
 
-class UnlinkedConstituency(PeriodMixin, BaseModel):
+class UnlinkedConstituency(Deprecated, PeriodMixin, BaseModel):
     """
     A placeholder for a constituency which is known by name only.
 
@@ -103,28 +134,14 @@ class UnlinkedConstituency(PeriodMixin, BaseModel):
     class Meta:
         verbose_name_plural = "Unlinked constituencies"
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=["name", "person", "election"],
                 name="unique_election_result",
             )
         ]
 
 
-class ConstituencyBoundary(BaseModel):
-    constituency = models.OneToOneField(
-        Constituency,
-        on_delete=models.CASCADE,
-    )
-    geo_json = models.JSONField()
-
-    def __str__(self):
-        return self.constituency.name
-
-    class Meta:
-        verbose_name_plural = "Constituency Boundaries"
-
-
-class ConstituencyAlsoKnownAs(PeriodMixin, BaseModel):
+class ConstituencyAlsoKnownAs(Deprecated, PeriodMixin, BaseModel):
     canonical = models.ForeignKey(
         "Constituency",
         on_delete=models.CASCADE,

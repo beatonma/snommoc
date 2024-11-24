@@ -1,0 +1,35 @@
+{
+  "comment": "Response for Diane Abbott [172]",
+  "value": [
+    {
+      "category": "Countries of interest",
+      "focus": ["Africa, Jamaica"]
+    },
+    {
+      "category": "Political Interests",
+      "focus": ["Small businesses, education"]
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "/Members/172/Focus",
+      "method": "GET"
+    },
+    {
+      "rel": "overview",
+      "href": "/Members/172",
+      "method": "GET"
+    },
+    {
+      "rel": "synopsis",
+      "href": "/Members/172/Synopsis",
+      "method": "GET"
+    },
+    {
+      "rel": "contactInformation",
+      "href": "/Members/172/Contact",
+      "method": "GET"
+    }
+  ]
+}

@@ -360,15 +360,8 @@ def create_sample_commons_division(
     )
 
 
-def _coerce_house(house: str | None) -> House:
-    if house is None:
-        house, _ = House.objects.get_or_create(name="Commons")
-
-    elif isinstance(house, str):
-        house, _ = House.objects.get_or_create(name=house)
-
-    else:
-        raise ValueError(f"_coerce_house got unexpected argument '{house}")
+def _coerce_house(house: str = "Commons") -> House:
+    house, _ = House.objects.get_or_create(name=house)
 
     return house
 

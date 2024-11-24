@@ -1,0 +1,134 @@
+{
+  "comment": "Response for Keir Starmer [4514] with electionContested value from Boris Johnson [1423]",
+  "value": {
+    "representations": [
+      {
+        "constituencyStart": "2024-05-31T00:00:00",
+        "constituencyEnd": null,
+        "house": 1,
+        "name": "Holborn and St Pancras",
+        "id": 4105,
+        "startDate": "2024-07-04T00:00:00",
+        "endDate": null,
+        "additionalInfo": "Elected 1 time",
+        "additionalInfoLink": null
+      },
+      {
+        "constituencyStart": "2010-04-13T00:00:00",
+        "constituencyEnd": "2024-05-30T00:00:00",
+        "house": 1,
+        "name": "Holborn and St Pancras",
+        "id": 3536,
+        "startDate": "2015-05-07T00:00:00",
+        "endDate": "2024-05-30T00:00:00",
+        "additionalInfo": "Elected 3 times",
+        "additionalInfoLink": null
+      }
+    ],
+    "electionsContested": [
+      {
+        "house": 1,
+        "name": "Clwyd South",
+        "id": 717,
+        "startDate": "1997-05-01T00:00:00",
+        "endDate": null,
+        "additionalInfo": null,
+        "additionalInfoLink": null
+      }
+    ],
+    "houseMemberships": [
+      {
+        "house": 1,
+        "name": "Commons",
+        "id": 1,
+        "startDate": "2015-05-07T00:00:00",
+        "endDate": null,
+        "additionalInfo": "Sir Keir Starmer",
+        "additionalInfoLink": null
+      }
+    ],
+    "governmentPosts": [
+      {
+        "house": 1,
+        "name": "Prime Minister and First Lord of the Treasury",
+        "id": 1267,
+        "startDate": "2024-07-05T00:00:00",
+        "endDate": null,
+        "additionalInfo": "Prime Minister",
+        "additionalInfoLink": "https://www.gov.uk/government/organisations/prime-ministers-office-10-downing-street"
+      }
+    ],
+    "oppositionPosts": [
+      {
+        "house": 1,
+        "name": "Leader of HM Official Opposition",
+        "id": 4,
+        "startDate": "2020-04-04T00:00:00",
+        "endDate": "2024-07-05T00:00:00",
+        "additionalInfo": "HM Official Opposition",
+        "additionalInfoLink": null
+      },
+      {
+        "house": 1,
+        "name": "Shadow Secretary of State for Exiting the European Union",
+        "id": 1315,
+        "startDate": "2016-10-06T00:00:00",
+        "endDate": "2020-04-04T00:00:00",
+        "additionalInfo": "Department for Exiting the European Union ",
+        "additionalInfoLink": "https://www.gov.uk/government/organisations/department-for-exiting-the-european-union"
+      },
+      {
+        "house": 1,
+        "name": "Shadow Minister (Home Office)",
+        "id": 884,
+        "startDate": "2015-09-18T00:00:00",
+        "endDate": "2016-06-27T00:00:00",
+        "additionalInfo": "Home Office",
+        "additionalInfoLink": "https://www.gov.uk/government/organisations/home-office"
+      }
+    ],
+    "otherPosts": [
+      {
+        "house": 1,
+        "name": "Leader of the Labour Party",
+        "id": 789,
+        "startDate": "2020-04-04T00:00:00",
+        "endDate": null,
+        "additionalInfo": null,
+        "additionalInfoLink": null
+      }
+    ],
+    "partyAffiliations": [
+      {
+        "house": 1,
+        "name": "Labour",
+        "id": 15,
+        "startDate": "2015-05-07T00:00:00",
+        "endDate": null,
+        "additionalInfo": null,
+        "additionalInfoLink": null
+      }
+    ],
+    "committeeMemberships": [
+      {
+        "house": 1,
+        "name": "Home Affairs Committee",
+        "id": 83,
+        "startDate": "2015-07-08T00:00:00",
+        "endDate": "2015-10-26T00:00:00",
+        "additionalInfo": null,
+        "additionalInfoLink": null
+      }
+    ]
+  },
+  "links": [
+    { "rel": "self", "href": "/Members/4514/Biography", "method": "GET" },
+    { "rel": "overview", "href": "/Members/4514", "method": "GET" },
+    { "rel": "synopsis", "href": "/Members/4514/Synopsis", "method": "GET" },
+    {
+      "rel": "contactInformation",
+      "href": "/Members/4514/Contact",
+      "method": "GET"
+    }
+  ]
+}

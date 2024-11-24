@@ -1,10 +1,5 @@
 from django.db import models
-
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-    PersonMixin,
-)
+from repository.models.mixins import BaseModel, ParliamentDotUkMixin, PersonMixin
 
 
 class ElectionType(BaseModel):
@@ -53,10 +48,12 @@ class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):
 class ContestedElection(PersonMixin, BaseModel):
     """Elections in which the person took part but did not win."""
 
-    election = models.ForeignKey(
-        "Election",
+    person = models.ForeignKey(
+        "Person",
         on_delete=models.CASCADE,
+        related_name="contested_elections",
     )
+    date = models.DateField()
 
     constituency = models.ForeignKey(
         "Constituency",
@@ -64,4 +61,4 @@ class ContestedElection(PersonMixin, BaseModel):
     )
 
     def __str__(self):
-        return f"{self.election}: {self.constituency}"
+        return f"{self.constituency} {self.date}"

@@ -19,6 +19,11 @@ class House(BaseModel):
 
 
 class HouseMembership(PersonMixin, PeriodMixin, BaseModel):
+    person = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        related_name="house_memberships",
+    )
     house = models.ForeignKey(
         "House",
         on_delete=models.CASCADE,

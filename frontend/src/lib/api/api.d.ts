@@ -351,13 +351,17 @@ export interface components {
         ConstituencyMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
+            /** Start */
+            start: string | null;
+            /** End */
+            end: string | null;
         };
         /** MemberMiniSchema */
         MemberMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
-            /** Current Post */
-            current_post: string | null;
+            /** Current Posts */
+            current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
             /** Portrait */
@@ -400,19 +404,10 @@ export interface components {
             /** Web */
             web: components["schemas"]["WebAddressSchema"][];
         };
-        /** CommitteeChairSchema */
-        CommitteeChairSchema: {
-            /** Start */
-            start: string | null;
-            /** End */
-            end: string | null;
-        };
         /** CommitteeMemberSchema */
         CommitteeMemberSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
-            /** Chair */
-            chair: components["schemas"]["CommitteeChairSchema"][];
             /** Start */
             start: string | null;
             /** End */
@@ -423,8 +418,8 @@ export interface components {
         MemberProfile: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
-            /** Current Post */
-            current_post: string | null;
+            /** Current Posts */
+            current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
             portrait?: components["schemas"]["PortraitSchema"] | null;
@@ -432,8 +427,8 @@ export interface components {
             full_title: string | null;
             given_name: components["schemas"]["Name"] | null;
             family_name: components["schemas"]["Name"] | null;
-            /** Active */
-            active: boolean;
+            /** Is Active */
+            is_active: boolean;
             /** House */
             house?: string | null;
             /** Date Of Birth */
@@ -479,8 +474,8 @@ export interface components {
         SubjectOfInterestSchema: {
             /** Category */
             category: string;
-            /** Subject */
-            subject: string;
+            /** Description */
+            description: string;
         };
         /** TownSchema */
         TownSchema: {
@@ -493,6 +488,17 @@ export interface components {
             url: components["schemas"]["Url"];
             /** Description */
             description: string | null;
+        };
+        /** ConstituencyRepresentation */
+        ConstituencyRepresentation: {
+            constituency: components["schemas"]["ConstituencyMiniSchema"];
+            /**
+             * Start
+             * Format: date
+             */
+            start: string;
+            /** End */
+            end: string | null;
         };
         /** DeclaredInterestsSchema */
         DeclaredInterestsSchema: {
@@ -510,15 +516,6 @@ export interface components {
             /** Registered Late */
             registered_late: boolean;
         };
-        /** ElectionSchema */
-        ElectionSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            name: components["schemas"]["Name"];
-            /** Date */
-            date: string | null;
-            /** Election Type */
-            election_type: string;
-        };
         /** ExperienceSchema */
         ExperienceSchema: {
             /** Category */
@@ -532,18 +529,6 @@ export interface components {
             /** End */
             end: string | null;
         };
-        /** HistoricalConstituencySchema */
-        HistoricalConstituencySchema: {
-            constituency: components["schemas"]["ConstituencyMiniSchema"];
-            election: components["schemas"]["ElectionSchema"];
-            /**
-             * Start
-             * Format: date
-             */
-            start: string;
-            /** End */
-            end: string | null;
-        };
         /** HouseMembershipSchema */
         HouseMembershipSchema: {
             house: components["schemas"]["Name"];
@@ -552,27 +537,14 @@ export interface components {
             /** End */
             end: string | null;
         };
-        /** MaidenSpeechSchema */
-        MaidenSpeechSchema: {
-            /** House */
-            house: string;
-            /**
-             * Date
-             * Format: date
-             */
-            date: string;
-            /** Subject */
-            subject: string | null;
-            /** Hansard */
-            hansard: string | null;
-        };
         /** MemberCareerHistory */
         MemberCareerHistory: {
-            posts: components["schemas"]["PostsSchema"];
+            /** Posts */
+            posts: components["schemas"]["PostSchema"][];
             /** Parties */
             parties: components["schemas"]["PartyAffiliationSchema"][];
             /** Constituencies */
-            constituencies: components["schemas"]["HistoricalConstituencySchema"][];
+            constituencies: components["schemas"]["ConstituencyRepresentation"][];
             /** Committees */
             committees: components["schemas"]["CommitteeMemberSchema"][];
             /** Experiences */
@@ -581,8 +553,6 @@ export interface components {
             houses: components["schemas"]["HouseMembershipSchema"][];
             /** Interests */
             interests: components["schemas"]["DeclaredInterestsSchema"][];
-            /** Speeches */
-            speeches: components["schemas"]["MaidenSpeechSchema"][];
         };
         /** PartyAffiliationSchema */
         PartyAffiliationSchema: {
@@ -595,6 +565,8 @@ export interface components {
         /** PostSchema */
         PostSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
+            /** Type */
+            type: string;
             name: components["schemas"]["Name"];
             /** Hansard */
             hansard: string | null;
@@ -602,15 +574,6 @@ export interface components {
             start: string | null;
             /** End */
             end: string | null;
-        };
-        /** PostsSchema */
-        PostsSchema: {
-            /** Governmental */
-            governmental: components["schemas"]["PostSchema"][];
-            /** Parliamentary */
-            parliamentary: components["schemas"]["PostSchema"][];
-            /** Opposition */
-            opposition: components["schemas"]["PostSchema"][];
         };
         /** DivisionMiniSchema */
         DivisionMiniSchema: {
@@ -759,19 +722,6 @@ export interface components {
             /** Count */
             count: number;
         };
-        /** BoundarySchema */
-        BoundarySchema: {
-            /** Kml */
-            kml: string;
-            /** Center Latitude */
-            center_latitude: string;
-            /** Center Longitude */
-            center_longitude: string;
-            /** Area */
-            area: string;
-            /** Boundary Length */
-            boundary_length: string;
-        };
         /** ConstituencyFullSchema */
         ConstituencyFullSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -781,19 +731,29 @@ export interface components {
             /** End */
             end: string | null;
             mp: components["schemas"]["MemberMiniSchema"] | null;
-            boundary?: components["schemas"]["BoundarySchema"] | null;
+            /** Boundary */
+            boundary?: Record<string, never> | null;
             /** Results */
             results: components["schemas"]["ResultsSchema"][];
+        };
+        /** ElectionSchema */
+        ElectionSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Date */
+            date: string | null;
+            /** Election Type */
+            election_type: string;
         };
         /** ResultsSchema */
         ResultsSchema: {
             election: components["schemas"]["ElectionSchema"];
-            mp: components["schemas"]["MemberMiniSchema"];
+            mp: components["schemas"]["MemberMiniSchema"] | null;
         };
         /** ConstituencyCandidateSchema */
         ConstituencyCandidateSchema: {
             name: components["schemas"]["Name"];
-            profile: components["schemas"]["MemberMiniSchema"] | null;
+            profile?: components["schemas"]["MemberMiniSchema"] | null;
             party_name: components["schemas"]["Name"];
             party: components["schemas"]["PartyMiniSchema"] | null;
             /** Order */
@@ -803,13 +763,10 @@ export interface components {
         };
         /** ConstituencyResultSchema */
         ConstituencyResultSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
             /** Electorate */
             electorate: number;
             /** Turnout */
             turnout: number;
-            /** Turnout Fraction */
-            turnout_fraction: number;
             /** Result */
             result: string;
             /** Majority */
@@ -1138,6 +1095,7 @@ export interface operations {
     api_routers_constituency_constituencies: {
         parameters: {
             query?: {
+                query?: string;
                 limit?: number;
                 offset?: number;
             };
@@ -1341,6 +1299,7 @@ export interface operations {
     api_routers_party_parties: {
         parameters: {
             query?: {
+                query?: string;
                 limit?: number;
                 offset?: number;
             };

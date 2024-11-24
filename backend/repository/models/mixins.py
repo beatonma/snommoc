@@ -42,6 +42,9 @@ class PeriodQuerySet(BaseQuerySet):
             & (Q(end__isnull=True) | Q(end__gte=dt))
         )
 
+    def get_current(self):
+        return self.filter(end__isnull=True)
+
 
 class PeriodMixin(models.Model):
     """For models that represent something with a start/end date"""

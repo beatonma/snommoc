@@ -1,5 +1,6 @@
 """Field types used in pydantic schemas."""
 
+import re
 from datetime import date, datetime
 from typing import Annotated, Any
 
@@ -15,38 +16,25 @@ from phonenumbers import NumberParseException
 from pydantic import AfterValidator, AliasPath, BeforeValidator, Field
 from pydantic_core import PydanticUndefined
 
+__all__ = [
+    "field",
+    "CoercedStr",
+    "CoercedDate",
+    "CoercedDateTime",
+    "CoercedList",
+    "CoercedColor",
+    "CoercedPhoneNumber",
+]
+
 PHONE_NUMBER_REGION = "GB"
 
-type CoercedStr = Annotated[
-    str | None,
-    BeforeValidator(coerce_to_str),
-    AfterValidator(lambda x: x.strip() if x else None),
-]
-type CoercedBool = Annotated[bool | None, BeforeValidator(coerce_to_boolean)]
-type CoercedDate = Annotated[date | None, BeforeValidator(coerce_to_date)]
-type CoercedDateTime = Annotated[datetime | None, BeforeValidator(coerce_to_datetime)]
-type CoercedList[T] = Annotated[
-    list[T],
-    BeforeValidator(coerce_to_list),
-    Field(default_factory=list),
-]
 
-
-def _coerce_phonenumber(obj: str | None) -> str | None:
-    try:
-        return str(PhoneNumber.from_string(obj, PHONE_NUMBER_REGION))
-    except NumberParseException:
-        return None
-
-
-type CoercedPhoneNumber = Annotated[
-    str | None,
-    BeforeValidator(_coerce_phonenumber),
-    Field(default=None),
-]
-
-
-def field(validation_alias: str, *, default: Any = PydanticUndefined):
+def field(
+    validation_alias: str,
+    *,
+    default: Any = PydanticUndefined,
+    description: str | None = PydanticUndefined,
+):
     """Convenience function for fields with validation_alias set.
 
     `validation_alias` may use dotted notation to indicate that the target
@@ -63,4 +51,51 @@ def field(validation_alias: str, *, default: Any = PydanticUndefined):
         default=default,
         default_factory=default_factory,
         validation_alias=validation_alias,
+        description=description,
     )
+
+
+def _coerce_color(value: str | None) -> str | None:
+    if value is None:
+        return None
+    if not value.startswith("#"):
+        value = f"#{value}"
+    if not re.match(r"#[0-9a-fA-F]{6}", value):
+        return None
+    return value
+
+
+def _coerce_phonenumber(obj: str | None) -> str | None:
+    try:
+        return str(PhoneNumber.from_string(obj, PHONE_NUMBER_REGION))
+    except NumberParseException:
+        return None
+
+
+def _normalize_whitespace(text: str | None) -> str | None:
+    if text is None:
+        return None
+    return text.strip().replace("\r", "")
+
+
+type CoercedStr = Annotated[
+    str | None,
+    BeforeValidator(coerce_to_str),
+    AfterValidator(_normalize_whitespace),
+]
+type CoercedBool = Annotated[bool | None, BeforeValidator(coerce_to_boolean)]
+type CoercedDate = Annotated[date | None, BeforeValidator(coerce_to_date)]
+type CoercedDateTime = Annotated[datetime | None, BeforeValidator(coerce_to_datetime)]
+type CoercedList[T] = Annotated[
+    list[T],
+    BeforeValidator(coerce_to_list),
+    Field(default_factory=list),
+]
+
+type CoercedPhoneNumber = Annotated[
+    CoercedStr,
+    BeforeValidator(_coerce_phonenumber),
+    Field(default=None),
+]
+
+type CoercedColor = Annotated[CoercedStr, AfterValidator(_coerce_color)]

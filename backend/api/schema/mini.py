@@ -55,7 +55,7 @@ class MemberMiniSchema(ParliamentSchema):
 
     @staticmethod
     def resolve_current_posts(obj):
-        return obj.current_posts().values_list("post__name", flat=True)
+        return obj.current_posts()
 
 
 class DivisionMiniSchema(ParliamentSchema):

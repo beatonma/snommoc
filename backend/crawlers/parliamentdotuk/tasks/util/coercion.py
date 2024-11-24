@@ -50,6 +50,9 @@ def coerce_to_boolean(value, default=None) -> bool | None:
 
 
 def coerce_to_date(value) -> date | None:
+    if isinstance(value, date):
+        return value
+
     try:
         return date_parser.parse(value).date()
     except (

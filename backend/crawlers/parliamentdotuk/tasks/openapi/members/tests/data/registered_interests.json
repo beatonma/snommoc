@@ -1,0 +1,376 @@
+{
+  "comment": "Response for Keir Starmer [4514]",
+  "value": [
+    {
+      "id": 12,
+      "name": "1. Employment and earnings",
+      "sortOrder": 0,
+      "interests": [
+        {
+          "id": 4935,
+          "interest": "Role, work or services: Copyright payments for books written before my election to Parliament\r\nPayer: Authors’ Licensing and Collecting Society, 4 Battle Bridge Lane, London SE1 2HX",
+          "createdWhen": "2024-04-18T15:21:14.44",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": [
+            {
+              "id": 4937,
+              "interest": "Payment: £540.18 \r\nReceived on: 20 March 2024. Hours: none.\r\n(Registered 20 March 2024)",
+              "createdWhen": "2024-04-22T15:49:17.13",
+              "lastAmendedWhen": null,
+              "deletedWhen": null,
+              "isCorrection": false,
+              "childInterests": []
+            },
+            {
+              "id": 10850,
+              "interest": "Payment: £205.86 Copyright payments for books written before my election to Parliament\r\nReceived on: 25 September 2024. Hours: no hours entered.\r\n(Registered 30 September 2024)",
+              "createdWhen": "2024-10-02T15:01:29.8166667",
+              "lastAmendedWhen": null,
+              "deletedWhen": null,
+              "isCorrection": false,
+              "childInterests": []
+            }
+          ]
+        },
+        {
+          "id": 4940,
+          "interest": "Role, work or services: Legal services provided before my election to Parliament\r\nPayer: Birnberg Pierce, 14 Inverness Street, London NW1 7HJ",
+          "createdWhen": "2024-04-18T15:20:25.03",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": [
+            {
+              "id": 4941,
+              "interest": "Payment: £927.96 \r\nReceived on: 16 January 2024. Hours: none since my election.\r\n(Registered 23 January 2024)",
+              "createdWhen": "2024-04-18T15:20:25.03",
+              "lastAmendedWhen": null,
+              "deletedWhen": null,
+              "isCorrection": false,
+              "childInterests": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "2. (b) Any other support not included in Category 2(a)",
+      "sortOrder": 1,
+      "interests": [
+        {
+          "id": 5469,
+          "interest": "Name of donor: Lord Waheed Ali\r\nAddress of donor: private\r\nAmount of donation or nature and value if donation in kind: £6,000 for the private office of the Leader of the Opposition\r\nDate received: 21 February 2024\r\nDate accepted: 21 February 2024\r\nDonor status: individual\r\n(Registered 26 February 2024)",
+          "createdWhen": "2024-05-29T16:14:38.52",
+          "lastAmendedWhen": "2024-05-02T15:43:26.0966667",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "3. Gifts, benefits and hospitality from UK sources",
+      "sortOrder": 2,
+      "interests": [
+        {
+          "id": 3116,
+          "interest": "Name of donor: Teescraft Engineering Ltd\r\nAddress of donor: Factory 1, South Church Enterprise Park, Bishop Auckland DL14 6XB\r\nAmount of donation or nature and value if donation in kind: Four tickets with hospitality for Newcastle United v Arsenal, value £1,000\r\nDate received: 4 November 2023\r\nDate accepted: 4 November 2023\r\nDonor status: company, registration 01554968\r\n(Registered 6 November 2023)",
+          "createdWhen": "2024-04-18T15:17:35.53",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 3400,
+          "interest": "Name of donor: Global Media and Entertainment Ltd\r\nAddress of donor: 30 Leicester Square, London WC2H 7LA\r\nAmount of donation or nature and value if donation in kind: Four tickets to the Jingle Bell Ball with hospitality, value £800\r\nDate received: 10 December 2023\r\nDate accepted: 10 December 2023\r\nDonor status: company, registration 06251684\r\n(Registered 19 December 2023)",
+          "createdWhen": "2024-04-18T15:20:46.2",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 3401,
+          "interest": "Name of donor: West Ham United Football Club\r\nAddress of donor: London Stadium E20 2ST\r\nAmount of donation or nature and value if donation in kind: Two tickets for pre-match hospitality in the Chairman’s Lounge and to the match (value is estimated), value £2,000\r\nDate received: 11 February 2024\r\nDate accepted: 11 February 2024\r\nDonor status: company, registration 66516\r\n(Registered 12 February 2024)",
+          "createdWhen": "2024-04-18T15:17:49.6566667",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 4455,
+          "interest": "Name of donor: Norwich City Football Club\r\nAddress of donor: Carrow Road, Norwich NR1 1JE\r\nAmount of donation or nature and value if donation in kind: Four match tickets and hospitality, value £820\r\nDate received: 2 March 2024\r\nDate accepted: 2 March 2024\r\nDonor status: company, registration 00154044\r\n(Registered 4 March 2024)",
+          "createdWhen": "2024-04-18T15:19:28.55",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 4653,
+          "interest": "Name of donor: Premier League\r\nAddress of donor: 57 North Wharf Road, London W2 1HQ\r\nAmount of donation or nature and value if donation in kind: Five tickets with hospitality to Arsenal vs Porto, value £3,000\r\nDate received: 12 March 2024\r\nDate accepted: 12 March 2024\r\nDonor status: company, registration 02719699\r\n(Registered 14 March 2024)",
+          "createdWhen": "2024-04-18T15:19:28.55",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5178,
+          "interest": "Name of donor: Manchester City Football Club\r\nAddress of donor: Etihad Stadium, Ashton New Road, Manchester M11 3FF\r\nAmount of donation or nature and value if donation in kind: Hospitality and match tickets for two people to Manchester City vs Arsenal (value is approximate), value £900\r\nDate received: 31 March 2024\r\nDate accepted: 31 March 2024\r\nDonor status: company, registration 08355862\r\n(Registered 9 April 2024)",
+          "createdWhen": "2024-04-22T15:49:41.41",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5179,
+          "interest": "Name of donor: Brighton and Hove Albion Football Club\r\nAddress of donor: American Express Stadium, Village Way, Brighton BN1 9BL\r\nAmount of donation or nature and value if donation in kind: Four tickets and hospitality to Brighton vs Arsenal (value is approximate), value £500\r\nDate received: 6 April 2024\r\nDate accepted: 6 April 2024\r\nDonor status: company, registration 00081077\r\n(Registered 9 April 2024)",
+          "createdWhen": "2024-04-22T15:49:41.41",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5220,
+          "interest": "Name of donor: Wolverhampton Wanderers Football Club\r\nAddress of donor: Molineux Stadium, Waterloo Road, Wolverhampton WV1 4QR\r\nAmount of donation or nature and value if donation in kind: Four tickets and hospitality to Arsenal vs Wolverhampton Wanderers (value is approximate), value £1,488\r\nDate received: 20 April 2024\r\nDate accepted: 20 April 2024\r\nDonor status: company, registration 1989823\r\n(Registered 23 April 2024)",
+          "createdWhen": "2024-05-02T15:43:34.2133333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5870,
+          "interest": "Name of donor: Lord Waheed Alli\r\nAddress of donor: private\r\nAmount of donation or nature and value if donation in kind: Work clothing, value £16,200\r\nDate received: 17 April 2024\r\nDate accepted: 17 April 2024\r\nDonor status: individual\r\n(Registered 24 April 2024; updated 24 May 2024)",
+          "createdWhen": "2024-11-01T15:51:00.2695044",
+          "lastAmendedWhen": "2024-05-29T16:14:38.52",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5433,
+          "interest": "Name of donor: Tottenham Hotspur Ltd\r\nAddress of donor: Tottenham Hotspur Football Club, Lilywhite House, 782 High Road, London N17 0BX\r\nAmount of donation or nature and value if donation in kind: Five tickets and hospitality to Tottenham Hotspur vs Arsenal (value is approximate), value £2,500\r\nDate received: 28 April 2024\r\nDate accepted: 28 April 2024\r\nDonor status: company, registration 01706358\r\n(Registered 29 April 2024)",
+          "createdWhen": "2024-05-02T15:43:26.0966667",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5845,
+          "interest": "Name of donor: Manchester United\r\nAddress of donor: Old Trafford, Sir Matt Busby Way, Manchester M16 0RA\r\nAmount of donation or nature and value if donation in kind: Two tickets in the Directors’ Box (including dining) at Old Trafford for Manchester United v Arsenal FC (value is approximate), value £1,790\r\nDate received: 12 May 2024\r\nDate accepted: 12 May 2024\r\nDonor status: company, registration 95489\r\n(Registered 20 May 2024)",
+          "createdWhen": "2024-05-29T16:14:30.48",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5828,
+          "interest": "Name of donor: National Theatre\r\nAddress of donor: South Bank, Southwark, London SE1 9PX\r\nAmount of donation or nature and value if donation in kind: Four tickets to see \"Nye\" plus dinner, value £358\r\nDate received: 8 May 2024\r\nDate accepted: 8 May 2024\r\nDonor status: company, registration 749504\r\n(Registered 21 May 2024)",
+          "createdWhen": "2024-05-29T16:14:38.52",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 5843,
+          "interest": "Name of donor: Lord Waheed Alli\r\nAddress of donor: private\r\nAmount of donation or nature and value if donation in kind: Multiple pairs of glasses, value £2,485\r\nDate received: 29 April 2024\r\nDate accepted: 29 April 2024\r\nDonor status: individual\r\n(Registered 22 May 2024)",
+          "createdWhen": "2024-05-29T16:14:38.52",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 6861,
+          "interest": "Name of donor: The Football Association Premier League Limited\r\nAddress of donor: 57 North Wharf Road, London W2 1HQ\r\nAmount of donation or nature and value if donation in kind: Four tickets with hospitality to Taylor Swift concert, value £4,000\r\nDate received: 21 June 2024\r\nDate accepted: 21 June 2024\r\nDonor status: company, registration 02719699\r\n(Registered 22 July 2024)",
+          "createdWhen": "2024-08-16T14:56:19.8233333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 8836,
+          "interest": "Name of donor: Lord Waheed Alli\r\nAddress of donor: private\r\nAmount of donation or nature and value if donation in kind: Accommodation, value £20,437.28\r\nDate received: 29 May 2024 to 13 July 2024\r\nDate accepted: 29 May 2024\r\nDonor status: individual\r\n(Registered 2 August 2024)",
+          "createdWhen": "2024-08-16T15:02:01.3433333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10672,
+          "interest": "Name of donor: The Arsenal Football Club Limited\r\nAddress of donor: Arsenal Football Club, Highbury House, 75 Drayton Park, London N5 1BU\r\nAmount of donation or nature and value if donation in kind: Tickets and hospitality for two people in the Directors' Box (approximate market value £500 each), value £1,000\r\nDate received: 17 August 2024\r\nDate accepted: 17 August 2024\r\nDonor status: company, registration 00109244\r\n(Registered 10 September 2024)",
+          "createdWhen": "2024-11-06T16:18:41.4532566",
+          "lastAmendedWhen": "2024-11-06T16:12:47.1229698",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10695,
+          "interest": "Name of donor: Lord Waheed Alli\r\nAddress of donor: private\r\nAmount of donation or nature and value if donation in kind: Clothing and personal support to spouse, value £6,134\r\nDate received: 1 June 2024\r\nDate accepted: 1 June 2024\r\nDonor status: individual\r\n(Registered 13 September 2024)",
+          "createdWhen": "2024-10-02T15:01:05.4333333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10699,
+          "interest": "Name of donor: The Football Association Ltd\r\nAddress of donor: Wembley Stadium, Wembley, London HA9 0WS\r\nAmount of donation or nature and value if donation in kind: Two tickets and hospitality to Taylor Swift which were offered to and accepted by family members, value £598\r\nDate received: 15 August 2024\r\nDate accepted: 15 August 2024\r\nDonor status: company, registration 00077797\r\n(Registered 15 September 2024)",
+          "createdWhen": "2024-10-02T15:01:05.4333333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10698,
+          "interest": "Name of donor: Universal Music Operations Ltd\r\nAddress of donor: 4 Pancras Square, London, United Kingdom N1C 4AG\r\nAmount of donation or nature and value if donation in kind: Four tickets and hospitality to Taylor Swift. Estimated, value £2,800\r\nDate received: 20 August 2024\r\nDate accepted: 20 August 2024\r\nDonor status: company, registration 00950138\r\n(Registered 15 September 2024)",
+          "createdWhen": "2024-10-02T15:01:05.4333333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10706,
+          "interest": "Name of donor: Tottenham Hotspur Stadium Limited\r\nAddress of donor: Lilywhite House 782 High Road, Tottenham, London, United Kingdom, N17 0BX\r\nAmount of donation or nature and value if donation in kind: Two tickets and hospitality to Tottenham Hotspur vs Arsenal (value is approximate), value £920\r\nDate received: 15 September 2024\r\nDate accepted: 15 September 2024\r\nDonor status: company, registration 10151725\r\n(Registered 16 September 2024)",
+          "createdWhen": "2024-11-06T16:17:35.4212408",
+          "lastAmendedWhen": "2024-11-06T16:16:10.3273596",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10705,
+          "interest": "Name of donor: Arena Racing Corporation Limited\r\nAddress of donor: Millbank Tower, 21-24 Millbank, London SW1P 4QP\r\nAmount of donation or nature and value if donation in kind: Four tickets & hospitality at Doncaster Races, value £1,936\r\nDate received: 14 September 2024\r\nDate accepted: 14 September 2024\r\nDonor status: company, registration 07997040\r\n(Registered 16 September 2024)",
+          "createdWhen": "2024-10-02T15:01:05.4333333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10781,
+          "interest": "Name of donor: Edeline Lee, Studio Garconne Ltd\r\nAddress of donor: 35-37 Ludgate Hill, Office 7, London, London EC4M 7JN\r\nAmount of donation or nature and value if donation in kind: Loan of clothing to my spouse on multiple occasions; single use of a hair and makeup artist for my spouse. Approximate total value of rental of comparable items and hourly fee of hair and make-up professionals, value £839.52\r\nDate received: 19 August 2024 to 27 September 2024\r\nDate accepted: 19 August 2024\r\nDonor status: company, registration 06028213\r\n(Registered 20 September 2024)",
+          "createdWhen": "2024-10-02T15:01:21.62",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "4. Visits outside the UK",
+      "sortOrder": 3,
+      "interests": [
+        {
+          "id": 3251,
+          "interest": "Name of donor: (1) Ministry of Foreign Affairs of the State of Qatar  (2) COP28 Presidency Office\r\nAddress of donor: (1) Almirqab Tower, West Bay, Doha, Qatar  (2) Capital Plaza, Abu Dhabi, United Arab Emirates\r\nEstimate of the probable value (or amount of any donation): (1) Private jet provided for return flights between Dubai and Doha, plus transportation, for me and three members of staff, value £25,508.83  (2) Airport transfer and daily travel by car during COP28 (value is approximate), value £765\r\nDestination of visit: Qatar (Doha) and United Arab Emirates (Dubai)\r\nDates of visit: 30 November 2023 to 3 December 2023\r\nPurpose of visit: Meeting with the Emir of Qatar, travelling from COP28 in Dubai. Attending COP28 as part of my frontbench role.\r\n(Registered 13 December 2023; updated 18 December 2023)",
+          "createdWhen": "2024-10-16T09:11:39.9283507",
+          "lastAmendedWhen": "2024-04-18T15:21:00.32",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "8. Miscellaneous",
+      "sortOrder": 4,
+      "interests": [
+        {
+          "id": 2079,
+          "interest": "Director of The Death Penalty Project.\r\nDate interest ended: 2 September 2024\r\n(Registered 5 June 2015; updated 18 September 2024)",
+          "createdWhen": "2024-10-02T15:01:05.4333333",
+          "lastAmendedWhen": "2024-04-18T15:15:14.3266667",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 2078,
+          "interest": "Leeds University Law Faculty Advisory Board\r\nDate interest ended: 29 April 2024\r\n(Registered 5 June 2015; updated 29 April 2024)",
+          "createdWhen": "2024-05-02T15:43:26.0966667",
+          "lastAmendedWhen": "2024-04-18T15:15:14.3266667",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 2077,
+          "interest": "Member of the Youth Justice Legal Centre’s advisory board. The centre was set up by Just for Kids Law\r\nDate interest ended: 29 April 2024\r\n(Registered 5 June 2015; updated 29 April 2024)",
+          "createdWhen": "2024-05-13T10:25:48.814556",
+          "lastAmendedWhen": "2024-05-02T15:43:26.0966667",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 2081,
+          "interest": "Associate Tenant, Doughty Street Chambers\r\nDate interest arose: 1 May 2015\r\nDate interest ended: 26 September 2024\r\n(Registered 6 January 2016; updated 18 September 2024)",
+          "createdWhen": "2024-10-02T15:01:21.62",
+          "lastAmendedWhen": "2024-04-18T15:15:14.3266667",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 2080,
+          "interest": "Member of Advisory Board, European Institute, University College, London\r\nDate interest arose: 1 October 2015\r\nDate interest ended: 29 April 2024\r\n(Registered 6 January 2016; updated 29 April 2024)",
+          "createdWhen": "2024-05-02T15:43:26.0966667",
+          "lastAmendedWhen": "2024-04-18T15:15:14.3266667",
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 3552,
+          "interest": "I returned an advance payment of £18,450 to Harper Collins because I am no longer writing the book for which the advance was received.\r\nDate interest arose: 20 December 2023\r\nAdditional information: This payment was originally registered on 18 May 2022.\r\n(Registered 5 January 2024)",
+          "createdWhen": "2024-04-18T15:20:17.9633333",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        },
+        {
+          "id": 10858,
+          "interest": "Name of donor: The Arsenal Football Club Ltd\r\nI remain a paid season ticket holder at Arsenal but, given security advice, the club has said it will find seats for my son and I in the Directors’ Box whenever practicable.\r\nDate interest arose: 27 September 2024\r\n(Registered 30 September 2024)",
+          "createdWhen": "2024-10-02T15:01:29.8166667",
+          "lastAmendedWhen": null,
+          "deletedWhen": null,
+          "isCorrection": false,
+          "childInterests": []
+        }
+      ]
+    }
+  ],
+  "links": [
+    { "rel": "self", "href": "/Members/4514/Interests", "method": "GET" },
+    { "rel": "overview", "href": "/Members/4514", "method": "GET" },
+    { "rel": "synopsis", "href": "/Members/4514/Synopsis", "method": "GET" },
+    {
+      "rel": "contactInformation",
+      "href": "/Members/4514/Contact",
+      "method": "GET"
+    }
+  ]
+}

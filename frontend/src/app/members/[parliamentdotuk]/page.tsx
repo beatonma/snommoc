@@ -79,12 +79,15 @@ const MemberCard = (props: MemberComponentProps) => {
           </div>
 
           <div>
-            <OptionalDiv condition={member.current_post} title="Current post" />
+            <OptionalDiv
+              condition={member.current_posts}
+              title="Current post"
+            />
 
             <div className="flex gap-1">
               <Party party={member.party} />
               <MpStatus
-                active={member.active}
+                active={member.is_active}
                 house={member.house}
                 constituency={member.constituency}
               />

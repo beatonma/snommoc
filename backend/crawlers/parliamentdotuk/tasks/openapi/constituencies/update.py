@@ -10,7 +10,6 @@ from repository.models import (
     Election,
     Person,
 )
-from repository.resolution.members import get_member_for_election_result, normalize_name
 
 from ..parties.update import update_party
 from ..schema import ResponseItem
@@ -126,20 +125,16 @@ def _update_election_result_detail(data: dict, context: TaskContext, func_kwargs
     )
 
     for candidate in data.candidates:
-        _update_candidate(candidate, detail, constituency, election)
+        _update_candidate(candidate, detail)
 
 
 def _update_candidate(
     candidate: schema.ElectionCandidate,
     detail: ConstituencyResultDetail,
-    constituency: Constituency,
-    election: Election,
 ):
-    person = get_member_for_election_result(
-        normalize_name(candidate.name),
-        constituency,
-        election,
-    )
+    person = None
+    if person_id := candidate.parliamentdotuk:
+        person = Person.objects.get_or_none(parliamentdotuk=person_id)
     party = None
     party_name = None
     if party_data := candidate.party:

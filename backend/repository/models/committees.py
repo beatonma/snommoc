@@ -1,11 +1,11 @@
 from django.db import models
-
 from repository.models.mixins import (
     BaseModel,
     ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,
 )
+from util.cleanup import Deprecated
 
 
 class Committee(ParliamentDotUkMixin, BaseModel):
@@ -16,6 +16,11 @@ class Committee(ParliamentDotUkMixin, BaseModel):
 
 
 class CommitteeMember(PersonMixin, PeriodMixin, BaseModel):
+    person = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        related_name="committees",
+    )
     committee = models.ForeignKey(
         "Committee",
         on_delete=models.CASCADE,
@@ -24,8 +29,16 @@ class CommitteeMember(PersonMixin, PeriodMixin, BaseModel):
     def __str__(self):
         return f"{self.person}: {self.committee}"
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["person", "committee", "start"],
+                name="unique_committee_per_person_per_start_date",
+            )
+        ]
 
-class CommitteeChair(PeriodMixin, BaseModel):
+
+class CommitteeChair(Deprecated, PeriodMixin, BaseModel):
     member = models.ForeignKey(
         "CommitteeMember",
         on_delete=models.CASCADE,

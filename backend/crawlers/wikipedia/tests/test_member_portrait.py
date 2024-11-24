@@ -3,10 +3,11 @@ from unittest.mock import patch
 from basetest.testcase import LocalTestCase
 from crawlers.context import TaskContext
 from crawlers.wikipedia.tasks.member_portrait import update_wikipedia_member_portraits
+from notifications.models import TaskNotification
 from repository.models import MemberPortrait, Person
 from repository.tests.data.create import create_sample_person
 
-CONTEXT = TaskContext(None, None)
+CONTEXT = TaskContext(None, TaskNotification())
 
 """
 Edited sample response for main images from url:

@@ -1,14 +1,14 @@
-from .address import PhysicalAddress, WebAddress
+from .address import AddressType, PhysicalAddress, WebAddress
 from .bill import Bill
 from .committees import Committee, CommitteeChair, CommitteeMember
 from .constituency import (
     Constituency,
     ConstituencyAlsoKnownAs,
     ConstituencyBoundary,
+    ConstituencyRepresentative,
     ConstituencyResult,
     UnlinkedConstituency,
 )
-from .declared_interests import DeclaredInterest, DeclaredInterestCategory
 from .divisions import (
     CommonsDivision,
     CommonsDivisionVote,
@@ -24,9 +24,10 @@ from .houses import House, HouseMembership
 from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech
 from .organisation import Organisation
-from .party import Party, PartyAlsoKnownAs, PartyAssociation
+from .party import Party, PartyAffiliation, PartyAlsoKnownAs
 from .person import LifeEvent, Person, PersonAlsoKnownAs
 from .portrait import MemberPortrait
 from .posts import Post, PostHolder
+from .registered_interests import RegisteredInterest, RegisteredInterestCategory
 from .session import ParliamentarySession
 from .subjects_of_interest import SubjectOfInterest, SubjectOfInterestCategory

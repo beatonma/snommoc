@@ -23,6 +23,7 @@ const Member = (props: MemberMiniSchema) => {
     <Link
       href={`/members/${props.parliamentdotuk}/`}
       className="flex overflow-hidden sm:rounded-lg"
+      title={`${props.parliamentdotuk}`}
     >
       <PartyIconBackground party={props.party} className="flex grow gap-3 p-3">
         <MemberPortrait
@@ -34,7 +35,7 @@ const Member = (props: MemberMiniSchema) => {
           <h2 className="text-xl font-semibold">{props.name}</h2>
           <OptionalDiv
             title="Current post"
-            condition={props.current_post}
+            condition={props.current_posts}
             className="line-clamp-1"
           />
           <div className="separated flex flex-wrap">

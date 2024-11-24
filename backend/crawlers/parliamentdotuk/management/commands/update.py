@@ -72,7 +72,6 @@ class Command(TaskCommand):
     @staticmethod
     def handle_members(scope: str, **kwargs) -> Callable:
         return {
-            "active": parliament.update_active_member_details,
-            "all": parliament.update_all_members_basic_info,
+            "active": parliament.update_current_members,
             "portraits": multi_source.update_member_portraits,
-        }.get(scope, parliament.update_active_member_details)
+        }.get(scope, parliament.update_current_members)

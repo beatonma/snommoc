@@ -1,0 +1,71 @@
+{
+  "comment": "Response for Lord Aberdare [3898]",
+  "value": [
+    {
+      "id": 2095,
+      "type": "Public life",
+      "typeId": 2,
+      "title": "Trustee",
+      "organisation": "National Library of Wales",
+      "startMonth": null,
+      "startYear": 2012,
+      "endMonth": null,
+      "endYear": 2021
+    },
+    {
+      "id": 9,
+      "type": "Public life",
+      "typeId": 2,
+      "title": "Deputy Lieutenant",
+      "organisation": "Dyfed",
+      "startMonth": null,
+      "startYear": 2009,
+      "endMonth": null,
+      "endYear": 2022
+    },
+    {
+      "id": 3337,
+      "type": "Non political",
+      "typeId": 1,
+      "title": "Director",
+      "organisation": "WALTZ Programmes Ltd",
+      "startMonth": null,
+      "startYear": 2009,
+      "endMonth": null,
+      "endYear": 2012
+    },
+    {
+      "id": 8,
+      "type": "Public life",
+      "typeId": 2,
+      "title": "Trustee",
+      "organisation": "St John Cymru - Wales",
+      "startMonth": null,
+      "startYear": 2008,
+      "endMonth": null,
+      "endYear": 2018
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "/Members/3898/Experience",
+      "method": "GET"
+    },
+    {
+      "rel": "overview",
+      "href": "/Members/3898",
+      "method": "GET"
+    },
+    {
+      "rel": "synopsis",
+      "href": "/Members/3898/Synopsis",
+      "method": "GET"
+    },
+    {
+      "rel": "contactInformation",
+      "href": "/Members/3898/Contact",
+      "method": "GET"
+    }
+  ]
+}

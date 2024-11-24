@@ -4,17 +4,20 @@ from repository.models.party import PartyTheme
 
 
 def update_party(data: schema.Party) -> Party:
-    party, _ = Party.objects.update_or_create(
+    party, created = Party.objects.update_or_create(
         parliamentdotuk=data.parliamentdotuk,
         create_defaults={
             "name": data.name,
         },
     )
 
+    if not created:
+        return party
+
     if (background := data.background_color) and (foreground := data.foreground_color):
         PartyTheme.objects.get_or_create(
             party=party,
-            create_defaults={
+            defaults={
                 "primary": background,
                 "on_primary": foreground,
             },

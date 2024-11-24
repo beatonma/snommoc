@@ -1,0 +1,64 @@
+{
+  "comment": "Response for Keir Starmer [4514]",
+  "value": [
+    {
+      "type": "Parliamentary office",
+      "typeDescription": null,
+      "typeId": 1,
+      "isPreferred": false,
+      "isWebAddress": false,
+      "notes": null,
+      "line1": "House of Commons",
+      "line2": "London",
+      "postcode": "SW1A 0AA",
+      "email": "keir.starmer.mp@parliament.uk"
+    },
+    {
+      "type": "Constituency office",
+      "typeDescription": null,
+      "typeId": 4,
+      "isPreferred": false,
+      "isWebAddress": false,
+      "notes": null,
+      "line1": "Constituency Office",
+      "email": "keir.starmer.constituency@parliament.uk"
+    },
+    {
+      "type": "Prime Minister's office",
+      "typeDescription": null,
+      "typeId": 1009,
+      "isPreferred": false,
+      "isWebAddress": true,
+      "notes": null,
+      "line1": "https://contact.no10.gov.uk/"
+    },
+    {
+      "type": "Website",
+      "typeDescription": null,
+      "typeId": 6,
+      "isPreferred": false,
+      "isWebAddress": true,
+      "notes": null,
+      "line1": "http://www.keirstarmer.com/"
+    },
+    {
+      "type": "X (formerly Twitter)",
+      "typeDescription": null,
+      "typeId": 7,
+      "isPreferred": false,
+      "isWebAddress": true,
+      "notes": null,
+      "line1": "https://twitter.com/keir_starmer"
+    }
+  ],
+  "links": [
+    { "rel": "self", "href": "/Members/4514/Contact", "method": "GET" },
+    { "rel": "overview", "href": "/Members/4514", "method": "GET" },
+    { "rel": "synopsis", "href": "/Members/4514/Synopsis", "method": "GET" },
+    {
+      "rel": "contactInformation",
+      "href": "/Members/4514/Contact",
+      "method": "GET"
+    }
+  ]
+}

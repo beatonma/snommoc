@@ -4,8 +4,9 @@ from basetest.testcase import LocalTestCase
 from crawlers.context import TaskContext
 from crawlers.wikipedia import wikipedia_client
 from crawlers.wikipedia.tasks import schema
+from notifications.models import TaskNotification
 
-CONTEXT = TaskContext(None, None)
+CONTEXT = TaskContext(None, TaskNotification())
 
 _SAMPLE = {
     "batchcomplete": "",

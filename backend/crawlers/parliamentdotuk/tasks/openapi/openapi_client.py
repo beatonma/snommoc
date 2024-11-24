@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Literal, Union
 
 from crawlers.context import TaskContext
 from crawlers.network import get_json
@@ -11,19 +11,24 @@ ItemFunc receives:
 - an TaskNotification which can be used to report progress or errors (may be None)
 - a dict of additional kwargs which provide context data (may be None, or missing)
 """
-type ItemFunc = Union[
-    Callable[[dict, TaskContext, dict | None], None],
-    Callable[[dict, TaskContext], None],
+type ItemFunc[T] = Union[
+    Callable[[dict, TaskContext, dict | None], T],
+    Callable[[dict, TaskContext], T],
 ]
 
 
-def _apply_item_func(
+type ItemFuncStatus = Literal["continue", "exit"]
+
+
+def _apply_item_func[
+    T
+](
     item: dict,
-    item_func: ItemFunc,
+    item_func: ItemFunc[T],
     context: TaskContext,
     report: Callable[[], str],
     func_kwargs: dict | None,
-) -> bool:
+) -> (T | ItemFuncStatus):
     """
     :param report: A function that describes the item for useful error logging.
     :return: True if the caller should continue its task, False if the caller should halt the task.
@@ -32,23 +37,24 @@ def _apply_item_func(
 
     try:
         if func_kwargs is None:
-            item_func(item, context)
+            return item_func(item, context)
         else:
-            item_func(item, context, func_kwargs)
-        return True
-
-    except HttpError as e:
-        context.warning(f"Item response failed with status={e.status_code}: {report()}")
-        return True
+            return item_func(item, context, func_kwargs)
 
     except ValidationError as e:
         context.error(e, "Schema validation failed")
         raise e
 
+    except HttpError as e:
+        context.warning(
+            f"Item response failed with status={e.status_code}: {report()}\n{e}"
+        )
+        return "exit"
+
     except Exception as e:
         context.warning(f"Failed to read item: {report()}")
         context.mark_as_failed(e)
-        return False
+        return "exit"
 
 
 def foreach(
@@ -57,7 +63,7 @@ def foreach(
     context: TaskContext,
     items_key: str = "items",
     func_kwargs: dict | None = None,
-):
+) -> None:
     """
     Retrieve a JSON list from endpoint_url and pass each item to item_func for processing.
     Paging is handled automatically until no more items are returned, or max_items count is reached (if specified).
@@ -74,13 +80,11 @@ def foreach(
     item_count = context.skip_items
     items_per_page = context.items_per_page
 
-    def _item_notification_info(_index: int):
-        params = f"skip={item_count}&take={items_per_page}"
-
-        return f"Item #{_index} of {endpoint_url}?{params}"
-
     while True:
         if context.is_finished():
+            context.warning(
+                f"Context marked as done: complete={context.complete} | failed={context.failed}"
+            )
             return
         data = get_json(
             endpoint_url,
@@ -110,14 +114,14 @@ def foreach(
             break
 
         for index, item in enumerate(items):
-            should_continue = _apply_item_func(
+            func_status = _apply_item_func(
                 item,
                 item_func,
                 context,
-                lambda: _item_notification_info(index),
+                lambda: f"Item #{index} of {endpoint_url}?skip={item_count}&take={items_per_page}",
                 func_kwargs,
             )
-            if not should_continue:
+            if func_status == "exit":
                 return
 
             item_count += 1
@@ -126,15 +130,18 @@ def foreach(
 
         if data_is_dict:
             if item_count >= data.get("totalResults", 0):
+                context.info(f"Finished updating {item_count} items")
                 break
 
 
-def get(
+def get[
+    T
+](
     endpoint_url: str,
-    item_func: ItemFunc,
+    item_func: ItemFunc[T],
     context: TaskContext,
     func_kwargs: dict | None = None,
-):
+) -> T:
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.
     """
@@ -149,7 +156,7 @@ def get(
             f"openapi_client.get expects a response with a dictionary, got {item}"
         )
 
-    _apply_item_func(
+    return _apply_item_func(
         item,
         item_func,
         context,

@@ -21,6 +21,8 @@ class Post(ParliamentDotUkMixin, BaseModel):
         null=True,
         blank=True,
     )
+    additional_info = models.CharField(max_length=512, null=True, blank=True)
+    additional_info_link = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name

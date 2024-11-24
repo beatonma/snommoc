@@ -48,6 +48,7 @@ def unused(func):
 class Deprecated:
     def __init__(self, *args, **kwargs):
         log.warning(f"DEPRECATED: Class {self.__class__.__name__}")
+        super().__init__(*args, **kwargs)
 
 
 def deprecated(func):

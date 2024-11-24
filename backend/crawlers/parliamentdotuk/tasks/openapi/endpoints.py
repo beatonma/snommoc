@@ -22,6 +22,19 @@ CONSTITUENCY_RESULTS_FULL = "https://members-api.parliament.uk/api/Location/Cons
 MEMBER_PORTRAIT_URL = (
     "https://members-api.parliament.uk/api/Members/{member_id}/PortraitUrl"
 )
+MEMBERS_CURRENT = "https://members-api.parliament.uk/api/Members/Search"
+MEMBERS_HISTORICAL = "https://members-api.parliament.uk/api/Members/SearchHistorical"
+MEMBER_BIOGRAPHY = "https://members-api.parliament.uk/api/Members/{member_id}/Biography"
+MEMBER_CONTACT = "https://members-api.parliament.uk/api/Members/{member_id}/Contact"
+MEMBER_EXPERIENCE = (
+    "https://members-api.parliament.uk/api/Members/{member_id}/Experience"
+)
+MEMBER_REGISTERED_INTERESTS = (
+    "https://members-api.parliament.uk/api/Members/{member_id}/RegisteredInterests"
+)
+MEMBER_SUBJECTS_OF_INTEREST = (
+    "https://members-api.parliament.uk/api/Members/{member_id}/Focus"
+)
 
 
 def constituency_boundary(constituency_id: int) -> str:
@@ -68,3 +81,23 @@ def bill_publications(bill_id: int) -> str:
 
 def member_portrait(member_id: int) -> str:
     return MEMBER_PORTRAIT_URL.format(member_id=member_id)
+
+
+def member_biography(member_id: int) -> str:
+    return MEMBER_BIOGRAPHY.format(member_id=member_id)
+
+
+def member_contact(member_id: int) -> str:
+    return MEMBER_CONTACT.format(member_id=member_id)
+
+
+def member_experience(member_id: int) -> str:
+    return MEMBER_EXPERIENCE.format(member_id=member_id)
+
+
+def member_registered_interests(member_id: int) -> str:
+    return MEMBER_REGISTERED_INTERESTS.format(member_id=member_id)
+
+
+def member_subjects_of_interest(member_id: int) -> str:
+    return MEMBER_SUBJECTS_OF_INTEREST.format(member_id=member_id)

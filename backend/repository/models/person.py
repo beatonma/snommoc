@@ -34,13 +34,11 @@ class PersonQuerySet(BaseQuerySet):
         )
         return member
 
-    def filter_name(self, name: str):
-        return self.filter(
-            Q(name__iexact=name) | Q(personalsoknownas__alias__iexact=name)
-        )
-
     def filter(self, *args, **kwargs) -> "PersonQuerySet":
         return cast("PersonQuerySet", super().filter(*args, **kwargs))
+
+    def filter_name(self, name: str):
+        return self.filter(Q(name__iexact=name) | Q(aliases__alias__iexact=name))
 
     def active(self) -> "PersonQuerySet":
         return self.filter(is_active=True)
@@ -149,12 +147,15 @@ class Person(
         help_text="Whether this person currently has a seat in parliament.",
     )
 
-    def current_posts(self):
+    def current_posts_qs(self):
         from repository.models.posts import PostHolder
 
         return PostHolder.objects.filter(person=self, end__isnull=True).order_by(
             "-start"
         )
+
+    def current_posts(self):
+        return self.current_posts_qs().values_list("post__name", flat=True)
 
     def age(self) -> int:
         if self.date_of_death:
@@ -199,6 +200,11 @@ class Person(
 
 
 class PersonAlsoKnownAs(PersonMixin, BaseModel):
+    person = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        related_name="aliases",
+    )
     alias = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
 
     class Meta:

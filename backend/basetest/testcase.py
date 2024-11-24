@@ -1,10 +1,3 @@
-import sys
-from io import StringIO
-from unittest import skipIf
-from unittest.mock import Mock, patch
-
-import django.core.management
-import pytest
 from django.test import TestCase
 
 
@@ -36,108 +29,11 @@ class BaseTestCase(TestCase):
     def assertNoneCreated(self, model_class, msg=None):
         self.assertEqual(model_class.objects.all().count(), 0, msg=msg)
 
-    def assertQuerysetSize(self, queryset, expected_length: int, msg=None):
-        self.assertLengthEquals(queryset.all(), expected_length, msg=msg)
-
-    def assertContentsEqual(self, first: list, second: list, msg=None):
-        """Ensure the lists have the same items, ignoring the order of appearance."""
-        differences = []
-
-        if len(first) != len(second):
-            raise AssertionError(
-                "assertContentsEqual failed: Lists have different lengths"
-                f" [{len(first)} != {len(second)}]"
-            )
-
-        def appearances(item, lst) -> int:
-            return len(list(filter(lambda x: x == item, lst)))
-
-        for item in set(first + second):
-            in_first = appearances(item, first)
-            in_second = appearances(item, second)
-            if in_first != in_second:
-                differences.append((item, in_first, in_second))
-
-        if differences:
-            print(f"differences: {differences}")
-            message = "\n".join(
-                [
-                    f"in_first={in_first} in_second={in_second} item={item}"
-                    for (item, in_first, in_second) in differences
-                ]
-            )
-            raise AssertionError(f"assertContentsEqual failed [{msg or ''}]: {message}")
-        else:
-            print(f"Lists have same items {first}, {second}")
-
-
-class LocalTestCalledNetwork(Exception):
-    """
-    LocalTestCase implementations should never make network calls!
-    """
-
-    pass
+    def assertQuerysetSize(self, queryset, expected_count: int, msg=None):
+        self.assertEqual(queryset.all().count(), expected_count, msg=msg)
 
 
 class LocalTestCase(BaseTestCase):
-    """Tests that use only local data - no external network calls!
-
-    Local tests run by default but are disabled when `-network` command line flag is passsed to runtests.
-    """
-
-    pass
-
-
-class LocalManagementTestCase(LocalTestCase):
-    """Tests for manage.py commands."""
-
-    command = None
-
-    def call_command(self, *args, sync: bool = True, **kwargs) -> str:
-        from django.core.management import CommandError, call_command
-
-        if self.command is None:
-            raise NotImplementedError("LocalManagementTestCase must set self.command!")
-
-        print(
-            f"Running `manage.py {self.command} args={args} kwargs={kwargs}"
-            f" {'-sync' if sync else ''}`"
-        )
-
-        out = StringIO()
-        try:
-            # Bypass @lru_cache decorator on get_commands to make sure we can
-            # find commands for the current state of settings.INSTALLED_APPS.
-            with patch.object(
-                django.core.management,
-                "get_commands",
-                side_effect=Mock(wraps=django.core.management.get_commands.__wrapped__),
-            ):
-                call_command(
-                    self.command,
-                    *args,
-                    stdout=out,
-                    stderr=StringIO(),
-                    sync=sync,
-                    **kwargs,
-                )
-
-        except CommandError as e:
-            print(e)
-            raise e
-
-        return out.getvalue()
-
-
-@pytest.mark.skipif("not config.getoption('network')")
-@skipIf(
-    "manage.py" in sys.argv,
-    reason="Use `pytest --network` to run tests from NetworkTestCase.",
-)
-class NetworkTestCase(BaseTestCase):
-    """Tests that interact a remote server.
-
-    Network tasks are disabled by default but can be executed by passing the `-network` command line flag to runtests.
-    """
+    """Tests that use only local data - no external network calls!"""
 
     pass

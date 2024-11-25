@@ -6,7 +6,6 @@ from repository.models.mixins import (
     PersonMixin,
     SocialMixin,
 )
-from util.cleanup import Deprecated
 
 
 class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
@@ -60,99 +59,27 @@ class ConstituencyRepresentative(PersonMixin, PeriodMixin, BaseModel):
     constituency = models.ForeignKey(
         "Constituency",
         on_delete=models.CASCADE,
-        related_name="mps",
+        related_name="representatives",
+        related_query_name="representative",
     )
+
+    def election_results(self):
+        from repository.models import ConstituencyResult
+
+        return ConstituencyResult.objects.filter_date_range(
+            self.start, self.end
+        ).filter(
+            person=self.person,
+            constituency=self.constituency,
+        )
 
     def __str__(self):
         return f"{self.constituency.name} {self.describe_timespan()}"
 
-
-class ConstituencyResult(Deprecated, PeriodMixin, BaseModel):
-    """
-    Track which MP won in this constituency at this election.
-    """
-
-    election = models.ForeignKey(
-        "Election",
-        on_delete=models.CASCADE,
-    )
-
-    mp = models.ForeignKey(
-        "Person",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        default=None,
-    )
-
-    constituency = models.ForeignKey(
-        "Constituency",
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return f"{self.election} | {self.constituency}"
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["election", "constituency", "mp"],
-                name="unique_constituency_result",
-            )
+                fields=["person", "constituency", "start"],
+                name="unique_person_per_constituency_per_startdate",
+            ),
         ]
-        ordering = ["constituency", "election"]
-
-
-class UnlinkedConstituency(Deprecated, PeriodMixin, BaseModel):
-    """
-    A placeholder for a constituency which is known by name only.
-
-    [ConstituencyResult] and [ContestedElection] source data only provides a name (no ID),
-    and sometimes we are unable to resolve that name to a canonical [Constituency] instance.
-
-    In those cases, create an UnlinkedConstituency which can be checked manually.
-
-    See :py:func:`<repository.resolution.resolve_unlinked_constituency>`
-    """
-
-    name = models.CharField(max_length=64)
-    election = models.ForeignKey(
-        "Election",
-        on_delete=models.CASCADE,
-    )
-
-    person = models.ForeignKey(
-        "Person",
-        on_delete=models.CASCADE,
-    )
-
-    person_won = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = "Unlinked constituencies"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["name", "person", "election"],
-                name="unique_election_result",
-            )
-        ]
-
-
-class ConstituencyAlsoKnownAs(Deprecated, PeriodMixin, BaseModel):
-    canonical = models.ForeignKey(
-        "Constituency",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="+",
-    )
-    name = models.CharField(max_length=64, default="")
-
-    def __str__(self):
-        return f"{self.name} -> {self.canonical.name} [{self.canonical_id}]"
-
-    class Meta:
-        verbose_name_plural = "Constituency AKAs"

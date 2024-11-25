@@ -4,7 +4,6 @@ from django.db.models import QuerySet
 from repository.apps import RepositoryConfig
 from repository.models import (
     Constituency,
-    ConstituencyAlsoKnownAs,
     Party,
     PartyAlsoKnownAs,
     Person,
@@ -49,7 +48,6 @@ class RepositoryAdmin(BaseAdmin):
 
 
 @admin.register(
-    ConstituencyAlsoKnownAs,
     Party,
     PartyAlsoKnownAs,
     PersonAlsoKnownAs,

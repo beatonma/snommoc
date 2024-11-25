@@ -6,7 +6,7 @@ from repository.models.mixins import BaseModel, PeriodMixin, PeriodQuerySet
 
 
 class MotdQuerySet(PeriodQuerySet):
-    def get_for_date(self, dt: date):
+    def filter_date(self, dt: date):
         return self.filter(
             Q(display=True)
             & (Q(start__isnull=True) | Q(start__lte=dt))

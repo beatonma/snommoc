@@ -18,7 +18,7 @@ def zeitgeist(request: HttpRequest):
     lords_divisions = items.for_target_type(LordsDivision)
     bills = items.for_target_type(Bill)
 
-    motd = MessageOfTheDay.objects.get_for_date(today)
+    motd = MessageOfTheDay.objects.filter_date(today)
 
     return {
         "motd": motd,

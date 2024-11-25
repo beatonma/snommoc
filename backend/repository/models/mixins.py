@@ -15,6 +15,20 @@ class BaseQuerySet(QuerySet):
             return None
 
 
+class UnresolvedQuerySet(BaseQuerySet):
+    """A queryset for models which have fields that may not be set automatically.
+
+    e.g. A model has a Person foreign key but its source data does not include
+    an ID so the Person cannot be created and may not be resolved from available data.
+    """
+
+    def unresolved(self):
+        """Returns a queryset whose entries have unresolved values."""
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.unresolved() has not been implemented"
+        )
+
+
 class BaseModel(models.Model, BaseModelMixin):
     """
     Not a mixin as such. All concrete model implementations should extend from this.
@@ -36,13 +50,16 @@ class PersonMixin(models.Model):
 
 
 class PeriodQuerySet(BaseQuerySet):
-    def get_for_date(self, dt: date):
+    def filter_date_range(self, start: date | None, end: date | None):
         return self.filter(
-            (Q(start__isnull=True) | Q(start__lte=dt))
-            & (Q(end__isnull=True) | Q(end__gte=dt))
+            (Q(start__isnull=True) | Q(start__lte=end))
+            & (Q(end__isnull=True) | Q(end__gte=start))
         )
 
-    def get_current(self):
+    def filter_date(self, dt: date):
+        return self.filter_date_range(dt, dt)
+
+    def filter_current(self):
         return self.filter(end__isnull=True)
 
 

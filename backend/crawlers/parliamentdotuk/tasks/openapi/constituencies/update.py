@@ -49,8 +49,8 @@ def update_election_results(context: TaskContext):
         )
 
 
-def _update_constituency(data: dict, context: TaskContext):
-    data = ResponseItem[schema.ConstituencyItem].model_validate(data)
+def _update_constituency(response_data: dict, context: TaskContext):
+    data = ResponseItem[schema.ConstituencyItem].model_validate(response_data)
 
     try:
         member = Person.objects.get(parliamentdotuk=data.member_id)
@@ -68,8 +68,8 @@ def _update_constituency(data: dict, context: TaskContext):
     )
 
 
-def _update_boundary(data: dict, context: TaskContext, func_kwargs: dict):
-    data = schema.ConstituencyBoundary.model_validate(data)
+def _update_boundary(response_data: dict, context: TaskContext, func_kwargs: dict):
+    data = schema.ConstituencyBoundary.model_validate(response_data)
 
     ConstituencyBoundary.objects.update_or_create(
         constituency_id=func_kwargs["constituency_id"],
@@ -79,8 +79,10 @@ def _update_boundary(data: dict, context: TaskContext, func_kwargs: dict):
     )
 
 
-def _update_election_result(data: dict, context: TaskContext, func_kwargs: dict):
-    data = ResponseItem[list[schema.ElectionResult]].model_validate(data)
+def _update_election_result(
+    response_data: dict, context: TaskContext, func_kwargs: dict
+):
+    data = ResponseItem[list[schema.ElectionResult]].model_validate(response_data)
     constituency = Constituency.objects.get(
         parliamentdotuk=func_kwargs["constituency_id"]
     )
@@ -104,14 +106,22 @@ def _update_election_result(data: dict, context: TaskContext, func_kwargs: dict)
         )
 
 
-def _update_election_result_detail(data: dict, context: TaskContext, func_kwargs: dict):
-    data = ResponseItem[schema.ElectionResult].model_validate(data).value
+def _update_election_result_detail(
+    response_data: dict, context: TaskContext, func_kwargs: dict
+):
+    data = ResponseItem[schema.ElectionResult].model_validate(response_data).value
     constituency = func_kwargs["constituency"]
     election = func_kwargs["election"]
 
-    result, _ = ConstituencyResult.objects.update_or_create(
+    winner_name, winner_person = _get_winning_candidate(data.candidates)
+
+    result, _ = ConstituencyResult.objects.get_or_create(
         constituency=constituency,
         election=election,
+        defaults={
+            "mp": winner_person,
+            "mp_name": winner_name,
+        },
     )
 
     detail, _ = ConstituencyResultDetail.objects.update_or_create(
@@ -126,6 +136,36 @@ def _update_election_result_detail(data: dict, context: TaskContext, func_kwargs
 
     for candidate in data.candidates:
         _update_candidate(candidate, detail)
+
+
+def _get_winning_candidate(
+    candidates: list[schema.ElectionCandidate],
+) -> tuple[str | None, Person | None]:
+    """Resolve a Person instance for the winner, or their name if resolution unsuccessful.
+
+    Returns:
+        (`None`, `None`) if the winning candidate could not be found at all - shouldn't happen.
+        (`None`, `Person`) if a Person instance was resolved.
+        (`str`, `None`) with the winner's name if a Person instance was not resolved.
+    """
+    winner: schema.ElectionCandidate | None = None
+    for x in candidates:
+        if x.rank_order == 1:
+            winner = winner
+
+    if not winner:
+        return None, None
+
+    if winner.parliamentdotuk:
+        return None, Person.objects.get_member(winner.parliamentdotuk, name=winner.name)
+
+    # Try to resolve Person instance by name
+    winner_name = winner.name
+    qs = Person.objects.filter_name(winner_name)
+    if qs.count() == 1:
+        return None, qs.first()
+
+    return winner_name, None
 
 
 def _update_candidate(

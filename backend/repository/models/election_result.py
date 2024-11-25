@@ -1,6 +1,61 @@
 from django.db import models
-from repository.models.mixins import BaseModel
+from repository.models.mixins import (
+    BaseModel,
+    PeriodMixin,
+    PeriodQuerySet,
+    UnresolvedQuerySet,
+)
 from repository.models.person import NAME_MAX_LENGTH
+
+
+class ConstituencyResultQuerySet(UnresolvedQuerySet, PeriodQuerySet):
+    def unresolved(self):
+        return self.filter(mp__isnull=True)
+
+
+class ConstituencyResult(PeriodMixin, BaseModel):
+    """
+    Track which MP won in this constituency at this election.
+    """
+
+    objects = ConstituencyResultQuerySet.as_manager()
+    election = models.ForeignKey(
+        "Election",
+        on_delete=models.CASCADE,
+    )
+    constituency = models.ForeignKey(
+        "Constituency",
+        on_delete=models.CASCADE,
+    )
+
+    winner = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="constituency_results",
+        related_query_name="constituency_result",
+    )
+    winner_name = models.CharField(max_length=NAME_MAX_LENGTH, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.winner:
+            # If mp has been resolved, mp_name is no longer needed.
+            self.winner_name = None
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.election} | {self.constituency}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["election", "constituency"],
+                name="unique_constituency_result",
+            )
+        ]
+        ordering = ["constituency", "election"]
 
 
 class ConstituencyResultDetail(BaseModel):
@@ -26,6 +81,7 @@ class ConstituencyCandidate(BaseModel):
         "ConstituencyResultDetail",
         on_delete=models.CASCADE,
         related_name="candidates",
+        related_query_name="candidate",
     )
     name = models.CharField(max_length=NAME_MAX_LENGTH)
     person = models.ForeignKey(

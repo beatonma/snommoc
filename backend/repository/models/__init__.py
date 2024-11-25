@@ -1,14 +1,7 @@
 from .address import AddressType, PhysicalAddress, WebAddress
 from .bill import Bill
 from .committees import Committee, CommitteeChair, CommitteeMember
-from .constituency import (
-    Constituency,
-    ConstituencyAlsoKnownAs,
-    ConstituencyBoundary,
-    ConstituencyRepresentative,
-    ConstituencyResult,
-    UnlinkedConstituency,
-)
+from .constituency import Constituency, ConstituencyBoundary, ConstituencyRepresentative
 from .divisions import (
     CommonsDivision,
     CommonsDivisionVote,
@@ -17,7 +10,11 @@ from .divisions import (
     LordsDivisionVote,
 )
 from .election import ContestedElection, Election, ElectionNationalResult, ElectionType
-from .election_result import ConstituencyCandidate, ConstituencyResultDetail
+from .election_result import (
+    ConstituencyCandidate,
+    ConstituencyResult,
+    ConstituencyResultDetail,
+)
 from .experiences import Experience, ExperienceCategory
 from .geography import Country, Town
 from .houses import House, HouseMembership

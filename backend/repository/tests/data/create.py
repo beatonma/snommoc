@@ -200,7 +200,7 @@ def create_constituency_result(
     return ConstituencyResult.objects.create(
         constituency=constituency,
         election=election,
-        mp=mp,
+        winner=mp,
     )
 
 

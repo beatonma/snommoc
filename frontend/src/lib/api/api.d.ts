@@ -427,8 +427,7 @@ export interface components {
             full_title: string | null;
             given_name: components["schemas"]["Name"] | null;
             family_name: components["schemas"]["Name"] | null;
-            /** Is Active */
-            is_active: boolean;
+            status: components["schemas"]["MemberStatus"];
             /** House */
             house?: string | null;
             /** Date Of Birth */
@@ -445,6 +444,15 @@ export interface components {
             address: components["schemas"]["AddressSchema"];
             /** Subjects Of Interest */
             subjects_of_interest: components["schemas"]["SubjectOfInterestSchema"][];
+        };
+        /** MemberStatus */
+        MemberStatus: {
+            /** Is Active */
+            is_active: boolean;
+            /** Description */
+            description: string | null;
+            /** Extra Notes */
+            extra_notes: string | null;
         };
         PhoneNumber: string;
         /** PhysicalAddressSchema */

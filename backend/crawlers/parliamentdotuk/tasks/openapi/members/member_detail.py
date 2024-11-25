@@ -28,6 +28,7 @@ from repository.models import (
     SubjectOfInterestCategory,
     WebAddress,
 )
+from repository.models.person import PersonStatus
 from repository.models.posts import Post, PostHolder
 
 
@@ -53,8 +54,21 @@ def _update_member_detail(data: dict, context: TaskContext):
             "full_title": basic_info.full_title,
             "gender": basic_info.gender,
             "party": update_party(basic_info.party),
-            "is_active": True,
         },
+    )
+    status_data = basic_info.status
+    status_defaults = (
+        {
+            "is_active": status_data.is_active,
+            "description": status_data.description,
+            "notes": status_data.notes,
+        }
+        if status_data
+        else {}
+    )
+    person_status, _ = PersonStatus.objects.update_or_create(
+        person=person,
+        defaults=status_defaults,
     )
 
     fetch = partial(openapi_client.get, context=context, func_kwargs={"person": person})

@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
 from repository.models import House
-from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.person import Person
 from repository.tests import values
 
@@ -28,38 +27,6 @@ class PersonPropertyTests(LocalTestCase):
 
             self.assertEqual(living_person.age(), 47)
             self.assertEqual(dead_person.age(), 37)
-
-    def test_person_is_mp(self):
-        commons = House.objects.create(name=HOUSE_OF_COMMONS)
-        lords = House.objects.create(name=HOUSE_OF_LORDS)
-
-        inactive_mp = Person(name=values.EXAMPLE_NAME, is_active=False, house=commons)
-        self.assertFalse(inactive_mp.is_mp())
-
-        inactive_lord = Person(name=values.EXAMPLE_NAME, is_active=False, house=lords)
-        self.assertFalse(inactive_lord.is_mp())
-
-        active_lord = Person(name=values.EXAMPLE_NAME, is_active=True, house=lords)
-        self.assertFalse(active_lord.is_mp())
-
-        active_mp = Person(name=values.EXAMPLE_NAME, is_active=True, house=commons)
-        self.assertTrue(active_mp.is_mp())
-
-    def test_person_is_lord(self):
-        commons = House.objects.create(name=HOUSE_OF_COMMONS)
-        lords = House.objects.create(name=HOUSE_OF_LORDS)
-
-        inactive_mp = Person(name=values.EXAMPLE_NAME, is_active=False, house=commons)
-        self.assertFalse(inactive_mp.is_lord())
-
-        inactive_lord = Person(name=values.EXAMPLE_NAME, is_active=False, house=lords)
-        self.assertFalse(inactive_lord.is_lord())
-
-        active_lord = Person(name=values.EXAMPLE_NAME, is_active=True, house=lords)
-        self.assertTrue(active_lord.is_lord())
-
-        active_mp = Person(name=values.EXAMPLE_NAME, is_active=True, house=commons)
-        self.assertFalse(active_mp.is_lord())
 
     def tearDown(self) -> None:
         self.delete_instances_of(

@@ -22,7 +22,7 @@ from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech
 from .organisation import Organisation
 from .party import Party, PartyAffiliation, PartyAlsoKnownAs
-from .person import LifeEvent, Person, PersonAlsoKnownAs
+from .person import LifeEvent, Person, PersonAlsoKnownAs, PersonStatus
 from .portrait import MemberPortrait
 from .posts import Post, PostHolder
 from .registered_interests import RegisteredInterest, RegisteredInterestCategory

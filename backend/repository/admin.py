@@ -83,7 +83,6 @@ class ConstituencyAdmin(RepositoryAdmin):
 @admin.register(Person)
 class PersonAdmin(RepositoryAdmin):
     ordering = [
-        "-is_active",
         "name",
         "party",
     ]

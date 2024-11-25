@@ -16,6 +16,7 @@ from repository.models import (
     Person,
 )
 from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
+from repository.models.person import PersonStatus
 from repository.tests.data.sample_bills import (
     any_sample_bill_stage_type,
     any_sample_bill_type,
@@ -82,7 +83,7 @@ def _any_str(max_length: int = 32) -> str:
 def create_sample_person(
     parliamentdotuk: int | None = None,
     name: str | None = None,
-    active: bool = True,
+    is_active: bool = True,
     randomise: bool = True,
     **kwargs,
 ) -> Person:
@@ -96,13 +97,19 @@ def create_sample_person(
     if name:
         m.name = name
 
-    return Person.objects.create(
+    person = Person.objects.create(
         parliamentdotuk=m.pk,
         name=m.name,
-        is_active=active,
         house=_coerce_house(m.house),
         **kwargs,
     )
+
+    status, _ = PersonStatus.objects.get_or_create(
+        person=person,
+        defaults={"is_active": is_active},
+    )
+
+    return person
 
 
 def create_sample_constituency(

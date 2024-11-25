@@ -3,6 +3,7 @@ from typing import Optional, cast
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import (
     BaseModel,
@@ -41,7 +42,7 @@ class PersonQuerySet(BaseQuerySet):
         return self.filter(Q(name__iexact=name) | Q(aliases__alias__iexact=name))
 
     def active(self) -> "PersonQuerySet":
-        return self.filter(is_active=True)
+        return self.filter(status__is_active=True)
 
     def commons(self) -> "PersonQuerySet":
         return self.filter(house__name=HOUSE_OF_COMMONS)
@@ -142,10 +143,12 @@ class Person(
         null=True,
         blank=True,
     )
-    is_active = models.BooleanField(
-        default=False,
-        help_text="Whether this person currently has a seat in parliament.",
-    )
+
+    def is_active(self) -> bool:
+        try:
+            return self.status.is_active
+        except ObjectDoesNotExist:
+            return False
 
     def current_posts_qs(self):
         from repository.models.posts import PostHolder
@@ -168,12 +171,12 @@ class Person(
 
     def is_mp(self) -> bool:
         if self.house:
-            return self.is_active and self.house.name == HOUSE_OF_COMMONS
+            return self.is_active() and self.house.name == HOUSE_OF_COMMONS
         return False
 
     def is_lord(self) -> bool:
         if self.house:
-            return self.is_active and self.house.name == HOUSE_OF_LORDS
+            return self.is_active() and self.house.name == HOUSE_OF_LORDS
         return False
 
     def portrait_thumbnail_url(self) -> Optional[str]:
@@ -197,6 +200,20 @@ class Person(
     class Meta:
         ordering = ["name"]
         verbose_name_plural = "People"
+
+
+class PersonStatus(PersonMixin, PeriodMixin, BaseModel):
+    person = models.OneToOneField(
+        "Person",
+        on_delete=models.CASCADE,
+        related_name="status",
+    )
+    is_active = models.BooleanField(db_index=True)
+    description = models.CharField(max_length=64, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return _("Active") if self.is_active else _("Inactive")
 
 
 class PersonAlsoKnownAs(PersonMixin, BaseModel):

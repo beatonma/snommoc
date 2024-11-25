@@ -2,6 +2,7 @@ import uuid
 
 from django.urls import reverse
 from repository.models import Person
+from repository.tests.data.create import create_sample_person
 from social.models.token import UserToken
 from social.tests import reverse_api
 from social.tests.testcase import SocialTestCase
@@ -22,17 +23,12 @@ class GetSocialAllTests(SocialTestCase):
     def setUp(self, *args, **kwargs) -> None:
         self.valid_token = uuid.uuid4()
 
-        self.target_person_one, _ = Person.objects.get_or_create(
+        self.target_person_one = create_sample_person(
             parliamentdotuk=4837,
             name="Aaron Bell",
-            is_active=True,
         )
 
-        self.target_person_two, _ = Person.objects.get_or_create(
-            parliamentdotuk=1423,
-            name="Boris Johnson",
-            is_active=True,
-        )
+        self.target_person_two = create_sample_person(1423, "Boris Johnson")
 
         self.valid_user = create_sample_usertoken(
             username=_VALID_USER,

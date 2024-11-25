@@ -4,6 +4,7 @@ from api import status
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from repository.models import Person
+from repository.tests.data.create import create_sample_person
 from social.models import Comment
 from social.models.token import UserToken
 from social.tests import reverse_api
@@ -31,7 +32,7 @@ class CommentTests(SocialTestCase):
     def setUp(self, *args, **kwargs) -> None:
         self.valid_token = uuid.uuid4()
 
-        Person.objects.create(parliamentdotuk=4837, name="Aaron Bell", is_active=True)
+        create_sample_person(parliamentdotuk=4837, name="Aaron Bell")
 
         create_sample_usertoken(_TEST_USERNAME, token=self.valid_token)
 

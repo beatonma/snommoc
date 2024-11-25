@@ -87,7 +87,7 @@ const MemberCard = (props: MemberComponentProps) => {
             <div className="flex gap-1">
               <Party party={member.party} />
               <MpStatus
-                active={member.is_active}
+                active={member.status.is_active}
                 house={member.house}
                 constituency={member.constituency}
               />

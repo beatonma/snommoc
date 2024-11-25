@@ -112,6 +112,12 @@ class PortraitSchema(Schema):
     tall: str | None = field("tall_url", default=None)
 
 
+class MemberStatus(Schema):
+    is_active: bool
+    description: str | None
+    extra_notes: str | None = field("notes")
+
+
 class MemberProfile(MemberMiniSchema, ParliamentSchema):
     name: Name
     current_posts: list[str]
@@ -121,7 +127,7 @@ class MemberProfile(MemberMiniSchema, ParliamentSchema):
     full_title: str | None
     given_name: Name | None
     family_name: Name | None
-    is_active: bool
+    status: MemberStatus
     house: str | None = field("house.name", default=None)
     date_of_birth: date | None
     date_of_death: date | None

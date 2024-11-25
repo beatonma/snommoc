@@ -14,12 +14,23 @@ from pydantic import BaseModel as Schema
 from pydantic import Field, model_validator
 
 
+class MemberStatus(Schema):
+    status_id: int = field("statusId")
+    is_active: bool = field("statusIsActive")
+    description: str | None = field("statusDescription", default=None)
+    notes: str | None = field("statusNotes", default=None)
+    status_start: CoercedDate = field("statusStartDate")
+
+
 class MemberBasic(Schema):
     parliamentdotuk: int = field("id")
     name: CoercedStr = field("nameDisplayAs")
     full_title: CoercedStr = field("nameFullTitle")
     gender: CoercedStr
     party: Party | None = field("latestParty")
+    status: MemberStatus | None = field(
+        "latestHouseMembership.membershipStatus", default=None
+    )
 
 
 class ConstituencyRepresentation(Schema):

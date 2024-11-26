@@ -13,11 +13,11 @@ class SocialAdmin(BaseAdmin):
     default_display_fields = [
         "target",
         "user",
-        "modified_on",
+        "modified_at",
     ]
 
     default_ordering = [
-        "modified_on",
+        "modified_at",
     ]
 
 

@@ -1,12 +1,8 @@
+from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import UniqueConstraint
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
-from repository.models.mixins import (
-    BaseModel,
-    BaseQuerySet,
-    ParliamentDotUkMixin,
-    SocialMixin,
-)
+from repository.models.mixins import ParliamentDotUkMixin, SocialMixin
 
 
 class DivisionSharedProperties(SocialMixin):
@@ -179,7 +175,7 @@ def _base_DivisionVote(*, division_fk: str, person_related_name: str):
                 ),
             ]
             ordering = [
-                "-modified_on",
+                "-modified_at",
             ]
 
     return _DivisionVote

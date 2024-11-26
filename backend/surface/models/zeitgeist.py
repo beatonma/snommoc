@@ -1,8 +1,8 @@
 from typing import Type
 
+from common.models import BaseModel, BaseQuerySet
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from repository.models.mixins import BaseModel, BaseQuerySet
 from social.models.mixins import GenericTargetMixin
 
 

@@ -3,8 +3,8 @@ Allow users to register how they would vote on a given division,
 or whether they are in favour of or against a bill.
 """
 
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import BaseModel
 from social.models.mixins import GenericTargetMixin, UserMixin
 
 

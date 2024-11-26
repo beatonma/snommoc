@@ -26,5 +26,5 @@ api.add_router("zeitgeist/", zeitgeist_router)
 @paginate
 def recent_notifications(request: HttpRequest):
     return TaskNotification.objects.filter(level__gte=logging.INFO).order_by(
-        "-created_on"
+        "-created_at"
     )

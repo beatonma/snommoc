@@ -2,10 +2,8 @@
 
 import django.db.models.deletion
 import phonenumber_field.modelfields
-from django.db import migrations, models
-
-import util.models.generics
 import util.time
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
@@ -50,7 +48,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillAgent",
@@ -80,7 +78,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillPublication",
@@ -118,7 +116,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillPublicationType",
@@ -140,7 +138,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillStage",
@@ -185,7 +183,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillTypeCategory",
@@ -206,7 +204,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="Organisation",
@@ -228,7 +226,7 @@ class Migration(migrations.Migration):
             options={
                 "ordering": ["name"],
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.AlterField(
             model_name="parliamentarysession",
@@ -263,7 +261,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillStageType",
@@ -291,7 +289,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillStageSitting",
@@ -320,7 +318,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name="billstage",
@@ -387,7 +385,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="BillPublicationLink",
@@ -418,7 +416,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name="billpublication",

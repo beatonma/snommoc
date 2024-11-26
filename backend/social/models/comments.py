@@ -1,11 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-
-from repository.models.mixins import BaseModel
-from social.models.mixins import (
-    DeletionPendingMixin,
-    GenericTargetMixin,
-    UserMixin,
-)
+from social.models.mixins import DeletionPendingMixin, GenericTargetMixin, UserMixin
 
 
 class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
@@ -35,7 +30,7 @@ class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):
             visible=True,
             target_type=self.target_type,
             target_id=self.target_id,
-            created_on=self.created_on,
+            created_at=self.created_at,
         )
 
     class Meta:

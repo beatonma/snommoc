@@ -1,9 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-
-from repository.models.mixins import (
-    BaseModel,
-    PeriodMixin,
-)
+from repository.models.mixins import PeriodMixin
 
 
 class BaseFeatured(PeriodMixin, BaseModel):

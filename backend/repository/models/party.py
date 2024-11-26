@@ -1,13 +1,9 @@
 import logging
 from typing import Optional
 
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-    PeriodMixin,
-    WikipediaMixin,
-)
+from repository.models.mixins import ParliamentDotUkMixin, PeriodMixin, WikipediaMixin
 
 log = logging.getLogger(__name__)
 

@@ -101,8 +101,8 @@ class CreateCommentRequest(_InteractionSchema):
 class Comment(Schema):
     username: str = _field("user.username")
     text: str
-    created_on: datetime
-    modified_on: datetime
+    created_at: datetime
+    modified_at: datetime
 
 
 class SocialContentResponse(Schema):

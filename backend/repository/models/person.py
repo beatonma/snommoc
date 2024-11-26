@@ -1,13 +1,12 @@
 from typing import Optional, cast
 
+from common.models import BaseModel, BaseQuerySet
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import (
-    BaseModel,
-    BaseQuerySet,
     ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,

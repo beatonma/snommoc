@@ -1,11 +1,7 @@
+from common.models import BaseModel
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-    PeriodMixin,
-    PersonMixin,
-)
+from repository.models.mixins import ParliamentDotUkMixin, PeriodMixin, PersonMixin
 
 
 class Post(ParliamentDotUkMixin, BaseModel):

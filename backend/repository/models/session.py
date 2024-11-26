@@ -1,10 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-    PeriodMixin,
-)
+from repository.models.mixins import ParliamentDotUkMixin, PeriodMixin
 
 
 class ParliamentarySession(ParliamentDotUkMixin, PeriodMixin, BaseModel):

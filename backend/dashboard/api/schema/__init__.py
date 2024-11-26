@@ -8,6 +8,6 @@ class DashboardTaskNotificationSchema(Schema):
     content: str | None
     complete: bool
     failed: bool
-    created_on: datetime
+    created_at: datetime
     finished_at: datetime | None
     level: int

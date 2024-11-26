@@ -1,7 +1,8 @@
 from typing import Literal
 
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import BaseModel, PeriodMixin, PersonMixin
+from repository.models.mixins import PeriodMixin, PersonMixin
 
 type HouseType = Literal["Commons", "Lords"]
 HOUSE_OF_COMMONS: HouseType = "Commons"

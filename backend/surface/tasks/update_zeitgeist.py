@@ -3,11 +3,11 @@ import logging
 from typing import Type
 
 from celery import shared_task
+from common.models import BaseModel
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from notifications.models.task_notification import task_notification
 from repository.models import Bill, CommonsDivision, LordsDivision, Person
-from repository.models.mixins import BaseModel
 from social.models import Comment, Vote
 from surface.models import FeaturedPerson
 from surface.models.featured import (
@@ -53,13 +53,13 @@ def _update_from_social():
         comments = _filter_social_content(Comment, ct)
         votes = _filter_social_content(Vote, ct)
 
-        for created_on, _id in comments + votes:
+        for created_at, _id in comments + votes:
             ZeitgeistItem.objects.update_or_create(
                 target_id=_id,
                 target_type=ct,
                 defaults={
                     "reason": ZeitgeistItem.REASON_SOCIAL,
-                    "created_on": coerce_timezone(created_on),
+                    "created_at": coerce_timezone(created_at),
                 },
             )
 
@@ -74,10 +74,10 @@ def _filter_social_content(model: Type[BaseModel], content_type: ContentType) ->
             target_type=content_type,
         )
         .order_by(
-            "created_on",
+            "created_at",
         )
         .values_list(
-            "created_on",
+            "created_at",
             "target_id",
         )[:RECENT_ENGAGEMENT_SAMPLE_SIZE]
     )
@@ -115,13 +115,13 @@ def _update_featured_bills(today: datetime.date):
         _create_featured_zeitgeist_item(Bill, x.start or today, x.target.pk)
 
 
-def _create_featured_zeitgeist_item(model, created: datetime.date, _id):
+def _create_featured_zeitgeist_item(model, created_at: datetime.date, _id):
     ct = ContentType.objects.get_for_model(model)
     ZeitgeistItem.objects.update_or_create(
         target_id=_id,
         target_type=ct,
         defaults={
             "reason": ZeitgeistItem.REASON_FEATURE,
-            "created_on": coerce_timezone(created),
+            "created_at": coerce_timezone(created_at),
         },
     )

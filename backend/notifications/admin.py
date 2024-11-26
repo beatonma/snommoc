@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from common.admin import BaseAdmin
+from django.contrib import admin
 from notifications.models import TaskNotification
 
 
@@ -21,7 +20,7 @@ class TaskNotificationAdmin(BaseAdmin):
     readonly_fields = [
         "content",
         "title",
-        "created_on",
+        "created_at",
         "level",
         "uuid",
         "finished_at",

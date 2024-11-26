@@ -1,10 +1,10 @@
 import logging
 
+from common.models import BaseQuerySet
 from crawlers.context import TaskContext
 from crawlers.wikipedia import wikipedia_client
 from crawlers.wikipedia.tasks import schema
 from repository.models import MemberPortrait, Person
-from repository.models.mixins import BaseQuerySet
 
 log = logging.getLogger(__name__)
 

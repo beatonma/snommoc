@@ -1,11 +1,10 @@
 from typing import Optional
 
+from dashboard.views.dashboard import StaffView
+from dashboard.views.scoring import get_similarity_score
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
-
-from dashboard.views.dashboard import StaffView
-from dashboard.views.scoring import get_similarity_score
 from repository.models import (
     Bill,
     CommonsDivision,
@@ -14,7 +13,6 @@ from repository.models import (
     Party,
     Person,
 )
-from repository.models.util.queryset import get_or_none
 from surface.models import (
     FeaturedBill,
     FeaturedCommonsDivision,
@@ -135,6 +133,6 @@ def _check_is_featured(FeaturedModel, obj):
     if FeaturedModel is None:
         return None
     else:
-        target = get_or_none(FeaturedModel, target_id=obj.pk)
+        target = FeaturedModel.objects.get_or_none(target_id=obj.pk)
 
         return target is not None

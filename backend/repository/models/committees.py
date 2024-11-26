@@ -1,10 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import (
-    BaseModel,
-    ParliamentDotUkMixin,
-    PeriodMixin,
-    PersonMixin,
-)
+from repository.models.mixins import ParliamentDotUkMixin, PeriodMixin, PersonMixin
 from util.cleanup import Deprecated
 
 

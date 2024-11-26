@@ -45,7 +45,3 @@ def get_concrete_models(base_model):
 
     subclasses = list(filter(filter_func, found))
     return sorted(subclasses, key=lambda x: x.__name__)
-
-
-class BaseModelMixin:
-    pass

@@ -1,5 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import BaseModel, ParliamentDotUkMixin, PersonMixin
+from repository.models.mixins import ParliamentDotUkMixin, PersonMixin
 
 
 class ElectionType(BaseModel):

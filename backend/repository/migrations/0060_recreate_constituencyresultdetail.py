@@ -1,5 +1,4 @@
 import django.db.models.deletion
-import util.models.generics
 import util.time
 from django.db import migrations, models
 
@@ -43,7 +42,7 @@ class Migration(migrations.Migration):
             options={
                 "ordering": ["constituency_result"],
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name="ConstituencyCandidate",
@@ -96,6 +95,6 @@ class Migration(migrations.Migration):
                 "ordering": ["name", "election_result"],
                 "unique_together": {("election_result", "name")},
             },
-            bases=(models.Model, util.models.generics.BaseModelMixin),
+            bases=(models.Model,),
         ),
     ]

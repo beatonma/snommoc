@@ -41,14 +41,14 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
         keir = create_sample_person(23, "Keir Starmer")
         anna = create_sample_person(37, "Anna McMorrin")
 
-        create_sample_vote(boris, user1, "aye", created_on=dates[0])
-        create_sample_vote(keir, user1, "no", created_on=dates[1])
-        create_sample_vote(boris, user2, "no", created_on=dates[2])
-        create_sample_vote(keir, user2, "aye", created_on=dates[3])
+        create_sample_vote(boris, user1, "aye", created_at=dates[0])
+        create_sample_vote(keir, user1, "no", created_at=dates[1])
+        create_sample_vote(boris, user2, "no", created_at=dates[2])
+        create_sample_vote(keir, user2, "aye", created_at=dates[3])
 
-        create_sample_comment(boris, user1, created_on=dates[4])
-        create_sample_comment(keir, user2, created_on=dates[5])
-        create_sample_comment(keir, user1, created_on=dates[6])
+        create_sample_comment(boris, user1, created_at=dates[4])
+        create_sample_comment(keir, user2, created_at=dates[5])
+        create_sample_comment(keir, user1, created_at=dates[6])
 
         _create_featured_person(anna)
 

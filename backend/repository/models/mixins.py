@@ -1,18 +1,10 @@
 import datetime
 from datetime import date
 
+from common.models import BaseQuerySet
 from django.db import models
-from django.db.models import Q, QuerySet
-from util.models.generics import BaseModelMixin
-from util.time import get_now, in_range, is_current
-
-
-class BaseQuerySet(QuerySet):
-    def get_or_none(self, **kwargs):
-        try:
-            return self.get(**kwargs)
-        except self.model.DoesNotExist:
-            return None
+from django.db.models import Q
+from util.time import in_range, is_current
 
 
 class UnresolvedQuerySet(BaseQuerySet):
@@ -27,19 +19,6 @@ class UnresolvedQuerySet(BaseQuerySet):
         raise NotImplementedError(
             f"{self.__class__.__name__}.unresolved() has not been implemented"
         )
-
-
-class BaseModel(models.Model, BaseModelMixin):
-    """
-    Not a mixin as such. All concrete model implementations should extend from this.
-    """
-
-    objects = BaseQuerySet.as_manager()
-    created_on = models.DateTimeField(default=get_now)
-    modified_on = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
 
 
 class PersonMixin(models.Model):
@@ -82,14 +61,6 @@ class PeriodMixin(models.Model):
         if self.start:
             return f"since {self.start}"
         return ""
-
-    @classmethod
-    def get_date_in_period_filter(cls, date):
-        """
-        Use with queryset.filter to find objects for which the given [date] falls
-        between the object [start] and [end] dates. End date may be null if the period is ongoing.
-        """
-        return Q(start__lte=date) & (Q(end__gt=date) | Q(end__isnull=True))
 
     class Meta:
         abstract = True

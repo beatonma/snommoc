@@ -2,13 +2,8 @@ from common.admin import BaseAdmin, register_models_to_default_admin
 from django.contrib import admin
 from django.db.models import QuerySet
 from repository.apps import RepositoryConfig
-from repository.models import (
-    Constituency,
-    Party,
-    PartyAlsoKnownAs,
-    Person,
-    PersonAlsoKnownAs,
-)
+from repository.models import (Constituency, Party, PartyAlsoKnownAs, Person,
+                               PersonAlsoKnownAs)
 from repository.models.party import PartyTheme
 
 
@@ -56,7 +51,7 @@ class RepositoryAdmin(BaseAdmin):
 class DefaultEditableAdmin(RepositoryAdmin):
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
-        readonly_fields = ["parliamentdotuk", "created_on", "modified_on"]
+        readonly_fields = ["parliamentdotuk", "created_at", "modified_at"]
         fields = model._meta.fields
         self.readonly_fields = [x.name for x in fields if x.name in readonly_fields]
 

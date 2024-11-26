@@ -20,7 +20,7 @@ class SocialSignalTest(SocialTestCase):
         token = create_sample_usertoken(username="fred")
         target = create_sample_usertoken()
 
-        created_on = get_now().replace(
+        created_at = get_now().replace(
             year=2019, month=2, day=25, hour=15, minute=32, second=1, microsecond=0
         )
         now = get_now()
@@ -29,8 +29,8 @@ class SocialSignalTest(SocialTestCase):
             target=target,
             user=token,
             text="Hello my name is fred",
-            created_on=created_on,
-            modified_on=created_on,
+            created_at=created_at,
+            modified_at=created_at,
         )
 
         comment.delete()
@@ -40,7 +40,7 @@ class SocialSignalTest(SocialTestCase):
         self.assertEqual(placeholder_comment.text, "")
         self.assertEqual(placeholder_comment.target, target)
 
-        # Ensure modified_on has been set to current timestamp when the comment was deleted
-        self.assertNotEqual(created_on, now)
-        self.assertEqual(placeholder_comment.created_on, created_on)
-        self.assertEqual(placeholder_comment.modified_on.date(), now.date())
+        # Ensure modified_at has been set to current timestamp when the comment was deleted
+        self.assertNotEqual(created_at, now)
+        self.assertEqual(placeholder_comment.created_at, created_at)
+        self.assertEqual(placeholder_comment.modified_at.date(), now.date())

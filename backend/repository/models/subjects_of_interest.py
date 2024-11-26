@@ -1,5 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import BaseModel, PersonMixin
+from repository.models.mixins import PersonMixin
 
 
 class SubjectOfInterestCategory(BaseModel):

@@ -1,10 +1,6 @@
+from common.models import BaseModel
 from django.db import models
-from repository.models.mixins import (
-    BaseModel,
-    PeriodMixin,
-    PeriodQuerySet,
-    UnresolvedQuerySet,
-)
+from repository.models.mixins import PeriodMixin, PeriodQuerySet, UnresolvedQuerySet
 from repository.models.person import NAME_MAX_LENGTH
 
 

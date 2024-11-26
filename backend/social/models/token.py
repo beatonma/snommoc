@@ -1,8 +1,8 @@
 import uuid
 
+from common.models import BaseModel, BaseQuerySet
 from django.core.validators import RegexValidator
 from django.db import models
-from repository.models.mixins import BaseModel, BaseQuerySet
 from social.models.mixins import DeletionPendingMixin
 
 
@@ -80,4 +80,4 @@ class UsernameChanged(BaseModel):
     previous_name = models.CharField(max_length=16)
 
     def __str__(self):
-        return f"{self.created_on}: {self.previous_name} -> {self.new_name}"
+        return f"{self.created_at}: {self.previous_name} -> {self.new_name}"

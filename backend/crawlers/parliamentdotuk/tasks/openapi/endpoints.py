@@ -2,6 +2,12 @@ LORDS_DIVISIONS_ALL = "https://lordsvotes-api.parliament.uk/data/Divisions/searc
 LORDS_DIVISION_SINGLE = (
     "https://lordsvotes-api.parliament.uk/data/Divisions/{division_id}"
 )
+COMMONS_DIVISIONS_ALL = (
+    "https://commonsvotes-api.parliament.uk/data/divisions.json/search"
+)
+COMMONS_DIVISION_SINGLE = (
+    "https://commonsvotes-api.parliament.uk/data/division/{division_id}.json"
+)
 
 BILLS_ALL = (
     "https://bills-api.parliament.uk/api/v1/Bills?SortOrder=DateUpdatedDescending"
@@ -53,6 +59,10 @@ def constituency_election_results_detail(constituency_id: int, election_id: int)
 
 def lords_division(division_id: int) -> str:
     return LORDS_DIVISION_SINGLE.format(division_id=division_id)
+
+
+def commons_division(division_id: int) -> str:
+    return COMMONS_DIVISION_SINGLE.format(division_id=division_id)
 
 
 def bill(bill_id: int) -> str:

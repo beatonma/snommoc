@@ -1,0 +1,1681 @@
+[
+  {
+    "DivisionId": 1873,
+    "Date": "2024-11-25T21:50:00",
+    "PublicationUpdated": "2024-11-26T09:52:43",
+    "Number": 47,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Non-Domestic Rating (Multipliers and Private Schools) Bill: Second Reading",
+    "AyeCount": 336,
+    "NoCount": 175,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4778,
+        "Name": "Greg Smith",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Mid Buckinghamshire",
+        "ListAs": "Smith, Greg",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4787,
+        "Name": "James Wild",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "North West Norfolk",
+        "ListAs": "Wild, James",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1872,
+    "Date": "2024-11-25T21:34:00",
+    "PublicationUpdated": "2024-11-25T22:03:49",
+    "Number": 46,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Non-Domestic Rating (Multipliers and Private Schools) Bill: Reasoned Amendment to Second Reading",
+    "AyeCount": 173,
+    "NoCount": 335,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4778,
+        "Name": "Greg Smith",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Mid Buckinghamshire",
+        "ListAs": "Smith, Greg",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4787,
+        "Name": "James Wild",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "North West Norfolk",
+        "ListAs": "Wild, James",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1871,
+    "Date": "2024-11-19T15:06:00",
+    "PublicationUpdated": "2024-11-19T19:42:28",
+    "Number": 45,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Passenger Railway Services (Public Ownership) Bill: motion to disagree with Lords Amendment 2",
+    "AyeCount": 350,
+    "NoCount": 108,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4491,
+        "Name": "Vicky Foxcroft",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Lewisham North",
+        "ListAs": "Foxcroft, Vicky",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4779,
+        "Name": "Taiwo Owatemi",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Coventry North West",
+        "ListAs": "Owatemi, Taiwo",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4805,
+        "Name": "Alicia Kearns",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Rutland and Stamford",
+        "ListAs": "Kearns, Alicia",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1870,
+    "Date": "2024-11-19T14:53:00",
+    "PublicationUpdated": "2024-11-25T19:55:46",
+    "Number": 44,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Passenger Railway Services (Public Ownership) Bill: motion to disagree with Lords Amendment 1",
+    "AyeCount": 344,
+    "NoCount": 172,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4491,
+        "Name": "Vicky Foxcroft",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Lewisham North",
+        "ListAs": "Foxcroft, Vicky",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4779,
+        "Name": "Taiwo Owatemi",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Coventry North West",
+        "ListAs": "Owatemi, Taiwo",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4805,
+        "Name": "Alicia Kearns",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Rutland and Stamford",
+        "ListAs": "Kearns, Alicia",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1869,
+    "Date": "2024-11-13T00:00:00",
+    "PublicationUpdated": "2024-11-13T15:05:46",
+    "Number": 43,
+    "IsDeferred": true,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Draft Windsor Framework (Non-Commercial Movement of Pet Animals) Regulations 2024",
+    "AyeCount": 412,
+    "NoCount": 16,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": null,
+    "NoTellers": null,
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1868,
+    "Date": "2024-11-12T19:00:00",
+    "PublicationUpdated": "2024-11-20T11:36:22",
+    "Number": 42,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "House of Lords (Hereditary Peers) Bill: Third Reading",
+    "AyeCount": 435,
+    "NoCount": 73,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4632,
+        "Name": "Anna McMorrin",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Cardiff North",
+        "ListAs": "McMorrin, Anna",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1867,
+    "Date": "2024-11-12T18:34:00",
+    "PublicationUpdated": "2024-11-13T15:40:55",
+    "Number": 41,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "House of Lords (Hereditary Peers) Bill Committee: New Clause 20",
+    "AyeCount": 98,
+    "NoCount": 375,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4632,
+        "Name": "Anna McMorrin",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Cardiff North",
+        "ListAs": "McMorrin, Anna",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1866,
+    "Date": "2024-11-12T18:19:00",
+    "PublicationUpdated": "2024-11-13T14:38:52",
+    "Number": 40,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "House of Lords (Hereditary Peers) Bill Committee: New Clause 7",
+    "AyeCount": 93,
+    "NoCount": 355,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 5310,
+        "Name": "Lee Dillon",
+        "Party": "Liberal Democrat",
+        "SubParty": null,
+        "PartyColour": "faa01a",
+        "PartyAbbreviation": "LD",
+        "MemberFrom": "Newbury",
+        "ListAs": "Dillon, Mr Lee",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4089,
+        "Name": "Tessa Munt",
+        "Party": "Liberal Democrat",
+        "SubParty": null,
+        "PartyColour": "faa01a",
+        "PartyAbbreviation": "LD",
+        "MemberFrom": "Wells and Mendip Hills",
+        "ListAs": "Munt, Tessa",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4632,
+        "Name": "Anna McMorrin",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Cardiff North",
+        "ListAs": "McMorrin, Anna",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": "New Clause 7",
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1865,
+    "Date": "2024-11-12T18:05:00",
+    "PublicationUpdated": "2024-11-12T18:22:26",
+    "Number": 39,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "House of Lords (Hereditary Peers) Bill Committee: New Clause 1",
+    "AyeCount": 41,
+    "NoCount": 378,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4494,
+        "Name": "Simon Hoare",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "North Dorset",
+        "ListAs": "Hoare, Simon",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5062,
+        "Name": "Nick Timothy",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "West Suffolk",
+        "ListAs": "Timothy, Nick",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4632,
+        "Name": "Anna McMorrin",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Cardiff North",
+        "ListAs": "McMorrin, Anna",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1864,
+    "Date": "2024-11-12T17:50:00",
+    "PublicationUpdated": "2024-11-13T16:19:29",
+    "Number": 38,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "House of Lords (Hereditary Peers) Bill Committee: Amendment 25",
+    "AyeCount": 98,
+    "NoCount": 376,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4449,
+        "Name": "Anna Turley",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Redcar",
+        "ListAs": "Turley, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4632,
+        "Name": "Anna McMorrin",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Cardiff North",
+        "ListAs": "McMorrin, Anna",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1863,
+    "Date": "2024-11-06T21:00:00",
+    "PublicationUpdated": "2024-11-11T10:43:25",
+    "Number": 37,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 44:  Rates of alcohol duty",
+    "AyeCount": 371,
+    "NoCount": 77,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4501,
+        "Name": "Gerald Jones",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Merthyr Tydfil and Aberdare",
+        "ListAs": "Jones, Gerald",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4357,
+        "Name": "Kirsty Blackman",
+        "Party": "Scottish National Party",
+        "SubParty": null,
+        "PartyColour": "fff685",
+        "PartyAbbreviation": "SNP",
+        "MemberFrom": "Aberdeen North",
+        "ListAs": "Blackman, Kirsty",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4089,
+        "Name": "Tessa Munt",
+        "Party": "Liberal Democrat",
+        "SubParty": null,
+        "PartyColour": "faa01a",
+        "PartyAbbreviation": "LD",
+        "MemberFrom": "Wells and Mendip Hills",
+        "ListAs": "Munt, Tessa",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1862,
+    "Date": "2024-11-06T20:49:00",
+    "PublicationUpdated": "2024-11-07T10:58:20",
+    "Number": 36,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 36: Stamp duty land tax (additional dwellings: purchases on or after 1 April 2025)",
+    "AyeCount": 373,
+    "NoCount": 110,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4501,
+        "Name": "Gerald Jones",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Merthyr Tydfil and Aberdare",
+        "ListAs": "Jones, Gerald",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1861,
+    "Date": "2024-11-06T20:37:00",
+    "PublicationUpdated": "2024-11-07T15:41:54",
+    "Number": 35,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 35: Stamp duty land tax (additional dwellings: purchases before 1 April 2025) ",
+    "AyeCount": 378,
+    "NoCount": 116,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4501,
+        "Name": "Gerald Jones",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Merthyr Tydfil and Aberdare",
+        "ListAs": "Jones, Gerald",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1860,
+    "Date": "2024-11-06T20:25:00",
+    "PublicationUpdated": "2024-11-22T14:47:10",
+    "Number": 34,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 34: Value added tax (private school fees)",
+    "AyeCount": 383,
+    "NoCount": 184,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4501,
+        "Name": "Gerald Jones",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Merthyr Tydfil and Aberdare",
+        "ListAs": "Jones, Gerald",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1859,
+    "Date": "2024-11-06T20:10:00",
+    "PublicationUpdated": "2024-11-11T12:38:39",
+    "Number": 33,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 14: Energy (oil and gas) profits levy (period for which levy has effect) ",
+    "AyeCount": 450,
+    "NoCount": 120,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4501,
+        "Name": "Gerald Jones",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Merthyr Tydfil and Aberdare",
+        "ListAs": "Jones, Gerald",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1858,
+    "Date": "2024-11-06T19:55:00",
+    "PublicationUpdated": "2024-11-07T17:07:48",
+    "Number": 32,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 13: Energy (oil and gas) profits levy (relief for investment expenditure)",
+    "AyeCount": 454,
+    "NoCount": 124,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4871,
+        "Name": "Christian Wakeford",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Bury South",
+        "ListAs": "Wakeford, Christian",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5129,
+        "Name": "Martin McCluskey",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Inverclyde and Renfrewshire West",
+        "ListAs": "McCluskey, Martin",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4804,
+        "Name": "Gagan Mohindra",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "South West Hertfordshire",
+        "ListAs": "Mohindra, Mr Gagan",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1857,
+    "Date": "2024-11-06T19:40:00",
+    "PublicationUpdated": "2024-11-07T17:06:34",
+    "Number": 31,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 12: Energy (oil and gas) profits levy (increase in rate) ",
+    "AyeCount": 455,
+    "NoCount": 125,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4871,
+        "Name": "Christian Wakeford",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Bury South",
+        "ListAs": "Wakeford, Christian",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5129,
+        "Name": "Martin McCluskey",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Inverclyde and Renfrewshire West",
+        "ListAs": "McCluskey, Martin",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1856,
+    "Date": "2024-11-06T19:26:00",
+    "PublicationUpdated": "2024-11-11T12:28:24",
+    "Number": 30,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 8: Capital gains tax (investors' relief)",
+    "AyeCount": 400,
+    "NoCount": 122,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4871,
+        "Name": "Christian Wakeford",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Bury South",
+        "ListAs": "Wakeford, Christian",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5129,
+        "Name": "Martin McCluskey",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Inverclyde and Renfrewshire West",
+        "ListAs": "McCluskey, Martin",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1855,
+    "Date": "2024-11-06T19:12:00",
+    "PublicationUpdated": "2024-11-07T17:10:14",
+    "Number": 29,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 7: Capital gains tax (business asset disposal relief)",
+    "AyeCount": 400,
+    "NoCount": 120,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4871,
+        "Name": "Christian Wakeford",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Bury South",
+        "ListAs": "Wakeford, Christian",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5129,
+        "Name": "Martin McCluskey",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Inverclyde and Renfrewshire West",
+        "ListAs": "McCluskey, Martin",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1854,
+    "Date": "2024-11-06T18:58:00",
+    "PublicationUpdated": "2024-11-06T19:18:42",
+    "Number": 28,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Budget Resolution No. 6: Capital gains tax (the main rates)",
+    "AyeCount": 401,
+    "NoCount": 120,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4871,
+        "Name": "Christian Wakeford",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Bury South",
+        "ListAs": "Wakeford, Christian",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5129,
+        "Name": "Martin McCluskey",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Inverclyde and Renfrewshire West",
+        "ListAs": "McCluskey, Martin",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4872,
+        "Name": "David Simmonds",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Ruislip, Northwood and Pinner",
+        "ListAs": "Simmonds, David",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1853,
+    "Date": "2024-10-29T18:53:00",
+    "PublicationUpdated": "2024-11-01T10:34:16",
+    "Number": 27,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Great British Energy Bill: Third Reading",
+    "AyeCount": 361,
+    "NoCount": 111,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4805,
+        "Name": "Alicia Kearns",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Rutland and Stamford",
+        "ListAs": "Kearns, Alicia",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1852,
+    "Date": "2024-10-29T18:28:00",
+    "PublicationUpdated": "2024-11-06T14:43:22",
+    "Number": 26,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Great British Energy Bill Report Stage: Amendment 8",
+    "AyeCount": 115,
+    "NoCount": 361,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4805,
+        "Name": "Alicia Kearns",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Rutland and Stamford",
+        "ListAs": "Kearns, Alicia",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1851,
+    "Date": "2024-10-29T18:14:00",
+    "PublicationUpdated": "2024-11-06T14:42:00",
+    "Number": 25,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Great British Energy Bill Report Stage: Amendment 6",
+    "AyeCount": 124,
+    "NoCount": 361,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4805,
+        "Name": "Alicia Kearns",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Rutland and Stamford",
+        "ListAs": "Kearns, Alicia",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4739,
+        "Name": "Jerome Mayhew",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Broadland and Fakenham",
+        "ListAs": "Mayhew, Jerome",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1850,
+    "Date": "2024-10-29T17:58:00",
+    "PublicationUpdated": "2024-10-29T18:17:08",
+    "Number": 24,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Great British Energy Bill Report Stage: Amendment 4",
+    "AyeCount": 96,
+    "NoCount": 353,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 5090,
+        "Name": "Tom Morrison",
+        "Party": "Liberal Democrat",
+        "SubParty": null,
+        "PartyColour": "faa01a",
+        "PartyAbbreviation": "LD",
+        "MemberFrom": "Cheadle",
+        "ListAs": "Morrison, Tom",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5322,
+        "Name": "Will Forster",
+        "Party": "Liberal Democrat",
+        "SubParty": null,
+        "PartyColour": "faa01a",
+        "PartyAbbreviation": "LD",
+        "MemberFrom": "Woking",
+        "ListAs": "Forster, Mr Will",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4993,
+        "Name": "Keir Mather",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Selby",
+        "ListAs": "Mather, Keir",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  },
+  {
+    "DivisionId": 1849,
+    "Date": "2024-10-21T22:16:00",
+    "PublicationUpdated": "2024-10-22T09:25:26",
+    "Number": 23,
+    "IsDeferred": false,
+    "EVELType": "",
+    "EVELCountry": "",
+    "Title": "Employment Rights Bill: Second Reading",
+    "AyeCount": 386,
+    "NoCount": 105,
+    "DoubleMajorityAyeCount": null,
+    "DoubleMajorityNoCount": null,
+    "AyeTellers": [
+      {
+        "MemberId": 4632,
+        "Name": "Anna McMorrin",
+        "Party": "Labour",
+        "SubParty": null,
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Cardiff North",
+        "ListAs": "McMorrin, Anna",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 5224,
+        "Name": "Kate Dearden",
+        "Party": "Labour",
+        "SubParty": "Co-op",
+        "PartyColour": "d50000",
+        "PartyAbbreviation": "Lab",
+        "MemberFrom": "Halifax",
+        "ListAs": "Dearden, Kate",
+        "ProxyName": null
+      }
+    ],
+    "NoTellers": [
+      {
+        "MemberId": 4384,
+        "Name": "Mike Wood",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Kingswinford and South Staffordshire",
+        "ListAs": "Wood, Mike",
+        "ProxyName": null
+      },
+      {
+        "MemberId": 4778,
+        "Name": "Greg Smith",
+        "Party": "Conservative",
+        "SubParty": null,
+        "PartyColour": "0063ba",
+        "PartyAbbreviation": "Con",
+        "MemberFrom": "Mid Buckinghamshire",
+        "ListAs": "Smith, Greg",
+        "ProxyName": null
+      }
+    ],
+    "Ayes": [],
+    "Noes": [],
+    "FriendlyDescription": null,
+    "FriendlyTitle": null,
+    "NoVoteRecorded": [],
+    "RemoteVotingStart": null,
+    "RemoteVotingEnd": null
+  }
+]

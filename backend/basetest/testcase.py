@@ -1,12 +1,6 @@
 from django.test import TestCase
 
 
-class DirtyTestException(Exception):
-    """Raised when a testcase fails to tidy up after itself."""
-
-    pass
-
-
 class BaseTestCase(TestCase):
     maxDiff = None
 

@@ -1,26 +1,35 @@
 """Viewmodels for parsing responses from Division OpenAPI endpoints."""
 
-from crawlers.parliamentdotuk.tasks.types import CoercedDate, CoercedDateTime
+from crawlers.parliamentdotuk.tasks.types import (
+    CoercedDate,
+    CoercedDateTime,
+    CoercedStr,
+    field,
+)
 from pydantic import BaseModel as Schema
+from pydantic import model_validator
 
 
-class DivisionMember(Schema):
+class Member:
+    member_id: int
+    name: str
+    party: str | None
+
+
+class LordsMember(Member, Schema):
     """
     Schema definition: https://lordsvotes-api.parliament.uk/index.html#model-MemberViewModel
     """
 
-    memberId: int
-    name: str | None
+    member_id: int = field("memberId")
+    name: CoercedStr
 
     """Sortable name"""
-    listAs: str | None
+    list_as: CoercedStr = field("listAs", default=None)
 
     """Type of Lord e.g. 'Life peer', 'Bishops'"""
-    memberFrom: str | None
-    party: str | None
-    partyColour: str | None
-    partyAbbreviation: str | None
-    partyIsMainParty: bool
+    member_from: CoercedStr = field("memberFrom", default=None)
+    party: CoercedStr
 
 
 class LordsDivision(Schema):
@@ -28,28 +37,67 @@ class LordsDivision(Schema):
     Schema definition: https://lordsvotes-api.parliament.uk/index.html#model-DivisionViewModel
     """
 
-    divisionId: int
+    division_id: int = field("divisionId")
     date: CoercedDate
     number: int
-    notes: str | None
-    title: str | None
-    isWhipped: bool
-    isGovernmentContent: bool
-    authoritativeContentCount: int
-    authoritativeNotContentCount: int
-    divisionHadTellers: bool
-    tellerContentCount: int
-    tellerNotContentCount: int
-    memberContentCount: int
-    memberNotContentCount: int
-    sponsoringMemberId: int | None
-    isHouse: bool | None
-    amendmentMotionNotes: str | None
-    isGovernmentWin: bool | None
-    remoteVotingStart: CoercedDateTime
-    remoteVotingEnd: CoercedDateTime
-    divisionWasExclusivelyRemote: bool
-    contentTellers: list[DivisionMember] | None
-    notContentTellers: list[DivisionMember] | None
-    contents: list[DivisionMember] | None
-    notContents: list[DivisionMember] | None
+    notes: CoercedStr
+    title: CoercedStr
+    is_whipped: bool = field("isWhipped")
+    is_government_content: bool = field("isGovernmentContent")
+    authoritative_content_count: int = field("authoritativeContentCount")
+    authoritative_not_content_count: int = field("authoritativeNotContentCount")
+    division_had_tellers: bool = field("divisionHadTellers")
+    teller_content_count: int = field("tellerContentCount")
+    teller_not_content_count: int = field("tellerNotContentCount")
+    member_content_count: int = field("memberContentCount")
+    member_not_content_count: int = field("memberNotContentCount")
+    sponsoring_member_id: int | None = field("sponsoringMemberId")
+    is_house: bool | None = field("isHouse")
+    amendment_motion_notes: CoercedStr = field("amendmentMotionNotes")
+    is_government_win: bool | None = field("isGovernmentWin")
+    remote_voting_start: CoercedDateTime = field("remoteVotingStart")
+    remote_voting_end: CoercedDateTime = field("remoteVotingEnd")
+    division_was_exclusively_remote: bool = field("divisionWasExclusivelyRemote")
+    content_tellers: list[LordsMember] | None = field("contentTellers")
+    not_content_tellers: list[LordsMember] | None = field("notContentTellers")
+    contents: list[LordsMember] | None
+    not_contents: list[LordsMember] | None = field("notContents")
+
+
+class CommonsDivisionItem(Schema):
+    division_id: int = field("DivisionId")
+
+
+class CommonsMember(Member, Schema):
+    member_id: int = field("MemberId")
+    name: CoercedStr = field("Name")
+    party: CoercedStr  # See validate_party method
+    constituency: CoercedStr = field("MemberFrom")
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_party(cls, obj):
+        """Combine Party and SubParty fields."""
+        party = obj.get("Party")
+        sub_party = obj.get("SubParty")
+        obj["party"] = f"{party} {sub_party}" if sub_party else party
+
+        return obj
+
+
+class CommonsDivision(Schema):
+    division_id: int = field("DivisionId")
+    date: CoercedDate = field("Date")
+    publication_updated: CoercedDateTime = field("PublicationUpdated")
+    number: int = field("Number")
+    is_deferred: bool = field("IsDeferred")
+    title: CoercedStr = field("Title")
+    friendly_title: CoercedStr = field("FriendlyTitle")
+    friendly_description: CoercedStr = field("FriendlyDescription")
+    aye_count: int = field("AyeCount")
+    no_count: int = field("NoCount")
+    aye_tellers: list[CommonsMember] = field("AyeTellers")
+    no_tellers: list[CommonsMember] = field("NoTellers")
+    ayes: list[CommonsMember] = field("Ayes")
+    noes: list[CommonsMember] = field("Noes")
+    did_not_vote: list[CommonsMember] = field("NoVoteRecorded")

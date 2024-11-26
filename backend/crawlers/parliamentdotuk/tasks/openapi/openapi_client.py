@@ -111,7 +111,7 @@ def foreach(
             )
 
         if len(items) == 0:
-            break
+            return
 
         for index, item in enumerate(items):
             func_status = _apply_item_func(
@@ -131,7 +131,7 @@ def foreach(
         if data_is_dict:
             if item_count >= data.get("totalResults", 0):
                 context.info(f"Finished updating {item_count} items")
-                break
+                return
 
 
 def get[

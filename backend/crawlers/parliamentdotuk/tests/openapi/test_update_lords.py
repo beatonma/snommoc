@@ -14,7 +14,6 @@ from repository.models.divisions import (
     LordsDivisionVote,
 )
 from repository.tests.data.create import create_sample_person
-from util.time import tzdatetime
 
 CONTEXT = TaskContext(None, TaskNotification())
 
@@ -81,15 +80,6 @@ class UpdateLordsDivisionsTests(LocalTestCase):
             " />The House divided:</p>",
         )
         self.assertEqual(division.is_government_win, True)
-        self.assertEqual(
-            division.remote_voting_start,
-            tzdatetime(2021, 11, 16, 17, 49, 37),
-        )
-        self.assertEqual(
-            division.remote_voting_end,
-            tzdatetime(2021, 11, 16, 17, 59, 37),
-        )
-        self.assertEqual(division.division_was_exclusively_remote, True)
 
     def test_division_votes_are_correct(self):
         division: LordsDivision = LordsDivision.objects.first()

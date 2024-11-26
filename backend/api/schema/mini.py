@@ -62,7 +62,7 @@ class DivisionMiniSchema(ParliamentSchema):
     title: str
     date: date
     house: HouseType
-    passed: bool
+    is_passed: bool
 
 
 class BillMiniSchema(ParliamentSchema):

@@ -21,15 +21,11 @@ class CommonsDivisionSchema(ParliamentSchema):
     title: str
     date: date
     house: HouseType
-    passed: bool
-    deferred_vote: bool
+    is_passed: bool
+    is_deferred_vote: bool
     ayes: int
     noes: int
     did_not_vote: int
-    abstentions: int
-    errors: int
-    non_eligible: int
-    suspended_or_expelled: int
     votes: list[CommonsVoteSchema]
 
 
@@ -46,8 +42,8 @@ class LordsDivisionSchema(ParliamentSchema):
     house: HouseType
     description: str | None = field("amendment_motion_notes")
     sponsor: MemberMiniSchema | None = field("sponsoring_member", default=None)
-    passed: bool
-    whipped_vote: bool = field("is_whipped")
+    is_passed: bool
+    is_whipped_vote: bool = field("is_whipped")
     ayes: int
     noes: int
     votes: list[LordsVoteSchema] = field("votes")

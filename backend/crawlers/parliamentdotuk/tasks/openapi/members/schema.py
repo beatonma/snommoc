@@ -115,6 +115,7 @@ class ContactInfo(Schema):
     email: CoercedStr = field("email", default=None)
 
     @model_validator(mode="before")
+    @classmethod
     def validate_address(cls, obj):
         """Combine address fields into single string."""
         address_lines = [
@@ -143,6 +144,7 @@ class Experience(Schema):
     end: CoercedDate = Field(default=None)  # see validate_dates method
 
     @model_validator(mode="before")
+    @classmethod
     def validate_dates(cls, obj):
         start_month = obj.get("startMonth")
         start_year = obj.get("startYear")

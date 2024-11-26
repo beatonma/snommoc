@@ -299,17 +299,12 @@ def create_sample_session(
 def create_sample_commons_division(
     parliamentdotuk: int | None = None,
     title: str = None,
-    abstentions: int = None,
     ayes: int = None,
     noes: int = None,
     did_not_vote: int = None,
-    non_eligible: int = None,
-    errors: int = None,
-    suspended_or_expelled: int = None,
     date: datetime.date = None,
     deferred_vote: bool = _any_bool(),
     session: ParliamentarySession | None = None,
-    uin: str = "CD:2015-03-26:188",
     division_number: int = None,
 ) -> CommonsDivision:
     """Create a CommonsDivision with custom data."""
@@ -322,9 +317,6 @@ def create_sample_commons_division(
     if not session:
         session = create_sample_session()
 
-    if not abstentions:
-        abstentions = _any_int(300)
-
     if not ayes:
         ayes = _any_int(350)
 
@@ -333,15 +325,6 @@ def create_sample_commons_division(
 
     if not did_not_vote:
         did_not_vote = _any_int(300)
-
-    if not non_eligible:
-        non_eligible = _any_int(300)
-
-    if not errors:
-        errors = _any_int(30)
-
-    if not suspended_or_expelled:
-        suspended_or_expelled = _any_int(30)
 
     if not date:
         date = _any_date()
@@ -352,17 +335,13 @@ def create_sample_commons_division(
     return CommonsDivision.objects.create(
         parliamentdotuk=parliamentdotuk,
         title=title,
-        abstentions=abstentions,
         ayes=ayes,
         noes=noes,
+        is_passed=ayes > noes,
         did_not_vote=did_not_vote,
-        non_eligible=non_eligible,
-        errors=errors,
-        suspended_or_expelled=suspended_or_expelled,
         date=date,
-        deferred_vote=deferred_vote,
+        is_deferred_vote=deferred_vote,
         session=session,
-        uin=uin,
         division_number=division_number,
     )
 
@@ -423,13 +402,13 @@ def create_sample_lords_division(
         date=date,
         authoritative_content_count=ayes,
         authoritative_not_content_count=noes,
+        is_passed=ayes > noes,
         amendment_motion_notes=description,
         is_whipped=whipped_vote,
         number=division_number,
         is_government_content=_any_bool(),
         is_government_win=_any_bool(),
         division_had_tellers=_any_bool(),
-        division_was_exclusively_remote=_any_bool(),
         is_house=_any_bool(),
         teller_content_count=_any_bool(),
         teller_not_content_count=_any_bool(),

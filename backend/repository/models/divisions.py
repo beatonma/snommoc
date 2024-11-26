@@ -5,16 +5,19 @@ from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import ParliamentDotUkMixin, SocialMixin
 
 
-class DivisionSharedProperties(SocialMixin):
+class DivisionSharedProperties(SocialMixin, models.Model):
     title: models.CharField
     date: models.DateField
+    house: str
     ayes: int
     noes: int
-    passed: bool
-    house: str
+    is_passed: bool
 
     def social_title(self) -> str:
         return str(self.title)
+
+    class Meta:
+        abstract = True
 
 
 class CommonsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel):
@@ -30,43 +33,26 @@ class CommonsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel)
 
     division_number = models.PositiveSmallIntegerField()
 
-    uin = models.CharField(max_length=64)
-
     ayes = models.PositiveSmallIntegerField(
         help_text="How many members voted for the motion",
     )
     noes = models.PositiveSmallIntegerField(
         help_text="How many members voted against the motion",
     )
-    deferred_vote = models.BooleanField(
+    did_not_vote = models.PositiveSmallIntegerField(
+        help_text="How many members did not vote at all"
+    )
+    is_deferred_vote = models.BooleanField(
         default=False,
         help_text="A deferred vote is one that is not held immediately "
         "at the end of the debate, but at a later 'convenient' time",
     )
-    abstentions = models.PositiveSmallIntegerField(
-        help_text="How many members abstained from voting",
-    )
-    did_not_vote = models.PositiveSmallIntegerField()
-    errors = models.PositiveSmallIntegerField(
-        help_text="How many votes were found to be recorded in error"
-    )
-    non_eligible = models.PositiveSmallIntegerField(
-        help_text="How many members were ineligible to vote in this division",
-    )
-    suspended_or_expelled = models.PositiveSmallIntegerField(
-        help_text="How many members were unable to vote due to suspension or expulsion"
-    )
+    is_passed = models.BooleanField()
 
-    @property
-    def house(self):
+    @staticmethod
+    def house():
         return HOUSE_OF_COMMONS
 
-    @property
-    def passed(self) -> bool:
-        """Return True if the Ayes have it, False otherwise."""
-        return self.ayes > self.noes
-
-    @property
     def margin(self) -> int:
         return abs(self.ayes - self.noes)
 
@@ -97,18 +83,12 @@ class LordsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel):
         related_name="sponsored_lords_divisions",
     )
     is_house = models.BooleanField(null=True)
+    is_passed = models.BooleanField()
     is_government_win = models.BooleanField(null=True, blank=True)
-    remote_voting_start = models.DateTimeField(null=True, blank=True)
-    remote_voting_end = models.DateTimeField(null=True, blank=True)
-    division_was_exclusively_remote = models.BooleanField(null=True, blank=True)
 
-    @property
-    def house(self) -> str:
+    @staticmethod
+    def house() -> str:
         return HOUSE_OF_LORDS
-
-    @property
-    def passed(self) -> bool:
-        return self.ayes > self.noes
 
     @property
     def ayes(self) -> int:
@@ -138,6 +118,15 @@ class DivisionVoteQuerySet(BaseQuerySet):
         )
 
 
+class DivisionVoteSharedProperties(models.Model):
+    person: models.ForeignKey
+    division: models.ForeignKey
+    vote_type: models.ForeignKey
+
+    class Meta:
+        abstract = True
+
+
 def _base_DivisionVote(*, division_fk: str, person_related_name: str):
     """Generate abstract base class for CommonsDivisionVote,LordsDivisionVote
 
@@ -146,7 +135,7 @@ def _base_DivisionVote(*, division_fk: str, person_related_name: str):
         person_related_name: `related_name` for `person` field.
     """
 
-    class _DivisionVote(BaseModel):
+    class _DivisionVote(DivisionVoteSharedProperties, BaseModel):
         objects = DivisionVoteQuerySet.as_manager()
 
         person = models.ForeignKey(

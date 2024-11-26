@@ -1,12 +1,6 @@
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.openapi.bills.schema import (
-    Bill,
-    BillPublication,
-    BillStageType,
-    BillSummary,
-    House,
-)
-from crawlers.parliamentdotuk.tasks.openapi.divisions.schema import LordsDivision
+from crawlers.parliamentdotuk.tasks.openapi.bills import schema as bills_schema
+from crawlers.parliamentdotuk.tasks.openapi.divisions import schema as divisions_schema
 from crawlers.parliamentdotuk.tests.openapi.data_bill import (
     BILL_DATA,
     BILL_PUBLICATION_DATA,
@@ -23,19 +17,19 @@ class ApiViewmodelTestCase(LocalTestCase):
     """Ensure data from the API constructs our models correctly."""
 
     def test_lordsdivision_schemas(self):
-        division = LordsDivision(**LORDS_DIVISION_DATA)
+        division = divisions_schema.LordsDivision.model_validate(LORDS_DIVISION_DATA)
 
-        self.assertEqual(2613, division.divisionId)
+        self.assertEqual(2613, division.division_id)
         self.assertEqual(3, len(division.contents))
         self.assertEqual("Lord Pendry", division.contents[0].name)
 
     def test_billsummary_schemas(self):
-        bill = BillSummary(**BILL_SUMMARY_DATA)
+        bill = bills_schema.BillSummary.model_validate(BILL_SUMMARY_DATA)
 
         self.assertEqual(bill.billId, 512)
         self.assertEqual(bill.introducedSessionId, 22)
-        self.assertEqual(bill.currentHouse, House.Unassigned)
-        self.assertEqual(bill.originatingHouse, House.Commons)
+        self.assertEqual(bill.currentHouse, bills_schema.House.Unassigned)
+        self.assertEqual(bill.originatingHouse, bills_schema.House.Commons)
         self.assertEqual(bill.includedSessionIds, [22, 23])
 
         stage = bill.currentStage
@@ -43,12 +37,12 @@ class ApiViewmodelTestCase(LocalTestCase):
         sitting = stage.stageSittings[0]
 
         self.assertEqual(stage.description, "Royal Assent")
-        self.assertEqual(stage.house, House.Unassigned)
+        self.assertEqual(stage.house, bills_schema.House.Unassigned)
 
         self.assertEqual(sitting.date, tzdatetime(2010, 4, 8))
 
     def test_bill_schemas(self):
-        bill = Bill(**BILL_DATA)
+        bill = bills_schema.Bill(**BILL_DATA)
 
         self.assertEqual(
             bill.longTitle,
@@ -89,7 +83,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(member.name, "Mr Mark Hoban")
         self.assertEqual(member.party, "Conservative")
         self.assertEqual(member.partyColor, "0000ff")
-        self.assertEqual(member.house, House.Commons)
+        self.assertEqual(member.house, bills_schema.House.Commons)
         self.assertEqual(
             member.memberPhoto,
             "https://members-api.parliament.uk/api/Members/1414/Thumbnail",
@@ -113,8 +107,8 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertIsNone(bill.petitionInformation)
         self.assertEqual(bill.billId, 836)
         self.assertEqual(bill.shortTitle, "Appropriation Act 2011")
-        self.assertEqual(bill.currentHouse, House.Unassigned)
-        self.assertEqual(bill.originatingHouse, House.Commons)
+        self.assertEqual(bill.currentHouse, bills_schema.House.Unassigned)
+        self.assertEqual(bill.originatingHouse, bills_schema.House.Commons)
         self.assertEqual(bill.lastUpdate, tzdatetime(2012, 3, 28, 9, 58, 29))
         self.assertIsNone(bill.billWithdrawn)
         self.assertFalse(bill.isDefeated)
@@ -129,7 +123,7 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(stage.sessionId, 24)
         self.assertEqual(stage.description, "Royal Assent")
         self.assertEqual(stage.abbreviation, "RA")
-        self.assertEqual(stage.house, House.Unassigned)
+        self.assertEqual(stage.house, bills_schema.House.Unassigned)
 
         sitting = stage.stageSittings[0]
         self.assertEqual(sitting.id, 3957)
@@ -158,17 +152,17 @@ class ApiViewmodelTestCase(LocalTestCase):
         self.assertEqual(agent.website, "https://snommoc.org")
 
     def test_billstage_schemas(self):
-        stage = BillStageType(**BILL_STAGE_TYPE_DATA)
+        stage = bills_schema.BillStageType.model_validate(BILL_STAGE_TYPE_DATA)
 
         self.assertEqual(stage.id, 42)
         self.assertEqual(stage.name, "Consideration of Lords message")
-        self.assertEqual(stage.house, House.Commons)
+        self.assertEqual(stage.house, bills_schema.House.Commons)
 
     def test_billpublication_schemas(self):
-        pub = BillPublication(**BILL_PUBLICATION_DATA)
+        pub = bills_schema.BillPublication.model_validate(BILL_PUBLICATION_DATA)
 
         self.assertEqual(pub.id, 2716)
-        self.assertEqual(pub.house, House.Commons)
+        self.assertEqual(pub.house, bills_schema.House.Commons)
         self.assertTrue(pub.title.startswith("Public Administration "))
         self.assertEqual(pub.displayDate, tzdatetime(2008, 6, 4))
 

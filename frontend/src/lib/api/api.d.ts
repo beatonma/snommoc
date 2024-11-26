@@ -594,8 +594,8 @@ export interface components {
              */
             date: string;
             house: components["schemas"]["HouseType"];
-            /** Passed */
-            passed: boolean;
+            /** Is Passed */
+            is_passed: boolean;
         };
         /** @enum {string} */
         HouseType: "Commons" | "Lords";
@@ -802,24 +802,16 @@ export interface components {
              */
             date: string;
             house: components["schemas"]["HouseType"];
-            /** Passed */
-            passed: boolean;
-            /** Deferred Vote */
-            deferred_vote: boolean;
+            /** Is Passed */
+            is_passed: boolean;
+            /** Is Deferred Vote */
+            is_deferred_vote: boolean;
             /** Ayes */
             ayes: number;
             /** Noes */
             noes: number;
             /** Did Not Vote */
             did_not_vote: number;
-            /** Abstentions */
-            abstentions: number;
-            /** Errors */
-            errors: number;
-            /** Non Eligible */
-            non_eligible: number;
-            /** Suspended Or Expelled */
-            suspended_or_expelled: number;
             /** Votes */
             votes: components["schemas"]["CommonsVoteSchema"][];
         };
@@ -845,10 +837,10 @@ export interface components {
             /** Description */
             description: string | null;
             sponsor?: components["schemas"]["MemberMiniSchema"] | null;
-            /** Passed */
-            passed: boolean;
-            /** Whipped Vote */
-            whipped_vote: boolean;
+            /** Is Passed */
+            is_passed: boolean;
+            /** Is Whipped Vote */
+            is_whipped_vote: boolean;
             /** Ayes */
             ayes: number;
             /** Noes */

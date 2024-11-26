@@ -1,19 +1,19 @@
-import json
 from datetime import date
-from pathlib import Path
-from unittest.mock import patch
 
-from basetest.testcase import LocalTestCase
 from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi.members.member_detail import (
     update_current_members,
 )
+from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import Person
 
+CONTEXT = TaskContext(None, TaskNotification())
 
-def _patch():
-    response = {
+
+class UpdateMemberDetailTests(OpenApiTestCase):
+    file = __file__
+    mock_response = {
         "https://members-api.parliament.uk/api/Members/Search": "data/search.json",
         "https://members-api.parliament.uk/api/Members/4514/Biography": "data/biography.json",
         "https://members-api.parliament.uk/api/Members/4514/Contact": "data/contact.json",
@@ -22,22 +22,8 @@ def _patch():
         "https://members-api.parliament.uk/api/Members/4514/Focus": "data/focus.json",
     }
 
-    def _load_json_from_file(path: str):
-        with open(Path(__file__).parent / path, "r") as f:
-            return json.load(f)
-
-    return patch(
-        "crawlers.parliamentdotuk.tasks.openapi.openapi_client.get_json",
-        side_effect=lambda url, *args, **kwargs: _load_json_from_file(response[url]),
-    )
-
-
-CONTEXT = TaskContext(None, TaskNotification())
-
-
-class UpdateMemberDetailTests(LocalTestCase):
     def test_update_member_details(self):
-        with _patch():
+        with self.patch():
             update_current_members(context=CONTEXT)
 
         person = Person.objects.get(parliamentdotuk=4514)

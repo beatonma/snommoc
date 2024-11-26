@@ -10,5 +10,5 @@ from .constituencies import (
     update_constituency_boundaries,
     update_election_results,
 )
-from .divisions import update_lords_divisions
+from .divisions import update_commons_divisions, update_lords_divisions
 from .members import update_current_members

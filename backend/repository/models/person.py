@@ -28,9 +28,14 @@ class PersonQuerySet(BaseQuerySet):
     ):
         """Safely get the member with the given parliamentdotuk ID, or create
         it with given data if it does not already exist."""
+        defaults = defaults or {}
+
         member, _ = self.get_or_create(
             parliamentdotuk=parliamentdotuk,
-            defaults={"name": name or "__UNKNOWN_MEMBER__", **(defaults or {})},
+            defaults={
+                "name": (name or "__UNKNOWN_MEMBER__"),
+                **(defaults or {}),
+            },
         )
         return member
 

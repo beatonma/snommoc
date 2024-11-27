@@ -11,6 +11,7 @@ from repository.models import (
     Person,
 )
 
+from ..common import resolve_person
 from ..parties.update import update_party
 from ..schema import ResponseItem
 from . import schema
@@ -50,12 +51,16 @@ def update_election_results(context: TaskContext):
 
 
 def _update_constituency(response_data: dict, context: TaskContext):
-    data = ResponseItem[schema.ConstituencyItem].model_validate(response_data)
+    data = ResponseItem[schema.Constituency].model_validate(response_data).value
+    member = None
+    if member_data := data.member:
+        party = member_data.party
 
-    try:
-        member = Person.objects.get(parliamentdotuk=data.member_id)
-    except Person.DoesNotExist:
-        member = None
+        member = resolve_person(
+            member_data.parliamentdotuk,
+            member_data.name,
+            party_schema=party,
+        )
 
     constituency, _ = Constituency.objects.update_or_create(
         parliamentdotuk=data.parliamentdotuk,
@@ -157,7 +162,9 @@ def _get_winning_candidate(
         return None, None
 
     if winner.parliamentdotuk:
-        return None, Person.objects.get_member(winner.parliamentdotuk, name=winner.name)
+        return None, resolve_person(
+            winner.parliamentdotuk, name=winner.name, party_schema=winner.party
+        )
 
     # Try to resolve Person instance by name
     winner_name = winner.name

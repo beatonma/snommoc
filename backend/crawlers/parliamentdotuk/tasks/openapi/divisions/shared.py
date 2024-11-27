@@ -1,7 +1,8 @@
 from typing import Type
 
+from crawlers.parliamentdotuk.tasks.openapi.common import resolve_person
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
-from repository.models import DivisionVoteType, Party, Person
+from repository.models import DivisionVoteType
 from repository.models.divisions import (
     DivisionSharedProperties,
     DivisionVoteSharedProperties,
@@ -19,12 +20,8 @@ def create_votes[
 ):
     vote_type, _ = DivisionVoteType.objects.get_or_create(name=vote_type_name)
     for vote in votes:
-        party = Party.objects.get_or_none(name=vote.party)
-        person = Person.objects.get_member(
-            vote.member_id,
-            name=vote.name,
-            defaults={"party": party},
-        )
+        person = resolve_person(vote.member_id, vote.name, party_name=vote.party)
+
         _, created = division_vote_class.objects.update_or_create(
             person=person,
             division=division,

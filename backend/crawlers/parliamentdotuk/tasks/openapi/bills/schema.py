@@ -8,6 +8,7 @@ from crawlers.parliamentdotuk.tasks.types import (
     CoercedDateTime,
     CoercedPhoneNumber,
     CoercedStr,
+    PersonName,
     SanitizedHtmlStr,
     field,
 )
@@ -96,7 +97,7 @@ class Member(Schema):
     """Schema definition: https://bills-api.parliament.uk/index.html#model-Member"""
 
     member_id: int = field("memberId")
-    name: CoercedStr
+    name: PersonName
     party: CoercedStr
     party_color: CoercedColor = Field(alias="partyColour")
     house: House

@@ -1,13 +1,14 @@
 from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from repository.models import House, Organisation, ParliamentarySession, Party, Person
-from repository.models.bill import (
+from crawlers.parliamentdotuk.tasks.openapi.common import resolve_person
+from repository.models import (
     Bill,
     BillAgent,
     BillSponsor,
-    BillStage,
-    BillStageType,
     BillType,
+    House,
+    Organisation,
+    ParliamentarySession,
 )
 
 
@@ -45,7 +46,6 @@ def update_bill(response_data: dict, context: TaskContext) -> None:
     )
     bill.sessions.set(included_sessions)
 
-    # bill.current_stage = _get_current_stage(data, bill)
     bill.agent = _get_agent(data)
     bill.save()
 
@@ -70,39 +70,15 @@ def _get_agent(data: schema.Bill) -> BillAgent | None:
     return agent
 
 
-# def _get_current_stage(data: schema.Bill, bill: Bill) -> BillStage:
-#     stage = data.current_stage
-#     stage_type = BillStageType.objects.get(parliamentdotuk=stage.stage_id)
-#     house, _ = House.objects.get_or_create(name=stage.house.name)
-#
-#     session, _ = ParliamentarySession.objects.get_or_create(
-#         parliamentdotuk=stage.session_id
-#     )
-#
-#     current_stage, _ = BillStage.objects.update_or_create(
-#         parliamentdotuk=stage.id,
-#         defaults={
-#             "bill": bill,
-#             "description": stage.description,
-#             "abbreviation": stage.abbreviation,
-#             "house": house,
-#             "session": session,
-#             "sort_order": stage.sort_order,
-#             "stage_type": stage_type,
-#         },
-#     )
-#     return current_stage
-
-
 def _add_sponsors(bill: Bill, data: schema.Bill):
     for sponsor in data.sponsors:
-        _get_sponsor(bill, sponsor)
+        _add_sponsor(bill, sponsor)
 
 
-def _get_sponsor(bill: Bill, data: schema.Sponsor):
+def _add_sponsor(bill: Bill, data: schema.Sponsor):
     organisation = None
     if data.organisation:
-        organisation, _ = Organisation.objects.update_or_create(
+        Organisation.objects.update_or_create(
             name=data.organisation.name,
             defaults={
                 "url": data.organisation.url,
@@ -110,14 +86,9 @@ def _get_sponsor(bill: Bill, data: schema.Sponsor):
         )
 
     if member := data.member:
-        party = Party.objects.get_or_none(name=member.party)
-        person = Person.objects.get_member(
-            member.member_id,
-            name=member.name,
-            defaults={"party": party},
-        )
+        person = resolve_person(member.member_id, member.name, party_name=member.party)
 
-        sponsor, _ = BillSponsor.objects.update_or_create(
+        BillSponsor.objects.update_or_create(
             member=person,
             bill=bill,
             defaults={
@@ -127,9 +98,9 @@ def _get_sponsor(bill: Bill, data: schema.Sponsor):
         )
 
     elif organisation:
-        sponsor, _ = BillSponsor.objects.update_or_create(
+        BillSponsor.objects.update_or_create(
             bill=bill,
-            member_id=None,
+            member=None,
             organisation=organisation,
             defaults={
                 "sort_order": data.sort_order,

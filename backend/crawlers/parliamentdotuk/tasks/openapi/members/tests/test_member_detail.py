@@ -32,7 +32,7 @@ class UpdateMemberDetailTests(OpenApiTestCase):
 
     def test_update_member_details(self):
         person = self.person
-        self.assertEqual(person.name, "Sir Keir Starmer")
+        self.assertEqual(person.name, "Keir Starmer")
         self.assertEqual(person.full_title, "Rt Hon Sir Keir Starmer MP")
         self.assertEqual(person.gender, "M")
 

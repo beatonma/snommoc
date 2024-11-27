@@ -24,9 +24,11 @@ __all__ = [
     "CoercedList",
     "CoercedColor",
     "CoercedPhoneNumber",
+    "PersonName",
     "SanitizedHtmlStr",
 ]
 
+from repository.resolution.members import normalize_name
 from util.strings import sanitize_html
 
 PHONE_NUMBER_REGION = "GB"
@@ -94,6 +96,8 @@ type CoercedList[T] = Annotated[
     BeforeValidator(coerce_to_list),
     Field(default_factory=list),
 ]
+
+type PersonName = Annotated[CoercedStr, AfterValidator(normalize_name)]
 
 type CoercedPhoneNumber = Annotated[
     CoercedStr,

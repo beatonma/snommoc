@@ -4,6 +4,7 @@ from crawlers.parliamentdotuk.tasks.types import (
     CoercedDate,
     CoercedDateTime,
     CoercedStr,
+    PersonName,
     SanitizedHtmlStr,
     field,
 )
@@ -23,7 +24,7 @@ class LordsMember(Member, Schema):
     """
 
     member_id: int = field("memberId")
-    name: CoercedStr
+    name: PersonName
 
     """Sortable name"""
     list_as: CoercedStr = field("listAs", default=None)
@@ -71,7 +72,7 @@ class CommonsDivisionItem(Schema):
 
 class CommonsMember(Member, Schema):
     member_id: int = field("MemberId")
-    name: CoercedStr = field("Name")
+    name: PersonName = field("Name")
     party: CoercedStr  # See validate_party method
     constituency: CoercedStr = field("MemberFrom")
 

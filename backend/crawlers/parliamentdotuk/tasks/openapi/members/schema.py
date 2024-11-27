@@ -9,6 +9,7 @@ from crawlers.parliamentdotuk.tasks.types import (
     CoercedPhoneNumber,
     CoercedStr,
     field,
+    PersonName,
 )
 from pydantic import BaseModel as Schema
 from pydantic import Field, model_validator
@@ -24,7 +25,7 @@ class MemberStatus(Schema):
 
 class MemberBasic(Schema):
     parliamentdotuk: int = field("id")
-    name: CoercedStr = field("nameDisplayAs")
+    name: PersonName = field("nameDisplayAs")
     full_title: CoercedStr = field("nameFullTitle")
     gender: CoercedStr
     party: Party | None = field("latestParty")

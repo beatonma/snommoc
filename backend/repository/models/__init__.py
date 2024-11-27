@@ -1,5 +1,17 @@
 from .address import AddressType, PhysicalAddress, WebAddress
-from .bill import Bill
+from .bill import (
+    Bill,
+    BillAgent,
+    BillPublication,
+    BillPublicationLink,
+    BillPublicationType,
+    BillSponsor,
+    BillStage,
+    BillStageSitting,
+    BillStageType,
+    BillType,
+    BillTypeCategory,
+)
 from .committees import Committee, CommitteeChair, CommitteeMember
 from .constituency import Constituency, ConstituencyBoundary, ConstituencyRepresentative
 from .divisions import (

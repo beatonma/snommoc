@@ -18,6 +18,7 @@ class TaskContext:
         skip_items: int = 0,
         max_items: int = None,
         items_per_page: int | None = None,
+        follow_pagination: bool = True,
     ):
         self.failed = False
         self.complete = False
@@ -28,6 +29,7 @@ class TaskContext:
         self.skip_items = skip_items
         self.max_items = max_items
         self.items_per_page = items_per_page
+        self.follow_pagination = follow_pagination
 
     def limit_reached(self, item_count: int) -> bool:
         """Return True if item_count exceeds task limits"""
@@ -69,6 +71,7 @@ def task_context(
     label: str = None,
     cache_ttl: int = None,
     log_level: int = logging.INFO,
+    items_per_page: int | None = None,
 ):
     def task_decoration(func):
 
@@ -89,6 +92,7 @@ def task_context(
                     force_update=kwargs.pop("force_update", False),
                     skip_items=kwargs.pop("skip_items", 0),
                     max_items=kwargs.pop("max_items", None),
+                    items_per_page=kwargs.pop("items_per_page", items_per_page),
                 ),
             )
             func(*args, context=context, **kwargs)

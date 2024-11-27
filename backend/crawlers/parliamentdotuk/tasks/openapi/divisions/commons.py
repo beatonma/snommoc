@@ -2,8 +2,7 @@ from crawlers import caches
 from crawlers.context import TaskContext, task_context
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
-from crawlers.parliamentdotuk.tasks.openapi.divisions.shared import \
-    create_votes
+from crawlers.parliamentdotuk.tasks.openapi.divisions.shared import create_votes
 from repository.models import CommonsDivision, CommonsDivisionVote
 
 
@@ -45,9 +44,9 @@ def _update_commons_division(response_data: dict, context: TaskContext):
 
     create_votes(division, CommonsDivisionVote, data.ayes, "aye")
     create_votes(division, CommonsDivisionVote, data.noes, "no")
+    create_votes(division, CommonsDivisionVote, data.aye_tellers, "aye", is_teller=True)
+    create_votes(division, CommonsDivisionVote, data.no_tellers, "no", is_teller=True)
     create_votes(division, CommonsDivisionVote, data.did_not_vote, "did_not_vote")
-    create_votes(division, CommonsDivisionVote, data.aye_tellers, "aye_teller")
-    create_votes(division, CommonsDivisionVote, data.no_tellers, "no_teller")
 
     if created:
         context.info(f"Created CommonsDivision '{division}'")

@@ -4,6 +4,7 @@ from crawlers.parliamentdotuk.tasks.types import (
     CoercedDate,
     CoercedDateTime,
     CoercedStr,
+    SanitizedHtmlStr,
     field,
 )
 from pydantic import BaseModel as Schema
@@ -53,7 +54,7 @@ class LordsDivision(Schema):
     member_not_content_count: int = field("memberNotContentCount")
     sponsoring_member_id: int | None = field("sponsoringMemberId")
     is_house: bool | None = field("isHouse")
-    amendment_motion_notes: CoercedStr = field("amendmentMotionNotes")
+    amendment_motion_notes: SanitizedHtmlStr = field("amendmentMotionNotes")
     is_government_win: bool | None = field("isGovernmentWin")
     remote_voting_start: CoercedDateTime = field("remoteVotingStart")
     remote_voting_end: CoercedDateTime = field("remoteVotingEnd")

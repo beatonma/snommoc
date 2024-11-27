@@ -1,1 +1,1 @@
-from .bills import update_bills
+from .update import update_bills

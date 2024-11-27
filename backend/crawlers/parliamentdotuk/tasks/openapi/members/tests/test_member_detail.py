@@ -22,32 +22,27 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         "https://members-api.parliament.uk/api/Members/4514/Focus": "data/focus.json",
     }
 
-    def test_update_member_details(self):
-        with self.patch():
+    @classmethod
+    def setUpTestData(cls):
+        with cls.patch():
             update_current_members(context=CONTEXT)
 
-        person = Person.objects.get(parliamentdotuk=4514)
+    def setUp(self):
+        self.person = Person.objects.get(parliamentdotuk=4514)
+
+    def test_update_member_details(self):
+        person = self.person
         self.assertEqual(person.name, "Sir Keir Starmer")
         self.assertEqual(person.full_title, "Rt Hon Sir Keir Starmer MP")
         self.assertEqual(person.gender, "M")
 
-        self._test_party(person)
-        self._test_posts(person)
-        self._test_registered_interests(person)
-        self._test_subjects_of_interest(person)
-        self._test_experiences(person)
-        self._test_contact(person)
-        self._test_party_affiliations(person)
-        self._test_constituencies(person)
-        self._test_house_memberships(person)
-        self._test_elections_contested(person)
-        self._test_committees(person)
-
-    def _test_party(self, person: Person):
+    def test_party(self):
+        person = self.person
         self.assertEqual(person.party.name, "Labour")
         self.assertEqual(person.party.theme.primary, "#d50000")
 
-    def _test_posts(self, person: Person):
+    def test_posts(self):
+        person = self.person
         self.assertListEqual(
             list(person.current_posts()),
             [
@@ -67,17 +62,20 @@ class UpdateMemberDetailTests(OpenApiTestCase):
             "https://www.gov.uk/government/organisations/home-office",
         )
 
-    def _test_registered_interests(self, person: Person):
+    def test_registered_interests(self):
+        person = self.person
         self.assertQuerysetSize(person.registered_interests.all(), 36)
         interest = person.registered_interests.get(parliamentdotuk=10850)
         self.assertTrue("Payment: £205.86" in interest.description)
         self.assertEqual(interest.created, date(2024, 10, 2))
         self.assertTrue("4 Battle Bridge Lane" in interest.parent.description)
 
-    def _test_subjects_of_interest(self, person: Person):
+    def test_subjects_of_interest(self):
+        person = self.person
         self.assertQuerysetSize(person.subjects_of_interest.all(), 2)
 
-    def _test_experiences(self, person: Person):
+    def test_experiences(self):
+        person = self.person
         self.assertQuerysetSize(person.experiences.all(), 4)
         exp = person.experiences.get(parliamentdotuk=2095)
         self.assertEqual(exp.title, "Trustee")
@@ -85,7 +83,8 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(exp.start, date(2012, 1, 1))
         self.assertEqual(exp.end, date(2021, 12, 1))
 
-    def _test_contact(self, person: Person):
+    def test_contact(self):
+        person = self.person
         self.assertEqual(
             person.web_addresses.get(type__name__contains="Twitter").url,
             "https://twitter.com/keir_starmer",
@@ -96,12 +95,14 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(address.postcode, "SW1A 0AA")
         self.assertEqual(address.email, "keir.starmer.mp@parliament.uk")
 
-    def _test_party_affiliations(self, person: Person):
+    def test_party_affiliations(self):
+        person = self.person
         affiliation = person.party_affiliations.first()
         self.assertEqual(affiliation.party.name, "Labour")
         self.assertEqual(affiliation.start, date(2015, 5, 7))
 
-    def _test_constituencies(self, person: Person):
+    def test_constituencies(self):
+        person = self.person
         representation = person.constituencies.get(constituency__parliamentdotuk=3536)
         self.assertEqual(representation.start, date(2015, 5, 7))
         self.assertEqual(representation.end, date(2024, 5, 30))
@@ -111,19 +112,22 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(con.start, date(2010, 4, 13))
         self.assertEqual(con.end, date(2024, 5, 30))
 
-    def _test_house_memberships(self, person: Person):
+    def test_house_memberships(self):
+        person = self.person
         house = person.house_memberships.first()
 
         self.assertEqual(house.house.name, "Commons")
         self.assertEqual(house.start, date(2015, 5, 7))
 
-    def _test_elections_contested(self, person: Person):
+    def test_elections_contested(self):
+        person = self.person
         contested = person.contested_elections.first()
 
         self.assertEqual(contested.date, date(1997, 5, 1))
         self.assertEqual(contested.constituency.name, "Clwyd South")
 
-    def _test_committees(self, person: Person):
+    def test_committees(self):
+        person = self.person
         membership = person.committees.first()
         self.assertEqual(membership.start, date(2015, 7, 8))
         self.assertEqual(membership.end, date(2015, 10, 26))

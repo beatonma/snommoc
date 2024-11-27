@@ -9,6 +9,18 @@ from repository.models.bill import (
 )
 
 
+def fetch_and_update_bill_publications(bill_id: int, context: TaskContext) -> None:
+    openapi_client.foreach(
+        endpoints.bill_publications(bill_id),
+        items_key="publications",
+        item_func=_update_bill_publication,
+        context=context,
+        func_kwargs={
+            "bill_id": bill_id,
+        },
+    )
+
+
 def _update_or_create_bill_type(data: schema.BillPublicationType):
     pub_type, _ = BillPublicationType.objects.update_or_create(
         parliamentdotuk=data.id,
@@ -26,18 +38,18 @@ def _update_bill_publication(
     func_kwargs: dict,
 ):
     """Signature: openapi_client.ItemFunc"""
-    api_pub = schema.BillPublication(**data)
+    api_pub = schema.BillPublication.model_validate(data)
     bill_id = func_kwargs["bill_id"]
 
     house, _ = House.objects.get_or_create(name=api_pub.house.name)
-    pub_type = _update_or_create_bill_type(api_pub.publicationType)
+    pub_type = _update_or_create_bill_type(api_pub.publication_type)
 
     pub, _ = BillPublication.objects.update_or_create(
         parliamentdotuk=api_pub.id,
         bill_id=bill_id,
         defaults={
             "title": api_pub.title,
-            "display_date": api_pub.displayDate,
+            "display_date": api_pub.display_date,
             "publication_type": pub_type,
             "house": house,
         },
@@ -51,18 +63,6 @@ def _update_bill_publication(
                 "publication": pub,
                 "title": link.title,
                 "url": link.url,
-                "content_type": link.contentType,
+                "content_type": link.content_type,
             },
         )
-
-
-def fetch_and_update_bill_publications(bill_id: int, context: TaskContext) -> None:
-    openapi_client.foreach(
-        endpoints.bill_publications(bill_id),
-        items_key="publications",
-        item_func=_update_bill_publication,
-        context=context,
-        func_kwargs={
-            "bill_id": bill_id,
-        },
-    )

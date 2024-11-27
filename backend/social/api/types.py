@@ -1,18 +1,14 @@
 from typing import Annotated
 
-import nh3
 from pydantic import AfterValidator, Field
 from social.models import UserToken
 from social.validation.username import BlockedUsername, is_username_blocked
+from util.strings import sanitize_html
 
 type SanitizedText = Annotated[
     str,
-    AfterValidator(sanitize_text),
+    AfterValidator(sanitize_html),
 ]
-
-
-def sanitize_text(text: str) -> str:
-    return nh3.clean(text, tags=set(), attributes={}).strip()
 
 
 type CommentText = Annotated[

@@ -1,0 +1,74 @@
+{
+  "comment": "Response is a list wrapped by an object with default \"items\" key.",
+  "items": [
+    {
+      "billId": 2818,
+      "shortTitle": "Abolition of Business Rates Bill",
+      "currentHouse": "Commons",
+      "originatingHouse": "Commons",
+      "lastUpdate": "2021-05-04T10:42:08.0579851",
+      "billWithdrawn": null,
+      "isDefeated": false,
+      "billTypeId": 5,
+      "introducedSessionId": 35,
+      "includedSessionIds": [35],
+      "isAct": false,
+      "currentStage": {
+        "id": 12655,
+        "stageId": 7,
+        "sessionId": 35,
+        "description": "2nd reading",
+        "abbreviation": "2R",
+        "house": "Commons",
+        "stageSittings": [],
+        "sortOrder": 2
+      }
+    },
+    {
+      "billId": 2302,
+      "shortTitle": "Abortion Bill",
+      "currentHouse": "Commons",
+      "originatingHouse": "Commons",
+      "lastUpdate": "2019-09-17T16:22:10",
+      "billWithdrawn": null,
+      "isDefeated": false,
+      "billTypeId": 5,
+      "introducedSessionId": 30,
+      "includedSessionIds": [30],
+      "isAct": false,
+      "currentStage": {
+        "id": 15039,
+        "stageId": 7,
+        "sessionId": 30,
+        "description": "2nd reading",
+        "abbreviation": "2R",
+        "house": "Commons",
+        "stageSittings": [],
+        "sortOrder": 2
+      }
+    },
+    {
+      "billId": 2556,
+      "shortTitle": "Abortion Bill [HL]",
+      "currentHouse": "Lords",
+      "originatingHouse": "Lords",
+      "lastUpdate": "2021-05-05T11:05:17.4984479",
+      "billWithdrawn": null,
+      "isDefeated": false,
+      "billTypeId": 2,
+      "introducedSessionId": 35,
+      "includedSessionIds": [35],
+      "isAct": false,
+      "currentStage": {
+        "id": 11662,
+        "stageId": 2,
+        "sessionId": 35,
+        "description": "2nd reading",
+        "abbreviation": "2R",
+        "house": "Lords",
+        "stageSittings": [],
+        "sortOrder": 2
+      }
+    }
+  ]
+}

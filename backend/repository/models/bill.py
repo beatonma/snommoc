@@ -220,14 +220,6 @@ class Bill(SocialMixin, ParliamentDotUkMixin, BaseModel):
         related_name="bills",
     )
 
-    current_stage = models.ForeignKey(
-        "repository.BillStage",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="+",
-    )
-
     petitioning_period = models.CharField(max_length=512, null=True, blank=True)
     petitioning_information = models.TextField(null=True, blank=True)
 
@@ -241,6 +233,9 @@ class Bill(SocialMixin, ParliamentDotUkMixin, BaseModel):
         "repository.Organisation",
         related_name="promoted_bills",
     )
+
+    def current_stage(self):
+        return self.stages.all().order_by("-sort_order").first()
 
     def social_title(self) -> str:
         return self.title

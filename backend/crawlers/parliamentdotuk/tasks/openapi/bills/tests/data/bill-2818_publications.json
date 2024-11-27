@@ -1,0 +1,885 @@
+{
+  "billId": 512,
+  "publications": [
+    {
+      "house": "Commons",
+      "id": 2756,
+      "title": "Constitutional Reform and Governance Act 2010 c.25",
+      "publicationType": {
+        "id": 6,
+        "name": "Act of Parliament",
+        "description": "Full text of the Act of Parliament as passed by Parliament (this is the Act in its original state. The Act may have been amended by another Act and any such amendments are not shown in this version)."
+      },
+      "displayDate": "2010-04-12T00:00:00",
+      "links": [
+        {
+          "id": 3145,
+          "title": "Constitutional Reform and Governance Act 2010 c.25",
+          "url": "http://www.opsi.gov.uk/acts/acts2010/pdf/ukpga_20100025_en.pdf",
+          "contentType": "application/pdf"
+        },
+        {
+          "id": 3146,
+          "title": "Constitutional Reform and Governance Act 2010 c.25",
+          "url": "http://www.opsi.gov.uk/acts/acts2010/ukpga_20100025_en_1",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2755,
+      "title": "Proceedings on Consideration of Lords  Amendments as at  8 April  2010",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2010-04-09T00:00:00",
+      "links": [
+        {
+          "id": 3144,
+          "title": "Proceedings on Consideration of Lords  Amendments as at  8 April  2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/106/pro1060408p.427.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2753,
+      "title": "Selection of Amendments (Consideration of Lords Amendments)",
+      "publicationType": {
+        "id": 20,
+        "name": "Selection of amendments: Commons",
+        "description": "In the House of Commons, amendments are grouped together so that amendments relating to a particular topic or issue are discussed together."
+      },
+      "displayDate": "2010-04-08T00:00:00",
+      "links": [
+        {
+          "id": 3141,
+          "title": "Selection of Amendments (Consideration of Lords Amendments)",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/2009-10/selection-of-amendments/commons/CRAG-bill-100408.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2754,
+      "title": "Bill 106 09-10 (Lords Amendments to)",
+      "publicationType": {
+        "id": 5,
+        "name": "Bill",
+        "description": "Full text of the Bill as introduced and further versions of the Bill as it is reprinted to incorporate amendments (proposals for change) made during its passage through Parliament."
+      },
+      "displayDate": "2010-04-08T00:00:00",
+      "links": [
+        {
+          "id": 3142,
+          "title": "Bill 106 09-10 (Lords Amendments to)",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/106/2010106.1-4.html",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3143,
+          "title": "Bill 106 09-10 (Lords Amendments to)",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/106/2010106.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Lords",
+      "id": 2752,
+      "title": "Marshalled List of Amendments to be moved in Committee as at  6 April  2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-04-07T00:00:00",
+      "links": [
+        {
+          "id": 3140,
+          "title": "Marshalled List of Amendments to be moved in Committee as at  6 April  2010",
+          "url": "https://www.publications.parliament.uk/pa/ld200910/ldbills/040/amend/ml040-i.htm",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Lords",
+      "id": 2750,
+      "title": "HL Bill 40 09-10 (as brought from the Commons on 3 March 2010)",
+      "publicationType": {
+        "id": 5,
+        "name": "Bill",
+        "description": "Full text of the Bill as introduced and further versions of the Bill as it is reprinted to incorporate amendments (proposals for change) made during its passage through Parliament."
+      },
+      "displayDate": "2010-03-04T00:00:00",
+      "links": [
+        {
+          "id": 3136,
+          "title": "HL Bill 40 09-10 (as brought from the Commons on 3 March 2010)",
+          "url": "https://www.publications.parliament.uk/pa/ld200910/ldbills/040/10040.i-v.html",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3137,
+          "title": "HL Bill 40 09-10 (as brought from the Commons on 3 March 2010)",
+          "url": "https://www.publications.parliament.uk/pa/ld200910/ldbills/040/2010040.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Lords",
+      "id": 2751,
+      "title": "HL 40 EN (Explanatory Notes to Bill)",
+      "publicationType": {
+        "id": 3,
+        "name": "Explanatory Notes",
+        "description": "Documents to explain the purpose of the Bill."
+      },
+      "displayDate": "2010-03-04T00:00:00",
+      "links": [
+        {
+          "id": 3138,
+          "title": "HL 40 EN (Explanatory Notes to Bill)",
+          "url": "https://www.publications.parliament.uk/pa/ld200910/ldbills/040/en/10040x--.htm",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3139,
+          "title": "HL 40 EN (Explanatory Notes to Bill)",
+          "url": "https://www.publications.parliament.uk/pa/ld200910/ldbills/040/en/2010040en.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2749,
+      "title": "Report Stage Proceedings at at 2 March 2010",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2010-03-03T00:00:00",
+      "links": [
+        {
+          "id": 3135,
+          "title": "Report Stage Proceedings at at 2 March 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/068/pro0680203p.291-297.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2747,
+      "title": "Consideration of Bill as at 2 March 2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-03-02T00:00:00",
+      "links": [
+        {
+          "id": 3133,
+          "title": "Consideration of Bill as at 2 March 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/068/amend/pbc0680203m.1145-1151.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2748,
+      "title": "Constitutional Reform and Governance Bill selection of amendments (Consideration on Report)",
+      "publicationType": {
+        "id": 20,
+        "name": "Selection of amendments: Commons",
+        "description": "In the House of Commons, amendments are grouped together so that amendments relating to a particular topic or issue are discussed together."
+      },
+      "displayDate": "2010-03-02T00:00:00",
+      "links": [
+        {
+          "id": 3134,
+          "title": "Constitutional Reform and Governance Bill selection of amendments (Consideration on Report)",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/2009-10/selection-of-amendments/commons/CRAG-bill-100302.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2746,
+      "title": "Research Paper 10/18",
+      "publicationType": {
+        "id": 4,
+        "name": "Briefing papers",
+        "description": "House of Commons Library and House of Lords Library briefing papers aim to be politically impartial, containing factual information as well as a range of opinions on each subject. Briefing papers on Bills are produced before Second Reading and, in the Commons, after Committee Stage. "
+      },
+      "displayDate": "2010-02-25T00:00:00",
+      "links": [
+        {
+          "id": 3132,
+          "title": "Research Paper 10/18",
+          "url": "http://www.parliament.uk/documents/commons/lib/research/rp2010/rp10-018.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2742,
+      "title": "Notices of Amendments given on 9 February 2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-02-10T00:00:00",
+      "links": [
+        {
+          "id": 3127,
+          "title": "Notices of Amendments given on 9 February 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/amend/pbc0040902a.907-910.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2743,
+      "title": "Committee of the Whole House Proceedings on 9 February 2010",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2010-02-10T00:00:00",
+      "links": [
+        {
+          "id": 3128,
+          "title": "Committee of the Whole House Proceedings on 9 February 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/pro004020910p.195-201.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2744,
+      "title": "Constitutional Reform and Governance Bill, showing changes made in Committee to the bill as introduced in Session 2008-09",
+      "publicationType": {
+        "id": 21,
+        "name": "Tracked changes versions of Bills: Commons",
+        "description": "Tracked changes versions of the Bill, showing amendments made in Committee of the whole House and in Public Bill Committees in the House of Commons. Please note that these are unofficial versions and may not be completely accurate."
+      },
+      "displayDate": "2010-02-10T00:00:00",
+      "links": [
+        {
+          "id": 3129,
+          "title": "Constitutional Reform and Governance Bill, showing changes made in Committee to the bill as introduced in Session 2008-09",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/2009-10/compared-bills/CRAG-bill-100210.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2745,
+      "title": "Bill 68 09-10 (as amended in the Committee)",
+      "publicationType": {
+        "id": 5,
+        "name": "Bill",
+        "description": "Full text of the Bill as introduced and further versions of the Bill as it is reprinted to incorporate amendments (proposals for change) made during its passage through Parliament."
+      },
+      "displayDate": "2010-02-10T00:00:00",
+      "links": [
+        {
+          "id": 3130,
+          "title": "Bill 68 09-10 (as amended in the Committee)",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/068/10068.i-vi.html",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3131,
+          "title": "Bill 68 09-10 (as amended in the Committee)",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/068/2010068.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2740,
+      "title": "Committee of the Whole House Amendments as at 9 February 2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-02-09T00:00:00",
+      "links": [
+        {
+          "id": 3125,
+          "title": "Committee of the Whole House Amendments as at 9 February 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/amend/pbc0040902m.861-867.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2741,
+      "title": "Constitutional Reform and Governance Bill (Committee of the Whole House [Day 6])",
+      "publicationType": {
+        "id": 20,
+        "name": "Selection of amendments: Commons",
+        "description": "In the House of Commons, amendments are grouped together so that amendments relating to a particular topic or issue are discussed together."
+      },
+      "displayDate": "2010-02-09T00:00:00",
+      "links": [
+        {
+          "id": 3126,
+          "title": "Constitutional Reform and Governance Bill (Committee of the Whole House [Day 6])",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/2009-10/selection-of-amendments/commons/CRAG-bill-100209.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2739,
+      "title": "Committee of the Whole House Proceedings as at 1 February 2010",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2010-02-02T00:00:00",
+      "links": [
+        {
+          "id": 3124,
+          "title": "Committee of the Whole House Proceedings as at 1 February 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/pro0040201p.127-131.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2738,
+      "title": "Committee of the Whole House as at 1 February 2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-02-01T00:00:00",
+      "links": [
+        {
+          "id": 3123,
+          "title": "Committee of the Whole House as at 1 February 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/amend/pbc0040102m.653-659.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2736,
+      "title": "Constitutional Reform and Governance Bill (Committee of the Whole House [Day 5])",
+      "publicationType": {
+        "id": 20,
+        "name": "Selection of amendments: Commons",
+        "description": "In the House of Commons, amendments are grouped together so that amendments relating to a particular topic or issue are discussed together."
+      },
+      "displayDate": "2010-01-29T00:00:00",
+      "links": [
+        {
+          "id": 3121,
+          "title": "Constitutional Reform and Governance Bill (Committee of the Whole House [Day 5])",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/2009-10/selection-of-amendments/commons/CRAG-bill-100201.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2737,
+      "title": "Select Committee Report HC 239-I",
+      "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": "The following select committee reports have been identified as relevant to the debate on the Bill."
+      },
+      "displayDate": "2010-01-29T00:00:00",
+      "links": [
+        {
+          "id": 3122,
+          "title": "Select Committee Report HC 239-I",
+          "url": "https://www.publications.parliament.uk/pa/spconf/239/23902.htm",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2735,
+      "title": "Public Bill Committee  Proceedings as at 26 January 2010",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2010-01-27T00:00:00",
+      "links": [
+        {
+          "id": 3120,
+          "title": "Public Bill Committee  Proceedings as at 26 January 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/014/pro014012610p.113-119.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2734,
+      "title": "Committee of the Whole House as at 26 January 2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-01-26T00:00:00",
+      "links": [
+        {
+          "id": 3119,
+          "title": "Committee of the Whole House as at 26 January 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/amend/pbc0042601m.483-489.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2733,
+      "title": "Constitutional Reform and Governance Bill (Committee of the Whole House [Day 4])",
+      "publicationType": {
+        "id": 20,
+        "name": "Selection of amendments: Commons",
+        "description": "In the House of Commons, amendments are grouped together so that amendments relating to a particular topic or issue are discussed together."
+      },
+      "displayDate": "2010-01-25T00:00:00",
+      "links": [
+        {
+          "id": 3118,
+          "title": "Constitutional Reform and Governance Bill (Committee of the Whole House [Day 4])",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/committee/CRAG-bill-100126.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2732,
+      "title": "Committee of the the Whole House Proceedings as at 19 January 2010",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2010-01-20T00:00:00",
+      "links": [
+        {
+          "id": 3117,
+          "title": "Committee of the the Whole House Proceedings as at 19 January 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/pro0041901p.79-85.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2730,
+      "title": "Committee of the Whole House as at 19 January 2010",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2010-01-19T00:00:00",
+      "links": [
+        {
+          "id": 3115,
+          "title": "Committee of the Whole House as at 19 January 2010",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/amend/pbc0041901m.321-327.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2731,
+      "title": "Constitutional Reform and Governance Bill (Committee of the Whole House)",
+      "publicationType": {
+        "id": 20,
+        "name": "Selection of amendments: Commons",
+        "description": "In the House of Commons, amendments are grouped together so that amendments relating to a particular topic or issue are discussed together."
+      },
+      "displayDate": "2010-01-19T00:00:00",
+      "links": [
+        {
+          "id": 3116,
+          "title": "Constitutional Reform and Governance Bill (Committee of the Whole House)",
+          "url": "http://www.parliament.uk/documents/commons-public-bill-office/2010-11/selection-of-amendments/committee//CRAG-bill-100119.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Unassigned",
+      "id": 2728,
+      "title": "Joint Committee on Human Rights: Legislative Scrutiny: Constitutional Reform and Governance Bill; Video Recordings Bill (HL 33/HC 249 2009-10)",
+      "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": "The following select committee reports have been identified as relevant to the debate on the Bill."
+      },
+      "displayDate": "2010-01-18T00:00:00",
+      "links": [
+        {
+          "id": 3112,
+          "title": "Joint Committee on Human Rights: Legislative Scrutiny: Constitutional Reform and Governance Bill; Video Recordings Bill (HL 33/HC 249 2009-10)",
+          "url": "https://www.publications.parliament.uk/pa/jt200910/jtselect/jtrights/33/3302.htm",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3113,
+          "title": "Joint Committee on Human Rights: Legislative Scrutiny: Constitutional Reform and Governance Bill; Video Recordings Bill (HL 33/HC 249 2009-10)",
+          "url": "https://www.publications.parliament.uk/pa/jt200910/jtselect/jtrights/33/33.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2729,
+      "title": "Select Committee Report HL 33/HC 249",
+      "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": "The following select committee reports have been identified as relevant to the debate on the Bill."
+      },
+      "displayDate": "2010-01-18T00:00:00",
+      "links": [
+        {
+          "id": 3114,
+          "title": "Select Committee Report HL 33/HC 249",
+          "url": "https://www.publications.parliament.uk/pa/jt200910/jtselect/jtrights/33/3302.htm",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2726,
+      "title": "Bill 4 09-10 (as introduced)",
+      "publicationType": {
+        "id": 5,
+        "name": "Bill",
+        "description": "Full text of the Bill as introduced and further versions of the Bill as it is reprinted to incorporate amendments (proposals for change) made during its passage through Parliament."
+      },
+      "displayDate": "2009-11-19T00:00:00",
+      "links": [
+        {
+          "id": 3108,
+          "title": "Bill 4 09-10 (as introduced)",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/10004.i-v.html",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3109,
+          "title": "Bill 4 09-10 (as introduced)",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/2010004.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2727,
+      "title": "Bill 4 EN 09-10",
+      "publicationType": {
+        "id": 3,
+        "name": "Explanatory Notes",
+        "description": "Documents to explain the purpose of the Bill."
+      },
+      "displayDate": "2009-11-19T00:00:00",
+      "links": [
+        {
+          "id": 3110,
+          "title": "Bill 4 EN 09-10",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/en/index_004.htm",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3111,
+          "title": "Bill 4 EN 09-10",
+          "url": "https://www.publications.parliament.uk/pa/cm200910/cmbills/004/en/2010004en.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2725,
+      "title": "Committee of the the Whole House Proceedings as at 4 November 2009",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2009-11-05T00:00:00",
+      "links": [
+        {
+          "id": 3107,
+          "title": "Committee of the the Whole House Proceedings as at 4 November 2009",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/pro1420411p.471-477.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2723,
+      "title": "Committee of the Whole House as at 4 November 2009",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2009-11-04T00:00:00",
+      "links": [
+        {
+          "id": 3105,
+          "title": "Committee of the Whole House as at 4 November 2009",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/amend/pbc1420411m.1501-1507.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2724,
+      "title": "Committee of the the Whole House Proceedings as at 3 November 2009",
+      "publicationType": {
+        "id": 8,
+        "name": "Bill proceedings: Commons",
+        "description": "Details of proceedings in Public Bill Committee or Committee of the whole House, on any report (consideration) stage, and on any consideration of Lords Amendments or any subsequent Lords Messages.  The documents contain the text of amendments considered at each sitting and show whether it was agreed to, negatived (not agreed), not called, not moved or withdrawn."
+      },
+      "displayDate": "2009-11-04T00:00:00",
+      "links": [
+        {
+          "id": 3106,
+          "title": "Committee of the the Whole House Proceedings as at 3 November 2009",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/pro1420311p.457-463.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2722,
+      "title": "Committee of the Whole House as at 3 November 2009",
+      "publicationType": {
+        "id": 7,
+        "name": "Amendment Paper",
+        "description": "Full list of amendment papers relating to the Bill. Individual amendment papers will be replaced with consolidated lists before the amendments are discussed. Page and line references in amendment papers refer to the PDF version of the Bill."
+      },
+      "displayDate": "2009-11-03T00:00:00",
+      "links": [
+        {
+          "id": 3104,
+          "title": "Committee of the Whole House as at 3 November 2009",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/amend/pbc1420311m.1457-1463.html",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2721,
+      "title": "Research Paper 09/73",
+      "publicationType": {
+        "id": 4,
+        "name": "Briefing papers",
+        "description": "House of Commons Library and House of Lords Library briefing papers aim to be politically impartial, containing factual information as well as a range of opinions on each subject. Briefing papers on Bills are produced before Second Reading and, in the Commons, after Committee Stage. "
+      },
+      "displayDate": "2009-10-06T00:00:00",
+      "links": [
+        {
+          "id": 3103,
+          "title": "Research Paper 09/73",
+          "url": "http://www.parliament.uk/documents/commons/lib/research/rp2009/rp09-073.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2719,
+      "title": "Bill as introduced",
+      "publicationType": {
+        "id": 5,
+        "name": "Bill",
+        "description": "Full text of the Bill as introduced and further versions of the Bill as it is reprinted to incorporate amendments (proposals for change) made during its passage through Parliament."
+      },
+      "displayDate": "2009-07-20T00:00:00",
+      "links": [
+        {
+          "id": 3099,
+          "title": "Bill as introduced",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/09142.i-iv.html",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3100,
+          "title": "Bill as introduced",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/2009142.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2720,
+      "title": "Explanatory Notes to Bill",
+      "publicationType": {
+        "id": 3,
+        "name": "Explanatory Notes",
+        "description": "Documents to explain the purpose of the Bill."
+      },
+      "displayDate": "2009-07-20T00:00:00",
+      "links": [
+        {
+          "id": 3101,
+          "title": "Explanatory Notes to Bill",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/en/index_142.htm",
+          "contentType": "text/html"
+        },
+        {
+          "id": 3102,
+          "title": "Explanatory Notes to Bill",
+          "url": "https://www.publications.parliament.uk/pa/cm200809/cmbills/142/en/2009142en.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2718,
+      "title": "Government Response to Public Administration Select Committee, Tenth Report of Session 2007-08, Constitional Renewal: Draft Bill and White Paper (HC 499, 2007-08) Cm 7688",
+      "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": "The following select committee reports have been identified as relevant to the debate on the Bill."
+      },
+      "displayDate": "2009-06-04T00:00:00",
+      "links": [
+        {
+          "id": 3098,
+          "title": "Government Response to Public Administration Select Committee, Tenth Report of Session 2007-08, Constitional Renewal: Draft Bill and White Paper (HC 499, 2007-08) Cm 7688",
+          "url": "http://www.official-documents.gov.uk/document/cm76/7688/7688.pdf",
+          "contentType": "application/pdf"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Unassigned",
+      "id": 2717,
+      "title": "Joint Committee on the Draft Constitutional Renewal Bill: Draft Constitutional Renewal Bill Volume I (HL 166-I / HC 551-I)",
+      "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": "The following select committee reports have been identified as relevant to the debate on the Bill."
+      },
+      "displayDate": "2008-07-31T00:00:00",
+      "links": [
+        {
+          "id": 3097,
+          "title": "Joint Committee on the Draft Constitutional Renewal Bill: Draft Constitutional Renewal Bill Volume I (HL 166-I / HC 551-I)",
+          "url": "https://www.publications.parliament.uk/pa/jt200708/jtselect/jtconren/166/16602.htm",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "house": "Commons",
+      "id": 2716,
+      "title": "Public Administration Select Committee, Constitional Renewal: Draft Bill and White Paper (HC 499, 2007-08)",
+      "publicationType": {
+        "id": 9,
+        "name": "Select Committee report",
+        "description": "The following select committee reports have been identified as relevant to the debate on the Bill."
+      },
+      "displayDate": "2008-06-04T00:00:00",
+      "links": [
+        {
+          "id": 3096,
+          "title": "Public Administration Select Committee, Constitional Renewal: Draft Bill and White Paper (HC 499, 2007-08)",
+          "url": "https://www.publications.parliament.uk/pa/cm200708/cmselect/cmpubadm/499/49902.htm",
+          "contentType": "text/html"
+        }
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,42 +1,29 @@
-import logging
-
-from crawlers import caches
-from crawlers.context import TaskContext, task_context
-from crawlers.network import JsonCache
+from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.bills import schema
-from notifications.models import TaskNotification
 from repository.models.bill import BillType, BillTypeCategory
 
-log = logging.getLogger(__name__)
 
-
-def _update_bill_type(data: dict, context: TaskContext) -> None:
-    """Signature: openapi_client.ItemFunc"""
-    billtype = schema.BillType(**data)
-
-    category, _ = BillTypeCategory.objects.get_or_create(name=billtype.category.name)
-
-    BillType.objects.update_or_create(
-        parliamentdotuk=billtype.id,
-        defaults={
-            "name": billtype.name,
-            "description": billtype.description,
-            "category": category,
-        },
-    )
-
-
-@task_context(cache_name=caches.BILLS)
-def update_bill_types(
-    cache: JsonCache | None,
-    notification: TaskNotification | None,
-) -> None:
-    context = TaskContext(cache, notification)
-    log.info("Updating BillTypes...")
+def update_bill_types(context: TaskContext) -> None:
     openapi_client.foreach(
         endpoint_url=endpoints.BILL_TYPE_DEFINITIONS,
         item_func=_update_bill_type,
         context=context,
     )
-    log.info("BillTypes updated successfully")
+    context.info("BillTypes updated successfully")
+
+
+def _update_bill_type(response_data: dict, context: TaskContext) -> None:
+    """Signature: openapi_client.ItemFunc"""
+    data = schema.BillType.model_validate(response_data)
+
+    category, _ = BillTypeCategory.objects.get_or_create(name=data.category.name)
+
+    BillType.objects.update_or_create(
+        parliamentdotuk=data.id,
+        defaults={
+            "name": data.name,
+            "description": data.description,
+            "category": category,
+        },
+    )

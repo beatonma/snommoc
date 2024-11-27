@@ -15,6 +15,7 @@ def create_votes[
     division_vote_class: Type[DivisionVoteSharedProperties],
     votes: list[schema.Member],
     vote_type_name: str,
+    is_teller: bool = False,
 ):
     vote_type, _ = DivisionVoteType.objects.get_or_create(name=vote_type_name)
     for vote in votes:
@@ -24,8 +25,11 @@ def create_votes[
             name=vote.name,
             defaults={"party": party},
         )
-        division_vote_class.objects.update_or_create(
+        _, created = division_vote_class.objects.update_or_create(
             person=person,
             division=division,
-            defaults={"vote_type": vote_type},
+            defaults={
+                "vote_type": vote_type,
+                "is_teller": is_teller,
+            },
         )

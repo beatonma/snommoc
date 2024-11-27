@@ -154,6 +154,7 @@ def _base_DivisionVote(*, division_fk: str, person_related_name: str):
             related_name="+",
             null=True,
         )
+        is_teller = models.BooleanField(default=False)
 
         class Meta:
             abstract = True

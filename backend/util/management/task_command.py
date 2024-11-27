@@ -35,6 +35,12 @@ class TaskCommand(BaseCommand):
             default=None,
             help="Stop a task after processing this many items.",
         )
+        parser.add_argumet(
+            "--items_per_page",
+            type=int,
+            default=None,
+            help="Request this many items per page.",
+        )
 
     def handle_async(self, func, func_kwargs: dict | None = None, **command_options):
         """Call from handle(), passing the function along with the received options.
@@ -60,6 +66,7 @@ class TaskCommand(BaseCommand):
         func_kwargs["force_update"] = command_options.pop("force")
         func_kwargs["skip_items"] = command_options.pop("skip_items", 0)
         func_kwargs["max_items"] = command_options.pop("max_items", None)
+        func_kwargs["items_per_page"] = command_options.pop("items_per_page", None)
 
         if sync:
             log.info(

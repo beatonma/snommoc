@@ -47,6 +47,10 @@ def for_each_page[
             if context.limit_reached(item_count):
                 return
 
+        if not context.follow_pagination:
+            context.info("Task is not following pagination.")
+            return
+
 
 def _chunks(lst: list[str], size: int):
     """Yield successive n-sized chunks from lst."""

@@ -1,0 +1,1323 @@
+[
+  {
+    "divisionId": 3172,
+    "date": "2024-11-20T00:00:00",
+    "number": 5,
+    "notes": null,
+    "title": "Water (Special Measures) Bill [HL]",
+    "isWhipped": false,
+    "isGovernmentContent": false,
+    "authoritativeContentCount": 36,
+    "authoritativeNotContentCount": 89,
+    "divisionHadTellers": true,
+    "tellerContentCount": 36,
+    "tellerNotContentCount": 89,
+    "memberContentCount": 34,
+    "memberNotContentCount": 87,
+    "sponsoringMemberId": 4953,
+    "isHouse": true,
+    "amendmentMotionNotes": "<p>Lord Roborough moved amendment 51, to leave out clause 10. The House divided:</p>",
+    "isGovernmentWin": null,
+    "remoteVotingStart": "2024-11-20T21:20:21",
+    "remoteVotingEnd": "2024-11-20T21:28:21",
+    "divisionWasExclusivelyRemote": false,
+    "contentTellers": [
+      {
+        "memberId": 4311,
+        "name": "Baroness Williams of Trafford",
+        "listAs": "Williams of Trafford, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3359,
+        "name": "The Earl of Courtown",
+        "listAs": "Courtown, E.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      }
+    ],
+    "notContentTellers": [
+      {
+        "memberId": 4153,
+        "name": "Lord Kennedy of Southwark",
+        "listAs": "Kennedy of Southwark, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4157,
+        "name": "Baroness Wheeler",
+        "listAs": "Wheeler, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      }
+    ],
+    "contents": [
+      {
+        "memberId": 36,
+        "name": "Baroness Laing of Elderslie",
+        "listAs": "Laing of Elderslie, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 57,
+        "name": "Lord Young of Cookham",
+        "listAs": "Young of Cookham, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 883,
+        "name": "Lord Jopling",
+        "listAs": "Jopling, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 994,
+        "name": "Lord Hunt of Wirral",
+        "listAs": "Hunt of Wirral, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1141,
+        "name": "Lord Forsyth of Drumlean",
+        "listAs": "Forsyth of Drumlean, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1551,
+        "name": "Lord Jackson of Peterborough",
+        "listAs": "Jackson of Peterborough, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1833,
+        "name": "Lord Mancroft",
+        "listAs": "Mancroft, L.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2735,
+        "name": "The Earl of Dundee",
+        "listAs": "Dundee, E.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3384,
+        "name": "Viscount Craigavon",
+        "listAs": "Craigavon, V.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Crossbench",
+        "partyColour": "C0C0C0",
+        "partyAbbreviation": "XB",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3681,
+        "name": "Baroness Morris of Bolton",
+        "listAs": "Morris of Bolton, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3799,
+        "name": "Lord James of Blackheath",
+        "listAs": "James of Blackheath, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4081,
+        "name": "Lord Evans of Rainow",
+        "listAs": "Evans of Rainow, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4174,
+        "name": "Baroness Stedman-Scott",
+        "listAs": "Stedman-Scott, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4200,
+        "name": "Lord True",
+        "listAs": "True, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4289,
+        "name": "Baroness Manzoor",
+        "listAs": "Manzoor, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4499,
+        "name": "Lord Davies of Gower",
+        "listAs": "Davies of Gower, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4553,
+        "name": "Baroness Scott of Bybrook",
+        "listAs": "Scott of Bybrook, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4557,
+        "name": "Lord Shinkwin",
+        "listAs": "Shinkwin, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4582,
+        "name": "Baroness Bloomfield of Hinton Waldrist",
+        "listAs": "Bloomfield of Hinton Waldrist, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4699,
+        "name": "Baroness Meyer",
+        "listAs": "Meyer, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4720,
+        "name": "Lord Brownlow of Shurlock Row",
+        "listAs": "Brownlow of Shurlock Row, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4728,
+        "name": "Lord Parkinson of Whitley Bay",
+        "listAs": "Parkinson of Whitley Bay, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4888,
+        "name": "Lord Sharpe of Epsom",
+        "listAs": "Sharpe of Epsom, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4919,
+        "name": "The Earl of Leicester",
+        "listAs": "Leicester, E.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4920,
+        "name": "Lord Sandhurst",
+        "listAs": "Sandhurst, L.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4946,
+        "name": "Lord Remnant",
+        "listAs": "Remnant, L.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4952,
+        "name": "The Earl of Minto",
+        "listAs": "Minto, E.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4953,
+        "name": "Lord Roborough",
+        "listAs": "Roborough, L.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4957,
+        "name": "Lord Ashcombe",
+        "listAs": "Ashcombe, L.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4958,
+        "name": "The Earl of Effingham",
+        "listAs": "Effingham, E.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4969,
+        "name": "Baroness Foster of Aghadrumsee",
+        "listAs": "Foster of Aghadrumsee, B.",
+        "memberFrom": "Life peer",
+        "party": "Non-affiliated",
+        "partyColour": "",
+        "partyAbbreviation": "",
+        "partyIsMainParty": false
+      },
+      {
+        "memberId": 4986,
+        "name": "Lord Gascoigne",
+        "listAs": "Gascoigne, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4989,
+        "name": "Lord Ranger of Northwood",
+        "listAs": "Ranger of Northwood, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5016,
+        "name": "Lord Booth",
+        "listAs": "Booth, L.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4311,
+        "name": "Baroness Williams of Trafford",
+        "listAs": "Williams of Trafford, B.",
+        "memberFrom": "Life peer",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3359,
+        "name": "The Earl of Courtown",
+        "listAs": "Courtown, E.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "partyAbbreviation": "Con",
+        "partyIsMainParty": true
+      }
+    ],
+    "notContents": [
+      {
+        "memberId": 181,
+        "name": "Lord Cryer",
+        "listAs": "Cryer, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 269,
+        "name": "Baroness Smith of Malvern",
+        "listAs": "Smith of Malvern, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 276,
+        "name": "Lord Grocott",
+        "listAs": "Grocott, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 318,
+        "name": "Lord Spellar",
+        "listAs": "Spellar, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 328,
+        "name": "Baroness Beckett",
+        "listAs": "Beckett, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 347,
+        "name": "Baroness Merron",
+        "listAs": "Merron, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 407,
+        "name": "Baroness Taylor of Bolton",
+        "listAs": "Taylor of Bolton, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 489,
+        "name": "Lord Watts",
+        "listAs": "Watts, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 499,
+        "name": "Lord Campbell-Savours",
+        "listAs": "Campbell-Savours, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 518,
+        "name": "Baroness Quin",
+        "listAs": "Quin, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 525,
+        "name": "Lord Clark of Windermere",
+        "listAs": "Clark of Windermere, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 530,
+        "name": "Lord Jones",
+        "listAs": "Jones, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 533,
+        "name": "Lord Hanson of Flint",
+        "listAs": "Hanson of Flint, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 542,
+        "name": "Lord Touhig",
+        "listAs": "Touhig, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 544,
+        "name": "Lord Howarth of Newport",
+        "listAs": "Howarth of Newport, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 546,
+        "name": "Lord Murphy of Torfaen",
+        "listAs": "Murphy of Torfaen, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 567,
+        "name": "Lord Hain",
+        "listAs": "Hain, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 568,
+        "name": "Lord Anderson of Swansea",
+        "listAs": "Anderson of Swansea, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 579,
+        "name": "Lord Foulkes of Cumnock",
+        "listAs": "Foulkes of Cumnock, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 620,
+        "name": "Lord Browne of Ladyton",
+        "listAs": "Browne of Ladyton, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 631,
+        "name": "Baroness Adams of Craigielea",
+        "listAs": "Adams of Craigielea, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 693,
+        "name": "Lord Kinnock",
+        "listAs": "Kinnock, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1241,
+        "name": "Lord Watson of Invergowrie",
+        "listAs": "Watson of Invergowrie, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1387,
+        "name": "Lord Mann",
+        "listAs": "Mann, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1438,
+        "name": "Lord Beamish",
+        "listAs": "Beamish, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1463,
+        "name": "Lord Watson of Wyre Forest",
+        "listAs": "Watson of Wyre Forest, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1511,
+        "name": "Lord Austin of Dudley",
+        "listAs": "Austin of Dudley, L.",
+        "memberFrom": "Life peer",
+        "party": "Non-affiliated",
+        "partyColour": "",
+        "partyAbbreviation": "",
+        "partyIsMainParty": false
+      },
+      {
+        "memberId": 1755,
+        "name": "Baroness Young of Old Scone",
+        "listAs": "Young of Old Scone, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1770,
+        "name": "Lord Winston",
+        "listAs": "Winston, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1782,
+        "name": "Baroness Thornton",
+        "listAs": "Thornton, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 1827,
+        "name": "Baroness Uddin",
+        "listAs": "Uddin, B.",
+        "memberFrom": "Life peer",
+        "party": "Non-affiliated",
+        "partyColour": "",
+        "partyAbbreviation": "",
+        "partyIsMainParty": false
+      },
+      {
+        "memberId": 2024,
+        "name": "Lord Hunt of Kings Heath",
+        "listAs": "Hunt of Kings Heath, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2233,
+        "name": "Baroness Symons of Vernham Dean",
+        "listAs": "Symons of Vernham Dean, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2444,
+        "name": "Lord Whitty",
+        "listAs": "Whitty, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2490,
+        "name": "Lord Goldsmith",
+        "listAs": "Goldsmith, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2503,
+        "name": "Baroness Gale",
+        "listAs": "Gale, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2506,
+        "name": "Baroness McIntosh of Hudnall",
+        "listAs": "McIntosh of Hudnall, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2510,
+        "name": "Baroness Whitaker",
+        "listAs": "Whitaker, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2648,
+        "name": "Viscount Hanworth",
+        "listAs": "Hanworth, V.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2671,
+        "name": "Lord Harris of Haringey",
+        "listAs": "Harris of Haringey, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 2758,
+        "name": "Lord Falconer of Thoroton",
+        "listAs": "Falconer of Thoroton, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3154,
+        "name": "Lord Ponsonby of Shulbrede",
+        "listAs": "Ponsonby of Shulbrede, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3179,
+        "name": "Baroness Pitkeathley",
+        "listAs": "Pitkeathley, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3504,
+        "name": "Lord Bassam of Brighton",
+        "listAs": "Bassam of Brighton, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3609,
+        "name": "Baroness Finlay of Llandaff",
+        "listAs": "Finlay of Llandaff, B.",
+        "memberFrom": "Life peer",
+        "party": "Crossbench",
+        "partyColour": "C0C0C0",
+        "partyAbbreviation": "XB",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3671,
+        "name": "Lord Tunnicliffe",
+        "listAs": "Tunnicliffe, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3684,
+        "name": "Baroness Prosser",
+        "listAs": "Prosser, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 3798,
+        "name": "Lord Patel of Bradford",
+        "listAs": "Patel of Bradford, L.",
+        "memberFrom": "Life peer",
+        "party": "Non-affiliated",
+        "partyColour": "",
+        "partyAbbreviation": "",
+        "partyIsMainParty": false
+      },
+      {
+        "memberId": 3972,
+        "name": "Baroness Chapman of Darlington",
+        "listAs": "Chapman of Darlington, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4130,
+        "name": "Baroness Ritchie of Downpatrick",
+        "listAs": "Ritchie of Downpatrick, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4147,
+        "name": "Baroness Sherlock",
+        "listAs": "Sherlock, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4160,
+        "name": "Lord Knight of Weymouth",
+        "listAs": "Knight of Weymouth, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4166,
+        "name": "Baroness Donaghy",
+        "listAs": "Donaghy, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4170,
+        "name": "Baroness Smith of Basildon",
+        "listAs": "Smith of Basildon, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4179,
+        "name": "Baroness Healy of Primrose Hill",
+        "listAs": "Healy of Primrose Hill, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4234,
+        "name": "Baroness Lister of Burtersett",
+        "listAs": "Lister of Burtersett, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4290,
+        "name": "Baroness Lawrence of Clarendon",
+        "listAs": "Lawrence of Clarendon, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4303,
+        "name": "Baroness Kennedy of Cradley",
+        "listAs": "Kennedy of Cradley, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4332,
+        "name": "Baroness Rebuck",
+        "listAs": "Rebuck, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4395,
+        "name": "Baroness Hayman of Ullock",
+        "listAs": "Hayman of Ullock, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4508,
+        "name": "Baroness Anderson of Stoke-on-Trent",
+        "listAs": "Anderson of Stoke-on-Trent, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4559,
+        "name": "Lord Livermore",
+        "listAs": "Livermore, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4701,
+        "name": "Baroness Bryan of Partick",
+        "listAs": "Bryan of Partick, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4702,
+        "name": "Lord McNicol of West Kilbride",
+        "listAs": "McNicol of West Kilbride, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4711,
+        "name": "Baroness Osamor",
+        "listAs": "Osamor, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4723,
+        "name": "Lord Hendy",
+        "listAs": "Hendy, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4724,
+        "name": "Baroness Blower",
+        "listAs": "Blower, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4730,
+        "name": "Baroness Wilcox of Newport",
+        "listAs": "Wilcox of Newport, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4885,
+        "name": "Lord Sikka",
+        "listAs": "Sikka, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4912,
+        "name": "Baroness Blake of Leeds",
+        "listAs": "Blake of Leeds, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4925,
+        "name": "Viscount Stansgate",
+        "listAs": "Stansgate, V.",
+        "memberFrom": "Excepted Hereditary",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4956,
+        "name": "Baroness Taylor of Stevenage",
+        "listAs": "Taylor of Stevenage, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4959,
+        "name": "Lord Leong",
+        "listAs": "Leong, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4963,
+        "name": "Lord Sahota",
+        "listAs": "Sahota, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4966,
+        "name": "Baroness Twycross",
+        "listAs": "Twycross, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4972,
+        "name": "Lord Hendy of Richmond Hill",
+        "listAs": "Hendy of Richmond Hill, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4974,
+        "name": "Lord Prentis of Leeds",
+        "listAs": "Prentis of Leeds, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4977,
+        "name": "Baroness O'Grady of Upper Holloway",
+        "listAs": "O'Grady of Upper Holloway, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5013,
+        "name": "Lord Shamash",
+        "listAs": "Shamash, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5021,
+        "name": "Lord Hannett of Everton",
+        "listAs": "Hannett of Everton, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5022,
+        "name": "Baroness Ramsey of Wall Heath",
+        "listAs": "Ramsey of Wall Heath, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5023,
+        "name": "Baroness Smith of Llanfaes",
+        "listAs": "Smith of Llanfaes, B.",
+        "memberFrom": "Life peer",
+        "party": "Plaid Cymru",
+        "partyColour": "348837",
+        "partyAbbreviation": "PC",
+        "partyIsMainParty": false
+      },
+      {
+        "memberId": 5363,
+        "name": "Lord Vallance of Balham",
+        "listAs": "Vallance of Balham, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5364,
+        "name": "Lord Timpson",
+        "listAs": "Timpson, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5365,
+        "name": "Lord Hermer",
+        "listAs": "Hermer, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5370,
+        "name": "Baroness Smith of Cluny",
+        "listAs": "Smith of Cluny, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 5373,
+        "name": "Baroness Gustafsson",
+        "listAs": "Gustafsson, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4153,
+        "name": "Lord Kennedy of Southwark",
+        "listAs": "Kennedy of Southwark, L.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      },
+      {
+        "memberId": 4157,
+        "name": "Baroness Wheeler",
+        "listAs": "Wheeler, B.",
+        "memberFrom": "Life peer",
+        "party": "Labour",
+        "partyColour": "d50000",
+        "partyAbbreviation": "Lab",
+        "partyIsMainParty": true
+      }
+    ]
+  }
+]

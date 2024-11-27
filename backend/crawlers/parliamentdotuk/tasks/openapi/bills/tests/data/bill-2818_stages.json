@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": 12654,
+      "stageId": 6,
+      "sessionId": 35,
+      "description": "1st reading",
+      "abbreviation": "1R",
+      "house": "Commons",
+      "stageSittings": [
+        {
+          "id": 11498,
+          "stageId": 6,
+          "billStageId": 12654,
+          "billId": 2818,
+          "date": "2021-01-12T00:00:00"
+        }
+      ],
+      "sortOrder": 1
+    },
+    {
+      "id": 12655,
+      "stageId": 7,
+      "sessionId": 35,
+      "description": "2nd reading",
+      "abbreviation": "2R",
+      "house": "Commons",
+      "stageSittings": [],
+      "sortOrder": 2
+    }
+  ],
+  "totalResults": 2,
+  "itemsPerPage": 20
+}

@@ -1,0 +1,58 @@
+{
+  "comment": "Response for bill 2818 with added `agent` and `promoters` fields",
+  "longTitle": "A Bill to abolish business rates; and for connected purposes.",
+  "summary": null,
+  "sponsors": [
+    {
+      "member": {
+        "memberId": 4474,
+        "name": "Kevin Hollinrake",
+        "party": "Conservative",
+        "partyColour": "0063ba",
+        "house": "Commons",
+        "memberPhoto": "https://members-api.parliament.uk/api/Members/4474/Thumbnail",
+        "memberPage": "https://members.parliament.uk/member/4474/contact",
+        "memberFrom": "Thirsk and Malton"
+      },
+      "organisation": null,
+      "sortOrder": 1
+    }
+  ],
+  "promoters": [
+    {
+      "organisationName": "Promoter",
+      "organisationUrl": "https://promoter.example.com"
+    }
+  ],
+  "petitioningPeriod": null,
+  "petitionInformation": null,
+  "agent": {
+    "name": "Agent name",
+    "address": "Agent address",
+    "phoneNo": "01632 960001",
+    "email": "agent@example.com",
+    "website": "https://agent.example.com"
+  },
+  "billId": 2818,
+  "shortTitle": "Abolition of Business Rates Bill",
+  "formerShortTitle": null,
+  "currentHouse": "Commons",
+  "originatingHouse": "Commons",
+  "lastUpdate": "2021-05-04T10:42:08.0579851",
+  "billWithdrawn": null,
+  "isDefeated": false,
+  "billTypeId": 5,
+  "introducedSessionId": 35,
+  "includedSessionIds": [35],
+  "isAct": false,
+  "currentStage": {
+    "id": 12655,
+    "stageId": 7,
+    "sessionId": 35,
+    "description": "2nd reading",
+    "abbreviation": "2R",
+    "house": "Commons",
+    "stageSittings": [],
+    "sortOrder": 2
+  }
+}

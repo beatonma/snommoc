@@ -7,20 +7,18 @@ from repository.models import Person
 from repository.models.divisions import LordsDivision, LordsDivisionVote
 
 
-@task_context(cache_name=caches.LORDS_DIVISIONS)
-def update_lords_divisions(
-    context: TaskContext,
-) -> None:
+@task_context(cache_name=caches.LORDS_DIVISIONS, items_per_page=10)
+def update_lords_divisions(context: TaskContext) -> None:
     openapi_client.foreach(
         endpoints.LORDS_DIVISIONS_ALL,
-        item_func=update_lords_division,
+        item_func=_update_lords_division,
         context=context,
     )
 
 
-def update_lords_division(data_dict: dict, context: TaskContext) -> None:
+def _update_lords_division(response_data: dict, context: TaskContext) -> None:
     """Signature: openapi_client.ItemFunc"""
-    data = schema.LordsDivision(**data_dict)
+    data = schema.LordsDivision.model_validate(response_data)
 
     sponsor = (
         Person.objects.get_member(data.sponsoring_member_id)
@@ -56,9 +54,19 @@ def update_lords_division(data_dict: dict, context: TaskContext) -> None:
 
     create_votes(division, LordsDivisionVote, data.contents, "content")
     create_votes(division, LordsDivisionVote, data.not_contents, "not_content")
-    create_votes(division, LordsDivisionVote, data.content_tellers, "content_teller")
     create_votes(
-        division, LordsDivisionVote, data.not_content_tellers, "not_content_teller"
+        division,
+        LordsDivisionVote,
+        data.content_tellers,
+        "content",
+        is_teller=True,
+    )
+    create_votes(
+        division,
+        LordsDivisionVote,
+        data.not_content_tellers,
+        "not_content",
+        is_teller=True,
     )
 
     if created:

@@ -24,7 +24,10 @@ __all__ = [
     "CoercedList",
     "CoercedColor",
     "CoercedPhoneNumber",
+    "SanitizedHtmlStr",
 ]
+
+from util.strings import sanitize_html
 
 PHONE_NUMBER_REGION = "GB"
 
@@ -99,3 +102,17 @@ type CoercedPhoneNumber = Annotated[
 ]
 
 type CoercedColor = Annotated[CoercedStr, AfterValidator(_coerce_color)]
+type SanitizedHtmlStr = Annotated[
+    CoercedStr,
+    AfterValidator(
+        lambda html: (
+            sanitize_html(
+                html,
+                allow_tags={"p", "br", "a", "ul", "ol", "li"},
+                allow_attrs={"a": {"href"}},
+            )
+            if html
+            else None
+        )
+    ),
+]

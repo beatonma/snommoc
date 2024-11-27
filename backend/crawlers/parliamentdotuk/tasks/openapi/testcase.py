@@ -1,17 +1,22 @@
 import json
+import logging
 from pathlib import Path
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
 
+log = logging.getLogger(__name__)
+
 
 class OpenApiTestCase(LocalTestCase):
-    """Provides self.patch() which returns JSON data from local file, depending
+    """Provides cls.patch() which returns JSON data from a local file, depending
     on the requested URL. Mapping of URL to data file is defined in mock_response.
 
-    e.g.
-    with self.patch():
-        function_which_makes_openapi_client_calls()
+    Example usage:
+        @classmethod
+        def setUpTestData(cls):
+            with cls.patch():
+                function_which_makes_openapi_client_calls()
     """
 
     """File used to determine the CWD for resolution of mocked data."""
@@ -24,14 +29,17 @@ class OpenApiTestCase(LocalTestCase):
     """
     mock_response: dict[str, str]
 
-    def patch(self):
+    @classmethod
+    def patch(cls):
         return patch(
             "crawlers.parliamentdotuk.tasks.openapi.openapi_client.get_json",
-            side_effect=lambda url, *args, **kwargs: self._load_json_from_file(
-                self.mock_response[url]
+            side_effect=lambda url, *args, **kwargs: cls._load_json_from_file(
+                cls.mock_response[url]
             ),
         )
 
-    def _load_json_from_file(self, path: str):
-        with open(Path(self.file).parent / path, "r") as f:
+    @classmethod
+    def _load_json_from_file(cls, path: str):
+        with open(Path(cls.file).parent / path, "r") as f:
+            log.info(f"Loaded mock data from {path}")
             return json.load(f)

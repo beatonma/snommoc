@@ -106,8 +106,8 @@ def foreach(
 
         if not isinstance(items, list):
             raise TypeError(
-                "openapi_client.foreach expects a response with a list of items, got"
-                f" {data}"
+                "openapi_client.foreach expects a response with a list of items, "
+                f"got {data}"
             )
 
         if len(items) == 0:
@@ -128,10 +128,13 @@ def foreach(
             if context.limit_reached(item_count):
                 return
 
-        if data_is_dict:
-            if item_count >= data.get("totalResults", 0):
-                context.info(f"Finished updating {item_count} items")
-                return
+        if not context.follow_pagination:
+            context.info("Task is not following pagination.")
+            return
+
+        if data_is_dict and item_count >= data.get("totalResults", 0):
+            context.info(f"Finished updating {item_count} items")
+            return
 
 
 def get[

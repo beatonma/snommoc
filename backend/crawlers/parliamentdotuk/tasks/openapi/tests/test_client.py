@@ -1,40 +1,24 @@
-from unittest.mock import Mock, patch
-
-from basetest.testcase import LocalTestCase
 from crawlers.context import TaskContext
-from crawlers.network.cache import create_json_cache
 from crawlers.parliamentdotuk.tasks.openapi import openapi_client
-from crawlers.parliamentdotuk.tests.openapi.data_response import (
-    UNWRAPPED_DIVISIONS_RESPONSE,
-    WRAPPED_BILLS_RESPONSE,
-    WRAPPED_PUBLICATIONS_RESPONSE,
-)
+from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 
-MOCK_RESPONSES = {
-    "https://bills-api.parliament.uk/api/v1/Bills/512/Publications": WRAPPED_PUBLICATIONS_RESPONSE,
-    "https://lordsvotes-api.parliament.uk/data/Divisions/search": UNWRAPPED_DIVISIONS_RESPONSE,
-    "https://bills-api.parliament.uk/api/v1/Bills": WRAPPED_BILLS_RESPONSE,
-}
-
-
-def _patch_get_json(**kwargs):
-    return patch.object(
-        openapi_client,
-        "get_json",
-        Mock(side_effect=lambda url, **kw: MOCK_RESPONSES.get(url)),
-    )
-
-
 TASK_CONTEXT = TaskContext(
-    create_json_cache("openapi-tests"),
+    None,
     TaskNotification(title="ClientTestCase"),
     max_items=1,
     items_per_page=1,
 )
 
 
-class ClientTestCase(LocalTestCase):
+class ClientTestCase(OpenApiTestCase):
+    file = __file__
+    mock_response = {
+        "https://bills-api.parliament.uk/api/v1/Bills/512/Publications": "data/response_custom_items_key.json",
+        "https://lordsvotes-api.parliament.uk/data/Divisions/search": "data/response_list.json",
+        "https://bills-api.parliament.uk/api/v1/Bills": "data/response_default_items_key.json",
+    }
+
     def test_client_foreach_with_list_response(self):
         """Test foreach when the endpoint returns an unwrapped list of items."""
         items_processed = 0
@@ -46,7 +30,7 @@ class ClientTestCase(LocalTestCase):
             items_processed += 1
             division_id = data.get("divisionId")
 
-        with _patch_get_json():
+        with self.patch():
             openapi_client.foreach(
                 "https://lordsvotes-api.parliament.uk/data/Divisions/search",
                 context=TASK_CONTEXT,
@@ -66,7 +50,7 @@ class ClientTestCase(LocalTestCase):
             items_processed += 1
             bill_id = data.get("billId")
 
-        with _patch_get_json():
+        with self.patch():
             openapi_client.foreach(
                 "https://bills-api.parliament.uk/api/v1/Bills",
                 context=TASK_CONTEXT,
@@ -85,7 +69,7 @@ class ClientTestCase(LocalTestCase):
             nonlocal publication_id
             publication_id = data.get("id")
 
-        with _patch_get_json():
+        with self.patch():
             openapi_client.foreach(
                 "https://bills-api.parliament.uk/api/v1/Bills/512/Publications",
                 context=TASK_CONTEXT,

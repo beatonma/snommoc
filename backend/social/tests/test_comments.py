@@ -1,6 +1,7 @@
 import uuid
 
 from api import status
+from basetest.testcase import LocalTestCase
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from repository.models import Person
@@ -8,7 +9,6 @@ from repository.tests.data.create import create_sample_person
 from social.models import Comment
 from social.models.token import UserToken
 from social.tests import reverse_api
-from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
 
 _COMMENT = "This is a simple comment"
@@ -19,7 +19,7 @@ VIEWNAME_CREATE_COMMENT = reverse_api("create_comment")
 VIEWNAME_DELETE_COMMENT = reverse_api("delete_comment")
 
 
-class CommentTests(SocialTestCase):
+class CommentTests(LocalTestCase):
     """Social comments tests."""
 
     def post_json(self, data: dict):
@@ -196,9 +196,3 @@ class CommentTests(SocialTestCase):
 
         comment: Comment = Comment.objects.first()
         self.assertFalse(comment.flagged)
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Person,
-            *SocialTestCase.social_models,
-        )

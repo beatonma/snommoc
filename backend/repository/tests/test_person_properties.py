@@ -27,8 +27,3 @@ class PersonPropertyTests(LocalTestCase):
 
             self.assertEqual(living_person.age(), 47)
             self.assertEqual(dead_person.age(), 37)
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            House,
-        )

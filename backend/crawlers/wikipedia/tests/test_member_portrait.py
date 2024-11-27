@@ -130,9 +130,3 @@ class WikiMemberPortraitTests(LocalTestCase):
         self.assertEqual(cfox.square_url, cfox_thumb)
         self.assertEqual(cfox.tall_url, cfox_thumb)
         self.assertEqual(cfox.wide_url, cfox_thumb)
-
-    def tearDown(self):
-        self.delete_instances_of(
-            Person,
-            MemberPortrait,
-        )

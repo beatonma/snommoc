@@ -1,12 +1,12 @@
 from basetest.test_util import create_sample_user
+from basetest.testcase import LocalTestCase
 from social.models import Comment, OAuthToken
 from social.models.token import UserToken
-from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_comment, create_sample_usertoken
 from util.time import get_now
 
 
-class SocialSignalTest(SocialTestCase):
+class SocialSignalTest(LocalTestCase):
     """Social signals tests."""
 
     def test_create_usertoken_on_user_created_is_correct(self):

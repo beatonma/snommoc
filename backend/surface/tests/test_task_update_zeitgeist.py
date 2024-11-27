@@ -1,22 +1,12 @@
 from basetest.test_util import create_sample_dates
 from basetest.testcase import LocalTestCase
-from repository.models import (
-    Bill,
-    CommonsDivision,
-    House,
-    LordsDivision,
-    ParliamentarySession,
-    Person,
-)
-from repository.models.bill import BillType, BillTypeCategory
+from repository.models import Person
 from repository.tests.data.create import (
     create_sample_bill,
     create_sample_commons_division,
     create_sample_lords_division,
     create_sample_person,
 )
-from social.models import Comment, Vote
-from social.models.token import UserToken
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -87,21 +77,3 @@ class UpdateZeitgeistTaskTest(LocalTestCase):
 
         lords_div = zeitgeist.get(target_id=840)
         self.assertEqual(lords_div.target.title, "A voted-on lords division")
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Bill,
-            BillType,
-            BillTypeCategory,
-            Comment,
-            Comment,
-            CommonsDivision,
-            FeaturedPerson,
-            House,
-            LordsDivision,
-            ParliamentarySession,
-            Person,
-            UserToken,
-            Vote,
-            ZeitgeistItem,
-        )

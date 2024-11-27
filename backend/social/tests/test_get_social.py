@@ -1,11 +1,8 @@
 import uuid
 
-from django.urls import reverse
-from repository.models import Person
+from basetest.testcase import LocalTestCase
 from repository.tests.data.create import create_sample_person
-from social.models.token import UserToken
 from social.tests import reverse_api
-from social.tests.testcase import SocialTestCase
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
@@ -17,7 +14,7 @@ _VALID_USER = "get-social-valid-user"
 VIEWNAME_GET = reverse_api("get_social_content")
 
 
-class GetSocialAllTests(SocialTestCase):
+class GetSocialAllTests(LocalTestCase):
     """Tests for social content endpoint /all/"""
 
     def setUp(self, *args, **kwargs) -> None:
@@ -138,12 +135,6 @@ class GetSocialAllTests(SocialTestCase):
                 ],
                 "user_vote": "aye",
             },
-        )
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Person,
-            *SocialTestCase.social_models,
         )
 
     def assertSocialDataEqual(self, response, expected):

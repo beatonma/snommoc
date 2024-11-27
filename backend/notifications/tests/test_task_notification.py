@@ -76,8 +76,3 @@ class TaskNotificationDecorationTests(LocalTestCase):
         self.assertTrue(task.complete)
         self.assertFalse(task.failed)
         self.assertTrue(task.finished)
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            TaskNotification,
-        )

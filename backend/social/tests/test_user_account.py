@@ -32,10 +32,7 @@ class UserAccountViewTests(LocalTestCase):
         )
 
     def tearDown(self) -> None:
-        self.delete_instances_of(
-            UsernameChanged,
-            UserToken,
-        )
+        UserToken.objects.all().delete()
 
 
 class GetUserAccountTests(UserAccountViewTests):

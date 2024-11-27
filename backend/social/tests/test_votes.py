@@ -1,13 +1,13 @@
 import uuid
 
 from api import status
+from basetest.testcase import LocalTestCase
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from repository.models import Person
 from repository.tests.data.create import create_sample_person
 from social.models.votes import Vote
 from social.tests import reverse_api
-from social.tests.testcase import SocialTestCase
 from social.tests.util import create_sample_usertoken
 
 
@@ -27,7 +27,7 @@ VOTE_TYPE_AYE = Vote.VoteTypeChoices.AYE
 VOTE_TYPE_NO = Vote.VoteTypeChoices.NO
 
 
-class VoteTests(SocialTestCase):
+class VoteTests(LocalTestCase):
     """Social votes tests."""
 
     def setUp(self) -> None:
@@ -179,10 +179,3 @@ class VoteTests(SocialTestCase):
 
         vote: Vote = Vote.objects.filter(user=self.valid_user).first()
         self.assertEqual(vote.target, self.target_person)
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Person,
-            ContentType,
-            *SocialTestCase.social_models,
-        )

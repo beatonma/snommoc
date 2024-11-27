@@ -49,15 +49,3 @@ class PartyAlsoKnownAsSignalTest(LocalTestCase):
         # Make sure other candidates were not affected
         self.other_candidate.refresh_from_db()
         self.assertIsNone(self.other_candidate.party)
-
-    def tearDown(self) -> None:
-        self.delete_instances_of(
-            Constituency,
-            ConstituencyCandidate,
-            ConstituencyResultDetail,
-            Election,
-            ElectionType,
-            Party,
-            PartyAlsoKnownAs,
-            Person,
-        )

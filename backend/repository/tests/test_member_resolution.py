@@ -1,11 +1,5 @@
 from basetest.testcase import LocalTestCase
-from repository.models import (
-    Constituency,
-    Election,
-    ElectionType,
-    Person,
-    PersonAlsoKnownAs,
-)
+from repository.models import Constituency, Election
 from repository.resolution.members import normalize_name
 from repository.tests.data.create import (
     create_constituency_result,
@@ -54,16 +48,3 @@ class MemberResolutionTest(LocalTestCase):
         """Names in the format `Surname, Forename` should be rearranged to `Forename Surname`"""
         self.assertEqual(normalize_name("Caroline Lucas"), "Caroline Lucas")
         self.assertEqual(normalize_name("Lucas, Caroline"), "Caroline Lucas")
-
-    def tearDown(self) -> None:
-        self.mp = None
-        self.constituency = None
-        self.election = None
-
-        self.delete_instances_of(
-            Constituency,
-            Election,
-            ElectionType,
-            Person,
-            PersonAlsoKnownAs,
-        )

@@ -21,7 +21,7 @@ def _update_lords_division(response_data: dict, context: TaskContext) -> None:
     data = schema.LordsDivision.model_validate(response_data)
 
     sponsor = (
-        Person.objects.get_member(data.sponsoring_member_id)
+        Person.objects.resolve(data.sponsoring_member_id)
         if data.sponsoring_member_id
         else None
     )

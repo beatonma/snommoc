@@ -1,18 +1,74 @@
-import logging
-from typing import Optional
+import re
+from typing import Self, Union, cast
 
-from common.models import BaseModel
+from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from repository.models.mixins import ParliamentDotUkMixin, PeriodMixin, WikipediaMixin
 
-log = logging.getLogger(__name__)
+_SUB_PARTY_ID_OFFSET = 100_000
 
-# Added to party parliamentdotuk ID in case of multiple parties using same ID
-# e.g. Labour shares ID with Labour Co-op
-SHARED_ID_OFFSET = 10000
+# Special case:
+# Labour and Labour Co-op share the same parliamentdotuk ID but are generally
+# distinct, though overlapping, entities.
+# https://en.wikipedia.org/wiki/Labour_and_Co-operative_Party
+#
+# We will track them separately via custom a ID for Labour Co-op.
+# QuerySet methods must recognise this and handle it transparently.
+_LABOUR_ID = 15  # parliamentdotuk ID for Labour party
+_LABOUR_COOP_ID = _LABOUR_ID + _SUB_PARTY_ID_OFFSET  # Synthetic ID
+
+
+class PartyQuerySet(BaseQuerySet):
+    def get_or_create(self, defaults=None, **kwargs):
+        raise NotImplemented("Use Party.objects.resolve instead")
+
+    def update_or_create(self, defaults=None, **kwargs):
+        raise NotImplemented("Use Party.objects.resolve instead")
+
+    def filter(self, *args, **kwargs) -> Self:
+        return cast("PartyQuerySet", super().filter(*args, **kwargs))
+
+    def resolve(
+        self,
+        parliamentdotuk: int | None = None,
+        name: str | None = None,
+        defaults: dict | None = None,
+        update: bool = False,
+    ) -> tuple[Union["Party", None], bool]:
+        """
+        Args:
+            parliamentdotuk: Party ID, if available.
+            name: Party name, if available.
+            defaults: Default values passed to create/update methods, if possible.
+            update: If True, update_or_create may be used internally.
+                    If False, get_or_create may be used internally.
+
+        Returns:
+            A tuple of the (resolved party, created).
+            Similar to get_or_create, except that the resolved party may be None!
+        """
+
+        defaults = {**(defaults or {})}
+        if re.match(r"Labour \(?Co-?op\)?", name or "", re.IGNORECASE):
+            # Special case: Labour and Labour Co-op share the same parliamentdotuk
+            # ID but are generally consider to be distinct.
+            parliamentdotuk = _LABOUR_COOP_ID
+
+        if parliamentdotuk and name:
+            defaults["name"] = name
+
+            func = super().update_or_create if update else super().get_or_create
+            return func(parliamentdotuk=parliamentdotuk, defaults=defaults)
+
+        if parliamentdotuk:
+            return self.get_or_none(parliamentdotuk=parliamentdotuk), False
+
+        if name:
+            return self.get_or_none(name__iexact=name), False
 
 
 class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
+    objects = PartyQuerySet.as_manager()
     name = models.CharField(max_length=64, unique=True)
     short_name = models.CharField(
         max_length=16,
@@ -118,35 +174,3 @@ class PartyTheme(BaseModel):
 
     def __str__(self):
         return f"Theme: {self.party}"
-
-
-def get_or_create_party(
-    parliamentdotuk: Optional[int],
-    name: Optional[str],
-) -> Optional["Party"]:
-    if not parliamentdotuk:
-        return None
-
-    max_lookups = 5
-    party_id = parliamentdotuk
-
-    for n in range(0, max_lookups):
-        party, created = Party.objects.get_or_create(
-            parliamentdotuk=party_id,
-            defaults={
-                "name": name,
-            },
-        )
-
-        if created:
-            # First come, first served
-            return party
-
-        elif party.name == name:
-            # ID matches the name we have already recorded
-            return party
-
-        else:
-            party_id = party_id + SHARED_ID_OFFSET
-
-    log.warning(f"Many parties appear to share the same ID: {parliamentdotuk} {name}")

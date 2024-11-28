@@ -21,7 +21,7 @@ NAME_MAX_LENGTH = 128
 
 
 class PersonQuerySet(BaseQuerySet):
-    def get_member(
+    def resolve(
         self,
         parliamentdotuk: int,
         name: str | None = None,

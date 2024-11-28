@@ -247,11 +247,9 @@ def _update_contested_elections(person: Person, data: list[schema.ContestedElect
 
 def _update_historical_parties(person: Person, data: list[schema.PartyAffiliation]):
     for item in data:
-        party, _ = Party.objects.get_or_create(
+        party, _ = Party.objects.resolve(
             parliamentdotuk=item.party_id,
-            defaults={
-                "name": item.party_name,
-            },
+            name=item.party_name,
         )
 
         PartyAffiliation.objects.update_or_create(

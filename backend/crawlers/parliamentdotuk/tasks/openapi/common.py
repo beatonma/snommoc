@@ -33,7 +33,7 @@ def resolve_person(
     if party:
         defaults["party"] = party
 
-    return Person.objects.get_member(
+    return Person.objects.resolve(
         parliamentdotuk=person_id,
         name=name,
         defaults=defaults,
@@ -45,16 +45,8 @@ def _resolve_party(
     party_id: int | None,
     party_name: str | None,
 ) -> Party | None:
-
     if party_schema:
         return update_party(party_schema)
 
-    if party_id:
-        party, _ = Party.objects.get_or_create(
-            parliamentdotuk=party_id,
-            defaults={"name": party_name},
-        )
-        return party
-
-    if party_name:
-        return Party.objects.get_or_none(name=party_name)
+    party, _ = Party.objects.resolve(parliamentdotuk=party_id, name=party_name)
+    return party

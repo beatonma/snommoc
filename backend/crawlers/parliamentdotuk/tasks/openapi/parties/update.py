@@ -4,12 +4,8 @@ from repository.models.party import PartyTheme
 
 
 def update_party(data: schema.Party, update: bool = False) -> Party:
-    get_func = Party.objects.update_or_create if update else Party.objects.get_or_create
-    party, created = get_func(
-        parliamentdotuk=data.parliamentdotuk,
-        defaults={
-            "name": data.name,
-        },
+    party, created = Party.objects.resolve(
+        parliamentdotuk=data.parliamentdotuk, name=data.name, update=update
     )
 
     if not created:

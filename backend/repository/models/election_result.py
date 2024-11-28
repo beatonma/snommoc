@@ -18,10 +18,14 @@ class ConstituencyResult(PeriodMixin, BaseModel):
     election = models.ForeignKey(
         "Election",
         on_delete=models.CASCADE,
+        related_name="results",
+        related_query_name="result",
     )
     constituency = models.ForeignKey(
         "Constituency",
         on_delete=models.CASCADE,
+        related_name="results",
+        related_query_name="result",
     )
 
     winner = models.ForeignKey(
@@ -89,7 +93,7 @@ class ConstituencyCandidate(BaseModel):
     )
     votes = models.PositiveIntegerField(default=0)
     order = models.PositiveSmallIntegerField(default=100)
-    party_name = models.CharField(max_length=128)
+    result_change = models.CharField(max_length=16, null=True, blank=True)
 
     party = models.ForeignKey(
         "Party",

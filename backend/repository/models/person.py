@@ -1,4 +1,4 @@
-from typing import Optional, cast
+from typing import Optional, Self, Union, cast
 
 from common.models import BaseModel, BaseQuerySet
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,6 +15,7 @@ from repository.models.mixins import (
     WikipediaMixin,
 )
 from util import time as timeutil
+from util.strings import get_similarity_score
 
 NAME_MAX_LENGTH = 128
 
@@ -39,20 +40,49 @@ class PersonQuerySet(BaseQuerySet):
         )
         return member
 
-    def filter(self, *args, **kwargs) -> "PersonQuerySet":
+    def filter(self, *args, **kwargs) -> Self:
         return cast("PersonQuerySet", super().filter(*args, **kwargs))
 
     def filter_name(self, name: str):
         return self.filter(Q(name__iexact=name) | Q(aliases__alias__iexact=name))
 
-    def active(self) -> "PersonQuerySet":
+    def active(self) -> Self:
         return self.filter(status__is_active=True)
 
-    def commons(self) -> "PersonQuerySet":
+    def commons(self) -> Self:
         return self.filter(house__name=HOUSE_OF_COMMONS)
 
-    def lords(self) -> "PersonQuerySet":
+    def lords(self) -> Self:
         return self.filter(house__name=HOUSE_OF_LORDS)
+
+    def get_for_constituency(
+        self, name: str, constituency_name: str, similarity_threshold: int = 60
+    ) -> Union["Person", None]:
+        """Try to find a Person with the given name who has a known relationship with the given constituency.
+
+        similarity_threshold should be an integer between 0 and 100"""
+
+        qs = self.filter_name(name).filter(constituency__name=constituency_name)
+        if qs.count() == 1:
+            return qs.first()
+
+        qs = self.filter_name(name).prefetch_related("constituencies__constituency")
+        potential = []
+
+        def _safename(obj):
+            return obj.name if obj else None
+
+        for person in qs:
+            constituencies_names = [_safename(person.constituency_or_none())] + [
+                x.constituency.name for x in person.constituencies.all()
+            ]
+            for c in constituencies_names:
+                similarity = get_similarity_score(c, constituency_name)
+                if similarity >= similarity_threshold:
+                    potential.append(person)
+
+        if len(potential) == 1:
+            return potential[0]
 
 
 class Person(
@@ -163,6 +193,12 @@ class Person(
 
     def current_posts(self):
         return self.current_posts_qs().values_list("post__name", flat=True)
+
+    def constituency_or_none(self):
+        try:
+            return self.constituency
+        except ObjectDoesNotExist:
+            return None
 
     def age(self) -> int:
         if self.date_of_death:

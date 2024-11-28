@@ -15,6 +15,7 @@ class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         help_text="Current representative",
+        related_name="constituency",
     )
 
     ordinance_survey_name = models.CharField(max_length=64, null=True, blank=True)
@@ -40,6 +41,7 @@ class ConstituencyBoundary(BaseModel):
     constituency = models.OneToOneField(
         "Constituency",
         on_delete=models.CASCADE,
+        related_name="boundary",
     )
     geo_json = models.JSONField()
 

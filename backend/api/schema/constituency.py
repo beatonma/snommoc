@@ -20,13 +20,12 @@ class ConstituencyFullSchema(ParliamentSchema):
     end: date | None
     mp: MemberMiniSchema | None
     boundary: dict | None = field("constituencyboundary.geo_json", default=None)
-    results: list[ResultsSchema] = field("constituencyresult_set")
+    results: list[ResultsSchema]
 
 
 class ConstituencyCandidateSchema(Schema):
     name: Name
     profile: MemberMiniSchema | None = field("person", default=None)
-    party_name: Name
     party: PartyMiniSchema | None
     order: int
     votes: int

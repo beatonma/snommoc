@@ -1,12 +1,14 @@
 from repository.models import Party, Person
 
 from .parties.schema import Party as PartySchema
+from .parties.update import update_party
 
 
 def resolve_person(
     person_id: int,
     name: str | None,
     *,
+    party: Party | None = None,
     party_schema: PartySchema | None = None,
     party_id: int | None = None,
     party_name: str | None = None,
@@ -21,9 +23,13 @@ def resolve_person(
 
     API references to people usually include an ID, name and party. Other
     values may be passed via defaults."""
+
+    if not person_id:
+        return None
+
     defaults = {**(defaults or {})}
 
-    party = _resolve_party(party_schema, party_id, party_name)
+    party = party or _resolve_party(party_schema, party_id, party_name)
     if party:
         defaults["party"] = party
 
@@ -35,15 +41,18 @@ def resolve_person(
 
 
 def _resolve_party(
-    party_schema: PartySchema | None, party_id: int | None, party_name: str | None
+    party_schema: PartySchema | None,
+    party_id: int | None,
+    party_name: str | None,
 ) -> Party | None:
+
     if party_schema:
-        party_id = party_schema.parliamentdotuk
-        party_name = party_schema.name
+        return update_party(party_schema)
 
     if party_id:
         party, _ = Party.objects.get_or_create(
-            parliamentdotuk=party_id, defaults={"name": party_name}
+            parliamentdotuk=party_id,
+            defaults={"name": party_name},
         )
         return party
 

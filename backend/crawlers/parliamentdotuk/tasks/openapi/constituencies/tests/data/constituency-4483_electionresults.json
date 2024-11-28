@@ -1,0 +1,35 @@
+{
+  "value": [
+    {
+      "result": "LD Gain",
+      "isNotional": false,
+      "electorate": 77927,
+      "turnout": 48056,
+      "majority": 2160,
+      "winningParty": {
+        "id": 17,
+        "name": "Liberal Democrat",
+        "abbreviation": "LD",
+        "backgroundColour": "faa01a",
+        "foregroundColour": "FFFFFF",
+        "isLordsMainParty": true,
+        "isLordsSpiritualParty": false,
+        "governmentType": null,
+        "isIndependentParty": false
+      },
+      "electionTitle": "2024 General Election",
+      "electionDate": "2024-07-04T00:00:00",
+      "electionId": 422,
+      "isGeneralElection": true,
+      "constituencyName": "Inverness, Skye and West Ross-shire",
+      "candidates": []
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "Constituency/4483/ElectionResults",
+      "method": "GET"
+    }
+  ]
+}

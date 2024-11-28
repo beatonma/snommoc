@@ -1,4 +1,7 @@
+from typing import Sequence
+
 import nh3
+from fuzzywuzzy import fuzz
 
 
 def ellipsise(string: str, max_length: int = 32) -> str:
@@ -19,3 +22,7 @@ def sanitize_html(
         tags=allow_tags or set(),
         attributes=allow_attrs or {},
     ).strip()
+
+
+def get_similarity_score(a: Sequence, b: Sequence) -> int:
+    return fuzz.token_sort_ratio(a, b)

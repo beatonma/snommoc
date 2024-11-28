@@ -8,6 +8,7 @@ from repository.models import (
     ConstituencyResult,
     ConstituencyResultDetail,
     Election,
+    Party,
     Person,
 )
 
@@ -54,12 +55,10 @@ def _update_constituency(response_data: dict, context: TaskContext):
     data = ResponseItem[schema.Constituency].model_validate(response_data).value
     member = None
     if member_data := data.member:
-        party = member_data.party
-
         member = resolve_person(
             member_data.parliamentdotuk,
             member_data.name,
-            party_schema=party,
+            party_schema=member_data.party,
         )
 
     constituency, _ = Constituency.objects.update_or_create(
@@ -118,14 +117,16 @@ def _update_election_result_detail(
     constituency = func_kwargs["constituency"]
     election = func_kwargs["election"]
 
-    winner_name, winner_person = _get_winning_candidate(data.candidates)
+    winner_name, winner_person = _get_winning_candidate(
+        constituency.name, data.candidates
+    )
 
     result, _ = ConstituencyResult.objects.get_or_create(
         constituency=constituency,
         election=election,
         defaults={
-            "mp": winner_person,
-            "mp_name": winner_name,
+            "winner": winner_person,
+            "winner_name": winner_name,
         },
     )
 
@@ -144,6 +145,7 @@ def _update_election_result_detail(
 
 
 def _get_winning_candidate(
+    constituency_name: str,
     candidates: list[schema.ElectionCandidate],
 ) -> tuple[str | None, Person | None]:
     """Resolve a Person instance for the winner, or their name if resolution unsuccessful.
@@ -156,37 +158,26 @@ def _get_winning_candidate(
     winner: schema.ElectionCandidate | None = None
     for x in candidates:
         if x.rank_order == 1:
-            winner = winner
+            winner = x
 
     if not winner:
         return None, None
 
-    if winner.parliamentdotuk:
-        return None, resolve_person(
-            winner.parliamentdotuk, name=winner.name, party_schema=winner.party
-        )
+    person, party = _resolve_candidate_attributes(constituency_name, winner)
 
-    # Try to resolve Person instance by name
-    winner_name = winner.name
-    qs = Person.objects.filter_name(winner_name)
-    if qs.count() == 1:
-        return None, qs.first()
+    if person:
+        return None, person
 
-    return winner_name, None
+    return winner.name, None
 
 
 def _update_candidate(
     candidate: schema.ElectionCandidate,
     detail: ConstituencyResultDetail,
 ):
-    person = None
-    if person_id := candidate.parliamentdotuk:
-        person = Person.objects.get_or_none(parliamentdotuk=person_id)
-    party = None
-    party_name = None
-    if party_data := candidate.party:
-        party = update_party(party_data)
-        party_name = party.name
+    person, party = _resolve_candidate_attributes(
+        detail.constituency_result.constituency.name, candidate
+    )
 
     ConstituencyCandidate.objects.update_or_create(
         election_result=detail,
@@ -194,8 +185,25 @@ def _update_candidate(
         defaults={
             "person": person,
             "party": party,
-            "party_name": party_name,
             "order": candidate.rank_order,
+            "result_change": candidate.result_change,
             "votes": candidate.votes,
         },
     )
+
+
+def _resolve_candidate_attributes(
+    constituency_name: str,
+    candidate: schema.ElectionCandidate,
+) -> tuple[Person | None, Party | None]:
+    party = update_party(candidate.party) if candidate.party else None
+    person = resolve_person(
+        person_id=candidate.parliamentdotuk,
+        name=candidate.name,
+        party=party,
+    )
+
+    if not person:
+        person = Person.objects.get_for_constituency(candidate.name, constituency_name)
+
+    return person, party

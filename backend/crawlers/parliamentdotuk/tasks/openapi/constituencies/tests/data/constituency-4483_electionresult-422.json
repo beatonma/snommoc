@@ -1,0 +1,167 @@
+{
+  "value": {
+    "result": "LD Gain",
+    "isNotional": false,
+    "electorate": 77927,
+    "turnout": 48056,
+    "majority": 2160,
+    "winningParty": {
+      "id": 17,
+      "name": "Liberal Democrat",
+      "abbreviation": "LD",
+      "backgroundColour": "faa01a",
+      "foregroundColour": "FFFFFF",
+      "isLordsMainParty": true,
+      "isLordsSpiritualParty": false,
+      "governmentType": null,
+      "isIndependentParty": false
+    },
+    "electionTitle": "2024 General Election",
+    "electionDate": "2024-07-04T00:00:00",
+    "electionId": 422,
+    "isGeneralElection": true,
+    "constituencyName": "Inverness, Skye and West Ross-shire",
+    "candidates": [
+      {
+        "memberId": null,
+        "name": "Darren Paxton",
+        "party": {
+          "id": 144,
+          "name": "Socialist Equality Party",
+          "abbreviation": "SEP",
+          "backgroundColour": null,
+          "foregroundColour": null,
+          "isLordsMainParty": true,
+          "isLordsSpiritualParty": false,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "",
+        "rankOrder": 7,
+        "votes": 178,
+        "voteShare": 0.003704011986016314
+      },
+      {
+        "memberId": null,
+        "name": "Peter Newman",
+        "party": {
+          "id": 1057,
+          "name": "Scottish Green Party",
+          "abbreviation": "Green",
+          "backgroundColour": "78b82a",
+          "foregroundColour": "ffffff",
+          "isLordsMainParty": false,
+          "isLordsSpiritualParty": false,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "2.8%",
+        "rankOrder": 6,
+        "votes": 2038,
+        "voteShare": 0.04240885633427668
+      },
+      {
+        "memberId": null,
+        "name": "Ruraidh Stewart",
+        "party": {
+          "id": 4,
+          "name": "Conservative",
+          "abbreviation": "Con",
+          "backgroundColour": "0063ba",
+          "foregroundColour": "ffffff",
+          "isLordsMainParty": true,
+          "isLordsSpiritualParty": false,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "-18.1%",
+        "rankOrder": 5,
+        "votes": 2502,
+        "voteShare": 0.05206425836524056
+      },
+      {
+        "memberId": null,
+        "name": "Dillan Hill",
+        "party": {
+          "id": 1036,
+          "name": "Reform UK",
+          "abbreviation": "RUK",
+          "backgroundColour": "12b6cf",
+          "foregroundColour": "ffffff",
+          "isLordsMainParty": false,
+          "isLordsSpiritualParty": false,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "4.1%",
+        "rankOrder": 4,
+        "votes": 2934,
+        "voteShare": 0.06105377060096554
+      },
+      {
+        "memberId": null,
+        "name": "Michael Perera",
+        "party": {
+          "id": 15,
+          "name": "Labour",
+          "abbreviation": "Lab",
+          "backgroundColour": "d50000",
+          "foregroundColour": "ffffff",
+          "isLordsMainParty": true,
+          "isLordsSpiritualParty": true,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "3.6%",
+        "rankOrder": 3,
+        "votes": 6246,
+        "voteShare": 0.1299733644081904
+      },
+      {
+        "memberId": null,
+        "name": "Drew Hendry",
+        "party": {
+          "id": 29,
+          "name": "Scottish National Party",
+          "abbreviation": "SNP",
+          "backgroundColour": "fff685",
+          "foregroundColour": "000000",
+          "isLordsMainParty": false,
+          "isLordsSpiritualParty": false,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "-15.4%",
+        "rankOrder": 2,
+        "votes": 15999,
+        "voteShare": 0.3329240885633428
+      },
+      {
+        "memberId": null,
+        "name": "Angus MacDonald",
+        "party": {
+          "id": 17,
+          "name": "Liberal Democrat",
+          "abbreviation": "LD",
+          "backgroundColour": "faa01a",
+          "foregroundColour": "FFFFFF",
+          "isLordsMainParty": true,
+          "isLordsSpiritualParty": false,
+          "governmentType": null,
+          "isIndependentParty": false
+        },
+        "resultChange": "22.7%",
+        "rankOrder": 1,
+        "votes": 18159,
+        "voteShare": 0.3778716497419677
+      }
+    ]
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "Constituency/4483/ElectionResult/422",
+      "method": "GET"
+    }
+  ]
+}

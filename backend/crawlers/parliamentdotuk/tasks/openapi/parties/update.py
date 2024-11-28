@@ -3,10 +3,11 @@ from repository.models import Party
 from repository.models.party import PartyTheme
 
 
-def update_party(data: schema.Party) -> Party:
-    party, created = Party.objects.update_or_create(
+def update_party(data: schema.Party, update: bool = False) -> Party:
+    get_func = Party.objects.update_or_create if update else Party.objects.get_or_create
+    party, created = get_func(
         parliamentdotuk=data.parliamentdotuk,
-        create_defaults={
+        defaults={
             "name": data.name,
         },
     )

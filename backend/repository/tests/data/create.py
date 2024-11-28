@@ -5,6 +5,7 @@ from repository.models import (
     CommonsDivision,
     Constituency,
     ConstituencyCandidate,
+    ConstituencyRepresentative,
     ConstituencyResult,
     ConstituencyResultDetail,
     Election,
@@ -55,15 +56,29 @@ def _any_id() -> int:
 
 def _any_date() -> datetime.date:
     return datetime.date(
-        year=random.randint(1990, 2025),
+        year=random.randint(1990, 2030),
         month=random.randint(1, 12),
         day=random.randint(1, 28),
     )
 
 
+def _any_date_period() -> tuple[datetime.date, datetime.date | None]:
+    start = _any_date()
+    end = (
+        datetime.date(
+            year=random.randint(start.year + 1, 2030),
+            month=random.randint(1, 12),
+            day=random.randint(1, 28),
+        )
+        if random.choice([True, False])
+        else None
+    )
+    return start, end
+
+
 def _any_datetime() -> datetime.datetime:
     return tzdatetime(
-        year=random.randint(1990, 2025),
+        year=random.randint(1990, 2030),
         month=random.randint(1, 12),
         day=random.randint(1, 28),
         hour=random.randint(0, 23),
@@ -118,6 +133,7 @@ def create_sample_constituency(
     start: datetime.date | None = None,
     end: datetime.date | None = None,
     randomise: bool = True,
+    mp: Person | None = None,
 ) -> Constituency:
     c = any_sample_constituency()
 
@@ -140,6 +156,7 @@ def create_sample_constituency(
         pk=c.pk,
         start=c.start,
         end=c.end,
+        mp=mp,
     )
 
 
@@ -242,6 +259,23 @@ def create_constituency_result_detail(
         turnout=turnout,
         majority=majority,
         result=result,
+    )
+
+
+def create_sample_representative(
+    person: Person | None = None,
+    constituency: Constituency | None = None,
+    start: datetime.date | None = None,
+    end: datetime.date | None = None,
+) -> ConstituencyRepresentative:
+    if not start and not end:
+        start, end = _any_date_period()
+
+    return ConstituencyRepresentative.objects.create(
+        person=person or create_sample_person(),
+        constituency=constituency or create_sample_constituency(),
+        start=start,
+        end=end,
     )
 
 
@@ -538,15 +572,13 @@ def create_sample_constituency_candidate(
     if not votes:
         votes = _any_int(100)
 
-    if not party_name:
-        party = any_sample_party()
-        party_name = party.name
+    if party_name:
+        party = create_sample_party(name=party_name)
 
     return ConstituencyCandidate.objects.create(
         election_result=constituency_result_detail,
         name=name,
         votes=votes,
         order=order,
-        party_name=party_name,
         party=party,
     )

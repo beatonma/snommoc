@@ -1,7 +1,6 @@
 from typing import Optional
 
 from dashboard.views.dashboard import StaffView
-from dashboard.views.scoring import get_similarity_score
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
@@ -19,6 +18,7 @@ from surface.models import (
     FeaturedLordsDivision,
     FeaturedPerson,
 )
+from util.strings import get_similarity_score
 
 
 class DashboardSearch(StaffView):

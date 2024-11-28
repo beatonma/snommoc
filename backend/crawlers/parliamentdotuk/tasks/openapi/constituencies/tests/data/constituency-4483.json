@@ -1,0 +1,90 @@
+{
+  "value": {
+    "id": 4483,
+    "name": "Inverness, Skye and West Ross-shire",
+    "startDate": "2024-05-31T00:00:00",
+    "endDate": null,
+    "currentRepresentation": {
+      "member": {
+        "value": {
+          "id": 5362,
+          "nameListAs": "MacDonald, Mr Angus",
+          "nameDisplayAs": "Mr Angus MacDonald",
+          "nameFullTitle": "Mr Angus MacDonald MP",
+          "nameAddressAs": null,
+          "latestParty": {
+            "id": 17,
+            "name": "Liberal Democrat",
+            "abbreviation": "LD",
+            "backgroundColour": "faa01a",
+            "foregroundColour": "FFFFFF",
+            "isLordsMainParty": true,
+            "isLordsSpiritualParty": false,
+            "governmentType": null,
+            "isIndependentParty": false
+          },
+          "gender": "M",
+          "latestHouseMembership": {
+            "membershipFrom": "Inverness, Skye and West Ross-shire",
+            "membershipFromId": 4483,
+            "house": 1,
+            "membershipStartDate": "2024-07-04T00:00:00",
+            "membershipEndDate": null,
+            "membershipEndReason": null,
+            "membershipEndReasonNotes": null,
+            "membershipEndReasonId": null,
+            "membershipStatus": {
+              "statusIsActive": true,
+              "statusDescription": "Current Member",
+              "statusNotes": null,
+              "statusId": 0,
+              "status": 0,
+              "statusStartDate": "2024-07-04T00:00:00"
+            }
+          },
+          "thumbnailUrl": "https://members-api.parliament.uk/api/Members/5362/Thumbnail"
+        },
+        "links": [
+          {
+            "rel": "self",
+            "href": "/Members/5362",
+            "method": "GET"
+          },
+          {
+            "rel": "overview",
+            "href": "/Members/5362",
+            "method": "GET"
+          },
+          {
+            "rel": "synopsis",
+            "href": "/Members/5362/Synopsis",
+            "method": "GET"
+          },
+          {
+            "rel": "contactInformation",
+            "href": "/Members/5362/Contact",
+            "method": "GET"
+          }
+        ]
+      },
+      "representation": {
+        "membershipFrom": "Inverness, Skye and West Ross-shire",
+        "membershipFromId": 4483,
+        "house": 1,
+        "membershipStartDate": "2024-07-04T00:00:00",
+        "membershipEndDate": null,
+        "membershipEndReason": null,
+        "membershipEndReasonNotes": null,
+        "membershipEndReasonId": null,
+        "membershipStatus": null
+      }
+    }
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "/Constituency/4483/Inverness, Skye and West Ross-shire",
+      "method": "GET"
+    }
+  ]
+}

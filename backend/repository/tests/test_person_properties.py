@@ -2,22 +2,18 @@ from datetime import date, datetime
 from unittest.mock import patch
 
 from basetest.testcase import LocalTestCase
-from repository.models import House
-from repository.models.person import Person
-from repository.tests import values
+from repository.tests.data.create import create_sample_person
 
 
 class PersonPropertyTests(LocalTestCase):
     """Ensure that @property values on Person model are correct."""
 
     def test_person_age(self):
-        living_person = Person(
-            name=values.EXAMPLE_NAME,
+        living_person = create_sample_person(
             date_of_birth=date(1973, 6, 10),
         )
 
-        dead_person = Person(
-            name=values.EXAMPLE_NAME,
+        dead_person = create_sample_person(
             date_of_birth=date(1973, 6, 10),
             date_of_death=date(2011, 5, 1),
         )

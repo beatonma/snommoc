@@ -16,7 +16,7 @@ class UpdateBillsTests(OpenApiTestCase):
         "https://bills-api.parliament.uk/api/v1/Stages": "data/bill_stages.json",
         "https://bills-api.parliament.uk/api/v1/Bills/2818": "data/bill-2818.json",
         "https://bills-api.parliament.uk/api/v1/Bills/2818/Stages": "data/bill-2818_stages.json",
-        "https://bills-api.parliament.uk/api/v1/Bills/512/Publications": "data/bill-2818_publications.json",
+        "https://bills-api.parliament.uk/api/v1/Bills/2818/Publications": "data/bill-2818_publications.json",
     }
 
     @classmethod

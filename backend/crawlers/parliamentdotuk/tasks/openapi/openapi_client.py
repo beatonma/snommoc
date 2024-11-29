@@ -41,20 +41,20 @@ def _apply_item_func[
         else:
             return item_func(item, context, func_kwargs)
 
-    except ValidationError as e:
-        context.error(e, "Schema validation failed")
-        raise e
-
     except HttpError as e:
         context.warning(
             f"Item response failed with status={e.status_code}: {report()}\n{e}"
         )
         return "exit"
 
+    except ValidationError as e:
+        context.error(e, "Schema validation failed")
+        raise e
+
     except Exception as e:
-        context.warning(f"Failed to read item: {report()}")
+        context.error(e, f"Failed to read item: {report()}")
         context.mark_as_failed(e)
-        return "exit"
+        raise e
 
 
 def foreach(

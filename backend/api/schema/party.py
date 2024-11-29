@@ -1,4 +1,6 @@
-from api.schema.types import Name, ParliamentSchema, Url, WikipediaPath
+from datetime import datetime
+
+from api.schema.types import Name, ParliamentSchema, Url, WikipediaPath, field
 from ninja import Schema
 
 __all__ = ["PartyFullSchema", "PartyThemeSchema"]
@@ -11,6 +13,15 @@ class PartyThemeSchema(Schema):
     on_accent: str
 
 
+class PartyDemographics(Schema):
+    modified_at: datetime
+    house: str = field("house.name")
+    male_member_count: int
+    female_member_count: int
+    non_binary_member_count: int
+    total_member_count: int
+
+
 class PartyFullSchema(ParliamentSchema):
     name: Name
     short_name: Name | None
@@ -20,6 +31,7 @@ class PartyFullSchema(ParliamentSchema):
     wikipedia: WikipediaPath | None
     logo: str | None
     logo_mask: str | None
+    demographics: list[PartyDemographics]
     theme: PartyThemeSchema | None
 
     @staticmethod

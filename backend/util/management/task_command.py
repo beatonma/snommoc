@@ -35,7 +35,7 @@ class TaskCommand(BaseCommand):
             default=None,
             help="Stop a task after processing this many items.",
         )
-        parser.add_argumet(
+        parser.add_argument(
             "--items_per_page",
             type=int,
             default=None,

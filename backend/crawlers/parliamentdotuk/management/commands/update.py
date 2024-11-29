@@ -12,6 +12,20 @@ class Command(TaskCommand):
         super().add_arguments(parser)
         command = parser.add_subparsers(dest="command")
 
+        command.add_parser("bills", help="Update bill data")
+
+        constituencies = command.add_parser(
+            "constituencies",
+            help="Update constituency data, including boundaries and election results.",
+        ).add_subparsers(dest="scope")
+        constituencies.add_parser("", help="Update core constituency data")
+        constituencies.add_parser("boundaries", help="Update geographical boundaries")
+        constituencies.add_parser("elections", help="Update election results")
+
+        command.add_parser(
+            "demographics", help="Update current demographics data of Lords and MPs"
+        )
+
         divisions = command.add_parser(
             "divisions",
             help="Update division data",
@@ -27,23 +41,15 @@ class Command(TaskCommand):
         members.add_parser("all", help="Update basic data for all members")
         members.add_parser("portraits", help="Update member portraits")
 
-        constituencies = command.add_parser(
-            "constituencies",
-            help="Update constituency data, including boundaries and election results.",
-        ).add_subparsers(dest="scope")
-        constituencies.add_parser("", help="Update core constituency data")
-        constituencies.add_parser("boundaries", help="Update geographical boundaries")
-        constituencies.add_parser("elections", help="Update election results")
-
-        bills = command.add_parser("bills", help="Update bill data")
-
     def handle(self, *args, command: str, **kwargs):
         func: Callable | None = None
 
-        if command == "constituencies":
-            func = self.handle_constituencies(**kwargs)
-        elif command == "bills":
+        if command == "bills":
             func = parliament.update_bills
+        elif command == "constituencies":
+            func = self.handle_constituencies(**kwargs)
+        elif command == "demographics":
+            func = parliament.update_demographics
         elif command == "divisions":
             func = self.handle_divisions(**kwargs)
         elif command == "members":

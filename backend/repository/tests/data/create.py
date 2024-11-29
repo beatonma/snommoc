@@ -14,6 +14,7 @@ from repository.models import (
     LordsDivision,
     ParliamentarySession,
     Party,
+    PartyDemographics,
     Person,
 )
 from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
@@ -46,8 +47,8 @@ LOREM_IPSUM = (
 )
 
 
-def _any_int(max: int = 100) -> int:
-    return random.randint(1, max)
+def _any_int(_max: int = 100, _min: int = 0) -> int:
+    return random.randint(_min, _max)
 
 
 def _any_id() -> int:
@@ -279,6 +280,34 @@ def create_sample_representative(
     )
 
 
+def create_sample_party_demographics(
+    party: Party,
+    house: House = None,
+    male_member_count: int = None,
+    female_member_count: int = None,
+    non_binary_member_count: int = None,
+    total_member_count: int = None,
+) -> PartyDemographics:
+    return PartyDemographics.objects.create(
+        party=party,
+        house=house or create_sample_house(),
+        male_member_count=(
+            _any_int(200) if male_member_count is None else male_member_count
+        ),
+        female_member_count=(
+            _any_int(200) if female_member_count is None else female_member_count
+        ),
+        non_binary_member_count=(
+            _any_int(200)
+            if non_binary_member_count is None
+            else non_binary_member_count
+        ),
+        total_member_count=(
+            _any_int(200) if total_member_count is None else total_member_count
+        ),
+    )
+
+
 def create_sample_party(
     name: str | None = None,
     parliamentdotuk: int | None = None,
@@ -298,13 +327,16 @@ def create_sample_party(
     elif randomise:
         party.pk = _any_id()
 
-    return Party.objects.create(
+    party = Party.objects.create(
         name=party.name,
         parliamentdotuk=party.pk,
         homepage=homepage,
         wikipedia=wikipedia,
         year_founded=year_founded,
     )
+    create_sample_party_demographics(party, _coerce_house("Commons"))
+    create_sample_party_demographics(party, _coerce_house("Lords"))
+    return party
 
 
 def create_sample_parties():

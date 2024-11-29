@@ -19,11 +19,37 @@ _LABOUR_COOP_ID = _LABOUR_ID + _SUB_PARTY_ID_OFFSET  # Synthetic ID
 
 
 class PartyQuerySet(BaseQuerySet):
-    def get_or_create(self, defaults=None, **kwargs):
-        raise NotImplemented("Use Party.objects.resolve instead")
 
-    def update_or_create(self, defaults=None, **kwargs):
-        raise NotImplemented("Use Party.objects.resolve instead")
+    def update_or_create(
+        self,
+        defaults=None,
+        _resolve_internal: bool = False,
+        **kwargs,
+    ):
+        """Disabled: use `PartyQuerySet.resolve()` instead"""
+        if _resolve_internal:
+            # Only allow use if called internally by resolve method.
+            # _resolve_internal is passed on so that it is received by get_or_create
+            # when called in super() implementation.
+            return super().update_or_create(
+                defaults=defaults, _resolve_internal=_resolve_internal, **kwargs
+            )
+
+        raise NotImplementedError(
+            f"Use Party.objects.resolve instead of update_or_create ({self} default={defaults}, kwargs={kwargs})"
+        )
+
+    def get_or_create(self, defaults=None, _resolve_internal: bool = False, **kwargs):
+        """Disabled: use `PartyQuerySet.resolve()` instead"""
+        if _resolve_internal:
+            # Only allow use if called internally by resolve method.
+            # _resolve_internal is stripped here so it is not used in model
+            # creation or filtering.
+            return super().get_or_create(defaults=defaults, **kwargs)
+
+        raise NotImplementedError(
+            f"Use Party.objects.resolve instead of get_or_create ({self} default={defaults}, kwargs={kwargs})"
+        )
 
     def filter(self, *args, **kwargs) -> Self:
         return cast("PartyQuerySet", super().filter(*args, **kwargs))
@@ -57,8 +83,12 @@ class PartyQuerySet(BaseQuerySet):
         if parliamentdotuk and name:
             defaults["name"] = name
 
-            func = super().update_or_create if update else super().get_or_create
-            return func(parliamentdotuk=parliamentdotuk, defaults=defaults)
+            func = self.update_or_create if update else self.get_or_create
+            return func(
+                parliamentdotuk=parliamentdotuk,
+                defaults=defaults,
+                _resolve_internal=True,
+            )
 
         if parliamentdotuk:
             return self.get_or_none(parliamentdotuk=parliamentdotuk), False

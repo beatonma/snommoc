@@ -762,7 +762,6 @@ export interface components {
         ConstituencyCandidateSchema: {
             name: components["schemas"]["Name"];
             profile?: components["schemas"]["MemberMiniSchema"] | null;
-            party_name: components["schemas"]["Name"];
             party: components["schemas"]["PartyMiniSchema"] | null;
             /** Order */
             order: number;
@@ -870,6 +869,24 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** PartyDemographics */
+        PartyDemographics: {
+            /**
+             * Modified At
+             * Format: date-time
+             */
+            modified_at: string;
+            /** House */
+            house: string;
+            /** Male Member Count */
+            male_member_count: number;
+            /** Female Member Count */
+            female_member_count: number;
+            /** Non Binary Member Count */
+            non_binary_member_count: number;
+            /** Total Member Count */
+            total_member_count: number;
+        };
         /** PartyFullSchema */
         PartyFullSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -884,6 +901,8 @@ export interface components {
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
+            /** Demographics */
+            demographics: components["schemas"]["PartyDemographics"][];
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         WikipediaPath: string;

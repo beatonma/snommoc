@@ -14,6 +14,7 @@ from .bill import (
 )
 from .committees import Committee, CommitteeChair, CommitteeMember
 from .constituency import Constituency, ConstituencyBoundary, ConstituencyRepresentative
+from .demographics import LordsDemographics, PartyDemographics
 from .divisions import (
     CommonsDivision,
     CommonsDivisionVote,

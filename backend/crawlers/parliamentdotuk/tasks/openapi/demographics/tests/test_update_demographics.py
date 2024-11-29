@@ -1,9 +1,8 @@
 from datetime import date
 
 from crawlers.context import TaskContext
-from crawlers.parliamentdotuk.tasks.openapi.demographics.update import (
-    update_demographics,
-)
+from crawlers.parliamentdotuk.tasks.openapi.demographics.update import \
+    update_demographics
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import Party
@@ -21,11 +20,10 @@ class UpdateDemographicsTests(OpenApiTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        with cls.patch():
-            update_demographics(
-                context=CONTEXT,
-                for_date=date(2024, 11, 28),
-            )
+        update_demographics(
+            context=CONTEXT,
+            for_date=date(2024, 11, 28),
+        )
 
     def test_party_demographics(self):
         labour, _ = Party.objects.resolve(name="Labour")

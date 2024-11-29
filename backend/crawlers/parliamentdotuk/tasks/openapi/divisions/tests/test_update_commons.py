@@ -1,9 +1,8 @@
 from datetime import date
 
 from crawlers.context import TaskContext
-from crawlers.parliamentdotuk.tasks.openapi.divisions.commons import (
-    update_commons_divisions,
-)
+from crawlers.parliamentdotuk.tasks.openapi.divisions.commons import \
+    update_commons_divisions
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import CommonsDivision
@@ -22,9 +21,7 @@ class UpdateCommonsDivisionsTests(OpenApiTestCase):
     @classmethod
     def setUpTestData(cls):
         create_sample_party(name="Labour")
-
-        with cls.patch():
-            update_commons_divisions(context=CONTEXT)
+        update_commons_divisions(context=CONTEXT)
 
     def test_update_commons_divisions(self):
         division = CommonsDivision.objects.get(parliamentdotuk=1873)

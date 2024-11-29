@@ -24,8 +24,7 @@ class UpdateMemberDetailTests(OpenApiTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        with cls.patch():
-            update_current_members(context=CONTEXT)
+        update_current_members(context=CONTEXT)
 
     def setUp(self):
         self.person = Person.objects.get(parliamentdotuk=4514)

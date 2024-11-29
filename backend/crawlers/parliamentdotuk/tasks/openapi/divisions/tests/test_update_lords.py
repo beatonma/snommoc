@@ -19,9 +19,7 @@ class UpdateLordsDivisionsTests(OpenApiTestCase):
     @classmethod
     def setUpTestData(cls):
         create_sample_party(name="Conservative")
-
-        with cls.patch():
-            update_lords_divisions(context=CONTEXT)
+        update_lords_divisions(context=CONTEXT)
 
     def test_update_lords_divisions(self):
         division = LordsDivision.objects.get(parliamentdotuk=3172)

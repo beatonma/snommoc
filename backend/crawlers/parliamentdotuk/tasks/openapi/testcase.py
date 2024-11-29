@@ -9,14 +9,16 @@ log = logging.getLogger(__name__)
 
 
 class OpenApiTestCase(LocalTestCase):
-    """Provides cls.patch() which returns JSON data from a local file, depending
+    """Replace network calls with JSON data from a local file, depending
     on the requested URL. Mapping of URL to data file is defined in mock_response.
+
+    Patch is applied in cls.setupClass so any network calls in
+    cls.setupTestData are mocked automatically without further boilerplate.
 
     Example usage:
         @classmethod
         def setUpTestData(cls):
-            with cls.patch():
-                function_which_makes_openapi_client_calls()
+            function_which_makes_openapi_client_calls()
     """
 
     """File used to determine the CWD for resolution of mocked data."""
@@ -28,6 +30,11 @@ class OpenApiTestCase(LocalTestCase):
            relative to self.file
     """
     mock_response: dict[str, str]
+
+    @classmethod
+    def setUpClass(cls):
+        with cls.patch():
+            super().setUpClass()
 
     @classmethod
     def patch(cls):

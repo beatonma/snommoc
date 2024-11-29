@@ -22,8 +22,7 @@ class UpdateBillsTests(OpenApiTestCase):
     @classmethod
     def setUpTestData(cls):
         create_sample_party("Conservative")
-        with cls.patch():
-            update_bills(context=CONTEXT)
+        update_bills(context=CONTEXT)
 
     def setUp(self):
         self.bill = Bill.objects.get(parliamentdotuk=2818)

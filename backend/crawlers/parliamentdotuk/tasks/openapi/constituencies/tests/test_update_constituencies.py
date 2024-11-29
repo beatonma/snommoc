@@ -30,8 +30,7 @@ class _BaseTestCase(OpenApiTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        with cls.patch():
-            update_constituencies(context=CONTEXT)
+        update_constituencies(context=CONTEXT)
 
     def setUp(self):
         self.constituency = Constituency.objects.get(parliamentdotuk=4483)
@@ -51,8 +50,7 @@ class UpdateConstituencyBoundariesTest(_BaseTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        with cls.patch():
-            update_constituency_boundaries(context=CONTEXT)
+        update_constituency_boundaries(context=CONTEXT)
 
     def test_update_constituency_boundaries(self):
         boundary_json = self.constituency.boundary.geo_json
@@ -83,8 +81,7 @@ class UpdateElectionResultsTest(_BaseTestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        with cls.patch():
-            update_election_results(context=CONTEXT)
+        update_election_results(context=CONTEXT)
 
     def test_update_election_results(self):
         result: ConstituencyResult = self.constituency.results.get(election__pk=422)

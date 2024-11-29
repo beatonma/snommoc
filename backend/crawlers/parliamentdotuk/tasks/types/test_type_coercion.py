@@ -1,8 +1,7 @@
 import datetime
 
 from basetest.testcase import LocalTestCase
-from crawlers.parliamentdotuk.tasks.util.coercion import (
-    coerce_to_boolean,
+from crawlers.parliamentdotuk.tasks.types.coercion import (
     coerce_to_date,
     coerce_to_datetime,
     coerce_to_int,
@@ -93,17 +92,3 @@ class TypeCoercionTests(LocalTestCase):
                 tzinfo=datetime.timezone.utc,
             ),
         )
-
-    def test_coerce_to_boolean(self):
-        test_func = coerce_to_boolean
-
-        self.assertEqual(test_func("true"), True)
-        self.assertEqual(test_func("True"), True)
-        self.assertEqual(test_func("false"), False)
-        self.assertEqual(test_func("False"), False)
-        self.assertEqual(test_func(True), True)
-        self.assertEqual(test_func(False), False)
-        self.assertEqual(test_func(1), True)
-        self.assertEqual(test_func(0), False)
-
-        self.assertEqual(test_func(None), None)

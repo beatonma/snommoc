@@ -1,11 +1,19 @@
 """
-Functions for retrieving a specific type of data from data of some other type.
+Functions for retrieving a specific type of data from data which may be of some other type.
 """
 
 from datetime import date, datetime
 
 import dateutil.parser as date_parser
 from util.time import coerce_timezone, year_only_date
+
+__all__ = [
+    "coerce_to_list",
+    "coerce_to_int",
+    "coerce_to_str",
+    "coerce_to_date",
+    "coerce_to_datetime",
+]
 
 
 def coerce_to_list[T](obj: T | list[T] | None) -> list[T]:
@@ -34,19 +42,6 @@ def coerce_to_str(value, default=None) -> str | None:
         return default
     else:
         return str(value)
-
-
-def coerce_to_boolean(value, default=None) -> bool | None:
-    if value is None:
-        return default
-
-    if isinstance(value, str):
-        if value.lower() == "true":
-            return True
-        elif value.lower() == "false":
-            return False
-
-    return bool(value)
 
 
 def coerce_to_date(value) -> date | None:

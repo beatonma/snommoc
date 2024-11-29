@@ -4,10 +4,10 @@ from typing import Annotated
 from crawlers.parliamentdotuk.tasks.openapi.members.schema import MemberBasic
 from crawlers.parliamentdotuk.tasks.openapi.parties.schema import Party
 from crawlers.parliamentdotuk.tasks.types import (
-    CoercedDate,
-    field,
+    DateOrNone,
     PersonName,
-    CoercedStr,
+    StringOrNone,
+    field,
 )
 from pydantic import BaseModel as Schema
 from pydantic import BeforeValidator
@@ -16,8 +16,8 @@ from pydantic import BeforeValidator
 class Constituency(Schema):
     parliamentdotuk: int = field("id")
     name: str
-    start_date: CoercedDate = field("startDate")
-    end_date: CoercedDate = field("endDate")
+    start_date: DateOrNone = field("startDate")
+    end_date: DateOrNone = field("endDate")
     member: MemberBasic | None = field("currentRepresentation.member.value")
 
 
@@ -29,20 +29,20 @@ class ElectionCandidate(Schema):
     parliamentdotuk: int | None = field("memberId", default=None)
     name: PersonName = field("name")
     party: Party | None
-    result_change: CoercedStr = field("resultChange", default=None)
+    result_change: StringOrNone = field("resultChange", default=None)
     rank_order: int | None = field("rankOrder", default=None)
     votes: int
     vote_share: float | None = field("voteShare", default=None)
 
 
 class ElectionResult(Schema):
-    result: CoercedStr
+    result: StringOrNone
     is_notional: bool = field("isNotional")
     electorate: int
     turnout: int
     majority: int
-    election_name: CoercedStr = field("electionTitle", default=None)
-    election_date: CoercedDate = field("electionDate")
+    election_name: StringOrNone = field("electionTitle", default=None)
+    election_date: DateOrNone = field("electionDate")
     election_id: int = field("electionId")
     is_general_election: bool = field("isGeneralElection")
     candidates: list[ElectionCandidate]

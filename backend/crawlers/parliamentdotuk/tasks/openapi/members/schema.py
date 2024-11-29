@@ -3,12 +3,13 @@ from typing import Self
 
 from crawlers.parliamentdotuk.tasks.openapi.parties.schema import Party
 from crawlers.parliamentdotuk.tasks.types import (
-    CoercedDate,
-    CoercedDateTime,
-    CoercedList,
-    CoercedPhoneNumber,
-    CoercedStr,
+    DateOrNone,
+    DateTimeOrNone,
+    House,
+    List,
     PersonName,
+    PhoneNumber,
+    StringOrNone,
     field,
 )
 from pydantic import BaseModel as Schema
@@ -21,27 +22,27 @@ class MemberStatus(Schema):
     is_active: bool = field("statusIsActive")
     description: str | None = field("statusDescription", default=None)
     notes: str | None = field("statusNotes", default=None)
-    status_start: CoercedDate = field("statusStartDate")
+    status_start: DateOrNone = field("statusStartDate")
 
 
 class LatestHouseMembership(Schema):
-    membershipFrom: CoercedStr
-    house: int
-    membershipStartDate: CoercedDate
-    membershipEndDate: CoercedDate
+    membershipFrom: StringOrNone
+    house: House
+    membershipStartDate: DateOrNone
+    membershipEndDate: DateOrNone
 
 
 class MemberBasic(Schema):
     parliamentdotuk: int = field("id")
     name: PersonName = field("nameDisplayAs")
-    full_title: CoercedStr = field("nameFullTitle")
-    gender: CoercedStr
+    full_title: StringOrNone = field("nameFullTitle")
+    gender: StringOrNone
     party: Party | None = field("latestParty")
     status: MemberStatus | None = field(
         "latestHouseMembership.membershipStatus", default=None
     )
-    house: CoercedStr = Field(default=None)
-    lords_type: CoercedStr = Field(default=None)
+    house: House = Field(default=None)
+    lords_type: StringOrNone = Field(default=None)
 
     @model_validator(mode="before")
     @classmethod
@@ -49,31 +50,29 @@ class MemberBasic(Schema):
         house_membership = obj.get("latestHouseMembership")
         if house_membership:
             house_membership = LatestHouseMembership.model_validate(house_membership)
-            if house_membership.house == 1:
-                obj["house"] = HOUSE_OF_COMMONS
-            if house_membership.house == 2:
+            obj["house"] = house_membership.house
+            if house_membership.house == HOUSE_OF_LORDS:
                 obj["lords_type"] = house_membership.membershipFrom
-                obj["house"] = HOUSE_OF_LORDS
 
         return obj
 
 
 class ConstituencyRepresentation(Schema):
     constituency_id: int = field("id")
-    constituency_name: CoercedStr = field("name")
-    constituency_start: CoercedDate = field(
+    constituency_name: StringOrNone = field("name")
+    constituency_start: DateOrNone = field(
         "constituencyStart",
         description="Start of the constituency's existence",
     )
-    constituency_end: CoercedDate = field(
+    constituency_end: DateOrNone = field(
         "constituencyEnd",
         description="End of the constituency's existence",
     )
-    representation_start: CoercedDate = field(
+    representation_start: DateOrNone = field(
         "startDate",
         description="When this person became the constituency representative",
     )
-    representation_end: CoercedDate = field(
+    representation_end: DateOrNone = field(
         "endDate",
         description="When this person stopped being the constituency representative",
     )
@@ -81,38 +80,38 @@ class ConstituencyRepresentation(Schema):
 
 class ContestedElection(Schema):
     constituency_id: int = field("id")
-    constituency_name: CoercedStr = field("name")
-    date: CoercedDate = field("startDate")
+    constituency_name: StringOrNone = field("name")
+    date: DateOrNone = field("startDate")
 
 
 class HouseMembership(Schema):
-    house_id: int = field("id")
-    house_name: CoercedStr = field("name")
-    start: CoercedDate = field("startDate")
-    end: CoercedDate = field("endDate")
+    # house_id: House = field("id")
+    house_name: House = field("name")
+    start: DateOrNone = field("startDate")
+    end: DateOrNone = field("endDate")
 
 
 class Post(Schema):
     parliamentdotuk: int = field("id")
-    name: CoercedStr
-    start: CoercedDate = field("startDate")
-    end: CoercedDate = field("endDate")
-    additional_info: CoercedStr = field("additionalInfo")
-    additional_info_link: CoercedStr = field("additionalInfoLink")
+    name: StringOrNone
+    start: DateOrNone = field("startDate")
+    end: DateOrNone = field("endDate")
+    additional_info: StringOrNone = field("additionalInfo")
+    additional_info_link: StringOrNone = field("additionalInfoLink")
 
 
 class PartyAffiliation(Schema):
     party_id: int = field("id")
-    party_name: CoercedStr = field("name")
-    start: CoercedDate = field("startDate")
-    end: CoercedDate = field("endDate")
+    party_name: StringOrNone = field("name")
+    start: DateOrNone = field("startDate")
+    end: DateOrNone = field("endDate")
 
 
 class CommitteeMembership(Schema):
     committee_id: int = field("id")
-    committee_name: CoercedStr = field("name")
-    start: CoercedDate = field("startDate")
-    end: CoercedDate = field("endDate")
+    committee_name: StringOrNone = field("name")
+    start: DateOrNone = field("startDate")
+    end: DateOrNone = field("endDate")
 
 
 class MemberBiography(Schema):
@@ -128,16 +127,16 @@ class MemberBiography(Schema):
 
 class ContactInfo(Schema):
     type_id: int = field("typeId")
-    type_name: CoercedStr = field("type")
-    type_description: CoercedStr = field("typeDescription", default=None)
+    type_name: StringOrNone = field("type")
+    type_description: StringOrNone = field("typeDescription", default=None)
     is_preferred: bool = field("isPreferred")
     is_web_address: bool = field("isWebAddress")
-    notes: CoercedStr = field("notes", default=None)
-    address: CoercedStr  # See validate_address method
-    postcode: CoercedStr = field("postcode", default=None)
-    phone: CoercedPhoneNumber = field("phone", default=None)
-    fax: CoercedPhoneNumber = field("fax", default=None)
-    email: CoercedStr = field("email", default=None)
+    notes: StringOrNone = field("notes", default=None)
+    address: StringOrNone  # See validate_address method
+    postcode: StringOrNone = field("postcode", default=None)
+    phone: PhoneNumber = field("phone", default=None)
+    fax: PhoneNumber = field("fax", default=None)
+    email: StringOrNone = field("email", default=None)
 
     @model_validator(mode="before")
     @classmethod
@@ -161,12 +160,12 @@ class ContactInfo(Schema):
 
 class Experience(Schema):
     experience_id: int = field("id")
-    type: CoercedStr = field("type")
+    type: StringOrNone = field("type")
     type_id: int = field("typeId")
-    title: CoercedStr
-    organisation: CoercedStr
-    start: CoercedDate = Field(default=None)  # see validate_dates method
-    end: CoercedDate = Field(default=None)  # see validate_dates method
+    title: StringOrNone
+    organisation: StringOrNone
+    start: DateOrNone = Field(default=None)  # see validate_dates method
+    end: DateOrNone = Field(default=None)  # see validate_dates method
 
     @model_validator(mode="before")
     @classmethod
@@ -186,20 +185,20 @@ class Experience(Schema):
 
 class RegisteredInterest(Schema):
     interest_id: int = field("id")
-    interest_title: CoercedStr = field("interest")
-    created_at: CoercedDateTime = field("createdWhen")
-    last_amended_at: CoercedDateTime = field("lastAmendedWhen")
-    deleted_at: CoercedDateTime = field("deletedWhen")
+    interest_title: StringOrNone = field("interest")
+    created_at: DateTimeOrNone = field("createdWhen")
+    last_amended_at: DateTimeOrNone = field("lastAmendedWhen")
+    deleted_at: DateTimeOrNone = field("deletedWhen")
     is_correction: bool = field("isCorrection")
-    child_interests: CoercedList[Self] = field("childInterests")
+    child_interests: List[Self] = field("childInterests")
 
 
 class RegisteredInterestCategory(Schema):
     category_id: int = field("id")
-    name: CoercedStr
-    interests: CoercedList[RegisteredInterest]
+    name: StringOrNone
+    interests: List[RegisteredInterest]
 
 
 class SubjectOfInterest(Schema):
-    category: CoercedStr
-    descriptions: CoercedList[CoercedStr] = field("focus")
+    category: StringOrNone
+    descriptions: List[StringOrNone] = field("focus")

@@ -75,7 +75,7 @@ class UpdateBillsTests(OpenApiTestCase):
         agent = self.bill.agent
         self.assertEqual(agent.name, "Agent name")
         self.assertEqual(agent.address, "Agent address")
-        self.assertEqual(str(agent.phone_number), "01632 960001")
+        self.assertEqual(str(agent.phone_number), "0800 800150")
         self.assertEqual(agent.email, "agent@example.com")
         self.assertEqual(agent.website, "https://agent.example.com")
 

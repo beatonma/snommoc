@@ -4,12 +4,12 @@ import enum
 from typing import Annotated
 
 from crawlers.parliamentdotuk.tasks.types import (
-    CoercedColor,
-    CoercedDateTime,
-    CoercedPhoneNumber,
-    CoercedStr,
+    Color,
+    DateTimeOrNone,
     PersonName,
-    SanitizedHtmlStr,
+    PhoneNumber,
+    SafeHtmlOrNone,
+    StringOrNone,
     field,
 )
 from pydantic import BaseModel as Schema
@@ -42,7 +42,7 @@ class BillType(Schema):
     category: BillTypeCategory
     name: str
     description: Annotated[
-        SanitizedHtmlStr,
+        SafeHtmlOrNone,
         BeforeValidator(lambda x: x.replace("<div>", "<br><div>") if x else None),
     ]  # Insert <br> to keep block layout behaviour when <div> is stripped.
 
@@ -62,7 +62,7 @@ class BillStageSitting(Schema):
     stageId: int
     bill_stage_id: int = field("billStageId")
     bill_id: int = field("billId")
-    date: CoercedDateTime
+    date: DateTimeOrNone
 
 
 class StageSummary(Schema):
@@ -76,8 +76,8 @@ class StageSummary(Schema):
     id: int
     stage_id: int = field("stageId")
     session_id: int = field("sessionId")
-    description: CoercedStr
-    abbreviation: CoercedStr
+    description: StringOrNone
+    abbreviation: StringOrNone
     house: House
     stage_sittings: list[BillStageSitting] = field("stageSittings")
     sort_order: int = field("sortOrder")
@@ -86,11 +86,11 @@ class StageSummary(Schema):
 class BillAgent(Schema):
     """Schema definition: https://bills-api.parliament.uk/index.html#model-BillAgent"""
 
-    name: CoercedStr
-    address: CoercedStr
-    phone: CoercedPhoneNumber = field("phoneNo")
-    email: CoercedStr
-    website: CoercedStr
+    name: StringOrNone
+    address: StringOrNone
+    phone: PhoneNumber = field("phoneNo")
+    email: StringOrNone
+    website: StringOrNone
 
 
 class Member(Schema):
@@ -98,26 +98,26 @@ class Member(Schema):
 
     member_id: int = field("memberId")
     name: PersonName
-    party: CoercedStr
-    party_color: CoercedColor = Field(alias="partyColour")
+    party: StringOrNone
+    party_color: Color = Field(alias="partyColour")
     house: House
-    member_photo: CoercedStr = field("memberPhoto")
-    member_page: CoercedStr = field("memberPage")
-    member_from: CoercedStr = field("memberFrom")
+    member_photo: StringOrNone = field("memberPhoto")
+    member_page: StringOrNone = field("memberPage")
+    member_from: StringOrNone = field("memberFrom")
 
 
 class Organisation(Schema):
     """Schema definition: https://bills-api.parliament.uk/index.html#model-Organisation"""
 
-    name: CoercedStr
-    url: CoercedStr
+    name: StringOrNone
+    url: StringOrNone
 
 
 class Promoter(Schema):
     """Schema definition: https://bills-api.parliament.uk/index.html#model-Promoter"""
 
-    organisation_name: CoercedStr = field("organisationName")
-    organisation_url: CoercedStr = field("organisationUrl")
+    organisation_name: StringOrNone = field("organisationName")
+    organisation_url: StringOrNone = field("organisationUrl")
 
 
 class Sponsor(Schema):
@@ -145,7 +145,7 @@ class BillPublication(Schema):
     id: int
     house: House
     title: str
-    display_date: CoercedDateTime = field("displayDate")
+    display_date: DateTimeOrNone = field("displayDate")
     publication_type: BillPublicationType = field("publicationType")
     links: list[BillPublicationLink]
 
@@ -157,8 +157,8 @@ class BillSummary(Schema):
     short_title: str = field("shortTitle")
     current_house: House = field("currentHouse")
     originating_house: House = field("originatingHouse")
-    last_update: CoercedDateTime = field("lastUpdate")
-    bill_withdrawn: CoercedDateTime = field("billWithdrawn")
+    last_update: DateTimeOrNone = field("lastUpdate")
+    bill_withdrawn: DateTimeOrNone = field("billWithdrawn")
     is_defeated: bool = field("isDefeated")
     bill_type_id: int = field("billTypeId")
     introduced_session_id: int = field("introducedSessionId")
@@ -170,10 +170,10 @@ class BillSummary(Schema):
 class Bill(BillSummary, Schema):
     """Schema definition: https://bills-api.parliament.uk/index.html#model-Bill"""
 
-    long_title: CoercedStr = field("longTitle")
-    summary: SanitizedHtmlStr
+    long_title: StringOrNone = field("longTitle")
+    summary: SafeHtmlOrNone
     sponsors: list[Sponsor]
     promoters: list[Promoter]
-    petitioning_period: CoercedStr = field("petitioningPeriod")
-    petition_information: CoercedStr = field("petitionInformation")
+    petitioning_period: StringOrNone = field("petitioningPeriod")
+    petition_information: StringOrNone = field("petitionInformation")
     agent: BillAgent | None

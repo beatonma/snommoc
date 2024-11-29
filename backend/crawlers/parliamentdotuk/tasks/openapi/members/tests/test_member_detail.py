@@ -7,6 +7,7 @@ from crawlers.parliamentdotuk.tasks.openapi.members.member_detail import (
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import Person
+from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 
 CONTEXT = TaskContext(None, TaskNotification())
 
@@ -40,7 +41,7 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(person.name, "Keir Starmer")
         self.assertEqual(person.full_title, "Rt Hon Sir Keir Starmer MP")
         self.assertEqual(person.gender, "M")
-        self.assertEqual(person.house.name, "Commons")
+        self.assertEqual(person.house.name, HOUSE_OF_COMMONS)
 
     def test_party(self):
         person = self.person
@@ -120,10 +121,10 @@ class UpdateMemberDetailTests(OpenApiTestCase):
 
     def test_house_memberships(self):
         person = self.person
-        house = person.house_memberships.first()
+        memberships = person.house_memberships.first()
 
-        self.assertEqual(house.house.name, "Commons")
-        self.assertEqual(house.start, date(2015, 5, 7))
+        self.assertEqual(memberships.house.name, HOUSE_OF_COMMONS)
+        self.assertEqual(memberships.start, date(2015, 5, 7))
 
     def test_elections_contested(self):
         person = self.person
@@ -146,4 +147,4 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(person.name, "Lord Aberconway")
         self.assertEqual(person.lords_type.name, "Hereditary")
         self.assertFalse(person.is_active())
-        self.assertEqual(person.house.name, "Lords")
+        self.assertEqual(person.house.name, HOUSE_OF_LORDS)

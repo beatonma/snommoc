@@ -1,11 +1,11 @@
 """Viewmodels for parsing responses from Division OpenAPI endpoints."""
 
 from crawlers.parliamentdotuk.tasks.types import (
-    CoercedDate,
-    CoercedDateTime,
-    CoercedStr,
+    DateOrNone,
+    DateTimeOrNone,
     PersonName,
-    SanitizedHtmlStr,
+    SafeHtmlOrNone,
+    StringOrNone,
     field,
 )
 from pydantic import BaseModel as Schema
@@ -27,11 +27,11 @@ class LordsMember(Member, Schema):
     name: PersonName
 
     """Sortable name"""
-    list_as: CoercedStr = field("listAs", default=None)
+    list_as: StringOrNone = field("listAs", default=None)
 
     """Type of Lord e.g. 'Life peer', 'Bishops'"""
-    member_from: CoercedStr = field("memberFrom", default=None)
-    party: CoercedStr
+    member_from: StringOrNone = field("memberFrom", default=None)
+    party: StringOrNone
 
 
 class LordsDivision(Schema):
@@ -40,10 +40,10 @@ class LordsDivision(Schema):
     """
 
     division_id: int = field("divisionId")
-    date: CoercedDate
+    date: DateOrNone
     number: int
-    notes: CoercedStr
-    title: CoercedStr
+    notes: StringOrNone
+    title: StringOrNone
     is_whipped: bool = field("isWhipped")
     is_government_content: bool = field("isGovernmentContent")
     authoritative_content_count: int = field("authoritativeContentCount")
@@ -55,10 +55,10 @@ class LordsDivision(Schema):
     member_not_content_count: int = field("memberNotContentCount")
     sponsoring_member_id: int | None = field("sponsoringMemberId")
     is_house: bool | None = field("isHouse")
-    amendment_motion_notes: SanitizedHtmlStr = field("amendmentMotionNotes")
+    amendment_motion_notes: SafeHtmlOrNone = field("amendmentMotionNotes")
     is_government_win: bool | None = field("isGovernmentWin")
-    remote_voting_start: CoercedDateTime = field("remoteVotingStart")
-    remote_voting_end: CoercedDateTime = field("remoteVotingEnd")
+    remote_voting_start: DateTimeOrNone = field("remoteVotingStart")
+    remote_voting_end: DateTimeOrNone = field("remoteVotingEnd")
     division_was_exclusively_remote: bool = field("divisionWasExclusivelyRemote")
     content_tellers: list[LordsMember] | None = field("contentTellers")
     not_content_tellers: list[LordsMember] | None = field("notContentTellers")
@@ -73,8 +73,8 @@ class CommonsDivisionItem(Schema):
 class CommonsMember(Member, Schema):
     member_id: int = field("MemberId")
     name: PersonName = field("Name")
-    party: CoercedStr  # See validate_party method
-    constituency: CoercedStr = field("MemberFrom")
+    party: StringOrNone  # See validate_party method
+    constituency: StringOrNone = field("MemberFrom")
 
     @model_validator(mode="before")
     @classmethod
@@ -89,13 +89,13 @@ class CommonsMember(Member, Schema):
 
 class CommonsDivision(Schema):
     division_id: int = field("DivisionId")
-    date: CoercedDate = field("Date")
-    publication_updated: CoercedDateTime = field("PublicationUpdated")
+    date: DateOrNone = field("Date")
+    publication_updated: DateTimeOrNone = field("PublicationUpdated")
     number: int = field("Number")
     is_deferred: bool = field("IsDeferred")
-    title: CoercedStr = field("Title")
-    friendly_title: CoercedStr = field("FriendlyTitle")
-    friendly_description: CoercedStr = field("FriendlyDescription")
+    title: StringOrNone = field("Title")
+    friendly_title: StringOrNone = field("FriendlyTitle")
+    friendly_description: StringOrNone = field("FriendlyDescription")
     aye_count: int = field("AyeCount")
     no_count: int = field("NoCount")
     aye_tellers: list[CommonsMember] = field("AyeTellers")

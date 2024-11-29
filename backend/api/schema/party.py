@@ -22,6 +22,14 @@ class PartyDemographics(Schema):
     total_member_count: int
 
 
+class LordsDemographics(Schema):
+    modified_at: datetime
+    life_count: int
+    hereditary_count: int
+    bishop_count: int
+    total_count: int
+
+
 class PartyFullSchema(ParliamentSchema):
     name: Name
     short_name: Name | None
@@ -32,6 +40,7 @@ class PartyFullSchema(ParliamentSchema):
     logo: str | None
     logo_mask: str | None
     demographics: list[PartyDemographics]
+    lords: LordsDemographics | None = field("lords_demographics", default=None)
     theme: PartyThemeSchema | None
 
     @staticmethod

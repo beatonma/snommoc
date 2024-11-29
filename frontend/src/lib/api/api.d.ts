@@ -869,6 +869,22 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** LordsDemographics */
+        LordsDemographics: {
+            /**
+             * Modified At
+             * Format: date-time
+             */
+            modified_at: string;
+            /** Life Count */
+            life_count: number;
+            /** Hereditary Count */
+            hereditary_count: number;
+            /** Bishop Count */
+            bishop_count: number;
+            /** Total Count */
+            total_count: number;
+        };
         /** PartyDemographics */
         PartyDemographics: {
             /**
@@ -903,6 +919,7 @@ export interface components {
             logo_mask: string | null;
             /** Demographics */
             demographics: components["schemas"]["PartyDemographics"][];
+            lords?: components["schemas"]["LordsDemographics"] | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         WikipediaPath: string;

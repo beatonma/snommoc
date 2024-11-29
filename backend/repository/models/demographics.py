@@ -27,6 +27,9 @@ class PartyDemographics(BaseModel):
             ),
         ]
 
+    def __str__(self):
+        return f"{self.party.name} {self.house.name}"
+
 
 class LordsDemographics(BaseModel):
     party = models.OneToOneField(
@@ -39,3 +42,6 @@ class LordsDemographics(BaseModel):
     hereditary_count = models.PositiveSmallIntegerField()
     bishop_count = models.PositiveSmallIntegerField()
     total_count = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.party.name

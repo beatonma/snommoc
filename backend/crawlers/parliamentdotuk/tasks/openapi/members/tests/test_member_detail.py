@@ -20,6 +20,12 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         "https://members-api.parliament.uk/api/Members/4514/Experience": "data/experience.json",
         "https://members-api.parliament.uk/api/Members/4514/RegisteredInterests": "data/registered_interests.json",
         "https://members-api.parliament.uk/api/Members/4514/Focus": "data/focus.json",
+        # Duplicated responses - only the MemberBasic info is needed for tests of this member, the rest is ignored.
+        "https://members-api.parliament.uk/api/Members/3305/Biography": "data/empty_biography.json",
+        "https://members-api.parliament.uk/api/Members/3305/Contact": "data/empty_list.json",
+        "https://members-api.parliament.uk/api/Members/3305/Experience": "data/empty_list.json",
+        "https://members-api.parliament.uk/api/Members/3305/RegisteredInterests": "data/empty_list.json",
+        "https://members-api.parliament.uk/api/Members/3305/Focus": "data/empty_list.json",
     }
 
     @classmethod
@@ -34,6 +40,7 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(person.name, "Keir Starmer")
         self.assertEqual(person.full_title, "Rt Hon Sir Keir Starmer MP")
         self.assertEqual(person.gender, "M")
+        self.assertEqual(person.house.name, "Commons")
 
     def test_party(self):
         person = self.person
@@ -133,3 +140,10 @@ class UpdateMemberDetailTests(OpenApiTestCase):
 
         committee = membership.committee
         self.assertEqual(committee.name, "Home Affairs Committee")
+
+    def test_lord_type(self):
+        person = Person.objects.get(parliamentdotuk=3305)
+        self.assertEqual(person.name, "Lord Aberconway")
+        self.assertEqual(person.lords_type.name, "Hereditary")
+        self.assertFalse(person.is_active())
+        self.assertEqual(person.house.name, "Lords")

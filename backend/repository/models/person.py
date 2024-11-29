@@ -157,6 +157,8 @@ class Person(
     lords_type = models.ForeignKey(
         "LordsType",
         on_delete=models.SET_NULL,
+        related_name="lords",
+        related_query_name="lord",
         null=True,
         blank=True,
         default=None,

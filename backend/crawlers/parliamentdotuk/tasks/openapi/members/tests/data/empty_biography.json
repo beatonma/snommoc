@@ -1,0 +1,14 @@
+{
+  "comment": "Empty biography response for data that is not needed in tests",
+  "value": {
+    "representations": [],
+    "electionsContested": [],
+    "houseMemberships": [],
+    "governmentPosts": [],
+    "oppositionPosts": [],
+    "otherPosts": [],
+    "partyAffiliations": [],
+    "committeeMemberships": []
+  },
+  "links": []
+}

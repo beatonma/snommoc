@@ -61,9 +61,64 @@
           "method": "GET"
         }
       ]
+    },
+    {
+      "value": {
+        "id": 3305,
+        "nameListAs": "Aberconway, L.",
+        "nameDisplayAs": "Lord Aberconway",
+        "nameFullTitle": "The Lord Aberconway",
+        "nameAddressAs": null,
+        "latestParty": {
+          "id": 4,
+          "name": "Conservative",
+          "abbreviation": "Con",
+          "backgroundColour": "0063ba",
+          "foregroundColour": "ffffff",
+          "isLordsMainParty": true,
+          "isLordsSpiritualParty": false,
+          "governmentType": 3,
+          "isIndependentParty": false
+        },
+        "gender": "M",
+        "latestHouseMembership": {
+          "membershipFrom": "Hereditary",
+          "membershipFromId": 2,
+          "house": 2,
+          "membershipStartDate": "1953-05-23T00:00:00",
+          "membershipEndDate": "1999-11-11T00:00:00",
+          "membershipEndReason": "Excluded",
+          "membershipEndReasonNotes": null,
+          "membershipEndReasonId": 14,
+          "membershipStatus": null
+        },
+        "thumbnailUrl": "https://members-api.parliament.uk/api/Members/3305/Thumbnail"
+      },
+      "links": [
+        {
+          "rel": "self",
+          "href": "/Members/3305",
+          "method": "GET"
+        },
+        {
+          "rel": "overview",
+          "href": "/Members/3305",
+          "method": "GET"
+        },
+        {
+          "rel": "synopsis",
+          "href": "/Members/3305/Synopsis",
+          "method": "GET"
+        },
+        {
+          "rel": "contactInformation",
+          "href": "/Members/3305/Contact",
+          "method": "GET"
+        }
+      ]
     }
   ],
-  "totalResults": 1,
+  "totalResults": 2,
   "resultContext": "",
   "skip": 0,
   "take": 20,

@@ -17,6 +17,7 @@ from repository.models import (
     ExperienceCategory,
     House,
     HouseMembership,
+    LordsType,
     Organisation,
     Party,
     PartyAffiliation,
@@ -41,35 +42,14 @@ def update_current_members(context: TaskContext):
     )
 
 
-def _update_member_detail(data: dict, context: TaskContext):
+def _update_member_detail(response_data: dict, context: TaskContext):
     basic_info = (
-        common_schema.ResponseItem[schema.MemberBasic].model_validate(data).value
+        common_schema.ResponseItem[schema.MemberBasic]
+        .model_validate(response_data)
+        .value
     )
     member_id = basic_info.parliamentdotuk
-
-    person, _ = Person.objects.update_or_create(
-        parliamentdotuk=member_id,
-        defaults={
-            "name": basic_info.name,
-            "full_title": basic_info.full_title,
-            "gender": basic_info.gender,
-            "party": update_party(basic_info.party),
-        },
-    )
-    status_data = basic_info.status
-    status_defaults = (
-        {
-            "is_active": status_data.is_active,
-            "description": status_data.description,
-            "notes": status_data.notes,
-        }
-        if status_data
-        else {}
-    )
-    person_status, _ = PersonStatus.objects.update_or_create(
-        person=person,
-        defaults=status_defaults,
-    )
+    person = _update_member_basic(basic_info)
 
     fetch = partial(openapi_client.get, context=context, func_kwargs={"person": person})
 
@@ -99,6 +79,44 @@ def _update_member_detail(data: dict, context: TaskContext):
     )
 
 
+def _update_member_basic(basic_info: schema.MemberBasic) -> Person:
+    lords_type = None
+    if _type := basic_info.lords_type:
+        lords_type, _ = LordsType.objects.get_or_create(name=_type)
+
+    house = None
+    if _house := basic_info.house:
+        house, _ = House.objects.get_or_create(name=_house)
+
+    person, _ = Person.objects.update_or_create(
+        parliamentdotuk=basic_info.parliamentdotuk,
+        defaults={
+            "name": basic_info.name,
+            "full_title": basic_info.full_title,
+            "gender": basic_info.gender,
+            "party": update_party(basic_info.party),
+            "house": house,
+            "lords_type": lords_type,
+        },
+    )
+    status_data = basic_info.status
+    status_defaults = (
+        {
+            "is_active": status_data.is_active,
+            "description": status_data.description,
+            "notes": status_data.notes,
+        }
+        if status_data
+        else {"is_active": False}
+    )
+    person_status, _ = PersonStatus.objects.update_or_create(
+        person=person,
+        defaults=status_defaults,
+    )
+
+    return person
+
+
 def _update_member_biography(
     response_data: dict, context: TaskContext, func_kwargs: dict
 ):
@@ -108,6 +126,7 @@ def _update_member_biography(
         .value
     )
     person = func_kwargs["person"]
+    print(f"_update_member_biography: {person.pk}")
 
     _update_posts(person, biography.government_posts, "government")
     _update_posts(person, biography.opposition_posts, "opposition")

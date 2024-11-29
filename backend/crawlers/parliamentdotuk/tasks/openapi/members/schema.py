@@ -8,11 +8,12 @@ from crawlers.parliamentdotuk.tasks.types import (
     CoercedList,
     CoercedPhoneNumber,
     CoercedStr,
-    field,
     PersonName,
+    field,
 )
 from pydantic import BaseModel as Schema
 from pydantic import Field, model_validator
+from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 
 
 class MemberStatus(Schema):
@@ -21,6 +22,13 @@ class MemberStatus(Schema):
     description: str | None = field("statusDescription", default=None)
     notes: str | None = field("statusNotes", default=None)
     status_start: CoercedDate = field("statusStartDate")
+
+
+class LatestHouseMembership(Schema):
+    membershipFrom: CoercedStr
+    house: int
+    membershipStartDate: CoercedDate
+    membershipEndDate: CoercedDate
 
 
 class MemberBasic(Schema):
@@ -32,6 +40,22 @@ class MemberBasic(Schema):
     status: MemberStatus | None = field(
         "latestHouseMembership.membershipStatus", default=None
     )
+    house: CoercedStr = Field(default=None)
+    lords_type: CoercedStr = Field(default=None)
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate(cls, obj):
+        house_membership = obj.get("latestHouseMembership")
+        if house_membership:
+            house_membership = LatestHouseMembership.model_validate(house_membership)
+            if house_membership.house == 1:
+                obj["house"] = HOUSE_OF_COMMONS
+            if house_membership.house == 2:
+                obj["lords_type"] = house_membership.membershipFrom
+                obj["house"] = HOUSE_OF_LORDS
+
+        return obj
 
 
 class ConstituencyRepresentation(Schema):

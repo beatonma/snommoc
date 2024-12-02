@@ -21,6 +21,7 @@ def sanitize_html(
         html,
         tags=allow_tags or set(),
         attributes=allow_attrs or {},
+        link_rel="noopener noreferrer nofollow",
     ).strip()
 
 

@@ -1,11 +1,19 @@
-from django.test import TestCase
+from unittest import TestCase
+
+from django.test import TestCase as DjangoTestCase
 
 
-class BaseTestCase(TestCase):
+class SimpleTestCase(TestCase):
+    """Base class for tests that don't need database access."""
+
     maxDiff = None
 
     def assertLengthEquals(self, collection, expected_length: int, msg=None):
         self.assertEqual(len(collection), expected_length, msg=msg)
+
+
+class DatabaseTestCase(SimpleTestCase, DjangoTestCase):
+    """Base class for tests that need database access."""
 
     def assertNoneCreated(self, model_class, msg=None):
         self.assertEqual(model_class.objects.all().count(), 0, msg=msg)
@@ -14,7 +22,7 @@ class BaseTestCase(TestCase):
         self.assertEqual(queryset.all().count(), expected_count, msg=msg)
 
 
-class LocalTestCase(BaseTestCase):
+class LocalTestCase(DatabaseTestCase):
     """Tests that use only local data - no external network calls!"""
 
     pass

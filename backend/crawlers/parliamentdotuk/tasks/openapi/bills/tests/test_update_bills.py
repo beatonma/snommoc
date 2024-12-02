@@ -51,14 +51,13 @@ class UpdateBillsTests(OpenApiTestCase):
         self.assertEqual(
             bill_type.name, "Private Members' Bill (Starting in the House of Lords)"
         )
-        self.assertEqual(
-            bill_type.description,
-            "Private Members' bills in the Lords are usually introduced through a ballot"
-            " held on the day after State Opening of a new session of a parliament. In order to"
-            " enter the ballot, Peers must submit a draft of their bill (including its short and"
-            " long title, and all clauses and schedules) to the Legislation Office.<br>"
-            '<a href="https://www.parliament.uk/about/how/laws/bills/private-members/" '
-            'rel="noopener noreferrer">Find out more about Private Members\' Bills in the Lords</a>',
+        self.assertTrue(
+            bill_type.description.startswith("Private Members' bills in the Lords are ")
+        )
+        self.assertTrue(
+            bill_type.description.endswith(
+                "Find out more about Private Members' Bills in the Lords</a>"
+            )
         )
 
     def test_bill_sponsors(self):

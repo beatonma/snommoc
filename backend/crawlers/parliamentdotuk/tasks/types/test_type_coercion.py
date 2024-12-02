@@ -1,6 +1,6 @@
 import datetime
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from crawlers.parliamentdotuk.tasks.types.coercion import (
     coerce_to_date,
     coerce_to_datetime,
@@ -10,7 +10,7 @@ from crawlers.parliamentdotuk.tasks.types.coercion import (
 )
 
 
-class TypeCoercionTests(LocalTestCase):
+class TypeCoercionTests(SimpleTestCase):
     def test_coerce_to_list(self):
         test_func = coerce_to_list
 

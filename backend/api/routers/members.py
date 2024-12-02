@@ -1,7 +1,7 @@
 import logging
 
+from api.schema.includes import MemberMiniSchema
 from api.schema.member import MemberCareerHistory, MemberProfile, MemberVotesSchema
-from api.schema.mini import MemberMiniSchema
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router

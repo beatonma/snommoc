@@ -1,16 +1,10 @@
 from datetime import datetime
 
+from api.schema.includes import PartyThemeSchema
 from api.schema.types import Name, ParliamentSchema, Url, WikipediaPath, field
 from ninja import Schema
 
-__all__ = ["PartyFullSchema", "PartyThemeSchema"]
-
-
-class PartyThemeSchema(Schema):
-    primary: str
-    on_primary: str
-    accent: str
-    on_accent: str
+__all__ = ["PartyFullSchema"]
 
 
 class PartyDemographics(Schema):

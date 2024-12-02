@@ -1,6 +1,6 @@
 from ninja import Schema
 
-from .mini import BillMiniSchema, DivisionMiniSchema, MemberMiniSchema
+from .includes import BillMiniSchema, DivisionMiniSchema, MemberMiniSchema
 from .types import Url
 
 __all__ = [

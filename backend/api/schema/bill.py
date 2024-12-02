@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from api.schema.mini import MemberMiniSchema
+from api.schema.includes import MemberMiniSchema
 from api.schema.types import ParliamentSchema, Url, field
 from ninja import Schema
 from repository.models.bill import BillStage

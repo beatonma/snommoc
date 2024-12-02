@@ -1,5 +1,5 @@
 from api.schema.bill import BillFullSchema
-from api.schema.mini import BillMiniSchema
+from api.schema.includes import BillMiniSchema
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router

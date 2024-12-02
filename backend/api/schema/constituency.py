@@ -3,7 +3,7 @@ from datetime import date
 from ninja import Schema
 
 from .election import ElectionSchema
-from .mini import ConstituencyMiniSchema, MemberMiniSchema, PartyMiniSchema
+from .includes import ConstituencyMiniSchema, MemberMiniSchema, PartyMiniSchema
 from .types import Name, ParliamentSchema, field
 
 __all__ = ["ConstituencyFullSchema", "ConstituencyResultSchema"]

@@ -1,6 +1,6 @@
-from api.schema.mini import PartyMiniSchema
+from api.schema.includes import PartyMiniSchema
 from api.schema.party import PartyFullSchema
-from django.db.models import Q
+from django.db.models import F, Q, Sum
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -13,16 +13,27 @@ router = Router(tags=["Parties"])
 @router.get("/", response=list[PartyMiniSchema])
 @paginate
 def parties(request: HttpRequest, query: str = None):
-    qs = Party.objects.all()
+    qs = Party.objects.all().prefetch_related("demographics")
 
     if query:
-        return qs.filter(
+        qs = qs.filter(
             Q(name__icontains=query)
             | Q(short_name__icontains=query)
             | Q(long_name__icontains=query)
         )
 
-    return qs
+    qs = qs.annotate(
+        active_commons_members=Sum(
+            "demographics__total_member_count",
+            filter=Q(demographics__house__name="Commons"),
+        )
+    )
+    ordering = [
+        F("active_commons_members").desc(nulls_last=True),
+        F("active_member_count").desc(nulls_last=True),
+        "name",
+    ]
+    return qs.order_by(*ordering)
 
 
 @router.get("/{parliamentdotuk}/", response=PartyFullSchema)

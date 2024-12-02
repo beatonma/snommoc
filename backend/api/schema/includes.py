@@ -1,7 +1,8 @@
 from datetime import date, datetime
 
-from api.schema.party import PartyThemeSchema
 from api.schema.types import Name, ParliamentSchema, field
+from ninja import Schema
+from pydantic import Field
 from repository.models import Constituency
 from repository.models.houses import HouseType
 
@@ -11,7 +12,15 @@ __all__ = [
     "DivisionMiniSchema",
     "MemberMiniSchema",
     "PartyMiniSchema",
+    "PartyThemeSchema",
 ]
+
+
+class PartyThemeSchema(Schema):
+    primary: str
+    on_primary: str
+    accent: str
+    on_accent: str
 
 
 class PartyMiniSchema(ParliamentSchema):
@@ -19,6 +28,8 @@ class PartyMiniSchema(ParliamentSchema):
     logo: str | None
     logo_mask: str | None
     theme: PartyThemeSchema | None
+    active_member_count: int
+    active_commons_members: int | None = Field(default=None)
 
     @staticmethod
     def resolve_name(obj):

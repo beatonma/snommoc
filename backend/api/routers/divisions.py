@@ -1,5 +1,5 @@
 from api.schema.division import CommonsDivisionSchema, LordsDivisionSchema
-from api.schema.mini import DivisionMiniSchema
+from api.schema.includes import DivisionMiniSchema
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router

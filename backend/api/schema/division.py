@@ -1,6 +1,6 @@
 from datetime import date
 
-from api.schema.mini import MemberMiniSchema, PartyMiniSchema
+from api.schema.includes import MemberMiniSchema, PartyMiniSchema
 from api.schema.types import Name, ParliamentId, ParliamentSchema, field
 from repository.models.houses import HouseType
 

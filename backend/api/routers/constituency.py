@@ -1,5 +1,5 @@
 from api.schema.constituency import ConstituencyFullSchema, ConstituencyResultSchema
-from api.schema.mini import ConstituencyMiniSchema
+from api.schema.includes import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
 from django.db.models import Q
 from django.http import HttpRequest

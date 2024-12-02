@@ -8,6 +8,7 @@ import React, {
 import { ApiPaginatedPromise } from "@/api";
 import Loading from "@/components/loading";
 import { TintedButton } from "@/components/button";
+import { classes } from "@/util/react";
 
 interface Paginated<T> {
   items: T[];
@@ -88,12 +89,18 @@ const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
   };
 };
 
+export type PaginationItemComponent<T> = (
+  item: T,
+  index: number,
+  arr: T[],
+) => ReactNode;
 interface PaginationProps<T> {
   loader: PaginationLoader<T>;
   resetFlag?: boolean;
-  itemComponent: (item: T) => ReactNode;
+  itemComponent: PaginationItemComponent<T>;
 }
 
+const FullSpan = "col-start-1 col-span-full";
 export const InfiniteScroll = <T,>(
   props: PaginationProps<T> & Omit<ComponentPropsWithoutRef<"div">, "children">,
 ) => {
@@ -107,16 +114,40 @@ export const InfiniteScroll = <T,>(
 
   return (
     <div {...rest}>
-      <div className="col-span-full col-start-1">
+      <GridSpan className="font-bold">
         {pagination.availableItems >= 0
           ? `${pagination.availableItems} results`
           : null}
-      </div>
+      </GridSpan>
 
-      {pagination.items.map((it) => itemComponent(it))}
+      {pagination.items.map((it, index, arr) => itemComponent(it, index, arr))}
 
       <LoadNext pagination={pagination} />
     </div>
+  );
+};
+
+export const GridSpan = (props: ComponentPropsWithoutRef<"div">) => {
+  const { className, ...rest } = props;
+  return <div className={classes(className, FullSpan)} {...rest} />;
+};
+export const GridSpacer = (
+  props: Omit<ComponentPropsWithoutRef<"div">, "children">,
+) => {
+  const { className, ...rest } = props;
+  return <div className={classes(className, FullSpan)} {...rest} />;
+};
+export const GridSectionHeader = (props: ComponentPropsWithoutRef<"div">) => {
+  const { className, ...rest } = props;
+  return (
+    <div
+      className={classes(
+        className,
+        FullSpan,
+        "text-md pt-4 text-center sm:text-start",
+      )}
+      {...rest}
+    />
   );
 };
 
@@ -157,7 +188,7 @@ const LoadNext = <T,>({ pagination }: { pagination: Paginated<T> }) => {
   return (
     <div
       ref={infiniteScrollingRef}
-      className="col-span-full col-start-1 flex justify-center p-16"
+      className={`${FullSpan} flex justify-center p-16`}
     >
       {content}
     </div>

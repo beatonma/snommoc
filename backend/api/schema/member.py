@@ -2,7 +2,7 @@ from datetime import date
 
 from ninja import Schema
 
-from .mini import (
+from .includes import (
     ConstituencyMiniSchema,
     DivisionMiniSchema,
     MemberMiniSchema,

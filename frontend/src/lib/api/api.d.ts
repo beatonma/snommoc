@@ -385,6 +385,10 @@ export interface components {
             /** Logo Mask */
             logo_mask: string | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
+            /** Active Member Count */
+            active_member_count: number;
+            /** Active Commons Members */
+            active_commons_members?: number | null;
         };
         /** PartyThemeSchema */
         PartyThemeSchema: {

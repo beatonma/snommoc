@@ -1,10 +1,14 @@
-import { InfiniteScroll, PaginationLoader } from "@/components/pagination";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import {
+  InfiniteScroll,
+  type PaginationItemComponent,
+  PaginationLoader,
+} from "@/components/pagination";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface ListPageProps<T> {
   loader: PaginationLoader<T>;
-  itemComponent: (item: T) => ReactNode;
+  itemComponent: PaginationItemComponent<T>;
   gridClassName?: string;
 }
 const QueryParam = "query";

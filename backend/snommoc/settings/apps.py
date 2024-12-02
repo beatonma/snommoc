@@ -18,7 +18,7 @@ INSTALLED_THIRD_PARTY_APPS = [
 INSTALLED_PROJECT_APPS = [
     "api",
     "repository",
-    "crawlers.parliamentdotuk",
+    "crawlers",
     "notifications",
     "dashboard",
     "social",

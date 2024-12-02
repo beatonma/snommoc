@@ -120,6 +120,8 @@ class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
     logo = models.FileField(upload_to="party_logo", null=True, blank=True)
     logo_mask = models.FileField(upload_to="party_logo_mask", null=True, blank=True)
 
+    active_member_count = models.PositiveSmallIntegerField(default=0)
+
     class Meta:
         verbose_name_plural = "Parties"
         ordering = ["name"]

@@ -6,7 +6,8 @@ from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.parties.update import update_party
 from crawlers.parliamentdotuk.tasks.openapi.schema import ResponseItem
 from dateutil.utils import today
-from repository.models import House, LordsDemographics, PartyDemographics
+from django.db.models import F
+from repository.models import House, LordsDemographics, Party, PartyDemographics
 from repository.models.houses import HouseType
 
 from . import schema
@@ -14,6 +15,10 @@ from . import schema
 
 @task_context(cache_name=caches.DEMOGRAPHICS)
 def update_demographics(context: TaskContext, for_date: date | None = None):
+    # Important: Party.active_member_count is updated through _update_party_demographics
+    # so it must be reset to zero at the start of this process.
+    Party.objects.update(active_member_count=0)
+
     houses: list[HouseType] = ["Commons", "Lords"]
     for_date: date = for_date or today()
     for house in houses:
@@ -50,6 +55,11 @@ def _update_party_demographics(
             "total_member_count": data.total_member_count,
         },
     )
+
+    # Important: Party.active_member_count must be reset to 0 at start
+    # of this task so that active_member_count is accurate
+    party.active_member_count = F("active_member_count") + data.total_member_count
+    party.save(update_fields=["active_member_count"])
 
 
 def _update_lords_demographics(response_data: dict, context: TaskContext):

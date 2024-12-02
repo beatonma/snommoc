@@ -2,13 +2,13 @@ import datetime
 import os
 import shutil
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from crawlers.network.cache import _url_to_filename, create_json_cache, json_cache
 from util.settings import snommoc_settings
 from util.time import get_now
 
 
-class JsonCacheTest(LocalTestCase):
+class JsonCacheTest(SimpleTestCase):
     """JsonResponseCache tests"""
 
     cache_name = "json-cache-test"
@@ -91,7 +91,7 @@ class JsonCacheTest(LocalTestCase):
             shutil.rmtree(cache_dir)
 
 
-class JsonCacheDecoratorTest(LocalTestCase):
+class JsonCacheDecoratorTest(SimpleTestCase):
     """@json_cache decorator tests"""
 
     root_url = "https://snommoc.org/example/request/root.json"

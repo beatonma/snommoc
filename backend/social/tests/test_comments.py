@@ -1,7 +1,7 @@
 import uuid
 
 from api import status
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from repository.models import Person
@@ -19,7 +19,7 @@ VIEWNAME_CREATE_COMMENT = reverse_api("create_comment")
 VIEWNAME_DELETE_COMMENT = reverse_api("delete_comment")
 
 
-class CommentTests(LocalTestCase):
+class CommentTests(DatabaseTestCase):
     """Social comments tests."""
 
     def post_json(self, data: dict):

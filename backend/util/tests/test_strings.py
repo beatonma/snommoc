@@ -1,8 +1,8 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from util.strings import ellipsise
 
 
-class StringUtilTests(LocalTestCase):
+class StringUtilTests(SimpleTestCase):
     def test_ellipsise(self):
         short = "a" * 25  # Should be unchanged
         at_limit = "a" * 32  # Should be unchanged

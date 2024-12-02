@@ -1,8 +1,8 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from social.validation.username import is_username_blocked
 
 
-class ValidationTestCase(LocalTestCase):
+class ValidationTestCase(SimpleTestCase):
     def test_username_blocking(self):
         self.assertFalse(is_username_blocked("name", [], []))
         self.assertFalse(is_username_blocked("NAME", ["name65"], []))

@@ -1,9 +1,9 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from repository.models import Party
 from repository.tests.data.create import create_sample_party
 
 
-class PartyQuerySetTests(LocalTestCase):
+class PartyQuerySetTests(DatabaseTestCase):
     def test_resolve(self):
         resolve = Party.objects.resolve
         party = create_sample_party("Conservative")

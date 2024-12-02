@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from crawlers.context import TaskContext
 from crawlers.wikipedia import wikipedia_client
 from crawlers.wikipedia.tasks import schema
@@ -47,9 +47,7 @@ def _patch():
     )
 
 
-class WikipediaClientTests(LocalTestCase):
-    """"""
-
+class WikipediaClientTests(SimpleTestCase):
     def test_for_pages(self):
         results = {}
 

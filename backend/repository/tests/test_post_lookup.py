@@ -1,11 +1,11 @@
 from datetime import date
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from repository.models import Post, PostHolder
 from repository.tests.data.create import create_sample_person
 
 
-class PostTests(LocalTestCase):
+class PostTests(DatabaseTestCase):
     def setUp(self) -> None:
         self.governmental = Post.objects.create(
             type="governmental",

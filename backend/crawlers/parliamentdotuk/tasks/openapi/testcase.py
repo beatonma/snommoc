@@ -3,12 +3,12 @@ import logging
 from pathlib import Path
 from unittest.mock import patch
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 
 log = logging.getLogger(__name__)
 
 
-class OpenApiTestCase(LocalTestCase):
+class OpenApiTestCase(DatabaseTestCase):
     """Replace network calls with JSON data from a local file, depending
     on the requested URL. Mapping of URL to data file is defined in mock_response.
 

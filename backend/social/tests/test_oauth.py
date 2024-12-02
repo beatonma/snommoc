@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import google.oauth2.id_token
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from social.models import UserToken
 from social.tests import reverse_api
 
@@ -19,7 +19,7 @@ def _patched_id_token(oauth_token: str, request, audience: str | None):
     }
 
 
-class OAuthTests(LocalTestCase):
+class OAuthTests(DatabaseTestCase):
     def test_google_oauth_response(self):
         with patch.object(
             google.oauth2.id_token,

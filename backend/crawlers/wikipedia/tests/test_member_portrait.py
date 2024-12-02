@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from crawlers.context import TaskContext
 from crawlers.wikipedia.tasks.member_portrait import update_wikipedia_member_portraits
 from notifications.models import TaskNotification
@@ -103,7 +103,7 @@ _SAMPLE_MAIN = {
 }
 
 
-class WikiMemberPortraitTests(LocalTestCase):
+class WikiMemberPortraitTests(DatabaseTestCase):
     def setUp(self) -> None:
         create_sample_person(wikipedia="David_Evans,_Baron_Evans_of_Watford")
         create_sample_person(wikipedia="Robert_Fellowes,_Baron_Fellowes")

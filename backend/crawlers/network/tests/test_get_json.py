@@ -1,8 +1,8 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from crawlers.network.network import _resolve_query
 
 
-class GetJsonTest(LocalTestCase):
+class GetJsonTest(SimpleTestCase):
     def test_resolve_query(self):
         url, params = _resolve_query(
             "https://bills-api.parliament.uk/api/v1/Bills?SortOrder=DateUpdatedDescending",

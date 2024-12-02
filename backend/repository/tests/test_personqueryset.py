@@ -1,6 +1,6 @@
 from functools import partial
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from repository.models import Person
 from repository.tests.data.create import (
     create_sample_constituency,
@@ -9,7 +9,7 @@ from repository.tests.data.create import (
 )
 
 
-class PersonQuerySetTests(LocalTestCase):
+class PersonQuerySetTests(DatabaseTestCase):
     def test_get_for_constituency__by_constituency(self):
         create_sample_constituency()
         mp = create_sample_person()

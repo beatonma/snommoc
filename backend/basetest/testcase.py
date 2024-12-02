@@ -20,9 +20,3 @@ class DatabaseTestCase(SimpleTestCase, DjangoTestCase):
 
     def assertQuerysetSize(self, queryset, expected_count: int, msg=None):
         self.assertEqual(queryset.all().count(), expected_count, msg=msg)
-
-
-class LocalTestCase(DatabaseTestCase):
-    """Tests that use only local data - no external network calls!"""
-
-    pass

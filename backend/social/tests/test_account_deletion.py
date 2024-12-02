@@ -1,4 +1,4 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from social.models import Comment, Vote
 from social.tests.util import (
     create_sample_comment,
@@ -9,7 +9,7 @@ from social.tests.util import (
 SAMPLE_COMMENT_TEXT = ["This is an insightful comment.", "Very nuanced input."]
 
 
-class AccountDeletionTest(LocalTestCase):
+class AccountDeletionTest(DatabaseTestCase):
     """Tests for affected data when a UserToken is deleted."""
 
     def test_account_deletion_replaces_comments_with_empty_placeholders(self):

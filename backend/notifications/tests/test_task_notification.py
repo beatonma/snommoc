@@ -1,4 +1,4 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from notifications.models.task_notification import TaskNotification, task_notification
 
 
@@ -29,7 +29,7 @@ def my_child_task(succeed, **kwargs):
         raise _ChildException("child-task fails")
 
 
-class TaskNotificationDecorationTests(LocalTestCase):
+class TaskNotificationDecorationTests(DatabaseTestCase):
     def test_nested_should_share_root_notification(self):
         """Nested tasks should share the same TaskNotification instance."""
         my_root_task(succeed=True, child_succeed=True)

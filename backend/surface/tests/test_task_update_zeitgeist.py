@@ -1,5 +1,5 @@
 from basetest.test_util import create_sample_dates
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from repository.models import Person
 from repository.tests.data.create import (
     create_sample_bill,
@@ -20,7 +20,7 @@ def _create_featured_person(person: Person):
     return FeaturedPerson.objects.create(target=person)
 
 
-class UpdateZeitgeistTaskTest(LocalTestCase):
+class UpdateZeitgeistTaskTest(DatabaseTestCase):
     def setUp(self):
         dates = create_sample_dates(count=10)
 

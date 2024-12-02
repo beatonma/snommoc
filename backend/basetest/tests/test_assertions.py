@@ -1,7 +1,7 @@
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 
 
-class AssertionTests(LocalTestCase):
+class AssertionTests(SimpleTestCase):
     """Ensure that custom assertions defined in BaseTestCase work correctly."""
 
     def assertRaisesAssertion(self, func, *args, **kwargs):

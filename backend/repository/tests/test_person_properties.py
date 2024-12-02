@@ -1,11 +1,11 @@
 from datetime import date, datetime
 from unittest.mock import patch
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from repository.tests.data.create import create_sample_person
 
 
-class PersonPropertyTests(LocalTestCase):
+class PersonPropertyTests(DatabaseTestCase):
     """Ensure that @property values on Person model are correct."""
 
     def test_person_age(self):

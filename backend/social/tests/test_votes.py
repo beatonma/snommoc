@@ -1,7 +1,7 @@
 import uuid
 
 from api import status
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
 from repository.models import Person
@@ -27,7 +27,7 @@ VOTE_TYPE_AYE = Vote.VoteTypeChoices.AYE
 VOTE_TYPE_NO = Vote.VoteTypeChoices.NO
 
 
-class VoteTests(LocalTestCase):
+class VoteTests(DatabaseTestCase):
     """Social votes tests."""
 
     def setUp(self) -> None:

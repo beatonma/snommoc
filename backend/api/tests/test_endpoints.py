@@ -2,7 +2,7 @@ from typing import Callable
 
 from api import permissions, status
 from basetest.test_util import create_sample_user
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from django.urls import reverse
 from repository.tests.data.create import (
     create_constituency_result_detail,
@@ -16,7 +16,7 @@ from repository.tests.data.create import (
 )
 
 
-class LocalApiTestCase(LocalTestCase):
+class LocalApiTestCase(DatabaseTestCase):
     def setUp(self) -> None:
         self.user_with_permission = create_sample_user(username="endpoints")
         permissions.grant_read_snommoc_api(self.user_with_permission)

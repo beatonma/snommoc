@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from social.models import Comment
 from social.models.mixins import DeletionPendingMixin, get_target_kwargs
 from social.tasks import delete_expired_models
@@ -8,7 +8,7 @@ from social.tests.util import create_sample_comment, create_sample_usertoken
 from util.time import get_now
 
 
-class TestDeleteExpiredTask(LocalTestCase):
+class TestDeleteExpiredTask(DatabaseTestCase):
     def test_delete_pending(self):
         DeletionPendingMixin.DELETION_PENDING_PERIOD_HOURS = 1
         now = get_now()

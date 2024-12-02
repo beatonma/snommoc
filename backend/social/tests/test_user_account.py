@@ -6,7 +6,7 @@ import uuid
 from typing import List
 
 from api import status
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from social.models.token import UsernameChanged, UserToken
 from social.tests import reverse_api
 from social.tests.util import create_sample_usertoken
@@ -16,7 +16,7 @@ VIEWNAME_RENAME = reverse_api("rename_account")
 VIEWNAME_DELETE = reverse_api("delete_account")
 
 
-class UserAccountViewTests(LocalTestCase):
+class UserAccountViewTests(DatabaseTestCase):
     """Tests for user account management."""
 
     def setUp(self) -> None:

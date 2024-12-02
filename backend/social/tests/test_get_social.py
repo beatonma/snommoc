@@ -1,6 +1,6 @@
 import uuid
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import DatabaseTestCase
 from repository.tests.data.create import create_sample_person
 from social.tests import reverse_api
 from social.tests.util import (
@@ -14,7 +14,7 @@ _VALID_USER = "get-social-valid-user"
 VIEWNAME_GET = reverse_api("get_social_content")
 
 
-class GetSocialAllTests(LocalTestCase):
+class GetSocialAllTests(DatabaseTestCase):
     """Tests for social content endpoint /all/"""
 
     def setUp(self, *args, **kwargs) -> None:

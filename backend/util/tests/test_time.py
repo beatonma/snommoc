@@ -1,13 +1,13 @@
 from datetime import date, datetime
 from typing import Optional
 
-from basetest.testcase import LocalTestCase
+from basetest.testcase import SimpleTestCase
 from dateutil import tz
 from util import time as timeutil
 from util.time import coerce_timezone
 
 
-class TimeUtilTests(LocalTestCase):
+class TimeUtilTests(SimpleTestCase):
     """Tests for util.time functions."""
 
     def test_years_between(self):

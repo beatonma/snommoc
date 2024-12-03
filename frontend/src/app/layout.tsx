@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Link from "next/link";
 import { ReactNode } from "react";
 import { License } from "@/licensing";
 import { Nav } from "@/components/nav";
+import { StyledLink } from "@/components/link";
 
 export const metadata: Metadata = {
   title: "Commons",
@@ -21,9 +21,9 @@ export default function RootLayout({
         <header className="flex w-full flex-col items-center gap-2 p-8">
           <h1>Commons</h1>
           <Nav>
-            <Link href="/members/">Members</Link>
-            <Link href="/parties/">Parties</Link>
-            <Link href="/constituencies/">Constituencies</Link>
+            <StyledLink href="/members/">Members</StyledLink>
+            <StyledLink href="/parties/">Parties</StyledLink>
+            <StyledLink href="/constituencies/">Constituencies</StyledLink>
           </Nav>
         </header>
 
@@ -36,12 +36,12 @@ export default function RootLayout({
         <footer className="flex flex-col items-center gap-2 p-8">
           <License licence="OpenParliament" />
           <Nav>
-            <a href="/admin/" target="_blank">
+            <StyledLink href="/admin/" target="_blank">
               admin
-            </a>
-            <a href="https://tailwindcss.com/docs/" target="_blank">
+            </StyledLink>
+            <StyledLink href="https://tailwindcss.com/docs/" target="_blank">
               tailwind docs
-            </a>
+            </StyledLink>
           </Nav>
         </footer>
       </body>

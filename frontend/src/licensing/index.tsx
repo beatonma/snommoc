@@ -1,5 +1,5 @@
-import { ComponentPropsWithoutRef } from "react";
-import { TextButton } from "@/components/button";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
+import { StyledLink } from "@/components/link";
 
 interface Licence {
   name: string;
@@ -32,7 +32,7 @@ interface LicenseProps {
 }
 export const License = (
   props: LicenseProps &
-    Omit<ComponentPropsWithoutRef<"a">, "children" | "href" | "title">,
+    Omit<ComponentPropsWithoutRef<"div">, "children" | "title">,
 ) => {
   const { licence: licenceKey, ...rest } = props;
   const licensing = licence(licenceKey);
@@ -40,12 +40,53 @@ export const License = (
   if (!licensing) throw new Error(`No licensing data for '${licenceKey}'`);
 
   return (
-    <TextButton
-      href={licensing.licence.url}
-      title={licensing.licence.name}
-      {...rest}
-    >
-      {licensing.attribution.join(" ")}
-    </TextButton>
+    <div {...rest}>
+      <LinkifiedAttribution {...licensing} />
+    </div>
+  );
+};
+
+const LinkifiedAttribution = (props: Licensing) => {
+  const { licence, attribution } = props;
+
+  if (!attribution.find((it) => it.includes(licence.name))) {
+    // If licence name not included in attribution text, linkify the whole text.
+    return (
+      <StyledLink href={licence.url} title={licence.name}>
+        {attribution.map((attr, index) => (
+          <p key={index}>{attr}</p>
+        ))}
+      </StyledLink>
+    );
+  }
+
+  // Otherwise, linkify the licence name wherever it appears
+  const linkified = (
+    <StyledLink href={licence.url} title={licence.name}>
+      {licence.name}
+    </StyledLink>
+  );
+
+  return (
+    <>
+      {attribution.map((attr) => {
+        const parts = attr
+          .split(licence.name)
+          .map((fragment, index) =>
+            fragment ? <span key={index}>{fragment}</span> : "",
+          );
+
+        const lastIndex = parts.length - 1;
+        const results: ReactNode[] = [];
+        parts.forEach((part, index) => {
+          results.push(part);
+          if (index < lastIndex) {
+            results.push(linkified);
+          }
+        });
+
+        return <p key={attr}>{results}</p>;
+      })}
+    </>
   );
 };

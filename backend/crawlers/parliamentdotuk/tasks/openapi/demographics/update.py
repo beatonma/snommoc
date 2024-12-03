@@ -7,7 +7,12 @@ from crawlers.parliamentdotuk.tasks.openapi.parties.update import update_party
 from crawlers.parliamentdotuk.tasks.openapi.schema import ResponseItem
 from dateutil.utils import today
 from django.db.models import F
-from repository.models import House, LordsDemographics, Party, PartyDemographics
+from repository.models import (
+    House,
+    Party,
+    PartyGenderDemographics,
+    PartyLordsDemographics,
+)
 from repository.models.houses import HouseType
 
 from . import schema
@@ -40,12 +45,14 @@ def _update_party_demographics(
     response_data: dict, context: TaskContext, func_kwargs: dict
 ):
     house_name = func_kwargs["house_name"]
-    data = ResponseItem[schema.PartyDemographics].model_validate(response_data).value
+    data = (
+        ResponseItem[schema.PartyGenderDemographics].model_validate(response_data).value
+    )
 
     house, _ = House.objects.get_or_create(name=house_name)
     party = update_party(data.party, update=True)
 
-    result, _ = PartyDemographics.objects.update_or_create(
+    result, _ = PartyGenderDemographics.objects.update_or_create(
         party=party,
         house=house,
         defaults={
@@ -63,11 +70,13 @@ def _update_party_demographics(
 
 
 def _update_lords_demographics(response_data: dict, context: TaskContext):
-    data = ResponseItem[schema.LordsDemographics].model_validate(response_data).value
+    data = (
+        ResponseItem[schema.PartyLordsDemographics].model_validate(response_data).value
+    )
 
     party = update_party(data.party, update=True)
 
-    result, _ = LordsDemographics.objects.update_or_create(
+    result, _ = PartyLordsDemographics.objects.update_or_create(
         party=party,
         defaults={
             "life_count": data.life_count,

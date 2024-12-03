@@ -7,7 +7,7 @@ from ninja import Schema
 __all__ = ["PartyFullSchema"]
 
 
-class PartyDemographics(Schema):
+class GenderDemographics(Schema):
     modified_at: datetime
     house: str = field("house.name")
     male_member_count: int
@@ -33,8 +33,10 @@ class PartyFullSchema(ParliamentSchema):
     wikipedia: WikipediaPath | None
     logo: str | None
     logo_mask: str | None
-    demographics: list[PartyDemographics]
-    lords: LordsDemographics | None = field("lords_demographics", default=None)
+    gender_demographics: list[GenderDemographics]
+    lords_demographics: LordsDemographics | None = field(
+        "lords_demographics", default=None
+    )
     theme: PartyThemeSchema | None
 
     @staticmethod

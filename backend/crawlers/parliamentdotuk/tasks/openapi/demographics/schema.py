@@ -3,7 +3,7 @@ from crawlers.parliamentdotuk.tasks.types import field
 from pydantic import BaseModel as Schema
 
 
-class PartyDemographics(Schema):
+class PartyGenderDemographics(Schema):
     party: Party
     male_member_count: int = field("male")
     female_member_count: int = field("female")
@@ -11,7 +11,7 @@ class PartyDemographics(Schema):
     total_member_count: int = field("total")
 
 
-class LordsDemographics(Schema):
+class PartyLordsDemographics(Schema):
     party: Party
     life_count: int = field("life")
     hereditary_count: int = field("hereditary")

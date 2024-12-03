@@ -1,8 +1,9 @@
 from datetime import date
 
 from crawlers.context import TaskContext
-from crawlers.parliamentdotuk.tasks.openapi.demographics.update import \
-    update_demographics
+from crawlers.parliamentdotuk.tasks.openapi.demographics.update import (
+    update_demographics,
+)
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import Party
@@ -27,7 +28,7 @@ class UpdateDemographicsTests(OpenApiTestCase):
 
     def test_party_demographics(self):
         labour, _ = Party.objects.resolve(name="Labour")
-        labour_commons = labour.demographics.get(house__name="Commons")
+        labour_commons = labour.gender_demographics.get(house__name="Commons")
 
         self.assertEqual(labour_commons.male_member_count, 216)
         self.assertEqual(labour_commons.female_member_count, 186)
@@ -35,7 +36,7 @@ class UpdateDemographicsTests(OpenApiTestCase):
         self.assertEqual(labour_commons.total_member_count, 402)
 
         bishops, _ = Party.objects.resolve(name="Bishops")
-        bishops_lords = bishops.demographics.get(house__name="Lords")
+        bishops_lords = bishops.gender_demographics.get(house__name="Lords")
         self.assertEqual(bishops_lords.male_member_count, 18)
         self.assertEqual(bishops_lords.female_member_count, 7)
         self.assertEqual(bishops_lords.non_binary_member_count, 0)

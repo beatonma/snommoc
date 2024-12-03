@@ -14,7 +14,7 @@ from repository.models import (
     LordsDivision,
     ParliamentarySession,
     Party,
-    PartyDemographics,
+    PartyGenderDemographics,
     Person,
 )
 from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
@@ -287,8 +287,8 @@ def create_sample_party_demographics(
     female_member_count: int = None,
     non_binary_member_count: int = None,
     total_member_count: int = None,
-) -> PartyDemographics:
-    return PartyDemographics.objects.create(
+) -> PartyGenderDemographics:
+    return PartyGenderDemographics.objects.create(
         party=party,
         house=house or create_sample_house(),
         male_member_count=(

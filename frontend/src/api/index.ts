@@ -19,6 +19,8 @@ type ApiPromise<T> = Promise<ApiResponse<T>>;
 export type ApiPaginatedPromise<T> = Promise<ApiResponse<PaginatedData<T>>>;
 
 export type PartyDetail = components["schemas"]["PartyFullSchema"];
+export type GenderDemographics = components["schemas"]["GenderDemographics"];
+export type LordsDemographics = components["schemas"]["LordsDemographics"];
 export const getParty = async (
   parliamentdotuk: number,
 ): ApiPromise<PartyDetail> =>

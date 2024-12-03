@@ -2,16 +2,16 @@ from common.models import BaseModel
 from django.db import models
 
 
-class PartyDemographics(BaseModel):
+class PartyGenderDemographics(BaseModel):
     party = models.ForeignKey(
         "Party",
         on_delete=models.CASCADE,
-        related_name="demographics",
+        related_name="gender_demographics",
     )
     house = models.ForeignKey(
         "House",
         on_delete=models.CASCADE,
-        related_name="demographics",
+        related_name="gender_demographics",
     )
 
     male_member_count = models.PositiveSmallIntegerField()
@@ -23,7 +23,7 @@ class PartyDemographics(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["party", "house"],
-                name="unique_demographics_per_party_per_house",
+                name="unique_gender_demographics_per_party_per_house",
             ),
         ]
 
@@ -31,7 +31,7 @@ class PartyDemographics(BaseModel):
         return f"{self.party.name} {self.house.name}"
 
 
-class LordsDemographics(BaseModel):
+class PartyLordsDemographics(BaseModel):
     party = models.OneToOneField(
         "Party",
         on_delete=models.CASCADE,

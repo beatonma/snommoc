@@ -873,24 +873,8 @@ export interface components {
             /** Count */
             count: number;
         };
-        /** LordsDemographics */
-        LordsDemographics: {
-            /**
-             * Modified At
-             * Format: date-time
-             */
-            modified_at: string;
-            /** Life Count */
-            life_count: number;
-            /** Hereditary Count */
-            hereditary_count: number;
-            /** Bishop Count */
-            bishop_count: number;
-            /** Total Count */
-            total_count: number;
-        };
-        /** PartyDemographics */
-        PartyDemographics: {
+        /** GenderDemographics */
+        GenderDemographics: {
             /**
              * Modified At
              * Format: date-time
@@ -907,6 +891,22 @@ export interface components {
             /** Total Member Count */
             total_member_count: number;
         };
+        /** LordsDemographics */
+        LordsDemographics: {
+            /**
+             * Modified At
+             * Format: date-time
+             */
+            modified_at: string;
+            /** Life Count */
+            life_count: number;
+            /** Hereditary Count */
+            hereditary_count: number;
+            /** Bishop Count */
+            bishop_count: number;
+            /** Total Count */
+            total_count: number;
+        };
         /** PartyFullSchema */
         PartyFullSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -921,9 +921,9 @@ export interface components {
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
-            /** Demographics */
-            demographics: components["schemas"]["PartyDemographics"][];
-            lords?: components["schemas"]["LordsDemographics"] | null;
+            /** Gender Demographics */
+            gender_demographics: components["schemas"]["GenderDemographics"][];
+            lords_demographics?: components["schemas"]["LordsDemographics"] | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         WikipediaPath: string;

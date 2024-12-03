@@ -13,7 +13,7 @@ router = Router(tags=["Parties"])
 @router.get("/", response=list[PartyMiniSchema])
 @paginate
 def parties(request: HttpRequest, query: str = None):
-    qs = Party.objects.all().prefetch_related("demographics")
+    qs = Party.objects.all().prefetch_related("gender_demographics")
 
     if query:
         qs = qs.filter(
@@ -24,8 +24,8 @@ def parties(request: HttpRequest, query: str = None):
 
     qs = qs.annotate(
         active_commons_members=Sum(
-            "demographics__total_member_count",
-            filter=Q(demographics__house__name="Commons"),
+            "gender_demographics__total_member_count",
+            filter=Q(gender_demographics__house__name="Commons"),
         )
     )
     ordering = [

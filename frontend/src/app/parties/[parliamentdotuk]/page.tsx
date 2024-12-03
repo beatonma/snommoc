@@ -1,8 +1,9 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { getParty } from "@/api";
+import { getParty, PartyDetail } from "@/api";
 import ErrorMessage from "@/components/error";
 import React from "react";
 import { DetailPage } from "@/components/page/detail-page";
+import { OptionalSvg } from "@/components/image";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -30,6 +31,11 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <DetailPage>
+      <OptionalSvg
+        src={party.logo}
+        alt={party.name}
+        className="w-32 shrink-0 overflow-hidden rounded-md bg-primary-50 p-2"
+      />
       <div>{party.logo}</div>
       <div>{party.name}</div>
       <div>{party.long_name}</div>

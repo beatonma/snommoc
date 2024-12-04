@@ -448,6 +448,7 @@ export interface components {
             address: components["schemas"]["AddressSchema"];
             /** Subjects Of Interest */
             subjects_of_interest: components["schemas"]["SubjectOfInterestSchema"][];
+            wikipedia: components["schemas"]["WikipediaPath"] | null;
         };
         /** MemberStatus */
         MemberStatus: {
@@ -501,6 +502,7 @@ export interface components {
             /** Description */
             description: string | null;
         };
+        WikipediaPath: string;
         /** ConstituencyRepresentation */
         ConstituencyRepresentation: {
             constituency: components["schemas"]["ConstituencyMiniSchema"];
@@ -926,7 +928,6 @@ export interface components {
             lords_demographics?: components["schemas"]["LordsDemographics"] | null;
             theme: components["schemas"]["PartyThemeSchema"] | null;
         };
-        WikipediaPath: string;
         /** Motd */
         Motd: {
             /** Title */

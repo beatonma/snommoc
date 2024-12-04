@@ -1,7 +1,8 @@
 from typing import Annotated, Any
+from urllib.parse import urljoin
 
 from ninja import Schema
-from pydantic import Field
+from pydantic import AfterValidator, Field
 from pydantic.functional_validators import BeforeValidator
 from pydantic_core import PydanticUndefined
 
@@ -15,7 +16,9 @@ type Name = str
 type Title = str
 type EmailAddress = str
 type Url = str
-type WikipediaPath = str
+type WikipediaPath = Annotated[
+    str, AfterValidator(lambda path: urljoin("https://en.wikipedia.org/wiki/", path))
+]
 
 
 type PhoneNumber = Annotated[

@@ -15,6 +15,7 @@ from .types import (
     ParliamentSchema,
     PhoneNumber,
     Url,
+    WikipediaPath,
     field,
 )
 
@@ -137,6 +138,7 @@ class MemberProfile(MemberMiniSchema, ParliamentSchema):
     current_committees: list[CommitteeMemberSchema]
     address: AddressSchema
     subjects_of_interest: list[SubjectOfInterestSchema] = field("subjects_of_interest")
+    wikipedia: WikipediaPath | None
 
     @staticmethod
     def resolve_current_committees(obj):

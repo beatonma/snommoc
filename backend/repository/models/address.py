@@ -8,6 +8,9 @@ class AddressType(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class BaseAddress(PersonMixin, BaseModel):
     type = models.ForeignKey(

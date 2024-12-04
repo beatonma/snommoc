@@ -53,6 +53,10 @@ USE_I18N = True
 USE_TZ = True
 
 
+# PhoneNumberField region
+PHONENUMBER_DEFAULT_REGION = "GB"
+
+
 # Internal settings
 # API Crawler
 SNOMMOC = {

@@ -126,7 +126,6 @@ def _update_member_biography(
         .value
     )
     person = func_kwargs["person"]
-    print(f"_update_member_biography: {person.pk}")
 
     _update_posts(person, biography.government_posts, "government")
     _update_posts(person, biography.opposition_posts, "opposition")

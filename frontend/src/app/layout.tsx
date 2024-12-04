@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
-import { License } from "@/licensing";
+import { License } from "@/components/licence";
 import { Nav } from "@/components/nav";
 import { StyledLink } from "@/components/link";
 

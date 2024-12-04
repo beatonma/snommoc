@@ -1,34 +1,9 @@
 import { ComponentPropsWithoutRef, ReactNode } from "react";
-import { StyledLink } from "@/components/link";
-
-interface Licence {
-  name: string;
-  url: string;
-}
-
-interface Licensing {
-  licence: Licence;
-  attribution: string[];
-}
-
-const Licensing = {
-  OpenParliament: {
-    licence: {
-      name: "Open Parliament Licence v3.0",
-      url: "https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/",
-    },
-    attribution: [
-      "Contains Parliamentary information licensed under the Open Parliament Licence v3.0.",
-    ],
-  },
-};
-
-export const licence = (licence: keyof typeof Licensing) => {
-  return Licensing[licence];
-};
+import { TextLink } from "@/components/link";
+import { Licence, licence, LicenceDefinition } from "@/licensing";
 
 interface LicenseProps {
-  licence: keyof typeof Licensing;
+  licence: Licence;
 }
 export const License = (
   props: LicenseProps &
@@ -46,32 +21,32 @@ export const License = (
   );
 };
 
-const LinkifiedAttribution = (props: Licensing) => {
-  const { licence, attribution } = props;
+const LinkifiedAttribution = (props: LicenceDefinition) => {
+  const { name, url, attribution } = props;
 
-  if (!attribution.find((it) => it.includes(licence.name))) {
+  if (!attribution.find((it) => it.includes(name))) {
     // If licence name not included in attribution text, linkify the whole text.
     return (
-      <StyledLink href={licence.url} title={licence.name}>
+      <TextLink href={url} title={name}>
         {attribution.map((attr, index) => (
           <p key={index}>{attr}</p>
         ))}
-      </StyledLink>
+      </TextLink>
     );
   }
 
   // Otherwise, linkify the licence name wherever it appears
   const linkified = (
-    <StyledLink href={licence.url} title={licence.name}>
-      {licence.name}
-    </StyledLink>
+    <TextLink href={url} title={name}>
+      {name}
+    </TextLink>
   );
 
   return (
     <>
       {attribution.map((attr) => {
         const parts = attr
-          .split(licence.name)
+          .split(name)
           .map((fragment, index) =>
             fragment ? <span key={index}>{fragment}</span> : "",
           );

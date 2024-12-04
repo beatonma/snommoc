@@ -36,7 +36,7 @@ class PhysicalAddressSchema(Schema):
 
 class WebAddressSchema(Schema):
     url: Url
-    description: str | None
+    description: str | None = field("type.description")
 
 
 class AddressSchema(Schema):

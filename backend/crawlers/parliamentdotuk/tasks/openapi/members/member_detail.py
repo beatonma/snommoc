@@ -94,7 +94,7 @@ def _update_member_basic(basic_info: schema.MemberBasic) -> Person:
             "name": basic_info.name,
             "full_title": basic_info.full_title,
             "gender": basic_info.gender,
-            "party": update_party(basic_info.party),
+            "party": update_party(basic_info.party) if basic_info.party else None,
             "house": house,
             "lords_type": lords_type,
         },

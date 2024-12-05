@@ -3,7 +3,7 @@ from repository.models import Party
 from repository.models.party import PartyTheme
 
 
-def update_party(data: schema.Party, update: bool = False) -> Party:
+def update_party(data: schema.Party | None, update: bool = False) -> Party:
     party, created = Party.objects.resolve(
         parliamentdotuk=data.parliamentdotuk,
         name=data.name,

@@ -168,8 +168,11 @@ class PartyAffiliation(PeriodMixin, BaseModel):
         return f"{self.person}: {self.party}"
 
     class Meta:
-        unique_together = [
-            ["start", "person"],
+        constraints = [
+            models.UniqueConstraint(
+                fields=["start", "person", "party"],
+                name="unique_party_per_person_per_startdate",
+            )
         ]
 
 

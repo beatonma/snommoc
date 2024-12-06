@@ -33,6 +33,7 @@ class PartyFullSchema(ParliamentSchema):
     wikipedia: WikipediaPath | None
     logo: str | None
     logo_mask: str | None
+    active_member_count: int
     gender_demographics: list[GenderDemographics]
     lords_demographics: LordsDemographics | None = field(
         "lords_demographics", default=None

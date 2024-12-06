@@ -30,6 +30,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "members-api.parliament.uk",
       },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
     ],
   },
   webpack(config) {

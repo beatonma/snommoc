@@ -3,10 +3,14 @@ import { Metadata } from "next";
 import ConstituencyListPage from "@/app/constituencies/constituencies";
 
 export const metadata: Metadata = {
-  title: "Parties",
-  description: "Party list",
+  title: "Constituencies",
+  description: "Constituency list",
 };
 
 export default async function Page() {
-  return <ConstituencyListPage />;
+  return (
+    <main>
+      <ConstituencyListPage />
+    </main>
+  );
 }

@@ -3,7 +3,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { License } from "@/components/licence";
 import { Nav } from "@/components/nav";
-import { StyledLink } from "@/components/link";
+import { TextLink } from "@/components/link";
 
 export const metadata: Metadata = {
   title: "Commons",
@@ -17,17 +17,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full w-full">
-      <body className="grid h-full grid-rows-[min-content_1fr_min-content] items-start bg-white text-surface-900 dark:bg-surface-800 dark:text-surface-50">
+      <body className="grid h-full grid-rows-[min-content_1fr_min-content] items-start bg-surface-100 text-surface-900 dark:bg-surface-800 dark:text-surface-50">
         <header className="flex w-full flex-col items-center gap-2 p-8">
           <h1>Commons</h1>
           <Nav>
-            <StyledLink href="/members/">Members</StyledLink>
-            <StyledLink href="/parties/">Parties</StyledLink>
-            <StyledLink href="/constituencies/">Constituencies</StyledLink>
+            <TextLink href="/members/">Members</TextLink>
+            <TextLink href="/parties/">Parties</TextLink>
+            <TextLink href="/constituencies/">Constituencies</TextLink>
           </Nav>
         </header>
 
-        <div className="grid grid-cols-[1fr_minmax(300px,1350px)_1fr] items-center">
+        <div className="grid w-full grid-cols-[1fr_minmax(300px,1350px)_1fr] items-center">
           <div id="side_left" />
           {children}
           <div id="side_right" />
@@ -36,12 +36,12 @@ export default function RootLayout({
         <footer className="flex flex-col items-center gap-2 p-8">
           <License licence="OpenParliament" />
           <Nav>
-            <StyledLink href="/admin/" target="_blank">
+            <TextLink href="/admin/" target="_blank">
               admin
-            </StyledLink>
-            <StyledLink href="https://tailwindcss.com/docs/" target="_blank">
+            </TextLink>
+            <TextLink href="https://tailwindcss.com/docs/" target="_blank">
               tailwind docs
-            </StyledLink>
+            </TextLink>
           </Nav>
         </footer>
       </body>

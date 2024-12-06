@@ -1,6 +1,8 @@
 import client from "@/lib/api";
 import { components } from "@/lib/api/api";
 
+export type ExtraFilters = Record<string, string | number | boolean>;
+
 interface PaginatedData<T> {
   items: T[];
   count: number;
@@ -60,10 +62,11 @@ export type MemberMiniSchema = components["schemas"]["MemberMiniSchema"];
 export const getMembers = async (
   offset?: number,
   query?: string,
+  extraFilters?: ExtraFilters,
 ): ApiPaginatedPromise<MemberMiniSchema> =>
   client.GET("/api/members/", {
     params: {
-      query: { offset: offset, query: query },
+      query: { offset: offset, query: query, ...extraFilters },
     },
   });
 

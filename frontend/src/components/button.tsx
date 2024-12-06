@@ -1,18 +1,15 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react";
-import { classes } from "@/util/react";
+import { ComponentPropsWithoutRef } from "react";
+import { addClass, classes } from "@/util/transforms";
 import { AppIcon, Icon } from "@/components/icon";
 import Link from "next/link";
 
 export const TextButton = (props: ButtonProps) => {
-  const { className, ...rest } = props;
-
   return (
     <BaseButton
-      className={classes(
-        className,
+      {...addClass(
+        props,
         "rounded font-bold tracking-tight hover:bg-surface-50/15",
       )}
-      {...rest}
     />
   );
 };
@@ -22,11 +19,11 @@ export const TintedButton = (props: ButtonProps) => {
 
   return (
     <BaseButton
-      className={classes(
-        className,
-        "rounded-lg bg-primary-700 px-2 py-1 text-primary-50 hover:bg-primary-800",
+      {...addClass(
+        props,
+        "rounded-lg  px-2 py-1",
+        "[background-color:--accent] [color:--on_accent]",
       )}
-      {...rest}
     />
   );
 };
@@ -34,22 +31,27 @@ export const TintedButton = (props: ButtonProps) => {
 interface ButtonContentProps {
   icon?: AppIcon;
 }
-type ButtonProps = ButtonContentProps &
-  (
-    | ComponentPropsWithoutRef<"button">
-    | Omit<ComponentPropsWithoutRef<"a">, "onClick">
-    | Omit<ComponentPropsWithoutRef<"div">, "onClick">
-  );
+export type ButtonLinkProps = {
+  href: string | null | undefined;
+} & ButtonContentProps &
+  Omit<ComponentPropsWithoutRef<"a">, "onClick" | "href">;
+type ButtonDivProps = ButtonContentProps &
+  Omit<ComponentPropsWithoutRef<"a">, "onClick">;
+export type ButtonProps =
+  | (ButtonContentProps & ComponentPropsWithoutRef<"button">)
+  | ButtonDivProps
+  | ButtonLinkProps;
 
 const ButtonContent = (
   props: ButtonContentProps & ComponentPropsWithoutRef<"div">,
 ) => {
-  const { icon, className, children, ...rest } = props;
+  const { icon, children, ...rest } = addClass(
+    props,
+    "line-clamp-1 flex items-center gap-1",
+  );
+
   return (
-    <div
-      className={classes(className, "line-clamp-1 flex items-center gap-1")}
-      {...rest}
-    >
+    <div {...rest}>
       <Icon icon={icon} className="fill-current opacity-90" />
       {children}
     </div>
@@ -76,9 +78,9 @@ const BaseButton = (props: ButtonProps) => {
       </Link>
     );
   }
-  if ("onClick" in rest && typeof rest.onClick === "function") {
+  if (rest.type || ("onClick" in rest && typeof rest.onClick === "function")) {
     return (
-      <button className={cls} {...rest}>
+      <button className={cls} {...(rest as ComponentPropsWithoutRef<"button">)}>
         {content}
       </button>
     );
@@ -87,7 +89,6 @@ const BaseButton = (props: ButtonProps) => {
   // No usable href or onClick - render as simple div.
   return (
     <div
-      // className="pointer-events-none"
       className={classes("pointer-events-none", cls)}
       {...(rest as ComponentPropsWithoutRef<"div">)}
     >

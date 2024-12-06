@@ -1,5 +1,5 @@
 import { ComponentPropsWithoutRef } from "react";
-import { classes } from "@/util/react";
+import { classes } from "@/util/transforms";
 
 interface ElementTheme {
   backgroundColor: string | undefined;

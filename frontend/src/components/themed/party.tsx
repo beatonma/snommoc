@@ -1,13 +1,13 @@
-import type { Party } from "@/api";
+import type { Party, PartyDetail } from "@/api";
 import { ComponentPropsWithoutRef } from "react";
-import { classes } from "@/util/react";
+import { classes } from "@/util/transforms";
 import { ThemedDiv } from "@/components/themed/themed-div";
 
 interface PartyProps {
-  party: Party | null;
+  party: Party | PartyDetail | null | undefined;
 }
 
-const partyTheme = (party: Party) => ({
+const partyTheme = (party: Party | PartyDetail) => ({
   primary: {
     backgroundColor: party.theme?.primary,
     color: party.theme?.on_primary,
@@ -17,6 +17,19 @@ const partyTheme = (party: Party) => ({
     color: party.theme?.on_accent,
   },
 });
+
+export const partyThemeVariableStyle = (party: Party | PartyDetail) => {
+  return Object.fromEntries(
+    Object.entries({
+      primary: party.theme?.primary,
+      on_primary: party.theme?.on_primary,
+      accent: party.theme?.accent,
+      on_accent: party.theme?.on_accent,
+    })
+      .filter(([key, value]) => !!value)
+      .map(([key, value]) => [`--${key}`, value]),
+  );
+};
 
 /**
  * Container with party primary theme.

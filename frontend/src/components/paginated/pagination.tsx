@@ -5,10 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ApiPaginatedPromise } from "@/api";
+import { ApiPaginatedPromise, ExtraFilters } from "@/api";
 import Loading from "@/components/loading";
 import { TintedButton } from "@/components/button";
-import { classes } from "@/util/react";
+import { addClass, classes } from "@/util/transforms";
 
 interface Paginated<T> {
   items: T[];
@@ -23,6 +23,7 @@ interface Paginated<T> {
 export type PaginationLoader<T> = (
   offset?: number,
   query?: string,
+  extraFilters?: ExtraFilters,
 ) => ApiPaginatedPromise<T>;
 
 const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
@@ -95,6 +96,7 @@ export type PaginationItemComponent<T> = (
   arr: T[],
 ) => ReactNode;
 interface PaginationProps<T> {
+  header?: ReactNode;
   loader: PaginationLoader<T>;
   resetFlag?: boolean;
   itemComponent: PaginationItemComponent<T>;
@@ -104,7 +106,7 @@ const FullSpan = "col-start-1 col-span-full";
 export const InfiniteScroll = <T,>(
   props: PaginationProps<T> & Omit<ComponentPropsWithoutRef<"div">, "children">,
 ) => {
-  const { loader, resetFlag, itemComponent, ...rest } = props;
+  const { loader, resetFlag, header, itemComponent, ...rest } = addClass(props);
   const pagination = usePagination(loader);
 
   useEffect(() => {
@@ -114,6 +116,8 @@ export const InfiniteScroll = <T,>(
 
   return (
     <div {...rest}>
+      {header}
+
       <GridSpan className="font-bold">
         {pagination.availableItems >= 0
           ? `${pagination.availableItems} results`

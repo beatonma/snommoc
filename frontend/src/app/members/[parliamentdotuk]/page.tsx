@@ -1,15 +1,15 @@
 import { ConstituencyMini, MemberProfile, type Party } from "@/api";
 import { PhysicalAddress, WebAddress } from "@/components/address";
 import React, { ComponentPropsWithoutRef } from "react";
-import { PartyIconBackground } from "@/components/themed/party";
 import { MemberPortrait } from "@/components/member-portrait";
 import type { Metadata, ResolvingMetadata } from "next";
 import ErrorMessage from "@/components/error";
 import { getMember } from "@/api";
 import { TextButton } from "@/components/button";
-import { classes } from "@/util/react";
+import { addClass } from "@/util/transforms";
 import { OptionalDiv } from "@/components/optional";
-import { DetailPage } from "@/components/page/detail-page";
+import { HeaderCard } from "@/components/card";
+import { LinkGroup } from "@/components/link";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -36,12 +36,12 @@ export default async function Page({ params }: PageProps) {
   if (!member) return <ErrorMessage />;
 
   return (
-    <DetailPage>
+    <main>
       <MemberCard member={member} className="flex items-center" />
 
       <MemberDetail member={member} className="p-2" />
       <MemberCareer member={member} className="p-2" />
-    </DetailPage>
+    </main>
   );
 }
 
@@ -50,51 +50,46 @@ interface MemberComponentProps extends ComponentPropsWithoutRef<"section"> {
 }
 
 const MemberCard = (props: MemberComponentProps) => {
-  const { member, className, ...rest } = props;
+  const { member, ...rest } = addClass(props, "flex-col");
 
   return (
-    <section className={classes(className, "flex-col")} {...rest}>
-      <PartyIconBackground
+    <section {...rest}>
+      <HeaderCard
         party={member.party}
-        className="flex min-w-full flex-col gap-4 p-2 sm:min-w-[60vw] sm:max-w-[80vw] sm:flex-row sm:rounded-lg sm:p-4"
+        image={
+          <MemberPortrait
+            name={member.name}
+            src={member.portrait?.wide}
+            aspectClassName="aspect-[3/2]"
+            className="[:has(>img)]:w-full h-[220px] bg-surface-900/10 sm:w-auto"
+          />
+        }
       >
-        <MemberPortrait
-          name={member.name}
-          src={member.portrait?.wide}
-          aspectClassName="aspect-[3/2]"
-          className="[:has(>img)]:w-full h-[220px] self-center overflow-hidden rounded-lg bg-surface-900/10 sm:w-auto"
-        />
+        <h1>{member.name}</h1>
 
-        <div className="flex flex-col gap-1">
-          <h1 className="sm:w-max">{member.name}</h1>
-
-          <div className="flex flex-wrap gap-x-4">
-            {member.address.web.map((addr) => (
-              <WebAddress
-                key={addr.url}
-                url={addr.url}
-                description={addr.description}
-              />
-            ))}
-          </div>
-
-          <div>
-            <OptionalDiv
-              condition={member.current_posts}
-              title="Current post"
+        <LinkGroup>
+          {member.address.web.map((addr) => (
+            <WebAddress
+              key={addr.url}
+              url={addr.url}
+              description={addr.description}
             />
+          ))}
+        </LinkGroup>
 
-            <div className="flex gap-1">
-              <Party party={member.party} />
-              <MpStatus
-                active={member.status.is_active}
-                house={member.house}
-                constituency={member.constituency}
-              />
-            </div>
+        <div>
+          <OptionalDiv value={member.current_posts} title="Current post" />
+
+          <div className="flex gap-1">
+            <Party party={member.party} />
+            <MpStatus
+              active={member.status.is_active}
+              house={member.house}
+              constituency={member.constituency}
+            />
           </div>
         </div>
-      </PartyIconBackground>
+      </HeaderCard>
     </section>
   );
 };

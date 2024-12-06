@@ -1,16 +1,20 @@
 "use client";
-import { getMembers, type MemberMiniSchema } from "@/api";
-import Link from "next/link";
-import { PartyIconBackground } from "@/components/themed/party";
+import { type ExtraFilters, getMembers, type MemberMiniSchema } from "@/api";
 import { MemberPortrait } from "@/components/member-portrait";
 import { OptionalDiv } from "@/components/optional";
-import React from "react";
-import { SearchListPage } from "@/components/page/list-page";
+import React, { ReactNode } from "react";
+import { SearchList } from "@/components/paginated/search-list";
+import { ListItemCard } from "@/components/card";
 
-export default function MembersList() {
+export default function MembersList(props: {
+  header?: ReactNode;
+  extraFilters?: ExtraFilters;
+}) {
   return (
-    <SearchListPage
+    <SearchList
+      header={props.header}
       loader={getMembers}
+      extraFilters={props.extraFilters}
       itemComponent={(member) => (
         <Member key={member.parliamentdotuk} {...member} />
       )}
@@ -20,38 +24,36 @@ export default function MembersList() {
 
 const Member = (props: MemberMiniSchema) => {
   return (
-    <Link
+    <ListItemCard
       href={`/members/${props.parliamentdotuk}/`}
-      className="flex overflow-hidden sm:rounded-lg"
+      party={props.party}
       title={`${props.parliamentdotuk}`}
-    >
-      <PartyIconBackground party={props.party} className="flex grow gap-3 p-3">
+      image={
         <MemberPortrait
           name={props.name}
           src={props.portrait}
-          className="w-16 shrink-0 overflow-hidden rounded-md bg-primary-900"
+          className="size-16 shrink-0 overflow-hidden rounded-md bg-primary-900"
         />
-        <div className="flex flex-col gap-0.5 [&>div]:text-sm">
-          <h2 className="text-xl font-semibold">{props.name}</h2>
-          <OptionalDiv
-            title="Current post"
-            condition={props.current_posts}
-            className="line-clamp-1"
-          />
-          <div className="separated flex flex-wrap">
-            <OptionalDiv
-              title="Party"
-              condition={props.party?.name}
-              className="line-clamp-1"
-            />
-            <OptionalDiv
-              title="Constituency"
-              condition={props.constituency?.name}
-              className="line-clamp-1"
-            />
-          </div>
-        </div>
-      </PartyIconBackground>
-    </Link>
+      }
+    >
+      <h2>{props.name}</h2>
+      <OptionalDiv
+        title="Current post"
+        value={props.current_posts}
+        className="line-clamp-1"
+      />
+      <div className="separated flex flex-wrap">
+        <OptionalDiv
+          title="Party"
+          value={props.party?.name}
+          className="line-clamp-1"
+        />
+        <OptionalDiv
+          title="Constituency"
+          value={props.constituency?.name}
+          className="line-clamp-1"
+        />
+      </div>
+    </ListItemCard>
   );
 };

@@ -1,47 +1,50 @@
 "use client";
 import { getParties, type Party } from "@/api";
 import Link from "next/link";
-import { PartyIconBackground } from "@/components/themed/party";
 import React, { ComponentPropsWithoutRef } from "react";
-import { SearchListPage } from "@/components/page/list-page";
-import { classes } from "@/util/react";
-import { GridSectionHeader } from "@/components/pagination";
+import { SearchList } from "@/components/paginated/search-list";
+import { classes } from "@/util/transforms";
+import { GridSectionHeader } from "@/components/paginated/pagination";
 import { OptionalSvg } from "@/components/image";
+import { ListItemCard } from "@/components/card";
+import { plural } from "@/util/plurals";
 
 export default function PartyList() {
   return (
-    <SearchListPage
-      loader={getParties}
-      itemComponent={(party, index, arr) => {
-        if (
-          index > 0 &&
-          party.active_commons_members === null &&
-          (arr[index - 1]?.active_commons_members ?? null) !== null
-        ) {
-          return (
-            <React.Fragment key={party.parliamentdotuk}>
-              <GridSectionHeader>No current MPs</GridSectionHeader>
-              <Party party={party} />
-            </React.Fragment>
-          );
-        }
+    <main>
+      <SearchList
+        loader={getParties}
+        itemComponent={(party, index, arr) => {
+          if (
+            index > 0 &&
+            party.active_commons_members === null &&
+            (arr[index - 1]?.active_commons_members ?? null) !== null
+          ) {
+            return (
+              <React.Fragment key={party.parliamentdotuk}>
+                <GridSectionHeader>No current MPs</GridSectionHeader>
+                <Party party={party} />
+              </React.Fragment>
+            );
+          }
 
-        if (
-          index > 0 &&
-          party.active_member_count === 0 &&
-          (arr[index - 1]?.active_member_count ?? 0) > 0
-        ) {
-          return (
-            <React.Fragment key={party.parliamentdotuk}>
-              <GridSectionHeader>No current Members</GridSectionHeader>
-              <Party party={party} />
-            </React.Fragment>
-          );
-        }
+          if (
+            index > 0 &&
+            party.active_member_count === 0 &&
+            (arr[index - 1]?.active_member_count ?? 0) > 0
+          ) {
+            return (
+              <React.Fragment key={party.parliamentdotuk}>
+                <GridSectionHeader>No current Members</GridSectionHeader>
+                <Party party={party} />
+              </React.Fragment>
+            );
+          }
 
-        return <Party key={party.parliamentdotuk} party={party} />;
-      }}
-    />
+          return <Party key={party.parliamentdotuk} party={party} />;
+        }}
+      />
+    </main>
   );
 }
 
@@ -49,22 +52,32 @@ const Party = (props: { party: Party } & ComponentPropsWithoutRef<"a">) => {
   const { party, className, ...rest } = props;
 
   return (
-    <Link
+    <ListItemCard
       href={`/parties/${party.parliamentdotuk}/`}
-      className={classes(className, "flex overflow-hidden sm:rounded-lg")}
-      {...rest}
-    >
-      <PartyIconBackground party={party} className="flex grow gap-3 p-3">
+      party={party}
+      image={
         <OptionalSvg
           src={party.logo}
           alt={party.name}
           className="w-16 shrink-0 overflow-hidden rounded-md bg-primary-50 p-2"
         />
+      }
+      {...rest}
+    >
+      <h2>{party.name}</h2>
 
-        <div className="flex flex-col gap-0.5 [&>div]:text-sm">
-          <h2 className="text-xl font-semibold">{party.name}</h2>
-        </div>
-      </PartyIconBackground>
-    </Link>
+      <span>{partyMemberSummary(party)}</span>
+    </ListItemCard>
   );
+};
+
+const partyMemberSummary = (party: Party) => {
+  const mps = party.active_commons_members;
+  const lords = party.active_member_count - (party.active_commons_members ?? 0);
+
+  const parts = [];
+  if (mps) parts.push(plural("MP", mps));
+  if (lords) parts.push(plural("Lord", lords));
+
+  return parts.join(", ");
 };

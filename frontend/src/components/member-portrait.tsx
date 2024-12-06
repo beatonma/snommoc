@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import CommonsIcon from "@/svg/commons.svg";
-import { classes } from "@/util/react";
+import { classes } from "@/util/transforms";
 
 interface PortraitProps {
   name: string;

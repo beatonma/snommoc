@@ -9,10 +9,19 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        md: "848px",
+      },
       colors: {
         surface: colors.neutral,
-        primary: colors.slate,
-        accent: colors.amber,
+        primary: {
+          DEFAULT: "var(--primary)",
+          ...colors.slate,
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          ...colors.amber,
+        },
         default_party: colors.stone,
         house: {
           commons: {

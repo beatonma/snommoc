@@ -1,9 +1,19 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { getParty, PartyDetail } from "@/api";
+import {
+  GenderDemographics,
+  getParty,
+  LordsDemographics,
+  PartyDetail,
+} from "@/api";
 import ErrorMessage from "@/components/error";
 import React from "react";
-import { DetailPage } from "@/components/page/detail-page";
 import { OptionalSvg } from "@/components/image";
+import { OptionalDiv } from "@/components/optional";
+import { LinkGroup } from "@/components/link";
+import MembersList from "@/app/members/members";
+import { HeaderCard } from "@/components/card";
+import { partyThemeVariableStyle } from "@/components/themed/party";
+import { plural } from "@/util/plurals";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -30,19 +40,155 @@ export default async function Page({ params }: PageProps) {
   if (!party) return <ErrorMessage />;
 
   return (
-    <DetailPage>
-      <OptionalSvg
-        src={party.logo}
-        alt={party.name}
-        className="w-32 shrink-0 overflow-hidden rounded-md bg-primary-50 p-2"
-      />
-      <div>{party.logo}</div>
-      <div>{party.name}</div>
-      <div>{party.long_name}</div>
-      <div>{party.year_founded}</div>
+    <div
+      style={partyThemeVariableStyle(party)}
+      className="flex flex-col items-center gap-y-16"
+    >
+      <main className="readable flex flex-col flex-wrap items-center">
+        <section>
+          <HeaderCard
+            party={party}
+            image={
+              <OptionalSvg
+                src={party.logo}
+                alt={party.name}
+                className="w-32 shrink-0 overflow-hidden rounded-md bg-primary-50 p-2"
+                priority
+              />
+            }
+          >
+            <h1>{party.name}</h1>
 
-      <div>{party.homepage}</div>
-      <div>{party.wikipedia}</div>
-    </DetailPage>
+            <OptionalDiv
+              value={party.short_name}
+              condition={(it) => it !== party.name}
+            />
+            <OptionalDiv
+              value={party.long_name}
+              condition={(it) => it !== party.name}
+            />
+            <OptionalDiv
+              value={party.year_founded}
+              condition={Boolean}
+              block={(founded) => `Founded ${founded}`}
+            />
+            <OptionalDiv
+              value={party.active_member_count}
+              block={(count) =>
+                `${plural("Member", count).toLowerCase()} in Parliament`
+              }
+            />
+
+            <LinkGroup links={[party.homepage, party.wikipedia]} />
+          </HeaderCard>
+        </section>
+
+        <section className="w-full items-center">
+          <Demographics party={party} />
+        </section>
+      </main>
+
+      <aside className="[align-self:normal]">
+        <MembersList
+          header={<h2>Members</h2>}
+          extraFilters={{ party: party.parliamentdotuk }}
+        />
+      </aside>
+    </div>
   );
 }
+
+const Demographics = (props: { party: PartyDetail }) => {
+  const { party } = props;
+
+  if (!party.gender_demographics && !party.lords_demographics) return null;
+
+  return (
+    <>
+      <h2 className="py-2">Demographics</h2>
+      <div className="flex flex-row flex-wrap justify-center gap-16">
+        <_GenderDemographics demographics={party.gender_demographics} />
+        <_LordsDemographics demographics={party.lords_demographics} />
+      </div>
+    </>
+  );
+};
+
+const _GenderDemographics = (props: { demographics: GenderDemographics[] }) => {
+  const { demographics } = props;
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          {demographics.map((it) => (
+            <th key={it.house}>{it.house}</th>
+          ))}
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Male</td>
+          {demographics.map((it) => (
+            <td key={it.house}>{it.male_member_count}</td>
+          ))}
+        </tr>
+        <tr>
+          <td>Female</td>
+          {demographics.map((it) => (
+            <td key={it.house}>{it.female_member_count}</td>
+          ))}
+        </tr>
+        <tr>
+          <td>Non-Binary</td>
+          {demographics.map((it) => (
+            <td key={it.house}>{it.non_binary_member_count}</td>
+          ))}
+        </tr>
+        <tr>
+          <td>Total</td>
+          {demographics.map((it) => (
+            <td key={it.house}>{it.total_member_count}</td>
+          ))}
+        </tr>
+      </tbody>
+    </table>
+  );
+};
+
+const _LordsDemographics = (props: {
+  demographics: LordsDemographics | null | undefined;
+}) => {
+  const { demographics } = props;
+  if (!demographics) return null;
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th colSpan={2}>Lords type</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Bishops</td>
+          <td>{demographics.bishop_count}</td>
+        </tr>
+        <tr>
+          <td>Hereditary</td>
+          <td>{demographics.hereditary_count}</td>
+        </tr>
+        <tr>
+          <td>Life</td>
+          <td>{demographics.life_count}</td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td>{demographics.total_count}</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};

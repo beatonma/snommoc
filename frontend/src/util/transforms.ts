@@ -18,3 +18,8 @@ export const addClass = <T extends ClassNameProps>(
     className: classes(props.className, extraClasses.join(" ")),
   };
 };
+
+export const transformString = (
+  value: string | undefined | null,
+  transform: (value: string) => string,
+): string | null => (value ? transform(value) : null);

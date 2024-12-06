@@ -1,32 +1,42 @@
-import {
+import React, {
   ComponentPropsWithoutRef,
   createElement,
   ElementType,
   ReactNode,
 } from "react";
 
+type OptionalProps<T> = {
+  value: T | null | undefined;
+  condition?: (value: T) => boolean;
+  block?: (value: T) => ReactNode;
+};
+
 type ElementProps<E extends ElementType> = Omit<
   ComponentPropsWithoutRef<E>,
-  "children"
+  "children" | keyof OptionalProps<any>
 >;
 
-interface OptionalProps<T> {
-  condition: T | null | undefined;
-  block?: ((obj: T) => ReactNode) | undefined;
-}
-
-export const Optional = <E extends ElementType, T>(
-  props: { element: E } & ElementProps<E> & OptionalProps<T>,
+const OptionalElement = <E extends ElementType, T>(
+  props: { element: E | null } & ElementProps<E> & OptionalProps<T>,
 ) => {
-  const { element, condition, block, ...rest } = props;
-  if (condition) {
-    const func: (obj: T) => ReactNode = block ?? ((obj) => `${obj}`);
-    return createElement(element, rest, func(condition));
+  const { element, value, condition, block, ...rest } = props;
+  if (value == null) return null;
+  if (condition && !condition(value)) return null;
+  // if (!value) return null;
+
+  const content = (block ?? ((obj) => `${obj}`))(value);
+  if (element) {
+    return createElement(element, rest, content);
   }
+  return <>{content}</>;
 };
 
 export const OptionalDiv = <T,>(
   props: OptionalProps<T> & ElementProps<"div">,
 ) => {
-  return <Optional element="div" {...props} />;
+  return <OptionalElement element="div" {...props} />;
 };
+
+export const Optional = <T,>(props: OptionalProps<T>) => (
+  <OptionalElement element={null} {...props} />
+);

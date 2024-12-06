@@ -2,7 +2,6 @@ import type { Metadata, ResolvingMetadata } from "next";
 import { getConstituency } from "@/api";
 import ErrorMessage from "@/components/error";
 import React from "react";
-import { DetailPage } from "@/components/page/detail-page";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -29,7 +28,7 @@ export default async function Page({ params }: PageProps) {
   if (!constituency) return <ErrorMessage />;
 
   return (
-    <DetailPage>
+    <main>
       <div>{constituency.name}</div>
       <div>{constituency.mp?.name}</div>
       <div>
@@ -37,6 +36,6 @@ export default async function Page({ params }: PageProps) {
       </div>
       <pre>{JSON.stringify(constituency.boundary)}</pre>
       <pre>{JSON.stringify(constituency.results, null, 1)}</pre>
-    </DetailPage>
+    </main>
   );
 }

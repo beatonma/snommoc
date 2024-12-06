@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import MembersListPage from "@/app/members/members";
+import MembersList from "@/app/members/members";
 
 export const metadata: Metadata = {
   title: "Members",
@@ -8,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return <MembersListPage />;
+  return (
+    <main>
+      <MembersList />
+    </main>
+  );
 }

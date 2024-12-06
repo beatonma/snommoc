@@ -923,6 +923,8 @@ export interface components {
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
+            /** Active Member Count */
+            active_member_count: number;
             /** Gender Demographics */
             gender_demographics: components["schemas"]["GenderDemographics"][];
             lords_demographics?: components["schemas"]["LordsDemographics"] | null;
@@ -1002,6 +1004,7 @@ export interface operations {
         parameters: {
             query?: {
                 query?: string;
+                party?: number;
                 limit?: number;
                 offset?: number;
             };

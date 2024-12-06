@@ -8,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return <PartyListPage />;
+  return (
+    <main>
+      <PartyListPage />
+    </main>
+  );
 }

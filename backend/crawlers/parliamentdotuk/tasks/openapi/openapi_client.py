@@ -2,7 +2,7 @@ from typing import Callable, Literal, Union
 
 from crawlers.context import TaskContext
 from crawlers.network import get_json
-from crawlers.network.exceptions import HttpError
+from crawlers.network.exceptions import HttpError, HttpServerError
 from pydantic import ValidationError
 
 """
@@ -17,6 +17,10 @@ type ItemFunc[T] = Union[
 ]
 
 
+"""
+exit: Something went badly wrong, stop the process immediately.
+continue: Something went mildly wrong but it's probably fine.
+"""
 type ItemFuncStatus = Literal["continue", "exit"]
 
 
@@ -40,6 +44,12 @@ def _apply_item_func[
             return item_func(item, context)
         else:
             return item_func(item, context, func_kwargs)
+
+    except HttpServerError as e:
+        context.warning(
+            f"Remote server error\nItem response failed with status={e.status_code}.\n{report()}\n{e}"
+        )
+        return "continue"
 
     except HttpError as e:
         context.warning(
@@ -79,6 +89,12 @@ def foreach(
     """
     item_count = context.skip_items
     items_per_page = context.items_per_page
+
+    # Halt processing if errors occur for this proportion of items
+    item_error_threshold = 0.05
+    # Ignore item_error_threshold until this many items have been attempted.
+    item_error_threshold_after = 1 / item_error_threshold
+    item_error_count = 0
 
     while True:
         if context.is_finished():
@@ -125,6 +141,18 @@ def foreach(
                 return
 
             item_count += 1
+
+            if func_status == "continue":
+                item_error_count += 1
+                if (
+                    item_error_count >= item_error_threshold_after
+                    and (item_error_count / item_count) > item_error_threshold
+                ):
+                    context.warning(
+                        f"Item error threshold exceeded ({item_error_count}/{item_count} items failed)"
+                    )
+                    return
+
             if context.limit_reached(item_count):
                 return
 

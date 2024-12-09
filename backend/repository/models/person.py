@@ -95,7 +95,7 @@ class Person(
     objects = PersonQuerySet.as_manager()
     name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text="Canonical name for this person.",
+        help_text=_("Canonical name for this person."),
     )
     sort_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
@@ -105,26 +105,26 @@ class Person(
     )
     given_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text="First name",
+        help_text=_("First name"),
         null=True,
         blank=True,
     )
     family_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text="Last name",
+        help_text=_("Last name"),
         null=True,
         blank=True,
     )
     additional_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text="Middle name(s)",
+        help_text=_("Middle name(s)"),
         blank=True,
         null=True,
     )
 
     full_title = models.CharField(
         max_length=NAME_MAX_LENGTH,
-        help_text="Official name with honorifics.",
+        help_text=_("Official name with honorifics."),
         blank=True,
         null=True,
     )
@@ -168,7 +168,9 @@ class Person(
         null=True,
         blank=True,
         default=None,
-        help_text="The source of this person's lordship, if applicable (e.g. hereditary, bishop, peerage, etc)",
+        help_text=_(
+            "The source of this person's lordship, if applicable (e.g. hereditary, bishop, peerage, etc)"
+        ),
     )
 
     party = models.ForeignKey(
@@ -176,7 +178,9 @@ class Person(
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        help_text="Current party membership. Historic memberships can be retrieved via PartyAssociation model.",
+        help_text=_(
+            "Current party membership. Historic memberships can be retrieved via PartyAffiliation model."
+        ),
     )
 
     house = models.ForeignKey(
@@ -247,7 +251,7 @@ class Person(
 
     class Meta:
         ordering = ["name"]
-        verbose_name_plural = "People"
+        verbose_name_plural = _("People")
 
 
 class PersonStatus(PersonMixin, PeriodMixin, BaseModel):
@@ -256,7 +260,16 @@ class PersonStatus(PersonMixin, PeriodMixin, BaseModel):
         on_delete=models.CASCADE,
         related_name="status",
     )
-    is_active = models.BooleanField(db_index=True)
+    is_current = models.BooleanField(
+        db_index=True,
+        help_text=_("Whether this person currently has a seat in one of the houses."),
+    )
+    is_active = models.BooleanField(
+        db_index=True,
+        help_text=_(
+            "Whether this person is currently using their seat. May be false if they are on leave or suspended in some way."
+        ),
+    )
     description = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
@@ -273,8 +286,8 @@ class PersonAlsoKnownAs(PersonMixin, BaseModel):
     alias = models.CharField(max_length=NAME_MAX_LENGTH, unique=True)
 
     class Meta:
-        verbose_name_plural = "People also known as"
-        verbose_name = "PersonAlsoKnownAs"
+        verbose_name_plural = _("People also known as")
+        verbose_name = _("PersonAlsoKnownAs")
 
     def __str__(self):
         return f"{self.alias} -> {self.person}"

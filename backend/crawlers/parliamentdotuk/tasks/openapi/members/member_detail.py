@@ -104,6 +104,7 @@ def _update_member_basic(basic_info: schema.MemberBasic) -> Person:
     person_status, _ = PersonStatus.objects.update_or_create(
         person=person,
         defaults={
+            "is_current": status_data.is_current,
             "is_active": status_data.is_active,
             "description": status_data.description,
             "notes": status_data.notes,

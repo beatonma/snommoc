@@ -40,6 +40,7 @@ class _LatestHouseMembership(Schema):
 
 
 class MemberStatus(Schema):
+    is_current: bool
     is_active: bool
     description: StringOrNone
     notes: StringOrNone
@@ -68,6 +69,7 @@ class MemberStatus(Schema):
                 status_notes = status.notes or status_notes
                 status_since = status.status_start
 
+        obj["is_current"] = is_current
         obj["is_active"] = is_active
         obj["description"] = status_description
         obj["notes"] = status_notes

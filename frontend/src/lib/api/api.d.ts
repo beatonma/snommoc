@@ -334,6 +334,8 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @enum {string} */
+        HouseType: "Commons" | "Lords";
         /** Input */
         Input: {
             /**
@@ -452,12 +454,16 @@ export interface components {
         };
         /** MemberStatus */
         MemberStatus: {
+            /** Is Current */
+            is_current: boolean;
             /** Is Active */
             is_active: boolean;
             /** Description */
             description: string | null;
             /** Extra Notes */
             extra_notes: string | null;
+            /** Since */
+            since: string | null;
         };
         PhoneNumber: string;
         /** PhysicalAddressSchema */
@@ -603,8 +609,6 @@ export interface components {
             /** Is Passed */
             is_passed: boolean;
         };
-        /** @enum {string} */
-        HouseType: "Commons" | "Lords";
         /** MemberVotesSchema */
         MemberVotesSchema: {
             /** Commons */
@@ -1005,6 +1009,7 @@ export interface operations {
             query?: {
                 query?: string;
                 party?: number;
+                house?: components["schemas"]["HouseType"] | null;
                 limit?: number;
                 offset?: number;
             };

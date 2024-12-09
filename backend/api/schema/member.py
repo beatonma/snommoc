@@ -114,9 +114,11 @@ class PortraitSchema(Schema):
 
 
 class MemberStatus(Schema):
+    is_current: bool
     is_active: bool
     description: str | None
     extra_notes: str | None = field("notes")
+    since: date | None = field("start")
 
 
 class MemberProfile(MemberMiniSchema, ParliamentSchema):

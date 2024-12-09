@@ -25,16 +25,7 @@ export default function RootLayout({
             <TextLink href="/parties/">Parties</TextLink>
             <TextLink href="/constituencies/">Constituencies</TextLink>
           </Nav>
-        </header>
 
-        <div className="grid w-full grid-cols-[1fr_minmax(300px,1350px)_1fr] items-center">
-          <div id="side_left" />
-          {children}
-          <div id="side_right" />
-        </div>
-
-        <footer className="flex flex-col items-center gap-2 p-8">
-          <License licence="OpenParliament" />
           <Nav>
             <TextLink href="/admin/" target="_blank">
               admin
@@ -43,6 +34,16 @@ export default function RootLayout({
               tailwind docs
             </TextLink>
           </Nav>
+        </header>
+
+        <div className="grid w-full grid-cols-[1fr_minmax(300px,1350px)_1fr] items-center">
+          <div id="side_left" />
+          {children}
+          <div id="side_right" />
+        </div>
+
+        <footer className="flex flex-col items-center gap-2 p-8 text-center">
+          <License licence="OpenParliament" />
         </footer>
       </body>
     </html>

@@ -47,6 +47,7 @@ export const getParties = async (
   });
 
 export type MemberProfile = components["schemas"]["MemberProfile"];
+export type WebAddress = components["schemas"]["WebAddressSchema"];
 export const getMember = async (
   parliamentdotuk: number,
 ): ApiPromise<MemberProfile> =>

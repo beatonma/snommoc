@@ -67,15 +67,7 @@ const MemberCard = (props: MemberComponentProps) => {
       >
         <h1>{member.name}</h1>
 
-        <LinkGroup>
-          {member.address.web.map((addr) => (
-            <WebAddress
-              key={addr.url}
-              url={addr.url}
-              description={addr.description}
-            />
-          ))}
-        </LinkGroup>
+        <LinkGroup links={[...member.address.web, member.wikipedia]} />
 
         <div>
           <OptionalDiv value={member.current_posts} title="Current post" />

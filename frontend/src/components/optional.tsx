@@ -22,7 +22,6 @@ const OptionalElement = <E extends ElementType, T>(
   const { element, value, condition, block, ...rest } = props;
   if (value == null) return null;
   if (condition && !condition(value)) return null;
-  // if (!value) return null;
 
   const content = (block ?? ((obj) => `${obj}`))(value);
   if (element) {

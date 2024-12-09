@@ -45,7 +45,7 @@ export default async function Page({ params }: PageProps) {
       className="flex flex-col items-center gap-y-16"
     >
       <main className="readable flex flex-col flex-wrap items-center">
-        <section>
+        <section className="w-full">
           <HeaderCard
             party={party}
             image={
@@ -106,7 +106,7 @@ const Demographics = (props: { party: PartyDetail }) => {
   return (
     <>
       <h2 className="py-2">Demographics</h2>
-      <div className="flex flex-row flex-wrap justify-center gap-16">
+      <div className="flex flex-row flex-wrap gap-16">
         <_GenderDemographics demographics={party.gender_demographics} />
         <_LordsDemographics demographics={party.lords_demographics} />
       </div>

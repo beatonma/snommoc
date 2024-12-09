@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LinkProps } from "next/dist/client/link";
 import { ButtonLinkProps, TextButton } from "@/components/button";
 import type { AppIcon } from "@/components/icon";
+import { WebAddress } from "@/api";
 
 /**
  * Props signature for next/link Link component.
@@ -33,7 +34,7 @@ export const TextLink = (props: NextLinkProps) => {
 };
 
 type LinkGroupProps = {
-  links?: (string | null)[];
+  links?: (string | WebAddress | null)[];
 } & ComponentPropsWithoutRef<"div">;
 export const LinkGroup = (props: LinkGroupProps) => {
   const { links, children, ...rest } = addClass(
@@ -44,9 +45,18 @@ export const LinkGroup = (props: LinkGroupProps) => {
   if (links) {
     return (
       <div {...rest}>
-        {links.map((it) => (
-          <ButtonLink key={it} href={it} />
-        ))}
+        {links.map((it) => {
+          if (it != null && typeof it === "object") {
+            return (
+              <ButtonLink
+                key={it?.url}
+                href={it.url}
+                defaultDisplayText={it.description}
+              />
+            );
+          }
+          return <ButtonLink key={it} href={it} />;
+        })}
       </div>
     );
   }
@@ -55,7 +65,7 @@ export const LinkGroup = (props: LinkGroupProps) => {
 };
 
 export const ButtonLink = (
-  props: ButtonLinkProps & { defaultDisplayText?: string },
+  props: ButtonLinkProps & { defaultDisplayText?: string | null },
 ) => {
   const { href, defaultDisplayText, icon, ...rest } = addClass(props, "w-fit");
   if (!href) return null;
@@ -66,7 +76,7 @@ export const ButtonLink = (
     <TextButton
       icon={icon ?? values.icon}
       href={href}
-      title={defaultDisplayText}
+      title={defaultDisplayText ?? undefined}
       {...rest}
       target="_blank"
       referrerPolicy="same-origin"

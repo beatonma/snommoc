@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from pathlib import Path
 from unittest.mock import patch
 
@@ -41,7 +42,7 @@ class OpenApiTestCase(DatabaseTestCase):
         return patch(
             "crawlers.parliamentdotuk.tasks.openapi.openapi_client.get_json",
             side_effect=lambda url, *args, **kwargs: cls._load_json_from_file(
-                cls.mock_response[url]
+                cls._get_mock_response(url)
             ),
         )
 
@@ -50,3 +51,12 @@ class OpenApiTestCase(DatabaseTestCase):
         with open(Path(cls.file).parent / path, "r") as f:
             log.info(f"Loaded mock data from {path}")
             return json.load(f)
+
+    @classmethod
+    def _get_mock_response(cls, url: str) -> str:
+        if url in cls.mock_response:
+            return cls.mock_response[url]
+
+        for key, value in cls.mock_response.items():
+            if re.match(key, url):
+                return value

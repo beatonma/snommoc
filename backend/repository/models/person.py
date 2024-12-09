@@ -97,6 +97,12 @@ class Person(
         max_length=NAME_MAX_LENGTH,
         help_text="Canonical name for this person.",
     )
+    sort_name = models.CharField(
+        max_length=NAME_MAX_LENGTH,
+        null=True,
+        blank=True,
+        db_index=True,
+    )
     given_name = models.CharField(
         max_length=NAME_MAX_LENGTH,
         help_text="First name",

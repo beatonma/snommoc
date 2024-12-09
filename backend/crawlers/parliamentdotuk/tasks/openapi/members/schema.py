@@ -35,6 +35,7 @@ class LatestHouseMembership(Schema):
 class MemberBasic(Schema):
     parliamentdotuk: int = field("id")
     name: PersonName = field("nameDisplayAs")
+    list_as: StringOrNone = field("nameListAs")
     full_title: StringOrNone = field("nameFullTitle")
     gender: StringOrNone
     party: Party | None = field("latestParty")

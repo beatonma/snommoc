@@ -92,6 +92,7 @@ def _update_member_basic(basic_info: schema.MemberBasic) -> Person:
         parliamentdotuk=basic_info.parliamentdotuk,
         defaults={
             "name": basic_info.name,
+            "sort_name": basic_info.list_as,
             "full_title": basic_info.full_title,
             "gender": basic_info.gender,
             "party": update_party(basic_info.party) if basic_info.party else None,

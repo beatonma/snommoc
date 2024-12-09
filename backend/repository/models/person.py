@@ -257,7 +257,7 @@ class PersonStatus(PersonMixin, PeriodMixin, BaseModel):
         related_name="status",
     )
     is_active = models.BooleanField(db_index=True)
-    description = models.CharField(max_length=64, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):

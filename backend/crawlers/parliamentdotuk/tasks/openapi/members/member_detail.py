@@ -81,11 +81,11 @@ def _update_member_detail(response_data: dict, context: TaskContext):
 
 def _update_member_basic(basic_info: schema.MemberBasic) -> Person:
     lords_type = None
-    if _type := basic_info.lords_type:
+    if _type := basic_info.status.lords_type:
         lords_type, _ = LordsType.objects.get_or_create(name=_type)
 
     house = None
-    if _house := basic_info.house:
+    if _house := basic_info.status.house:
         house, _ = House.objects.get_or_create(name=_house)
 
     person, _ = Person.objects.update_or_create(
@@ -101,18 +101,14 @@ def _update_member_basic(basic_info: schema.MemberBasic) -> Person:
         },
     )
     status_data = basic_info.status
-    status_defaults = (
-        {
+    person_status, _ = PersonStatus.objects.update_or_create(
+        person=person,
+        defaults={
             "is_active": status_data.is_active,
             "description": status_data.description,
             "notes": status_data.notes,
-        }
-        if status_data
-        else {"is_active": False}
-    )
-    person_status, _ = PersonStatus.objects.update_or_create(
-        person=person,
-        defaults=status_defaults,
+            "start": status_data.since,
+        },
     )
 
     return person

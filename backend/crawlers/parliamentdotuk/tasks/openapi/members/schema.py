@@ -14,10 +14,12 @@ from crawlers.parliamentdotuk.tasks.types import (
 )
 from pydantic import BaseModel as Schema
 from pydantic import Field, model_validator
-from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
+from repository.models.houses import HOUSE_OF_LORDS
 
 
-class MemberStatus(Schema):
+class _MemberStatus(Schema):
+    """Used internally for MemberStatus validation."""
+
     status_id: int = field("statusId")
     is_active: bool = field("statusIsActive")
     description: str | None = field("statusDescription", default=None)
@@ -25,11 +27,58 @@ class MemberStatus(Schema):
     status_start: DateOrNone = field("statusStartDate")
 
 
-class LatestHouseMembership(Schema):
-    membershipFrom: StringOrNone
+class _LatestHouseMembership(Schema):
+    """Used internally for MemberStatus validation."""
+
+    membership_from: StringOrNone = field("membershipFrom")
     house: House
-    membershipStartDate: DateOrNone
-    membershipEndDate: DateOrNone
+    membership_start_date: DateOrNone = field("membershipStartDate")
+    membership_end_date: DateOrNone = field("membershipEndDate")
+    membership_end_reason: StringOrNone = field("membershipEndReason")
+    membership_end_reason_notes: StringOrNone = field("membershipEndReasonNotes")
+    status: _MemberStatus | None = field("membershipStatus")
+
+
+class MemberStatus(Schema):
+    is_active: bool
+    description: StringOrNone
+    notes: StringOrNone
+    since: DateOrNone
+
+    house: House
+    lords_type: StringOrNone
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate(cls, obj):
+        """Use data from _LatestHouseMembership and its (optional) _MemberStatus
+        to build an accurate current status for this member"""
+        data = _LatestHouseMembership.model_validate(obj)
+        status = data.status
+
+        is_current = data.membership_end_date is None
+        is_active = is_current
+        status_description = data.membership_end_reason
+        status_notes = data.membership_end_reason_notes
+        status_since = data.membership_end_date or data.membership_start_date
+        if status:
+            is_active = is_active and status.is_active
+            if not is_active:
+                status_description = status.description or status_description
+                status_notes = status.notes or status_notes
+                status_since = status.status_start
+
+        obj["is_active"] = is_active
+        obj["description"] = status_description
+        obj["notes"] = status_notes
+        obj["since"] = status_since
+
+        obj["house"] = data.house
+        obj["lords_type"] = (
+            data.membership_from if data.house == HOUSE_OF_LORDS else None
+        )
+
+        return obj
 
 
 class MemberBasic(Schema):
@@ -39,23 +88,7 @@ class MemberBasic(Schema):
     full_title: StringOrNone = field("nameFullTitle")
     gender: StringOrNone
     party: Party | None = field("latestParty")
-    status: MemberStatus | None = field(
-        "latestHouseMembership.membershipStatus", default=None
-    )
-    house: House = Field(default=None)
-    lords_type: StringOrNone = Field(default=None)
-
-    @model_validator(mode="before")
-    @classmethod
-    def validate(cls, obj):
-        house_membership = obj.get("latestHouseMembership")
-        if house_membership:
-            house_membership = LatestHouseMembership.model_validate(house_membership)
-            obj["house"] = house_membership.house
-            if house_membership.house == HOUSE_OF_LORDS:
-                obj["lords_type"] = house_membership.membershipFrom
-
-        return obj
+    status: MemberStatus = field("latestHouseMembership")
 
 
 class ConstituencyRepresentation(Schema):

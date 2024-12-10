@@ -10,6 +10,7 @@ import { ApiPaginatedPromise, PaginatedQuery } from "@/api";
 import Loading from "@/components/loading";
 import { TintedButton } from "@/components/button";
 import { addClass } from "@/util/transforms";
+import { DivProps, DivPropsNoChildren } from "@/types/react";
 
 interface Paginated<T> {
   items: T[];
@@ -104,7 +105,7 @@ interface PaginationProps<T> {
 
 const FullSpan = "col-start-1 col-span-full";
 export const InfiniteScroll = <T,>(
-  props: PaginationProps<T> & Omit<ComponentPropsWithoutRef<"div">, "children">,
+  props: PaginationProps<T> & DivPropsNoChildren,
 ) => {
   const { loader, resetFlag, header, itemComponent, ...rest } = props;
   const pagination = usePagination(loader);
@@ -131,15 +132,13 @@ export const InfiniteScroll = <T,>(
   );
 };
 
-export const GridSpan = (props: ComponentPropsWithoutRef<"div">) => {
+export const GridSpan = (props: DivProps) => {
   return <div {...addClass(props, FullSpan)} />;
 };
-export const GridSpacer = (
-  props: Omit<ComponentPropsWithoutRef<"div">, "children">,
-) => {
+export const GridSpacer = (props: DivPropsNoChildren) => {
   return <div {...addClass(props, FullSpan)} />;
 };
-export const GridSectionHeader = (props: ComponentPropsWithoutRef<"div">) => {
+export const GridSectionHeader = (props: DivProps) => {
   return (
     <div
       {...addClass(props, FullSpan, "text-md pt-4 text-center sm:text-start")}

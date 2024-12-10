@@ -9,6 +9,7 @@ import React, {
   ReactNode,
   SetStateAction,
   useEffect,
+  useId,
   useRef,
   useState,
 } from "react";
@@ -21,6 +22,7 @@ import {
 } from "@/api";
 import { TintedButton } from "@/components/button";
 import Loading from "@/components/loading";
+import { DivProps, DivPropsNoChildren } from "@/types/react";
 
 const QueryParam = "query";
 const DefaultGridClass =
@@ -46,13 +48,16 @@ interface ListPageProps<T> {
 }
 
 type MaybeString = string | undefined;
-interface SingleChoiceFilter {
-  title: string;
-  value: MaybeString;
+interface SearchFilter<T> {
+  label: string;
+  value: T;
+}
+interface SingleChoiceFilter extends SearchFilter<MaybeString> {
   values: MaybeString[];
 }
 export interface SearchFilters {
   singleChoice: Record<string, SingleChoiceFilter>;
+  bool: Record<string, SearchFilter<boolean>>;
 }
 
 export const SearchList = <T,>(props: ListPageProps<T>) => {
@@ -67,6 +72,9 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
   const { loader: propsLoader, immutableFilters } = props;
 
   useEffect(() => {
+    /* Don't build loader until filtersQuery is populated. */
+    if (filtersQuery == null) return;
+
     const serialized = serializeQuery(currentQuery, filtersQuery);
     /* Avoid reconstructing the loader if its query fields have not changed
      * in a meaningful way. */
@@ -76,7 +84,7 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
     setLoader(
       () => (q: PaginatedQuery) =>
         propsLoader({
-          query: currentQuery,
+          query: currentQuery || undefined,
           ...filtersQuery,
           ...immutableFilters,
           ...q,
@@ -90,31 +98,38 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
     <>
       <InfiniteScroll
         loader={loader}
+        itemComponent={props.itemComponent}
         className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 grid justify-center sm:mx-2`}
         header={
           <GridSpan
             className={`${props.header ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
           >
             {props.header}
-            <form
-              className="flex items-center justify-center gap-2 p-4"
-              action={() => {
-                router.push(`?${QueryParam}=${query}`);
-                setCurrentQuery(query);
-              }}
-            >
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-              <TintedButton type="submit">Search</TintedButton>
 
-              <Filters filters={filters} setFilters={setFilters} />
-            </form>
+            <div>
+              <form
+                className="flex items-center justify-center gap-2 p-4"
+                action={() => {
+                  router.push(`?${QueryParam}=${query}`);
+                  setCurrentQuery(query);
+                }}
+              >
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                <TintedButton type="submit">Search</TintedButton>
+              </form>
+
+              <Filters
+                filters={filters}
+                setFilters={setFilters}
+                className="flex gap-6"
+              />
+            </div>
           </GridSpan>
         }
-        itemComponent={props.itemComponent}
       />
     </>
   );
@@ -122,15 +137,24 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
 
 const useFilters = (
   init: SearchFilters | undefined,
-): [SearchFilters, Dispatch<SetStateAction<SearchFilters>>, ExtraFilters] => {
-  const [filters, setFilters] = useState(init ?? { singleChoice: {} });
-  const [queryFilters, setQueryFilters] = useState({});
+): [
+  SearchFilters,
+  Dispatch<SetStateAction<SearchFilters>>,
+  ExtraFilters | undefined,
+] => {
+  const [filters, setFilters] = useState(
+    init ?? { singleChoice: {}, bool: {} },
+  );
+  const [queryFilters, setQueryFilters] = useState<ExtraFilters>();
 
   useEffect(() => {
     const results: ExtraFilters = {};
 
-    Object.entries(filters.singleChoice).forEach(([key, value]) => {
-      results[key] = value.value || undefined;
+    Object.values(filters).forEach((filterType: SearchFilter<unknown>) => {
+      Object.entries(filterType).forEach(([key, value]) => {
+        results[key] = value.value || undefined;
+        console.log(`-> ${key}=${value.value}`);
+      });
     });
     setQueryFilters(results);
   }, [filters]);
@@ -138,23 +162,38 @@ const useFilters = (
   return [filters, setFilters, queryFilters];
 };
 
-const Filters = (props: {
-  filters: SearchFilters;
-  setFilters: (value: SearchFilters) => void;
-}) => {
-  const { filters, setFilters } = props;
+const Filters = (
+  props: {
+    filters: SearchFilters;
+    setFilters: (value: SearchFilters) => void;
+  } & DivPropsNoChildren,
+) => {
+  const { filters, setFilters, ...rest } = props;
 
   return (
-    <div>
+    <div {...rest}>
       {Object.entries(filters.singleChoice).map(([key, value]) => (
         <SingleChoiceFilter
           key={key}
+          label={value.label}
           value={value.value}
           values={value.values}
           onChange={(it) => {
             const newFilters = { ...filters };
             newFilters["singleChoice"]![key]!["value"] = it;
+            setFilters(newFilters);
+          }}
+        />
+      ))}
 
+      {Object.entries(filters.bool).map(([key, value]) => (
+        <BooleanFilter
+          key={key}
+          label={value.label}
+          value={value.value}
+          onChange={(it) => {
+            const newFilters = { ...filters };
+            newFilters["bool"]![key]!["value"] = it;
             setFilters(newFilters);
           }}
         />
@@ -163,23 +202,70 @@ const Filters = (props: {
   );
 };
 
-interface SingleChoiceFilterProps {
-  values: MaybeString[];
-  value: MaybeString;
-  onChange: (value: string) => void;
+interface FilterWidgetProps<T> {
+  label: string;
+  value: T;
+  onChange: (value: T) => void;
 }
-const SingleChoiceFilter = (props: SingleChoiceFilterProps) => {
-  const { values, value, onChange } = props;
+
+const SingleChoiceFilter = (
+  props: FilterWidgetProps<MaybeString> & { values: MaybeString[] },
+) => {
+  const { label, values, value, onChange } = props;
 
   return (
-    <div className="">
-      <select value={value} onChange={(it) => onChange(it.target.value)}>
-        {values.map((opt) => (
-          <option key={opt ?? null} value={opt ?? ""}>
-            {opt ?? "----"}
-          </option>
-        ))}
-      </select>
+    <FilterLayout
+      label={label}
+      block={(id) => (
+        <select
+          id={id}
+          value={value}
+          onChange={(it) => onChange(it.target.value)}
+        >
+          {values.map((opt) => (
+            <option key={opt ?? null} value={opt ?? ""}>
+              {opt ?? "----"}
+            </option>
+          ))}
+        </select>
+      )}
+    />
+  );
+};
+
+const BooleanFilter = (props: FilterWidgetProps<boolean>) => {
+  const { label, value, onChange } = props;
+
+  return (
+    <FilterLayout
+      label={label}
+      block={(id) => (
+        <input
+          id={id}
+          type="checkbox"
+          checked={value}
+          onChange={(it) => onChange(it.target.checked)}
+        />
+      )}
+    />
+  );
+};
+
+const FilterLayout = (
+  props: DivPropsNoChildren & {
+    label: string;
+    block: (id: string) => ReactNode;
+  },
+) => {
+  const { block, label, ...rest } = props;
+  const id = useId();
+
+  return (
+    <div className="flex items-center gap-x-2">
+      <label htmlFor={id} className="text-sm">
+        {label}
+      </label>
+      {block(id)}
     </div>
   );
 };
@@ -187,9 +273,12 @@ const SingleChoiceFilter = (props: SingleChoiceFilterProps) => {
 /**
  * Format query and any additional filters in a consistent, comparable way.
  */
-const serializeQuery = (query: string, extras: ExtraFilters): string =>
-  Object.entries({ query: query, ...extras })
+const serializeQuery = (query: string, extras: ExtraFilters): string => {
+  console.log(`serializeQuery(${query}, ${JSON.stringify(extras)}`);
+
+  return Object.entries({ query: query, ...extras })
     .map(([k, v]) => (v ? `${k}=${v}` : undefined))
-    .filter(Boolean)
+    .filter((it) => it != null)
     .sort()
     .join(",");
+};

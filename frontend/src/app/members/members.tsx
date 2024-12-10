@@ -18,11 +18,12 @@ export default function MembersList(props: {
   const searchFilters: SearchFilters = {
     singleChoice: {
       house: {
-        title: "House",
+        label: "House",
         value: undefined,
         values: [undefined, ...HouseTypeValues],
       },
     },
+    bool: {},
   };
 
   return (

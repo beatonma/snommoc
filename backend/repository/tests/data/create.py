@@ -99,6 +99,7 @@ def _any_str(max_length: int = 32) -> str:
 def create_sample_person(
     parliamentdotuk: int | None = None,
     name: str | None = None,
+    is_current: bool = True,
     is_active: bool = True,
     randomise: bool = True,
     **kwargs,
@@ -122,7 +123,7 @@ def create_sample_person(
 
     status, _ = PersonStatus.objects.get_or_create(
         person=person,
-        defaults={"is_active": is_active},
+        defaults={"is_active": is_active, "is_current": is_current},
     )
 
     return person

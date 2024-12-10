@@ -91,7 +91,7 @@ export default async function Page({ params }: PageProps) {
       <aside className="[align-self:normal]">
         <MembersList
           header={<h2>Members</h2>}
-          extraFilters={{ party: party.parliamentdotuk }}
+          immutableFilters={{ party: party.parliamentdotuk }}
         />
       </aside>
     </div>

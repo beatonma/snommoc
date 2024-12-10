@@ -1,14 +1,15 @@
 import React, {
   ComponentPropsWithoutRef,
   ReactNode,
+  useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { ApiPaginatedPromise, ExtraFilters } from "@/api";
+import { ApiPaginatedPromise, PaginatedQuery } from "@/api";
 import Loading from "@/components/loading";
 import { TintedButton } from "@/components/button";
-import { addClass, classes } from "@/util/transforms";
+import { addClass } from "@/util/transforms";
 
 interface Paginated<T> {
   items: T[];
@@ -21,9 +22,7 @@ interface Paginated<T> {
 }
 
 export type PaginationLoader<T> = (
-  offset?: number,
-  query?: string,
-  extraFilters?: ExtraFilters,
+  query: PaginatedQuery,
 ) => ApiPaginatedPromise<T>;
 
 const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
@@ -43,7 +42,7 @@ const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
     loadingRef.current = false;
   };
 
-  const loadNext = async () => {
+  const loadNext = useCallback(async () => {
     if (loadingRef.current) return;
     if (
       totalItemsAvailable.current >= 0 &&
@@ -56,9 +55,10 @@ const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
     setError(undefined);
 
     try {
-      const response = await loader(offset.current);
+      const { data, error, response } = await loader({
+        offset: offset.current,
+      });
 
-      const { data, error } = response;
       if (error || !data) {
         setError(error);
         return;
@@ -73,11 +73,11 @@ const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
       setIsLoading(false);
       loadingRef.current = false;
     }
-  };
+  }, [loader]);
 
   useEffect(() => {
-    void loadNext();
-  }, []);
+    reset().then(loadNext);
+  }, [loadNext]);
 
   return {
     items: items,
@@ -106,7 +106,7 @@ const FullSpan = "col-start-1 col-span-full";
 export const InfiniteScroll = <T,>(
   props: PaginationProps<T> & Omit<ComponentPropsWithoutRef<"div">, "children">,
 ) => {
-  const { loader, resetFlag, header, itemComponent, ...rest } = addClass(props);
+  const { loader, resetFlag, header, itemComponent, ...rest } = props;
   const pagination = usePagination(loader);
 
   useEffect(() => {
@@ -132,25 +132,17 @@ export const InfiniteScroll = <T,>(
 };
 
 export const GridSpan = (props: ComponentPropsWithoutRef<"div">) => {
-  const { className, ...rest } = props;
-  return <div className={classes(className, FullSpan)} {...rest} />;
+  return <div {...addClass(props, FullSpan)} />;
 };
 export const GridSpacer = (
   props: Omit<ComponentPropsWithoutRef<"div">, "children">,
 ) => {
-  const { className, ...rest } = props;
-  return <div className={classes(className, FullSpan)} {...rest} />;
+  return <div {...addClass(props, FullSpan)} />;
 };
 export const GridSectionHeader = (props: ComponentPropsWithoutRef<"div">) => {
-  const { className, ...rest } = props;
   return (
     <div
-      className={classes(
-        className,
-        FullSpan,
-        "text-md pt-4 text-center sm:text-start",
-      )}
-      {...rest}
+      {...addClass(props, FullSpan, "text-md pt-4 text-center sm:text-start")}
     />
   );
 };

@@ -20,7 +20,8 @@
     @apply pb-16;
   }
 
-  input {
+  input,
+  select {
     @apply bg-surface-200 px-2 py-1 text-surface-950 dark:bg-surface-700 dark:text-surface-50;
   }
 
@@ -39,7 +40,7 @@
       }
     }
     td {
-      @apply min-w-24 px-2 py-1.5 text-center;
+      @apply min-w-24 px-4 py-1.5 text-center;
 
       &:first-child {
         @apply text-end;

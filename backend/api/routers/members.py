@@ -2,11 +2,13 @@ import logging
 
 from api.schema.includes import MemberMiniSchema
 from api.schema.member import MemberCareerHistory, MemberProfile, MemberVotesSchema
+from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
 from repository.models import CommonsDivisionVote, LordsDivisionVote, Person
+from repository.models.houses import HouseType
 
 log = logging.getLogger(__name__)
 router = Router(tags=["Members"])
@@ -14,13 +16,26 @@ router = Router(tags=["Members"])
 
 @router.get("/", response=list[MemberMiniSchema])
 @paginate
-def members(request: HttpRequest, query: str = None):
+def members(
+    request: HttpRequest,
+    query: str = None,
+    party: int = None,
+    house: HouseType | None = None,
+):
     qs = Person.objects.all().select_related("party", "constituency")
 
-    if not query:
-        return qs.active()
+    if party:
+        qs = qs.filter(party__parliamentdotuk=party)
 
-    return qs.filter(name__icontains=query).order_by("status__is_active", "-pk")
+    if house:
+        qs = qs.filter(house__name__iexact=house)
+
+    if not query:
+        return qs.active().order_by("sort_name")
+
+    return qs.filter(
+        Q(name__icontains=query) | Q(constituency__name__icontains=query)
+    ).order_by("status__is_active", "sort_name")
 
 
 @router.get("/{parliamentdotuk}/", response=MemberProfile)

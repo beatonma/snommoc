@@ -1,7 +1,12 @@
 import client from "@/lib/api";
-import { components } from "@/lib/api/api";
+import { components, paths } from "@/lib/api/api";
 
-export type ExtraFilters = Record<string, string | number | boolean>;
+export type ExtraFilters = Record<string, any>;
+export type ApiFilters = paths[keyof paths]["get"]["parameters"]["query"];
+export interface PaginatedQuery {
+  offset?: number;
+  limit?: number;
+}
 
 interface PaginatedData<T> {
   items: T[];
@@ -11,18 +16,25 @@ type ApiResponse<T> =
   | {
       data: T;
       error?: unknown;
+      response: Response;
     }
   | {
       data?: T;
       error: unknown;
+      response: Response;
     };
 
 type ApiPromise<T> = Promise<ApiResponse<T>>;
 export type ApiPaginatedPromise<T> = Promise<ApiResponse<PaginatedData<T>>>;
 
-export type PartyDetail = components["schemas"]["PartyFullSchema"];
-export type GenderDemographics = components["schemas"]["GenderDemographics"];
-export type LordsDemographics = components["schemas"]["LordsDemographics"];
+type schema = components["schemas"];
+
+export type HouseType = schema["HouseType"];
+export const HouseTypeValues = ["Commons", "Lords"];
+
+export type PartyDetail = schema["PartyFullSchema"];
+export type GenderDemographics = schema["GenderDemographics"];
+export type LordsDemographics = schema["LordsDemographics"];
 export const getParty = async (
   parliamentdotuk: number,
 ): ApiPromise<PartyDetail> =>
@@ -34,20 +46,20 @@ export const getParty = async (
     },
   });
 
-export type Party = components["schemas"]["PartyMiniSchema"];
-export type PartyTheme = components["schemas"]["PartyThemeSchema"];
+export type Party = schema["PartyMiniSchema"];
+export type PartyTheme = schema["PartyThemeSchema"];
+export type PartyFilters = paths["/api/parties/"]["get"]["parameters"]["query"];
 export const getParties = async (
-  offset?: number,
-  query?: string,
+  query: PartyFilters,
 ): ApiPaginatedPromise<Party> =>
   client.GET("/api/parties/", {
     params: {
-      query: { offset: offset, query: query },
+      query: query,
     },
   });
 
-export type MemberProfile = components["schemas"]["MemberProfile"];
-export type WebAddress = components["schemas"]["WebAddressSchema"];
+export type MemberProfile = schema["MemberProfile"];
+export type WebAddress = schema["WebAddressSchema"];
 export const getMember = async (
   parliamentdotuk: number,
 ): ApiPromise<MemberProfile> =>
@@ -59,19 +71,19 @@ export const getMember = async (
     },
   });
 
-export type MemberMiniSchema = components["schemas"]["MemberMiniSchema"];
+export type MemberMiniSchema = schema["MemberMiniSchema"];
+export type MemberFilters =
+  paths["/api/members/"]["get"]["parameters"]["query"];
 export const getMembers = async (
-  offset?: number,
-  query?: string,
-  extraFilters?: ExtraFilters,
+  query: MemberFilters,
 ): ApiPaginatedPromise<MemberMiniSchema> =>
   client.GET("/api/members/", {
     params: {
-      query: { offset: offset, query: query, ...extraFilters },
+      query: query,
     },
   });
 
-export type Constituency = components["schemas"]["ConstituencyFullSchema"];
+export type Constituency = schema["ConstituencyFullSchema"];
 export const getConstituency = async (
   parliamentdotuk: number,
 ): ApiPromise<Constituency> =>
@@ -83,13 +95,14 @@ export const getConstituency = async (
     },
   });
 
-export type ConstituencyMini = components["schemas"]["ConstituencyMiniSchema"];
+export type ConstituencyMini = schema["ConstituencyMiniSchema"];
+export type ConstituencyFilters =
+  paths["/api/constituencies/"]["get"]["parameters"]["query"];
 export const getConstituencies = async (
-  offset?: number,
-  query?: string,
+  query: ConstituencyFilters,
 ): ApiPaginatedPromise<ConstituencyMini> =>
   client.GET("/api/constituencies/", {
     params: {
-      query: { offset: offset, query: query },
+      query: query,
     },
   });

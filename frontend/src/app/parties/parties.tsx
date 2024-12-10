@@ -1,9 +1,7 @@
 "use client";
 import { getParties, type Party } from "@/api";
-import Link from "next/link";
 import React, { ComponentPropsWithoutRef } from "react";
 import { SearchList } from "@/components/paginated/search-list";
-import { classes } from "@/util/transforms";
 import { GridSectionHeader } from "@/components/paginated/pagination";
 import { OptionalSvg } from "@/components/image";
 import { ListItemCard } from "@/components/card";

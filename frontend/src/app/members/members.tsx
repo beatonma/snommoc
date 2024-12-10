@@ -1,20 +1,36 @@
 "use client";
-import { type ExtraFilters, getMembers, type MemberMiniSchema } from "@/api";
+import {
+  getMembers,
+  HouseTypeValues,
+  type MemberFilters,
+  type MemberMiniSchema,
+} from "@/api";
 import { MemberPortrait } from "@/components/member-portrait";
 import { OptionalDiv } from "@/components/optional";
 import React, { ReactNode } from "react";
-import { SearchList } from "@/components/paginated/search-list";
+import { SearchFilters, SearchList } from "@/components/paginated/search-list";
 import { ListItemCard } from "@/components/card";
 
 export default function MembersList(props: {
   header?: ReactNode;
-  extraFilters?: ExtraFilters;
+  immutableFilters?: MemberFilters;
 }) {
+  const searchFilters: SearchFilters = {
+    singleChoice: {
+      house: {
+        title: "House",
+        value: undefined,
+        values: [undefined, ...HouseTypeValues],
+      },
+    },
+  };
+
   return (
     <SearchList
       header={props.header}
       loader={getMembers}
-      extraFilters={props.extraFilters}
+      searchFilters={searchFilters}
+      immutableFilters={props.immutableFilters}
       itemComponent={(member) => (
         <Member key={member.parliamentdotuk} {...member} />
       )}

@@ -20,7 +20,10 @@ export default function MembersList(props: {
       house: {
         label: "House",
         value: undefined,
-        values: [undefined, ...Fixtures.HouseTypeValues],
+        values: [
+          { display: "All", value: undefined },
+          ...Fixtures.HouseTypeValues,
+        ],
       },
       status: {
         label: "Status",

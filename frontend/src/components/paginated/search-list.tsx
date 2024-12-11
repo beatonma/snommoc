@@ -53,8 +53,12 @@ interface SearchFilter<T> {
   label: string;
   value: T;
 }
+interface FilterValue<T> {
+  display: string;
+  value: T;
+}
 interface SingleChoiceFilter extends SearchFilter<MaybeString> {
-  values: MaybeString[];
+  values: (MaybeString | FilterValue<MaybeString>)[];
 }
 export interface SearchFilters {
   singleChoice: Record<string, SingleChoiceFilter>;
@@ -210,7 +214,7 @@ interface FilterWidgetProps<T> {
 }
 
 const SingleChoiceFilter = (
-  props: FilterWidgetProps<MaybeString> & { values: MaybeString[] },
+  props: FilterWidgetProps<MaybeString> & SingleChoiceFilter,
 ) => {
   const { label, values, value, onChange } = props;
 
@@ -223,11 +227,18 @@ const SingleChoiceFilter = (
           value={value}
           onChange={(it) => onChange(it.target.value)}
         >
-          {values.map((opt) => (
-            <option key={opt ?? null} value={opt ?? ""}>
-              {capitalize(opt) ?? "----"}
-            </option>
-          ))}
+          {values.map((opt) => {
+            const resolved =
+              typeof opt === "string" ? { display: opt, value: opt } : opt;
+            return (
+              <option
+                key={resolved?.value ?? null}
+                value={resolved?.value ?? ""}
+              >
+                {capitalize(resolved?.display) ?? "----"}
+              </option>
+            );
+          })}
         </select>
       )}
     />

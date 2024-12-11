@@ -5,6 +5,7 @@ const Plurals = {
   MP: ["MP", "MPs"],
   Lord: ["Lord", "Lords"],
   Member: ["Member", "Members"],
+  result: ["result", "results"],
 };
 
 export const plural = (key: keyof typeof Plurals, count: number) => {

@@ -1,5 +1,4 @@
 import React, {
-  ComponentPropsWithoutRef,
   ReactNode,
   useCallback,
   useEffect,
@@ -11,6 +10,67 @@ import Loading from "@/components/loading";
 import { TintedButton } from "@/components/button";
 import { addClass } from "@/util/transforms";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
+import { plural } from "@/util/plurals";
+
+const FullSpan = "col-start-1 col-span-full";
+
+export type PaginationLoader<T> = (
+  query: PaginatedQuery,
+) => ApiPaginatedPromise<T>;
+
+export type PaginationItemComponent<T> = (
+  item: T,
+  index: number,
+  arr: T[],
+) => ReactNode;
+interface PaginationProps<T> {
+  header?: ReactNode;
+  loader: PaginationLoader<T>;
+  resetFlag?: boolean;
+  itemComponent: PaginationItemComponent<T>;
+}
+
+export const InfiniteScroll = <T,>(
+  props: PaginationProps<T> & DivPropsNoChildren,
+) => {
+  const { loader, resetFlag, header, itemComponent, ...rest } = props;
+  const pagination = usePagination(loader);
+
+  useEffect(() => {
+    if (resetFlag === undefined) return;
+    pagination.reset().then(() => pagination.loadNext?.());
+  }, [pagination, resetFlag]);
+
+  return (
+    <div {...rest}>
+      {header}
+
+      <GridSpan className="font-bold">
+        {pagination.availableItems >= 0
+          ? plural("result", pagination.availableItems)
+          : null}
+      </GridSpan>
+
+      {pagination.items.map((it, index, arr) => itemComponent(it, index, arr))}
+
+      <LoadNext pagination={pagination} />
+    </div>
+  );
+};
+
+export const GridSpan = (props: DivProps) => {
+  return <div {...addClass(props, FullSpan)} />;
+};
+export const GridSpacer = (props: DivPropsNoChildren) => {
+  return <div {...addClass(props, FullSpan)} />;
+};
+export const GridSectionHeader = (props: DivProps) => {
+  return (
+    <div
+      {...addClass(props, FullSpan, "text-md pt-4 text-center sm:text-start")}
+    />
+  );
+};
 
 interface Paginated<T> {
   items: T[];
@@ -21,11 +81,6 @@ interface Paginated<T> {
   error: any | undefined;
   reset: () => Promise<void>;
 }
-
-export type PaginationLoader<T> = (
-  query: PaginatedQuery,
-) => ApiPaginatedPromise<T>;
-
 const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
   const [items, setItems] = useState<T[]>([]);
   const [error, setError] = useState<any>();
@@ -91,70 +146,18 @@ const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
   };
 };
 
-export type PaginationItemComponent<T> = (
-  item: T,
-  index: number,
-  arr: T[],
-) => ReactNode;
-interface PaginationProps<T> {
-  header?: ReactNode;
-  loader: PaginationLoader<T>;
-  resetFlag?: boolean;
-  itemComponent: PaginationItemComponent<T>;
-}
-
-const FullSpan = "col-start-1 col-span-full";
-export const InfiniteScroll = <T,>(
-  props: PaginationProps<T> & DivPropsNoChildren,
-) => {
-  const { loader, resetFlag, header, itemComponent, ...rest } = props;
-  const pagination = usePagination(loader);
-
-  useEffect(() => {
-    if (resetFlag === undefined) return;
-    pagination.reset().then(() => pagination.loadNext?.());
-  }, [resetFlag]);
-
-  return (
-    <div {...rest}>
-      {header}
-
-      <GridSpan className="font-bold">
-        {pagination.availableItems >= 0
-          ? `${pagination.availableItems} results`
-          : null}
-      </GridSpan>
-
-      {pagination.items.map((it, index, arr) => itemComponent(it, index, arr))}
-
-      <LoadNext pagination={pagination} />
-    </div>
-  );
-};
-
-export const GridSpan = (props: DivProps) => {
-  return <div {...addClass(props, FullSpan)} />;
-};
-export const GridSpacer = (props: DivPropsNoChildren) => {
-  return <div {...addClass(props, FullSpan)} />;
-};
-export const GridSectionHeader = (props: DivProps) => {
-  return (
-    <div
-      {...addClass(props, FullSpan, "text-md pt-4 text-center sm:text-start")}
-    />
-  );
-};
-
 const LoadNext = <T,>({ pagination }: { pagination: Paginated<T> }) => {
-  const infiniteScrollingRef = useRef(null);
+  const infiniteScrollingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const target = infiniteScrollingRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries?.[0]?.isIntersecting) {
-          void pagination.loadNext?.();
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            void pagination.loadNext?.();
+            return;
+          }
         }
       },
       { threshold: 1 },
@@ -169,7 +172,7 @@ const LoadNext = <T,>({ pagination }: { pagination: Paginated<T> }) => {
         observer.unobserve(target);
       }
     };
-  }, [infiniteScrollingRef]);
+  }, [pagination, infiniteScrollingRef]);
 
   let content;
   if (!pagination.hasMore) content = null;
@@ -183,7 +186,7 @@ const LoadNext = <T,>({ pagination }: { pagination: Paginated<T> }) => {
   return (
     <div
       ref={infiniteScrollingRef}
-      className={`${FullSpan} flex justify-center p-16`}
+      className={`${FullSpan} m-16 flex justify-center`}
     >
       {content}
     </div>

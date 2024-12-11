@@ -99,6 +99,8 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
 
   if (!loader) return <Loading />;
 
+  const hasHeader = !!props.header;
+
   return (
     <>
       <InfiniteScroll
@@ -107,13 +109,15 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
         className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 grid justify-center sm:mx-2`}
         header={
           <GridSpan
-            className={`${props.header ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
+            className={`${hasHeader ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
           >
             {props.header}
 
-            <div>
+            <div
+              className={`flex max-w-[600px] flex-col items-center gap-4 p-4 ${hasHeader ? "md:items-end" : ""}`}
+            >
               <form
-                className="flex items-center justify-center gap-2 p-4"
+                className="flex items-center justify-center gap-2"
                 action={() => {
                   router.push(`?${QueryParam}=${query}`);
                   setCurrentQuery(query);

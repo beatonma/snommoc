@@ -13,8 +13,10 @@ import { ListItemCard } from "@/components/card";
 
 export default function MembersList(props: {
   header?: ReactNode;
+  searchFilters?: SearchFilters;
   immutableFilters?: MemberFilters;
 }) {
+  const propSearchFilters: SearchFilters = props.searchFilters ?? {};
   const searchFilters: SearchFilters = {
     singleChoice: {
       house: {
@@ -30,8 +32,9 @@ export default function MembersList(props: {
         value: "current",
         values: Fixtures.MemberStatusValues,
       },
+      ...propSearchFilters.singleChoice,
     },
-    bool: {},
+    bool: { ...propSearchFilters.bool },
   };
 
   return (

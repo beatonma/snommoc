@@ -61,8 +61,8 @@ interface SingleChoiceFilter extends SearchFilter<MaybeString> {
   values: (MaybeString | FilterValue<MaybeString>)[];
 }
 export interface SearchFilters {
-  singleChoice: Record<string, SingleChoiceFilter>;
-  bool: Record<string, SearchFilter<boolean>>;
+  singleChoice?: Record<string, SingleChoiceFilter>;
+  bool?: Record<string, SearchFilter<boolean>>;
 }
 
 export const SearchList = <T,>(props: ListPageProps<T>) => {
@@ -181,7 +181,7 @@ const Filters = (
 
   return (
     <div {...rest}>
-      {Object.entries(filters.singleChoice).map(([key, value]) => (
+      {Object.entries(filters.singleChoice ?? {}).map(([key, value]) => (
         <SingleChoiceFilter
           key={key}
           label={value.label}
@@ -195,7 +195,7 @@ const Filters = (
         />
       ))}
 
-      {Object.entries(filters.bool).map(([key, value]) => (
+      {Object.entries(filters.bool ?? {}).map(([key, value]) => (
         <BooleanFilter
           key={key}
           label={value.label}

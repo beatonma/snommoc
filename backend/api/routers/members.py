@@ -1,4 +1,5 @@
 import logging
+from typing import Literal
 
 from api.schema.includes import MemberMiniSchema
 from api.schema.member import MemberCareerHistory, MemberProfile, MemberVotesSchema
@@ -9,9 +10,12 @@ from ninja import Router
 from ninja.pagination import paginate
 from repository.models import CommonsDivisionVote, LordsDivisionVote, Person
 from repository.models.houses import HouseType
+from util.collections import all_none
 
 log = logging.getLogger(__name__)
 router = Router(tags=["Members"])
+
+type StatusFilter = Literal["current", "inactive", "historical", "all"]
 
 
 @router.get("/", response=list[MemberMiniSchema])
@@ -21,8 +25,19 @@ def members(
     query: str = None,
     party: int = None,
     house: HouseType | None = None,
+    status: StatusFilter | None = None,
 ):
     qs = Person.objects.all().select_related("party", "constituency")
+
+    if not query and all_none(party, house, status):
+        return qs.current().order_by("sort_name")
+
+    if status is None or status == "current":
+        qs = qs.current()
+    elif status == "inactive":
+        qs = qs.inactive()
+    elif status == "historical":
+        qs = qs.historical()
 
     if party:
         qs = qs.filter(party__parliamentdotuk=party)
@@ -31,7 +46,7 @@ def members(
         qs = qs.filter(house__name__iexact=house)
 
     if not query:
-        return qs.active().order_by("sort_name")
+        return qs.order_by("sort_name")
 
     return qs.filter(
         Q(name__icontains=query) | Q(constituency__name__icontains=query)

@@ -22,7 +22,9 @@ import {
 } from "@/api";
 import { TintedButton } from "@/components/button";
 import Loading from "@/components/loading";
-import { DivProps, DivPropsNoChildren } from "@/types/react";
+import { DivPropsNoChildren } from "@/types/react";
+import { addClass, capitalize } from "@/util/transforms";
+import { MaybeString } from "@/types/common";
 
 const QueryParam = "query";
 const DefaultGridClass =
@@ -47,7 +49,6 @@ interface ListPageProps<T> {
   immutableFilters?: ExtraFilters;
 }
 
-type MaybeString = string | undefined;
 interface SearchFilter<T> {
   label: string;
   value: T;
@@ -224,7 +225,7 @@ const SingleChoiceFilter = (
         >
           {values.map((opt) => (
             <option key={opt ?? null} value={opt ?? ""}>
-              {opt ?? "----"}
+              {capitalize(opt) ?? "----"}
             </option>
           ))}
         </select>
@@ -257,11 +258,14 @@ const FilterLayout = (
     block: (id: string) => ReactNode;
   },
 ) => {
-  const { block, label, ...rest } = props;
+  const { block, label, ...rest } = addClass(
+    props,
+    "flex items-center gap-x-2",
+  );
   const id = useId();
 
   return (
-    <div className="flex items-center gap-x-2">
+    <div {...rest}>
       <label htmlFor={id} className="text-sm">
         {label}
       </label>
@@ -273,12 +277,9 @@ const FilterLayout = (
 /**
  * Format query and any additional filters in a consistent, comparable way.
  */
-const serializeQuery = (query: string, extras: ExtraFilters): string => {
-  console.log(`serializeQuery(${query}, ${JSON.stringify(extras)}`);
-
-  return Object.entries({ query: query, ...extras })
+const serializeQuery = (query: string, extras: ExtraFilters): string =>
+  Object.entries({ query: query, ...extras })
     .map(([k, v]) => (v ? `${k}=${v}` : undefined))
     .filter((it) => it != null)
     .sort()
     .join(",");
-};

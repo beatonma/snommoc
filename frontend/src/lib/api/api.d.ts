@@ -349,6 +349,8 @@ export interface components {
              */
             offset: number;
         };
+        /** @enum {string} */
+        StatusFilter: "current" | "inactive" | "historical" | "all";
         /** ConstituencyMiniSchema */
         ConstituencyMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -1010,6 +1012,7 @@ export interface operations {
                 query?: string;
                 party?: number;
                 house?: components["schemas"]["HouseType"] | null;
+                status?: components["schemas"]["StatusFilter"] | null;
                 limit?: number;
                 offset?: number;
             };

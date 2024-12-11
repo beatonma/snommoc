@@ -1,7 +1,7 @@
 "use client";
 import {
+  Fixtures,
   getMembers,
-  HouseTypeValues,
   type MemberFilters,
   type MemberMiniSchema,
 } from "@/api";
@@ -20,7 +20,12 @@ export default function MembersList(props: {
       house: {
         label: "House",
         value: undefined,
-        values: [undefined, ...HouseTypeValues],
+        values: [undefined, ...Fixtures.HouseTypeValues],
+      },
+      status: {
+        label: "Status",
+        value: "current",
+        values: Fixtures.MemberStatusValues,
       },
     },
     bool: {},

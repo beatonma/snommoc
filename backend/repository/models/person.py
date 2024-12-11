@@ -46,8 +46,17 @@ class PersonQuerySet(BaseQuerySet):
     def filter_name(self, name: str):
         return self.filter(Q(name__iexact=name) | Q(aliases__alias__iexact=name))
 
+    def current(self) -> Self:
+        return self.filter(status__is_current=True)
+
+    def historical(self) -> Self:
+        return self.filter(status__is_current=False)
+
     def active(self) -> Self:
         return self.filter(status__is_active=True)
+
+    def inactive(self) -> Self:
+        return self.current().filter(status__is_active=False)
 
     def commons(self) -> Self:
         return self.filter(house__name=HOUSE_OF_COMMONS)

@@ -30,7 +30,7 @@ export type ApiPaginatedPromise<T> = Promise<ApiResponse<PaginatedData<T>>>;
 type schema = components["schemas"];
 
 export type HouseType = schema["HouseType"];
-export const HouseTypeValues = ["Commons", "Lords"];
+export type StatusFilter = schema["StatusFilter"];
 
 export type PartyDetail = schema["PartyFullSchema"];
 export type GenderDemographics = schema["GenderDemographics"];
@@ -106,3 +106,14 @@ export const getConstituencies = async (
       query: query,
     },
   });
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Fixtures {
+  export const HouseTypeValues: HouseType[] = ["Commons", "Lords"];
+  export const MemberStatusValues: StatusFilter[] = [
+    "current",
+    "inactive",
+    "historical",
+    "all",
+  ];
+}

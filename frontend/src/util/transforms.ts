@@ -1,9 +1,11 @@
-export const classes = (...classNames: (string | null | undefined)[]) => {
+import { MaybeString } from "@/types/common";
+
+export const classes = (...classNames: (MaybeString | null)[]) => {
   return classNames.filter(Boolean).join(" ");
 };
 
 interface ClassNameProps {
-  className?: string | undefined;
+  className?: MaybeString;
 }
 
 /**
@@ -20,6 +22,9 @@ export const addClass = <T extends ClassNameProps>(
 };
 
 export const transformString = (
-  value: string | undefined | null,
+  value: MaybeString | null,
   transform: (value: string) => string,
 ): string | null => (value ? transform(value) : null);
+
+export const capitalize = (value: MaybeString | null): string | null =>
+  value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;

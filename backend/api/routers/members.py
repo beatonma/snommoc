@@ -40,10 +40,10 @@ def members(
         qs = qs.historical()
 
     if party:
-        qs = qs.filter(party__parliamentdotuk=party)
+        qs = qs.for_party_id(party)
 
     if house:
-        qs = qs.filter(house__name__iexact=house)
+        qs = qs.for_house(house)
 
     if not query:
         return qs.order_by("sort_name")

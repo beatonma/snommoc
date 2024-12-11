@@ -19,6 +19,13 @@ _LABOUR_COOP_ID = _LABOUR_ID + _SUB_PARTY_ID_OFFSET  # Synthetic ID
 
 
 class PartyQuerySet(BaseQuerySet):
+    @staticmethod
+    def reverse_party_id(party_id: int) -> Q:
+        q = Q(party__parliamentdotuk=party_id)
+        if party_id == _LABOUR_ID:
+            q |= Q(party__parliamentdotuk=_LABOUR_COOP_ID)
+
+        return q
 
     def update_or_create(
         self,

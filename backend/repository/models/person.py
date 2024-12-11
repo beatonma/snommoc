@@ -58,11 +58,13 @@ class PersonQuerySet(BaseQuerySet):
     def inactive(self) -> Self:
         return self.current().filter(status__is_active=False)
 
-    def commons(self) -> Self:
-        return self.filter(house__name=HOUSE_OF_COMMONS)
+    def for_house(self, house: str) -> Self:
+        return self.filter(house__name__iexact=house)
 
-    def lords(self) -> Self:
-        return self.filter(house__name=HOUSE_OF_LORDS)
+    def for_party_id(self, party_id: int) -> Self:
+        from repository.models.party import PartyQuerySet
+
+        return self.filter(PartyQuerySet.reverse_party_id(party_id))
 
     def get_for_constituency(
         self, name: str, constituency_name: str, similarity_threshold: int = 60

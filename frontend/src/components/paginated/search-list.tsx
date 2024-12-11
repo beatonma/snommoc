@@ -8,6 +8,7 @@ import React, {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useCallback,
   useEffect,
   useId,
   useRef,
@@ -30,8 +31,14 @@ const QueryParam = "query";
 const DefaultGridClass =
   "grid-cols-[repeat(auto-fit,minmax(300px,400px))] gap-x-8 gap-y-4";
 
-type SearchQuery = PaginatedQuery & ApiFilters;
-type SearchLoader<T> = (query: SearchQuery) => ApiPaginatedPromise<T>;
+export interface SearchFilters {
+  singleChoice?: Record<string, SingleChoiceFilter>;
+  bool?: Record<string, SearchFilter<boolean>>;
+}
+
+type SearchLoader<T> = (
+  query: PaginatedQuery & ApiFilters,
+) => ApiPaginatedPromise<T>;
 interface ListPageProps<T> {
   loader: SearchLoader<T>;
   header?: ReactNode;
@@ -48,43 +55,69 @@ interface ListPageProps<T> {
    */
   immutableFilters?: ExtraFilters;
 }
-
-interface SearchFilter<T> {
-  label: string;
-  value: T;
-}
-interface FilterValue<T> {
-  display: string;
-  value: T;
-}
-interface SingleChoiceFilter extends SearchFilter<MaybeString> {
-  values: (MaybeString | FilterValue<MaybeString>)[];
-}
-export interface SearchFilters {
-  singleChoice?: Record<string, SingleChoiceFilter>;
-  bool?: Record<string, SearchFilter<boolean>>;
-}
-
 export const SearchList = <T,>(props: ListPageProps<T>) => {
   const router = useRouter();
   const search = useSearchParams();
   const [query, setQuery] = useState<string>(search.get(QueryParam) ?? "");
   const [currentQuery, setCurrentQuery] = useState<string>(query);
-  const [filters, setFilters, filtersQuery] = useFilters(props.searchFilters);
+  const [filters, setFilters, filtersQuery] = useFilters(
+    props.searchFilters,
+    search,
+  );
   const [loader, setLoader] = useState<PaginationLoader<T>>();
-  const previous = useRef<string>();
+  const previousSearchParams = useRef<string>();
+  const isInitialized = useRef<boolean>(false);
 
   const { loader: propsLoader, immutableFilters } = props;
 
+  const updateSearchParams = useCallback(
+    /**
+     * Update the browser location to reflect current state of query and filters.
+     * Return true if there was a meaningful change.
+     */
+    (query: string, filters: ExtraFilters): boolean => {
+      const params = new URLSearchParams();
+      Object.entries({ [QueryParam]: query, ...filters }).forEach(
+        ([key, value]) => {
+          if (value != null && value !== "") {
+            params.set(key, value);
+          }
+        },
+      );
+      params.sort();
+      const serialized = `${params}`;
+      if (serialized === previousSearchParams.current) return false;
+      previousSearchParams.current = serialized;
+      if (isInitialized.current) {
+        router.push(`?${serialized}`);
+      } else {
+        router.replace(`?${serialized}`);
+      }
+      return true;
+    },
+    [router],
+  );
+
   useEffect(() => {
+    /**
+     * When navigating back/forward, update the active query from browser location.
+     */
+    const q = search.get(QueryParam) ?? "";
+    if (q === currentQuery) return;
+    setQuery(q);
+    setCurrentQuery(q);
+  }, [search, updateSearchParams]);
+
+  useEffect(() => {
+    /**
+     * Create a PaginationLoader using the current query and filter values.
+     */
+
     /* Don't build loader until filtersQuery is populated. */
     if (filtersQuery == null) return;
 
-    const serialized = serializeQuery(currentQuery, filtersQuery);
-    /* Avoid reconstructing the loader if its query fields have not changed
-     * in a meaningful way. */
-    if (serialized === previous.current) return;
-    previous.current = serialized;
+    const paramsChanged = updateSearchParams(currentQuery, filtersQuery);
+    if (!paramsChanged) return;
 
     setLoader(
       () => (q: PaginatedQuery) =>
@@ -95,80 +128,182 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
           ...q,
         }),
     );
-  }, [propsLoader, immutableFilters, currentQuery, filtersQuery]);
+    isInitialized.current = true;
+  }, [
+    updateSearchParams,
+    propsLoader,
+    immutableFilters,
+    currentQuery,
+    filtersQuery,
+  ]);
 
   if (!loader) return <Loading />;
 
-  const hasHeader = !!props.header;
-
   return (
-    <>
-      <InfiniteScroll
-        loader={loader}
-        itemComponent={props.itemComponent}
-        className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 grid justify-center sm:mx-2`}
-        header={
-          <GridSpan
-            className={`${hasHeader ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
-          >
-            {props.header}
-
-            <div
-              className={`flex max-w-[600px] flex-col items-center gap-4 p-4 ${hasHeader ? "md:items-end" : ""}`}
-            >
-              <form
-                className="flex items-center justify-center gap-2"
-                action={() => {
-                  router.push(`?${QueryParam}=${query}`);
-                  setCurrentQuery(query);
-                }}
-              >
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-                <TintedButton type="submit">Search</TintedButton>
-              </form>
-
-              <Filters
-                filters={filters}
-                setFilters={setFilters}
-                className="flex gap-6"
-              />
-            </div>
-          </GridSpan>
-        }
-      />
-    </>
+    <_SearchList
+      loader={loader}
+      itemComponent={props.itemComponent}
+      query={query}
+      setQuery={setQuery}
+      onConfirmSearch={() => setCurrentQuery(query)}
+      filters={filters}
+      setFilters={setFilters}
+    />
   );
 };
 
+const _SearchList = <T,>(props: {
+  loader: PaginationLoader<T>;
+  header?: ReactNode;
+  itemComponent: PaginationItemComponent<T>;
+  gridClassName?: string;
+  query: string;
+  setQuery: (q: string) => void;
+  onConfirmSearch: () => void;
+  filters: SearchFilters;
+  setFilters: (value: SearchFilters) => void;
+}) => {
+  const hasHeader = !!props.header;
+
+  return (
+    <InfiniteScroll
+      loader={props.loader}
+      itemComponent={props.itemComponent}
+      className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 grid justify-center sm:mx-2`}
+      header={
+        <GridSpan
+          className={`${hasHeader ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
+        >
+          {props.header}
+
+          <div
+            className={`flex max-w-[600px] flex-col items-center gap-4 p-4 ${hasHeader ? "md:items-end" : ""}`}
+          >
+            <form
+              className="flex items-center justify-center gap-2"
+              action={() => props.onConfirmSearch()}
+            >
+              <input
+                type="search"
+                value={props.query}
+                onChange={(e) => props.setQuery(e.target.value)}
+              />
+              <TintedButton type="submit">Search</TintedButton>
+            </form>
+
+            <Filters
+              filters={props.filters}
+              setFilters={props.setFilters}
+              className="flex gap-6"
+            />
+          </div>
+        </GridSpan>
+      }
+    />
+  );
+};
+
+interface SearchFilter<T> {
+  label: string;
+  value: T;
+}
+interface FilterValue<T> {
+  display: MaybeString;
+  value: T;
+}
+
+/**
+ * Resolve a value which may be either T or FilterValue<T> into a definite FilterValue<T>.
+ * @param value
+ */
+const resolveFilterValue = <T,>(value: T | FilterValue<T>): FilterValue<T> => {
+  if (
+    value &&
+    typeof value === "object" &&
+    "display" in value &&
+    "value" in value
+  ) {
+    return value;
+  }
+  return { display: value ? `${value}` : undefined, value: value };
+};
+
+interface SingleChoiceFilter extends SearchFilter<MaybeString> {
+  values: (MaybeString | FilterValue<MaybeString>)[];
+}
 const useFilters = (
   init: SearchFilters | undefined,
+  initUrlParams: URLSearchParams,
 ): [
   SearchFilters,
   Dispatch<SetStateAction<SearchFilters>>,
   ExtraFilters | undefined,
 ] => {
-  const [filters, setFilters] = useState(
-    init ?? { singleChoice: {}, bool: {} },
+  const [filters, setFilters] = useState<SearchFilters>(() =>
+    initFilters(init, initUrlParams),
   );
   const [queryFilters, setQueryFilters] = useState<ExtraFilters>();
 
   useEffect(() => {
+    // Build a flat {key:value} map suitable for use in URLSearchParams.
     const results: ExtraFilters = {};
 
     Object.values(filters).forEach((filterType: SearchFilter<unknown>) => {
       Object.entries(filterType).forEach(([key, value]) => {
         results[key] = value.value || undefined;
-        console.log(`-> ${key}=${value.value}`);
       });
     });
     setQueryFilters(results);
   }, [filters]);
 
   return [filters, setFilters, queryFilters];
+};
+
+/**
+ * Construct a SearchFilters object which represents the combination of the
+ * given values.
+ *
+ * @param init Default values
+ * @param initUrlParams Override defaults from the URL search parameters
+ */
+const initFilters = (
+  init: SearchFilters | undefined,
+  initUrlParams: URLSearchParams,
+): SearchFilters => {
+  const defaults = init ?? {};
+
+  const singleChoice = defaults.singleChoice ?? {};
+  for (const [key, value] of Object.entries(singleChoice)) {
+    if (initUrlParams.has(key)) {
+      const urlValue = initUrlParams.get(key);
+      if (!urlValue) continue;
+
+      const possibleValues = value.values;
+
+      for (const v of possibleValues) {
+        const _v = resolveFilterValue(v);
+        // Only override the default value if the URL value can be resolved
+        // to one of the values from SingleChoiceFilter.values.
+        if (_v.value?.toLowerCase() === urlValue.toLowerCase()) {
+          value.value = _v.value;
+        }
+      }
+    }
+  }
+
+  const bool = defaults.bool ?? {};
+  for (const [key, value] of Object.entries(bool)) {
+    const urlValue = initUrlParams.get(key);
+    if (!urlValue) continue;
+
+    if (urlValue.toLowerCase() === "true") {
+      value.value = true;
+    } else if (urlValue.toLowerCase() === "false") {
+      value.value = false;
+    }
+  }
+
+  return defaults;
 };
 
 const Filters = (
@@ -232,8 +367,8 @@ const SingleChoiceFilter = (
           onChange={(it) => onChange(it.target.value)}
         >
           {values.map((opt) => {
-            const resolved =
-              typeof opt === "string" ? { display: opt, value: opt } : opt;
+            const resolved = resolveFilterValue(opt);
+
             return (
               <option
                 key={resolved?.value ?? null}
@@ -288,13 +423,3 @@ const FilterLayout = (
     </div>
   );
 };
-
-/**
- * Format query and any additional filters in a consistent, comparable way.
- */
-const serializeQuery = (query: string, extras: ExtraFilters): string =>
-  Object.entries({ query: query, ...extras })
-    .map(([k, v]) => (v ? `${k}=${v}` : undefined))
-    .filter((it) => it != null)
-    .sort()
-    .join(",");

@@ -1,5 +1,6 @@
 from crawlers import caches
 from crawlers.context import TaskContext, task_context
+from crawlers.network.exceptions import HttpClientError
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from repository.models import (
     Constituency,
@@ -30,12 +31,20 @@ def update_constituencies(context: TaskContext):
 @task_context(cache_name=caches.CONSTITUENCIES)
 def update_constituency_boundaries(context: TaskContext):
     for constituency in Constituency.objects.filter(end__isnull=True):
-        openapi_client.get(
-            endpoint_url=endpoints.constituency_boundary(constituency.parliamentdotuk),
-            item_func=_update_boundary,
-            context=context,
-            func_kwargs={"constituency_id": constituency.parliamentdotuk},
-        )
+        try:
+            openapi_client.get(
+                endpoint_url=endpoints.constituency_boundary(
+                    constituency.parliamentdotuk
+                ),
+                item_func=_update_boundary,
+                context=context,
+                func_kwargs={"constituency_id": constituency.parliamentdotuk},
+            )
+        except HttpClientError as e:
+            from api import status
+
+            if e.status_code != status.HTTP_404_NOT_FOUND:
+                raise e
 
 
 @task_context(cache_name=caches.ELECTION_RESULTS)

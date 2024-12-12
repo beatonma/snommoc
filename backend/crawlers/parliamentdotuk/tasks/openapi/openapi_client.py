@@ -55,7 +55,7 @@ def _apply_item_func[
         context.warning(
             f"Item response failed with status={e.status_code}: {report()}\n{e}"
         )
-        return "exit"
+        return "continue"
 
     except ValidationError as e:
         context.error(e, "Schema validation failed")
@@ -172,7 +172,7 @@ def get[
     item_func: ItemFunc[T],
     context: TaskContext,
     func_kwargs: dict | None = None,
-) -> T:
+) -> None:
     """
     Retrieve a dictionary JSON object from endpoint_url and pass it to item_func for processing.
     """
@@ -187,7 +187,7 @@ def get[
             f"openapi_client.get expects a response with a dictionary, got {item}"
         )
 
-    return _apply_item_func(
+    _apply_item_func(
         item,
         item_func,
         context,

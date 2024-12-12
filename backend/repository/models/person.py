@@ -114,24 +114,6 @@ class Person(
         blank=True,
         db_index=True,
     )
-    given_name = models.CharField(
-        max_length=NAME_MAX_LENGTH,
-        help_text=_("First name"),
-        null=True,
-        blank=True,
-    )
-    family_name = models.CharField(
-        max_length=NAME_MAX_LENGTH,
-        help_text=_("Last name"),
-        null=True,
-        blank=True,
-    )
-    additional_name = models.CharField(
-        max_length=NAME_MAX_LENGTH,
-        help_text=_("Middle name(s)"),
-        blank=True,
-        null=True,
-    )
 
     full_title = models.CharField(
         max_length=NAME_MAX_LENGTH,

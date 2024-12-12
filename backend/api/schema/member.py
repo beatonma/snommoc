@@ -128,8 +128,6 @@ class MemberProfile(MemberMiniSchema, ParliamentSchema):
     constituency: ConstituencyMiniSchema | None
     portrait: PortraitSchema | None = field("memberportrait", default=None)
     full_title: str | None
-    given_name: Name | None
-    family_name: Name | None
     status: MemberStatus
     house: str | None = field("house.name", default=None)
     date_of_birth: date | None

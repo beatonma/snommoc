@@ -1,12 +1,8 @@
-import { MaybeString } from "@/types/common";
+import { ClassNameProps, MaybeString } from "@/types/common";
 
 export const classes = (...classNames: (MaybeString | null)[]) => {
   return classNames.filter(Boolean).join(" ");
 };
-
-interface ClassNameProps {
-  className?: MaybeString;
-}
 
 /**
  * Returns a copy of props with extraClasses appended to its className attribute.

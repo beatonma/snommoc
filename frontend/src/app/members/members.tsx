@@ -1,16 +1,8 @@
 "use client";
-import {
-  Fixtures,
-  getMembers,
-  type MemberFilters,
-  type MemberMiniSchema,
-} from "@/api";
-import { MemberPortrait } from "@/components/member-portrait";
-import { OptionalDiv } from "@/components/optional";
+import { Fixtures, getMembers, type MemberFilters } from "@/api";
 import React, { ReactNode } from "react";
 import { SearchFilters, SearchList } from "@/components/paginated/search-list";
-import { ListItemCard } from "@/components/card";
-import { SeparatedRow } from "@/components/collection";
+import { MemberItem } from "@/components/item-member";
 
 export default function MembersList(props: {
   header?: ReactNode;
@@ -45,44 +37,8 @@ export default function MembersList(props: {
       searchFilters={searchFilters}
       immutableFilters={props.immutableFilters}
       itemComponent={(member) => (
-        <Member key={member.parliamentdotuk} {...member} />
+        <MemberItem key={member.parliamentdotuk} member={member} />
       )}
     />
   );
 }
-
-const Member = (props: MemberMiniSchema) => {
-  return (
-    <ListItemCard
-      href={`/members/${props.parliamentdotuk}/`}
-      party={props.party}
-      title={`${props.parliamentdotuk}`}
-      image={
-        <MemberPortrait
-          name={props.name}
-          src={props.portrait}
-          className="size-16 shrink-0 overflow-hidden rounded-md bg-primary-900"
-        />
-      }
-    >
-      <h2>{props.name}</h2>
-      <OptionalDiv
-        title="Current post"
-        value={props.current_posts}
-        className="line-clamp-1"
-      />
-      <SeparatedRow>
-        <OptionalDiv
-          title="Party"
-          value={props.party?.name}
-          className="line-clamp-1"
-        />
-        <OptionalDiv
-          title="Constituency"
-          value={props.constituency?.name}
-          className="line-clamp-1"
-        />
-      </SeparatedRow>
-    </ListItemCard>
-  );
-};

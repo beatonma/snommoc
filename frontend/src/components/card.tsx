@@ -10,9 +10,8 @@ type CardProps = {
   party?: Party | PartyDetail | null;
 };
 
-export const HeaderCard = (
-  props: CardProps & ComponentPropsWithoutRef<"div">,
-) => {
+type HeaderCardProps = CardProps & ComponentPropsWithoutRef<"div">;
+export const HeaderCard = (props: HeaderCardProps) => {
   const { image, children, party, ...rest } = addClass(
     props,
     "flex flex-col sm:flex-row",
@@ -36,18 +35,24 @@ export const HeaderCard = (
   );
 };
 
-export const ListItemCard = (props: CardProps & NextLinkProps) => {
-  const { image, children, party, ...rest } = addClass(props, "flex");
+type ListItemCardProps = { label?: string } & CardProps & NextLinkProps;
+export const ListItemCard = (props: ListItemCardProps) => {
+  const { image, children, party, label, ...rest } = addClass(props, "flex");
 
   return (
     <Link {...rest}>
       <PartyIconBackground
         party={party}
-        className="flex w-full gap-3 overflow-hidden p-3 sm:rounded-lg"
+        className="flex w-full flex-col overflow-hidden p-3 sm:rounded-lg"
       >
-        {image}
-        <div className="flex flex-col gap-0.5 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
-          {children}
+        <div className="flex w-full gap-3">
+          {image}
+          <div className="w-full">
+            <div className="float-right w-fit text-sm opacity-50">{label}</div>
+            <div className="flex flex-col gap-0.5 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
+              {children}
+            </div>
+          </div>
         </div>
       </PartyIconBackground>
     </Link>

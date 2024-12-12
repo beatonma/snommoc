@@ -6,9 +6,8 @@ import { Date, DateRange } from "@/components/datetime";
 import { ConstituencyMap } from "./map";
 import { GeoJSON } from "geojson";
 import { partyThemeVariableStyle } from "@/components/themed/party";
-import { MemberPortrait } from "@/components/member-portrait";
-import { OptionalDiv } from "@/components/optional";
-import { ListItemCard } from "@/components/card";
+import { Optional } from "@/components/optional";
+import { MemberItem } from "@/components/item-member";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -63,7 +62,17 @@ export default async function Page({ params }: PageProps) {
         </section>
 
         <section>
-          <Member mp={constituency.mp} />
+          <Optional
+            value={constituency.mp}
+            block={(it) => (
+              <MemberItem
+                label="Current MP"
+                member={it}
+                className="max-w-[400px]"
+                showConstituency={false}
+              />
+            )}
+          />
 
           <pre>{JSON.stringify(constituency.results, null, 1)}</pre>
         </section>
@@ -71,34 +80,3 @@ export default async function Page({ params }: PageProps) {
     </div>
   );
 }
-
-const Member = (props: { mp: MemberMiniSchema | null }) => {
-  const { mp } = props;
-  if (!mp) return null;
-  return (
-    <ListItemCard
-      href={`/members/${mp.parliamentdotuk}/`}
-      party={mp.party}
-      title={`${mp.parliamentdotuk}`}
-      image={
-        <MemberPortrait
-          name={mp.name}
-          src={mp.portrait}
-          className="size-16 shrink-0 overflow-hidden rounded-md bg-primary-900"
-        />
-      }
-    >
-      <h2>{mp.name}</h2>
-      <OptionalDiv
-        title="Current post"
-        value={mp.current_posts}
-        className="line-clamp-1"
-      />
-      <OptionalDiv
-        title="Party"
-        value={mp.party?.name}
-        className="line-clamp-1"
-      />
-    </ListItemCard>
-  );
-};

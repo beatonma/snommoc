@@ -142,6 +142,8 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
   return (
     <_SearchList
       loader={loader}
+      header={props.header}
+      gridClassName={props.gridClassName}
       itemComponent={props.itemComponent}
       query={query}
       setQuery={setQuery}
@@ -154,9 +156,9 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
 
 const _SearchList = <T,>(props: {
   loader: PaginationLoader<T>;
-  header?: ReactNode;
+  header: ReactNode | undefined;
   itemComponent: PaginationItemComponent<T>;
-  gridClassName?: string;
+  gridClassName: string | undefined;
   query: string;
   setQuery: (q: string) => void;
   onConfirmSearch: () => void;

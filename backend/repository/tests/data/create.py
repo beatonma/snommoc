@@ -311,6 +311,9 @@ def create_sample_party_demographics(
 
 def create_sample_party(
     name: str | None = None,
+    *,
+    short_name: str | None = None,
+    long_name: str | None = None,
     parliamentdotuk: int | None = None,
     homepage: str | None = None,
     wikipedia: str | None = None,
@@ -331,6 +334,8 @@ def create_sample_party(
     party = Party.objects.create(
         name=party.name,
         parliamentdotuk=party.pk,
+        short_name=short_name,
+        long_name=long_name,
         homepage=homepage,
         wikipedia=wikipedia,
         year_founded=year_founded,

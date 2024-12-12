@@ -16,11 +16,7 @@ def parties(request: HttpRequest, query: str = None):
     qs = Party.objects.all().prefetch_related("gender_demographics")
 
     if query:
-        qs = qs.filter(
-            Q(name__icontains=query)
-            | Q(short_name__icontains=query)
-            | Q(long_name__icontains=query)
-        )
+        qs = qs.search(query)
 
     qs = qs.annotate(
         active_commons_members=Sum(

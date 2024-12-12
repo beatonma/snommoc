@@ -51,3 +51,11 @@ class PartyQuerySetTests(DatabaseTestCase):
         self.assertEqual((labour_coop, False), resolve(name="Labour co-op"))
         self.assertEqual((labour_coop, False), resolve(name="Labour (coop)"))
         self.assertEqual((labour_coop, False), resolve(name="Labour (co-op)"))
+
+    def test_search(self):
+        sf = create_sample_party("Sinn Féin")
+        snp = create_sample_party("Scottish National Party", short_name="SNP")
+
+        self.assertEqual(Party.objects.search("fein").first(), sf)
+        self.assertEqual(Party.objects.search("scottish").first(), snp)
+        self.assertEqual(Party.objects.search("snp").first(), snp)

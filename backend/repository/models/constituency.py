@@ -1,6 +1,10 @@
-from common.models import BaseModel
+from typing import Self
+
+from common.models import BaseModel, BaseQuerySet
 from django.db import models
+from django.db.models import Q
 from repository.models.mixins import (
+    AsciiNameMixin,
     ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,
@@ -8,7 +12,23 @@ from repository.models.mixins import (
 )
 
 
-class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
+class ConstituencyQuerySet(BaseQuerySet):
+    def search(self, query: str) -> Self:
+        return self.filter(
+            Q(name__icontains=query)
+            | Q(ascii_name__icontains=query)
+            | Q(mp__name__icontains=query)
+        )
+
+
+class Constituency(
+    SocialMixin,
+    ParliamentDotUkMixin,
+    PeriodMixin,
+    AsciiNameMixin,
+    BaseModel,
+):
+    objects = ConstituencyQuerySet.as_manager()
     name = models.CharField(max_length=64)
     mp = models.OneToOneField(
         "Person",
@@ -29,6 +49,11 @@ class Constituency(SocialMixin, ParliamentDotUkMixin, PeriodMixin, BaseModel):
 
     def social_title(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.update_ascii_name(self.name)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} [{self.parliamentdotuk}] {self.describe_timespan()}"

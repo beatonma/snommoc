@@ -1,7 +1,6 @@
 from api.schema.constituency import ConstituencyFullSchema, ConstituencyResultSchema
 from api.schema.includes import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
-from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -21,7 +20,7 @@ def constituencies(request: HttpRequest, query: str = None):
     qs = Constituency.objects.all()
 
     if query:
-        return qs.filter(Q(name__icontains=query) | Q(mp__name__icontains=query))
+        return qs.search(query)
 
     return qs.filter(end__isnull=True)
 

@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import (
+    AsciiNameMixin,
     ParliamentDotUkMixin,
     PeriodMixin,
     PersonMixin,
@@ -43,8 +44,15 @@ class PersonQuerySet(BaseQuerySet):
     def filter(self, *args, **kwargs) -> Self:
         return cast("PersonQuerySet", super().filter(*args, **kwargs))
 
-    def filter_name(self, name: str):
-        return self.filter(Q(name__iexact=name) | Q(aliases__alias__iexact=name))
+    def _filter_name(self, name: str) -> Self:
+        return self.filter(Q(name__iexact=name) | Q(ascii_name__iexact=name))
+
+    def search(self, query: str) -> Self:
+        return self.filter(
+            Q(name__icontains=query)
+            | Q(ascii_name__icontains=query)
+            | Q(constituency__name__icontains=query)
+        )
 
     def current(self) -> Self:
         return self.filter(status__is_current=True)
@@ -73,11 +81,11 @@ class PersonQuerySet(BaseQuerySet):
 
         similarity_threshold should be an integer between 0 and 100"""
 
-        qs = self.filter_name(name).filter(constituency__name=constituency_name)
+        qs = self._filter_name(name).filter(constituency__name=constituency_name)
         if qs.count() == 1:
             return qs.first()
 
-        qs = self.filter_name(name).prefetch_related("constituencies__constituency")
+        qs = self._filter_name(name).prefetch_related("constituencies__constituency")
         potential = []
 
         def _safename(obj):
@@ -101,6 +109,7 @@ class Person(
     ParliamentDotUkMixin,
     TheyWorkForYouMixin,
     WikipediaMixin,
+    AsciiNameMixin,
     BaseModel,
 ):
     objects = PersonQuerySet.as_manager()
@@ -238,6 +247,11 @@ class Person(
 
     def social_title(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.update_ascii_name(self.name)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} [{self.parliamentdotuk}]"

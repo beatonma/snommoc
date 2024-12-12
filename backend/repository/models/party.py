@@ -3,7 +3,13 @@ from typing import Self, Union, cast
 
 from common.models import BaseModel, BaseQuerySet
 from django.db import models
-from repository.models.mixins import ParliamentDotUkMixin, PeriodMixin, WikipediaMixin
+from django.db.models import Q
+from repository.models.mixins import (
+    AsciiNameMixin,
+    ParliamentDotUkMixin,
+    PeriodMixin,
+    WikipediaMixin,
+)
 
 _SUB_PARTY_ID_OFFSET = 100_000
 
@@ -61,6 +67,14 @@ class PartyQuerySet(BaseQuerySet):
     def filter(self, *args, **kwargs) -> Self:
         return cast("PartyQuerySet", super().filter(*args, **kwargs))
 
+    def search(self, query: str) -> Self:
+        return self.filter(
+            Q(name__icontains=query)
+            | Q(short_name__icontains=query)
+            | Q(long_name__icontains=query)
+            | Q(ascii_name__icontains=query)
+        )
+
     def resolve(
         self,
         parliamentdotuk: int | None = None,
@@ -104,7 +118,7 @@ class PartyQuerySet(BaseQuerySet):
             return self.get_or_none(name__iexact=name), False
 
 
-class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
+class Party(ParliamentDotUkMixin, WikipediaMixin, AsciiNameMixin, BaseModel):
     objects = PartyQuerySet.as_manager()
     name = models.CharField(max_length=64, unique=True)
     short_name = models.CharField(
@@ -129,12 +143,17 @@ class Party(ParliamentDotUkMixin, WikipediaMixin, BaseModel):
 
     active_member_count = models.PositiveSmallIntegerField(default=0)
 
-    class Meta:
-        verbose_name_plural = "Parties"
-        ordering = ["name"]
+    def save(self, *args, **kwargs):
+        self.update_ascii_name(self.name)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = "Parties"
+        ordering = ["name"]
 
 
 class PartyAlsoKnownAs(BaseModel):

@@ -48,9 +48,7 @@ def members(
     if not query:
         return qs.order_by("sort_name")
 
-    return qs.filter(
-        Q(name__icontains=query) | Q(constituency__name__icontains=query)
-    ).order_by("status__is_active", "sort_name")
+    return qs.search(query).order_by("status__is_active", "sort_name")
 
 
 @router.get("/{parliamentdotuk}/", response=MemberProfile)

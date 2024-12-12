@@ -44,3 +44,7 @@ class PersonQuerySetTests(DatabaseTestCase):
         self.assertEqual(get("0123456789"), mp)
         self.assertEqual(get("012345"), mp)
         self.assertIsNone(get("0123"))
+
+    def test_search(self):
+        mp = create_sample_person(name="Renée Short")
+        self.assertEqual(Person.objects.search("renee").first(), mp)

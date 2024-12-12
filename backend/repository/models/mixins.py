@@ -4,6 +4,7 @@ from datetime import date
 from common.models import BaseQuerySet
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from util.time import in_range, is_current
 
 
@@ -70,7 +71,7 @@ class ParliamentDotUkMixin(models.Model):
     """For models that have a corresponding api on parliament.uk"""
 
     parliamentdotuk = models.PositiveIntegerField(
-        primary_key=True, unique=True, help_text="ID used on parliament.uk website"
+        primary_key=True, unique=True, help_text=_("ID used on parliament.uk website")
     )
 
     class Meta:
@@ -81,7 +82,7 @@ class TheyWorkForYouMixin(models.Model):
     """For models that have a corresponding api on theyworkforyou.com"""
 
     theyworkforyou = models.PositiveIntegerField(
-        unique=True, null=True, help_text="ID used on theyworkforyou.com"
+        unique=True, null=True, help_text=_("ID used on theyworkforyou.com")
     )
 
     class Meta:
@@ -93,7 +94,7 @@ class WikipediaMixin(models.Model):
         null=True,
         blank=True,
         max_length=128,
-        help_text="Path section of a wikipedia url (e.g. 'John_Baron_(politician)')",
+        help_text=_("Path section of a wikipedia url (e.g. 'John_Baron_(politician)')"),
     )
 
     class Meta:
@@ -105,3 +106,32 @@ class SocialMixin:
         raise NotImplementedError(
             f"{self.__class__.__name__} does not implement method social_title()"
         )
+
+
+class AsciiNameMixin(models.Model):
+    ascii_name = models.CharField(
+        max_length=128,
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text=_("Simplified ASCII name"),
+    )
+
+    def update_ascii_name(self, source: str):
+        if not self.ascii_name:
+            ascii_name = self.normalize_ascii(source)
+            if ascii_name != source:
+                self.ascii_name = ascii_name
+
+    @staticmethod
+    def normalize_ascii(value: str) -> str:
+        import unicodedata
+
+        return (
+            unicodedata.normalize("NFKD", value)
+            .encode("ascii", "ignore")
+            .decode("ascii")
+        )
+
+    class Meta:
+        abstract = True

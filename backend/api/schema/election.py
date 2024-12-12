@@ -11,4 +11,4 @@ __all__ = [
 class ElectionSchema(ParliamentSchema, Schema):
     name: Name
     date: date | None
-    election_type: str = field("election_type.name")
+    election_type: str | None = field("election_type.name", default=None)

@@ -20,6 +20,9 @@ class ConstituencyQuerySet(BaseQuerySet):
             | Q(mp__name__icontains=query)
         )
 
+    def current(self) -> Self:
+        return self.filter(start__isnull=False, end__isnull=True)
+
 
 class Constituency(
     SocialMixin,

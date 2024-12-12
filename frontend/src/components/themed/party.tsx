@@ -2,6 +2,7 @@ import type { Party, PartyDetail } from "@/api";
 import { ComponentPropsWithoutRef } from "react";
 import { classes } from "@/util/transforms";
 import { ThemedDiv } from "@/components/themed/themed-div";
+import { Nullish } from "@/types/common";
 
 interface PartyProps {
   party: Party | PartyDetail | null | undefined;
@@ -18,7 +19,10 @@ const partyTheme = (party: Party | PartyDetail) => ({
   },
 });
 
-export const partyThemeVariableStyle = (party: Party | PartyDetail) => {
+export const partyThemeVariableStyle = (
+  party: Party | PartyDetail | Nullish,
+) => {
+  if (!party) return {};
   return Object.fromEntries(
     Object.entries({
       primary: party.theme?.primary,

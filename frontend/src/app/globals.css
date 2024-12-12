@@ -64,18 +64,6 @@
 @tailwind utilities;
 
 @layer components {
-  /**
-   * Insert a dash between child items.
-   * Intended for use in flex-row.
-   */
-  .separated {
-    > :not(:last-child)::after {
-      content: "-";
-      margin-inline: 0.25em;
-      color: currentColor;
-    }
-  }
-
   .readable {
     max-width: 800px;
   }

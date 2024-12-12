@@ -1,5 +1,5 @@
 import { ConstituencyMini, MemberProfile, type Party } from "@/api";
-import { PhysicalAddress, WebAddress } from "@/components/address";
+import { PhysicalAddress } from "@/components/address";
 import React, { ComponentPropsWithoutRef } from "react";
 import { MemberPortrait } from "@/components/member-portrait";
 import type { Metadata, ResolvingMetadata } from "next";

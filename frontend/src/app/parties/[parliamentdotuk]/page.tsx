@@ -44,8 +44,8 @@ export default async function Page({ params }: PageProps) {
       style={partyThemeVariableStyle(party)}
       className="flex flex-col items-center gap-y-16"
     >
-      <main className="readable flex flex-col flex-wrap items-center">
-        <section className="w-full">
+      <main className="readable flex w-full flex-col flex-wrap items-center">
+        <section>
           <HeaderCard
             party={party}
             image={

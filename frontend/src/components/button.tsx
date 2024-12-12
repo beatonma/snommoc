@@ -15,8 +15,6 @@ export const TextButton = (props: ButtonProps) => {
 };
 
 export const TintedButton = (props: ButtonProps) => {
-  const { className, ...rest } = props;
-
   return (
     <BaseButton
       {...addClass(

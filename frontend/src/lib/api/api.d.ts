@@ -351,15 +351,6 @@ export interface components {
         };
         /** @enum {string} */
         StatusFilter: "current" | "inactive" | "historical" | "all";
-        /** ConstituencyMiniSchema */
-        ConstituencyMiniSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            name: components["schemas"]["Name"];
-            /** Start */
-            start: string | null;
-            /** End */
-            end: string | null;
-        };
         /** MemberMiniSchema */
         MemberMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -367,7 +358,9 @@ export interface components {
             /** Current Posts */
             current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
-            constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
+            constituency: components["schemas"]["_MemberConstituencySchema"] | null;
+            /** Lord Type */
+            lord_type?: string | null;
             /** Portrait */
             portrait?: string | null;
         };
@@ -405,6 +398,18 @@ export interface components {
             /** On Accent */
             on_accent: string;
         };
+        /**
+         * _MemberConstituencySchema
+         * @description Simple constituency data for embedding in member
+         */
+        _MemberConstituencySchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Start */
+            start: string | null;
+            /** End */
+            end: string | null;
+        };
         /** AddressSchema */
         AddressSchema: {
             /** Physical */
@@ -421,6 +426,16 @@ export interface components {
             /** End */
             end: string | null;
         };
+        /** ConstituencyMiniSchema */
+        ConstituencyMiniSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Start */
+            start: string | null;
+            /** End */
+            end: string | null;
+            mp: components["schemas"]["_ConstituencyMemberSchema"] | null;
+        };
         EmailAddress: string;
         /** MemberProfile */
         MemberProfile: {
@@ -430,11 +445,11 @@ export interface components {
             current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
+            /** Lord Type */
+            lord_type?: string | null;
             portrait?: components["schemas"]["PortraitSchema"] | null;
             /** Full Title */
             full_title: string | null;
-            given_name: components["schemas"]["Name"] | null;
-            family_name: components["schemas"]["Name"] | null;
             status: components["schemas"]["MemberStatus"];
             /** House */
             house?: string | null;
@@ -511,6 +526,15 @@ export interface components {
             description: string | null;
         };
         WikipediaPath: string;
+        /**
+         * _ConstituencyMemberSchema
+         * @description Simple member data for embedding in constituency
+         */
+        _ConstituencyMemberSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            party: components["schemas"]["PartyMiniSchema"] | null;
+        };
         /** ConstituencyRepresentation */
         ConstituencyRepresentation: {
             constituency: components["schemas"]["ConstituencyMiniSchema"];

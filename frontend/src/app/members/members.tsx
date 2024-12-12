@@ -10,6 +10,7 @@ import { OptionalDiv } from "@/components/optional";
 import React, { ReactNode } from "react";
 import { SearchFilters, SearchList } from "@/components/paginated/search-list";
 import { ListItemCard } from "@/components/card";
+import { SeparatedRow } from "@/components/collection";
 
 export default function MembersList(props: {
   header?: ReactNode;
@@ -70,7 +71,7 @@ const Member = (props: MemberMiniSchema) => {
         value={props.current_posts}
         className="line-clamp-1"
       />
-      <div className="separated flex flex-wrap">
+      <SeparatedRow>
         <OptionalDiv
           title="Party"
           value={props.party?.name}
@@ -81,7 +82,7 @@ const Member = (props: MemberMiniSchema) => {
           value={props.constituency?.name}
           className="line-clamp-1"
         />
-      </div>
+      </SeparatedRow>
     </ListItemCard>
   );
 };

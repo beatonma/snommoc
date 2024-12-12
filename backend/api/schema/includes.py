@@ -44,7 +44,23 @@ class PartyMiniSchema(ParliamentSchema):
             pass
 
 
+class _ConstituencyMemberSchema(ParliamentSchema):
+    """Simple member data for embedding in constituency"""
+
+    name: Name
+    party: PartyMiniSchema | None
+
+
 class ConstituencyMiniSchema(ParliamentSchema):
+    name: Name
+    start: date | None
+    end: date | None
+    mp: _ConstituencyMemberSchema | None
+
+
+class _MemberConstituencySchema(ParliamentSchema):
+    """Simple constituency data for embedding in member"""
+
     name: Name
     start: date | None
     end: date | None
@@ -56,6 +72,8 @@ class MemberMiniSchema(ParliamentSchema):
     party: PartyMiniSchema | None
     constituency: ConstituencyMiniSchema | None
     portrait: str | None = field("memberportrait.square_url", default=None)
+    constituency: _MemberConstituencySchema | None
+    lord_type: str | None = field("lords_type.name", default=None)
 
     @staticmethod
     def resolve_constituency(obj):

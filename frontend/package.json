@@ -10,7 +10,9 @@
     "openapi": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/geojson": "^7946.0.15",
     "next": "15.0.3",
+    "ol": "^10.3.1",
     "openapi-fetch": "^0.13.0",
     "openapi-typescript": "^7.4.3",
     "react": "19.0.0-rc-66855b96-20241106",

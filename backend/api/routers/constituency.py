@@ -13,16 +13,18 @@ router = Router(tags=["Constituencies"])
 @router.get(
     "/",
     response=list[ConstituencyMiniSchema],
-    description="List of currently active constituencies",
+    description="Searchable constituencies. If no query, returns current constituencies.",
 )
 @paginate
 def constituencies(request: HttpRequest, query: str = None):
     qs = Constituency.objects.all()
 
     if query:
-        return qs.search(query)
+        qs = qs.search(query)
+    else:
+        qs = qs.current()
 
-    return qs.filter(end__isnull=True)
+    return qs.order_by("name")
 
 
 @router.get("/{parliamentdotuk}/", response=ConstituencyFullSchema)

@@ -11,7 +11,7 @@ __all__ = ["ConstituencyFullSchema", "ConstituencyResultSchema"]
 
 class ResultsSchema(Schema):
     election: ElectionSchema
-    mp: MemberMiniSchema | None
+    winner: MemberMiniSchema | None
 
 
 class ConstituencyFullSchema(ParliamentSchema):
@@ -19,7 +19,7 @@ class ConstituencyFullSchema(ParliamentSchema):
     start: date | None
     end: date | None
     mp: MemberMiniSchema | None
-    boundary: dict | None = field("constituencyboundary.geo_json", default=None)
+    boundary: dict | None = field("boundary.geo_json", default=None)
     results: list[ResultsSchema]
 
 

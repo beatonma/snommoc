@@ -22,6 +22,7 @@ const OptionalElement = <E extends ElementType, T>(
   const { element, value, condition, block, ...rest } = props;
   if (value == null) return null;
   if (condition && !condition(value)) return null;
+  if (!condition && Array.isArray(value) && value.length === 0) return null;
 
   const content = (block ?? ((obj) => `${obj}`))(value);
   if (element) {
@@ -32,9 +33,11 @@ const OptionalElement = <E extends ElementType, T>(
 
 export const OptionalDiv = <T,>(
   props: OptionalProps<T> & ElementProps<"div">,
-) => {
-  return <OptionalElement element="div" {...props} />;
-};
+) => <OptionalElement element="div" {...props} />;
+
+export const OptionalSpan = <T,>(
+  props: OptionalProps<T> & ElementProps<"span">,
+) => <OptionalElement element="span" {...props} />;
 
 export const Optional = <T,>(props: OptionalProps<T>) => (
   <OptionalElement element={null} {...props} />

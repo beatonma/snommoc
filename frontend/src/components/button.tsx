@@ -1,7 +1,8 @@
 import { ComponentPropsWithoutRef } from "react";
-import { addClass, classes } from "@/util/transforms";
+import { addClass } from "@/util/transforms";
 import { AppIcon, Icon } from "@/components/icon";
 import Link from "next/link";
+import { ChildrenProps } from "@/types/common";
 
 export const TextButton = (props: ButtonProps) => {
   return (
@@ -41,16 +42,11 @@ export type ButtonProps =
   | ButtonDivProps
   | ButtonLinkProps;
 
-const ButtonContent = (
-  props: ButtonContentProps & ComponentPropsWithoutRef<"div">,
-) => {
-  const { icon, children, ...rest } = addClass(
-    props,
-    "line-clamp-1 flex items-center gap-1",
-  );
+const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
+  const { icon, children } = props;
 
   return (
-    <div {...rest}>
+    <div className="flex items-center gap-1">
       <Icon icon={icon} className="fill-current opacity-90" />
       {children}
     </div>
@@ -60,7 +56,7 @@ const ButtonContent = (
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ...rest } = addClass(
     props,
-    "inline-block hover:cursor-pointer transition-all",
+    "inline-block align-top hover:cursor-pointer transition-all",
   );
 
   const content = <ButtonContent icon={icon}>{children}</ButtonContent>;
@@ -83,8 +79,10 @@ const BaseButton = (props: ButtonProps) => {
   // No usable href or onClick - render as simple div.
   return (
     <div
-      className={classes("pointer-events-none", props.className)}
-      {...(rest as ComponentPropsWithoutRef<"div">)}
+      {...(addClass(
+        rest,
+        "pointer-events-none",
+      ) as ComponentPropsWithoutRef<"div">)}
     >
       {content}
     </div>

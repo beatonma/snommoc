@@ -8,7 +8,7 @@ import PhoneIcon from "@/svg/material/phone.svg";
 import MailIcon from "@/svg/material/mail.svg";
 import FaxIcon from "@/svg/material/fax.svg";
 import { ComponentPropsWithoutRef } from "react";
-import { classes } from "@/util/transforms";
+import { addClass, classes } from "@/util/transforms";
 
 const Icons = {
   Facebook: FacebookIcon,
@@ -27,11 +27,11 @@ interface IconProps {
   icon?: AppIcon;
 }
 export const Icon = (props: IconProps & ComponentPropsWithoutRef<"svg">) => {
-  const { icon, className, ...rest } = props;
+  const { icon, ...rest } = addClass(props, "inline-block");
   if (!icon) return null;
 
   const Element = Icons[icon];
   if (!Element) throw `Unhandled icon: '${icon}'`;
 
-  return <Element className={classes(className)} {...rest} />;
+  return <Element {...rest} />;
 };

@@ -3,6 +3,7 @@ import { ComponentPropsWithoutRef } from "react";
 import { classes } from "@/util/transforms";
 import { ThemedDiv } from "@/components/themed/themed-div";
 import { Nullish } from "@/types/common";
+import { MaskedSvg } from "@/components/image";
 
 interface PartyProps {
   party: Party | PartyDetail | null | undefined;
@@ -95,11 +96,9 @@ export const PartyIconBackground = (
           backgroundColor: theme.primary.backgroundColor,
         }}
       >
-        <div
-          className="inset-0 h-full w-full translate-x-1/2 bg-black opacity-[0.08] [mask-position:center] [mask-repeat:no-repeat] [mask-size:100%_auto]"
-          style={{
-            maskImage: `url('${party.logo_mask ?? party.logo}')`,
-          }}
+        <MaskedSvg
+          src={party.logo_mask ?? party.logo}
+          className="inset-0 h-full w-full translate-x-1/2 bg-black/[0.08]"
         />
       </div>
       {children}

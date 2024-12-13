@@ -1,15 +1,39 @@
 "use client";
 import { TextButton, TintedButton } from "@/components/button";
-import React, { CSSProperties } from "react";
+import React from "react";
 import { ChildrenProps } from "@/types/common";
-
-const Theme: CSSProperties = {
-  // @ts-expect-error: Custom css variables not in CSSProperties spec.
-  "--accent": "212 19 144",
-  "--on_accent": "255 255 255",
-};
+import { partyThemeVariableStyle } from "@/components/themed/party";
+import * as Sample from "@/app/dev/sample";
+import { MemberItem } from "@/components/item-member";
+import { HeaderCard } from "@/components/card";
+import { MaskedSvg } from "@/components/image";
 
 export const ComponentsOverview = () => (
+  <>
+    <ButtonComponents />
+
+    <Section component="HeaderCard">
+      <HeaderCard
+        party={Sample.LabourParty}
+        image={
+          <MaskedSvg
+            src={Sample.LabourParty.logo}
+            className="size-64 bg-white"
+          />
+        }
+      >
+        <h1>Header card</h1>
+        <p>Text content</p>
+      </HeaderCard>
+    </Section>
+
+    <Section component="MemberItem">
+      <MemberItem member={Sample.KeirStarmerItem} />
+    </Section>
+  </>
+);
+
+const ButtonComponents = () => (
   <>
     <Section component="TextButton">
       <Row>
@@ -35,7 +59,7 @@ export const ComponentsOverview = () => (
           TintedButton
         </TintedButton>
 
-        <div style={Theme}>
+        <div style={partyThemeVariableStyle(Sample.LabourParty)}>
           <TintedButton href="#">Themed TintedButton</TintedButton>
         </div>
       </Row>

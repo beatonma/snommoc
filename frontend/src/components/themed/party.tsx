@@ -8,14 +8,17 @@ interface PartyProps {
   party: Party | PartyDetail | null | undefined;
 }
 
+const rgb = (value: string | undefined) =>
+  value ? `rgb(${value})` : undefined;
+
 const partyTheme = (party: Party | PartyDetail) => ({
   primary: {
-    backgroundColor: party.theme?.primary,
-    color: party.theme?.on_primary,
+    backgroundColor: rgb(party.theme?.primary),
+    color: rgb(party.theme?.on_primary),
   },
   accent: {
-    backgroundColor: party.theme?.accent,
-    color: party.theme?.on_accent,
+    backgroundColor: rgb(party.theme?.accent),
+    color: rgb(party.theme?.on_accent),
   },
 });
 
@@ -44,13 +47,7 @@ export const PartyPrimary = (
   const { party, ...rest } = props;
   if (!party) return <div {...rest} />;
 
-  return (
-    <ThemedDiv
-      theme={partyTheme(party).primary}
-      color={party.theme?.on_primary}
-      {...rest}
-    />
-  );
+  return <ThemedDiv theme={partyTheme(party).primary} {...rest} />;
 };
 
 /**
@@ -62,13 +59,7 @@ export const PartyAccent = (
   const { party, ...rest } = props;
   if (!party) return <div {...rest} />;
 
-  return (
-    <ThemedDiv
-      theme={partyTheme(party).accent}
-      color={party.theme?.on_accent}
-      {...rest}
-    />
-  );
+  return <ThemedDiv theme={partyTheme(party).accent} {...rest} />;
 };
 
 export const PartyIconBackground = (
@@ -88,18 +79,20 @@ export const PartyIconBackground = (
       </PartyPrimary>
     );
 
+  const theme = partyTheme(party);
+
   return (
     <div
       className={classes(className, "relative overflow-hidden")}
       style={{
-        color: party.theme?.on_primary,
+        color: theme.primary.color,
       }}
       {...rest}
     >
       <div
         className="absolute inset-0 z-[-1] h-full w-full"
         style={{
-          backgroundColor: party.theme?.primary,
+          backgroundColor: theme.primary.backgroundColor,
         }}
       >
         <div

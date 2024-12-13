@@ -1,15 +1,23 @@
-import { ConstituencyMini, MemberProfile, type Party } from "@/api";
+import {
+  ConstituencyMini,
+  HouseType,
+  MemberProfile,
+  MemberStatus,
+  type Party,
+} from "@/api";
 import { PhysicalAddress } from "@/components/address";
-import React, { ComponentPropsWithoutRef } from "react";
+import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import { MemberPortrait } from "@/components/member-portrait";
 import type { Metadata, ResolvingMetadata } from "next";
 import ErrorMessage from "@/components/error";
 import { getMember } from "@/api";
 import { TextButton } from "@/components/button";
 import { addClass } from "@/util/transforms";
-import { OptionalDiv } from "@/components/optional";
+import { OptionalDiv, OptionalSpan } from "@/components/optional";
 import { HeaderCard } from "@/components/card";
 import { LinkGroup } from "@/components/link";
+import { Nullish } from "@/types/common";
+import { Date } from "@/components/datetime";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -74,10 +82,11 @@ const MemberCard = (props: MemberComponentProps) => {
 
           <div className="flex flex-wrap gap-1">
             <Party party={member.party} />
-            <MpStatus
-              active={member.status.is_active}
+            <Status
+              status={member.status}
               house={member.house}
               constituency={member.constituency}
+              lordType={member.lord_type}
             />
           </div>
         </div>
@@ -95,29 +104,60 @@ const Party = ({ party }: { party: Party | null }) => {
   );
 };
 
-const MpStatus = ({
-  active,
-  house,
-  constituency,
-}: {
-  active: boolean;
-  house: string | null | undefined;
+const Status = (props: {
+  status: MemberStatus;
+  house: HouseType | Nullish;
   constituency: ConstituencyMini | null;
+  lordType: string | Nullish;
 }) => {
-  if (!active || house?.toLowerCase() !== "commons") return null;
+  const { status, house, constituency, lordType } = props;
 
-  if (!constituency) return <span>MP</span>;
+  const titleParts: ReactNode[] = [];
+  if (!status.is_current) {
+    titleParts.push("Former ");
+  }
+  if (house === "Commons") {
+    titleParts.push("MP");
+    if (constituency) {
+      titleParts.push(
+        " for ",
+        <TextButton
+          title="Constituency"
+          href={`/constituencies/${constituency.parliamentdotuk}/`}
+        >
+          {constituency.name}
+        </TextButton>,
+      );
+    }
+  } else if (house === "Lords") {
+    titleParts.push(`Lord - ${lordType}`);
+  }
+
+  let inactivityStatus: ReactNode;
+  if (status.is_current && !status.is_active) {
+    inactivityStatus = (
+      <OptionalDiv
+        className="basis-full"
+        value={status.since}
+        block={(it) => (
+          <>
+            Inactive since{" "}
+            <Date date={it} dateFormat={{ month: "long", year: "numeric" }} />
+            <OptionalSpan
+              value={status.description}
+              block={(it) => `: ${it}`}
+            />
+          </>
+        )}
+      />
+    );
+  }
 
   return (
-    <span>
-      MP for{" "}
-      <TextButton
-        title="Constituency"
-        href={`/constituencies/${constituency.parliamentdotuk}/`}
-      >
-        {constituency.name}
-      </TextButton>
-    </span>
+    <>
+      {titleParts}
+      {inactivityStatus}
+    </>
   );
 };
 

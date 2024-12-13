@@ -27,7 +27,6 @@ export const DateRange = (
     start: ParseableDate;
     end: ParseableDate;
     prefix?: ReactNode;
-    connector?: ReactNode;
     suffix?: ReactNode;
   } & DivPropsNoChildren,
 ) => {
@@ -56,19 +55,23 @@ export const DateRange = (
 };
 
 export const Date = (
-  props: { date: ParseableDate } & Omit<
-    ComponentPropsWithoutRef<"time">,
-    "dateTime" | "children"
-  >,
+  props: {
+    date: ParseableDate;
+    dateFormat?: Intl.DateTimeFormatOptions;
+  } & Omit<ComponentPropsWithoutRef<"time">, "dateTime" | "children" | "title">,
 ) => {
-  const { date, ...rest } = props;
+  const { date, dateFormat = DateFormat, ...rest } = props;
   const parsed = parseDate(date);
 
   if (parsed == null) return null;
 
   return (
-    <time dateTime={parsed.toDateString()} {...rest}>
-      {parsed.toLocaleDateString(undefined, DateFormat)}
+    <time
+      dateTime={parsed.toDateString()}
+      title={parsed.toDateString()}
+      {...rest}
+    >
+      {parsed.toLocaleDateString(undefined, dateFormat)}
     </time>
   );
 };

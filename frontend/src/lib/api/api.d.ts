@@ -451,8 +451,7 @@ export interface components {
             /** Full Title */
             full_title: string | null;
             status: components["schemas"]["MemberStatus"];
-            /** House */
-            house?: string | null;
+            house?: components["schemas"]["HouseType"] | null;
             /** Date Of Birth */
             date_of_birth: string | null;
             /** Date Of Death */

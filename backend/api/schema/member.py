@@ -129,7 +129,7 @@ class MemberProfile(MemberMiniSchema, ParliamentSchema):
     portrait: PortraitSchema | None = field("memberportrait", default=None)
     full_title: str | None
     status: MemberStatus
-    house: str | None = field("house.name", default=None)
+    house: HouseType | None = field("house.name", default=None)
     date_of_birth: date | None
     date_of_death: date | None
     age: int

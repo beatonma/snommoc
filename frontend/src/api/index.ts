@@ -59,6 +59,7 @@ export const getParties = async (
   });
 
 export type MemberProfile = schema["MemberProfile"];
+export type MemberStatus = schema["MemberStatus"];
 export type WebAddress = schema["WebAddressSchema"];
 export const getMember = async (
   parliamentdotuk: number,

@@ -57,28 +57,23 @@ const ButtonContent = (
 };
 
 const BaseButton = (props: ButtonProps) => {
-  const { icon, children, className, ...rest } = props;
-
-  const cls = classes(
-    className,
+  const { icon, children, ...rest } = addClass(
+    props,
     "inline-block hover:cursor-pointer transition-all",
   );
+
   const content = <ButtonContent icon={icon}>{children}</ButtonContent>;
 
   if ("href" in rest && rest.href) {
     return (
-      <Link
-        href={rest.href}
-        className={cls}
-        {...(rest as ComponentPropsWithoutRef<"a">)}
-      >
+      <Link href={rest.href} {...(rest as ComponentPropsWithoutRef<"a">)}>
         {content}
       </Link>
     );
   }
   if (rest.type || ("onClick" in rest && typeof rest.onClick === "function")) {
     return (
-      <button className={cls} {...(rest as ComponentPropsWithoutRef<"button">)}>
+      <button {...(rest as ComponentPropsWithoutRef<"button">)}>
         {content}
       </button>
     );
@@ -87,7 +82,7 @@ const BaseButton = (props: ButtonProps) => {
   // No usable href or onClick - render as simple div.
   return (
     <div
-      className={classes("pointer-events-none", cls)}
+      className={classes("pointer-events-none", props.className)}
       {...(rest as ComponentPropsWithoutRef<"div">)}
     >
       {content}

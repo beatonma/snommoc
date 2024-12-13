@@ -76,7 +76,7 @@ export const ButtonLink = (
     <TextButton
       icon={icon ?? values.icon}
       href={href}
-      title={defaultDisplayText ?? undefined}
+      title={values.title ?? defaultDisplayText ?? undefined}
       {...rest}
       target="_blank"
       referrerPolicy="same-origin"
@@ -90,6 +90,7 @@ export const ButtonLink = (
 interface WebHost {
   pattern: RegExp;
   icon: AppIcon;
+  title: string;
 
   /**
    * A function which edits the <display> capture group to make it suitable as displayText.
@@ -98,36 +99,44 @@ interface WebHost {
 }
 const WebHosts: WebHost[] = [
   {
+    title: "Twitter / X",
     pattern: /(https:\/\/)?(www\.)?(x|twitter)\.com\/(?<display>[\w.-]+).*/,
     icon: "Twitter",
   },
   {
+    title: "Facebook",
     pattern: /(https:\/\/)?(www\.)?facebook\.com\/(?<display>[\w.-]+).*/,
     icon: "Facebook",
   },
   {
+    title: "Instagram",
     pattern: /(https:\/\/)?(www\.)?instagram\.com\/(?<display>[\w.-]+).*/,
     icon: "Instagram",
   },
   {
+    title: "Email",
     pattern: /mailto:(?<display>.+)/,
     icon: "Email",
   },
   {
+    title: "Phone",
     pattern: /tel:(?<display>.+)/,
     icon: "Phone",
   },
   {
+    title: "Fax",
     pattern: /fax:(?<display>.+)/,
     icon: "Fax",
   },
   {
+    title: "Wikipedia",
     pattern: /(https:\/\/)?(\w+\.)?wikipedia\.org\/wiki\/(?<display>.+)/,
     icon: "Wikipedia",
     clean: (display) =>
       display?.replaceAll("_", " ")?.replace("(UK)", "")?.trim(),
   },
   {
+    title: "Website",
     pattern: /(https:\/\/)?(www\.)?(?<display>[\w.-]+\.(org|com|co.uk))\/?/,
     icon: "Home",
   },
@@ -135,11 +144,13 @@ const WebHosts: WebHost[] = [
 const webDisplayValues = (
   url: string,
 ): {
+  title: string | undefined;
   displayText: string | undefined;
   icon: AppIcon | undefined;
 } => {
   let displayText: string | undefined;
   let icon: AppIcon | undefined;
+  let title: string | undefined;
 
   for (const host of WebHosts) {
     const match = host.pattern.exec(url);
@@ -150,6 +161,7 @@ const webDisplayValues = (
       displayText = host.clean(displayText);
     }
     icon = host.icon;
+    title = host.title;
 
     break;
   }
@@ -159,6 +171,7 @@ const webDisplayValues = (
   }
 
   return {
+    title: title,
     displayText: displayText,
     icon: icon,
   };

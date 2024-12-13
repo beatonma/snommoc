@@ -108,7 +108,7 @@ const themedStyle = (element: HTMLElement) => {
     return buildStyle();
   }
 
-  const match = /#([a-fA-F\d]{6})([a-fA-F\d]{2})?/.exec(themePrimary);
+  const match = /(\d+ \d+ \d+)/.exec(themePrimary);
   if (match) {
     const opaque = match[1];
     return buildStyle(opaque);
@@ -120,14 +120,14 @@ const themedStyle = (element: HTMLElement) => {
 };
 
 const buildStyle = (opaqueColor?: string | undefined) => {
-  const color = opaqueColor ?? "000000";
+  const color = opaqueColor ?? "0 0 0";
   return new Style({
     stroke: new Stroke({
-      color: `#${color}fa`,
+      color: `rgb(${color} / .9)`,
       width: 1,
     }),
     fill: new Fill({
-      color: `#${color}28`,
+      color: `rgb(${color} / .25)`,
     }),
   });
 };

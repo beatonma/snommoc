@@ -1,6 +1,7 @@
 from api.schema.constituency import ConstituencyFullSchema, ConstituencyResultSchema
 from api.schema.includes import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
+from django.db.models import F
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -24,7 +25,7 @@ def constituencies(request: HttpRequest, query: str = None):
     else:
         qs = qs.current()
 
-    return qs.order_by("name")
+    return qs.order_by(F("end").desc(nulls_first=True), "name")
 
 
 @router.get("/{parliamentdotuk}/", response=ConstituencyFullSchema)

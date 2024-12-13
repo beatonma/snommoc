@@ -15,13 +15,15 @@ export default {
       colors: {
         surface: colors.neutral,
         primary: {
-          DEFAULT: "var(--primary)",
+          DEFAULT: "rgb(var(--primary))",
           ...colors.slate,
         },
+        on_primary: "rgb(var(--on_primary))",
         accent: {
-          DEFAULT: "var(--accent)",
+          DEFAULT: "rgb(var(--accent))",
           ...colors.amber,
         },
+        on_accent: "rgb(var(--on_accent))",
         default_party: colors.stone,
         house: {
           commons: {

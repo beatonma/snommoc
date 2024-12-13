@@ -17,10 +17,10 @@ __all__ = [
 
 
 class PartyThemeSchema(Schema):
-    primary: str
-    on_primary: str
-    accent: str
-    on_accent: str
+    primary: str = field("rgb_primary")
+    on_primary: str = field("rgb_on_primary")
+    accent: str = field("rgb_accent")
+    on_accent: str = field("rgb_on_accent")
 
 
 class PartyMiniSchema(ParliamentSchema):

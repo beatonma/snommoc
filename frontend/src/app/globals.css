@@ -1,6 +1,13 @@
 @tailwind base;
 
 @layer base {
+  :root {
+    --primary: 100 116 139;
+    --on_primary: 255 255 255;
+    --accent: 253 230 138;
+    --on_accent: 0 0 0;
+  }
+
   img {
     @apply object-cover;
   }
@@ -17,7 +24,7 @@
   }
 
   section:not(:last-child) {
-    @apply pb-16;
+    @apply mb-16;
   }
 
   input,
@@ -67,11 +74,4 @@
   .readable {
     max-width: 800px;
   }
-}
-
-:root {
-  --primary: #64748b;
-  --on_primary: white;
-  --accent: #fde68a;
-  --on_accent: black;
 }

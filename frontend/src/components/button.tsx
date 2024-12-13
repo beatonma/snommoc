@@ -19,8 +19,9 @@ export const TintedButton = (props: ButtonProps) => {
     <BaseButton
       {...addClass(
         props,
-        "rounded-lg  px-2 py-1",
-        "[background-color:--accent] [color:--on_accent]",
+        "rounded-md px-2 py-1",
+        "bg-accent text-on_accent",
+        "hover:bg-accent/90",
       )}
     />
   );

@@ -233,5 +233,38 @@ class PartyTheme(BaseModel):
         help_text="Color for text that overlays accent",
     )
 
+    # Values which work nicely with CSS rgb()
+    rgb_primary = models.CharField(max_length=16, editable=False, default="0 0 0")
+    rgb_on_primary = models.CharField(
+        max_length=16, editable=False, default="255 255 255"
+    )
+    rgb_accent = models.CharField(max_length=16, editable=False, default="255 255 255")
+    rgb_on_accent = models.CharField(max_length=16, editable=False, default="0 0 0")
+
+    def save(self, *args, **kwargs):
+        if self.primary and (value := _hex_to_rgb(self.primary)):
+            self.rgb_primary = value
+        if self.on_primary and (value := _hex_to_rgb(self.on_primary)):
+            self.rgb_on_primary = value
+        if self.accent and (value := _hex_to_rgb(self.accent)):
+            self.rgb_accent = value
+        if self.on_accent and (value := _hex_to_rgb(self.on_accent)):
+            self.rgb_on_accent = value
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Theme: {self.party}"
+
+
+def _hex_to_rgb(hex_code: str) -> str | None:
+    hex_code = hex_code.replace("#", "")
+
+    if len(hex_code) != 6:
+        return None
+
+    # Convert the hex string to integer RGB values
+    rgb = " ".join(
+        [str(x) for x in list(int(hex_code[i : i + 2], 16) for i in (0, 2, 4))]
+    )
+    return rgb

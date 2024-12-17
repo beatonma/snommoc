@@ -9,6 +9,7 @@ from crawlers.parliamentdotuk.tasks.types import (
     StringOrNone,
     field,
 )
+from pydantic import AfterValidator
 from pydantic import BaseModel as Schema
 from pydantic import BeforeValidator
 
@@ -35,8 +36,20 @@ class ElectionCandidate(Schema):
     vote_share: float | None = field("voteShare", default=None)
 
 
+def _result_description(value: str | None) -> str | None:
+    lc = value.lower()
+    if lc.endswith("hold"):
+        return "hold"
+    if lc.endswith("gain"):
+        return "gain"
+    return value
+
+
+type ResultDescription = Annotated[StringOrNone, AfterValidator(_result_description)]
+
+
 class ElectionResult(Schema):
-    result: StringOrNone
+    result: ResultDescription
     is_notional: bool = field("isNotional")
     electorate: int
     turnout: int

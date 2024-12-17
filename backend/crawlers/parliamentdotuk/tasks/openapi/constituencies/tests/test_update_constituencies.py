@@ -92,6 +92,7 @@ class UpdateElectionResultsTest(_BaseTestCase):
         self.assertEqual(result.winner.name, "Angus MacDonald")
 
         detail: ConstituencyResultDetail = result.detail
+        self.assertEqual(detail.result, "gain")
 
         hendry: ConstituencyCandidate = detail.candidates.get(name="Drew Hendry")
         self.assertEqual(hendry.votes, 15999)

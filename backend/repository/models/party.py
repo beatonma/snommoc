@@ -4,12 +4,8 @@ from typing import Self, Union, cast
 from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import Q
-from repository.models.mixins import (
-    AsciiNameMixin,
-    ParliamentDotUkMixin,
-    PeriodMixin,
-    WikipediaMixin,
-)
+from repository.models.mixins import (AsciiNameMixin, ParliamentDotUkMixin,
+                                      PeriodMixin, WikipediaMixin)
 
 _SUB_PARTY_ID_OFFSET = 100_000
 
@@ -68,6 +64,7 @@ class PartyQuerySet(BaseQuerySet):
         return cast("PartyQuerySet", super().filter(*args, **kwargs))
 
     def search(self, query: str) -> Self:
+        query = query.strip()
         return self.filter(
             Q(name__icontains=query)
             | Q(short_name__icontains=query)

@@ -48,6 +48,7 @@ class PersonQuerySet(BaseQuerySet):
         return self.filter(Q(name__iexact=name) | Q(ascii_name__iexact=name))
 
     def search(self, query: str) -> Self:
+        query = query.strip()
         return self.filter(
             Q(name__icontains=query)
             | Q(ascii_name__icontains=query)

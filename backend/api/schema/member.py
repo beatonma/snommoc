@@ -1,6 +1,7 @@
 from datetime import date
 
 from ninja import Schema
+from repository.models.houses import HouseType
 
 from .includes import (
     ConstituencyMiniSchema,

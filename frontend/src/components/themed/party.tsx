@@ -1,5 +1,5 @@
 import type { Party, PartyDetail } from "@/api";
-import { ComponentPropsWithoutRef } from "react";
+import React, { ComponentPropsWithoutRef } from "react";
 import { classes } from "@/util/transforms";
 import { ThemedDiv } from "@/components/themed/themed-div";
 import { Nullish } from "@/types/common";
@@ -9,7 +9,7 @@ interface PartyProps {
   party: Party | PartyDetail | null | undefined;
 }
 
-const rgb = (value: string | undefined) =>
+export const rgb = (value: string | undefined) =>
   value ? `rgb(${value})` : undefined;
 
 const partyTheme = (party: Party | PartyDetail) => ({
@@ -91,14 +91,14 @@ export const PartyIconBackground = (
       {...rest}
     >
       <div
-        className="absolute inset-0 z-[-1] h-full w-full"
+        className="absolute inset-0 z-[-1] size-full"
         style={{
           backgroundColor: theme.primary.backgroundColor,
         }}
       >
         <MaskedSvg
           src={party.logo_mask ?? party.logo}
-          className="inset-0 h-full w-full translate-x-1/2 bg-black/[0.08]"
+          className="inset-0 size-full translate-x-1/2 bg-black/[0.08]"
         />
       </div>
       {children}

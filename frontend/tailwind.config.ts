@@ -13,7 +13,10 @@ export default {
         md: "863px",
       },
       colors: {
-        surface: colors.neutral,
+        surface: {
+          DEFAULT: colors.neutral["500"],
+          ...colors.neutral,
+        },
         primary: {
           DEFAULT: "rgb(var(--primary))",
           ...colors.slate,
@@ -39,6 +42,9 @@ export default {
           },
           on_lords: colors.white,
         },
+      },
+      transitionDuration: {
+        DEFAULT: "220ms",
       },
     },
   },

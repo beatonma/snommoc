@@ -4,6 +4,7 @@ import { Party, PartyDetail } from "@/api";
 import { PartyIconBackground } from "@/components/themed/party";
 import Link from "next/link";
 import { NextLinkProps } from "@/components/link";
+import { Optional } from "@/components/optional";
 
 type CardProps = {
   image?: ReactNode;
@@ -23,7 +24,15 @@ export const HeaderCard = (props: HeaderCardProps) => {
 
   const content = (
     <>
-      <div className="self-center overflow-hidden rounded-lg">{image}</div>
+      <Optional
+        value={image}
+        block={(it) => (
+          <div className="flex w-full justify-center self-center overflow-hidden rounded-lg sm:w-auto">
+            {it}
+          </div>
+        )}
+      />
+
       <div className="flex flex-col gap-1">{children}</div>
     </>
   );
@@ -37,7 +46,11 @@ export const HeaderCard = (props: HeaderCardProps) => {
 
 type ListItemCardProps = { label?: string } & CardProps & NextLinkProps;
 export const ListItemCard = (props: ListItemCardProps) => {
-  const { image, children, party, label, ...rest } = addClass(props, "flex");
+  const { image, children, party, label, ...rest } = addClass(
+    props,
+    "flex max-w-[400px]",
+    "hover-overlay",
+  );
 
   return (
     <Link {...rest}>

@@ -14,6 +14,7 @@ from repository.models.mixins import (
 
 class ConstituencyQuerySet(BaseQuerySet):
     def search(self, query: str) -> Self:
+        query = query.strip()
         return self.filter(
             Q(name__icontains=query)
             | Q(ascii_name__icontains=query)

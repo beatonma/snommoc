@@ -9,10 +9,11 @@ import { ClassNameProps } from "@/types/common";
 interface MemberItemProps {
   member: MemberMiniSchema;
   label?: string;
+  showParty?: boolean;
   showConstituency?: boolean;
 }
 export const MemberItem = (props: MemberItemProps & ClassNameProps) => {
-  const { member, label, showConstituency, ...rest } = props;
+  const { member, label, showParty, showConstituency, ...rest } = props;
   return (
     <ListItemCard
       href={`/members/${member.parliamentdotuk}/`}
@@ -38,6 +39,7 @@ export const MemberItem = (props: MemberItemProps & ClassNameProps) => {
         <OptionalDiv
           title="Party"
           value={member.party?.name}
+          condition={() => showParty !== false}
           className="line-clamp-1"
         />
         <OptionalDiv

@@ -36,7 +36,7 @@ export default function RootLayout({
           </Nav>
         </header>
 
-        <div className="grid w-full grid-cols-[1fr_minmax(300px,1350px)_1fr] items-center">
+        <div className="grid w-full grid-cols-[1fr_minmax(auto,1350px)_1fr]">
           <div id="side_left" />
           {children}
           <div id="side_right" />

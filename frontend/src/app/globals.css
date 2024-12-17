@@ -8,6 +8,14 @@
     --on_accent: 0 0 0;
   }
 
+  .card {
+    @apply bg-surface-50 text-surface-900 drop-shadow-sm dark:bg-surface-900 dark:text-surface-50;
+  }
+
+  body {
+    @apply overflow-x-hidden;
+  }
+
   img {
     @apply object-cover;
   }
@@ -20,6 +28,9 @@
     @apply text-4xl;
   }
   h2 {
+    @apply text-3xl;
+  }
+  h3 {
     @apply text-2xl;
   }
 
@@ -33,36 +44,22 @@
   }
 
   table {
-    @apply w-fit border-collapse;
+    @apply card w-fit sm:rounded-lg;
+
+    thead th:not(:empty) {
+      @apply border-b-[0.1px] border-primary/25 text-center;
+    }
+
+    tbody th {
+      @apply border-r-[0.1px] border-primary/25 text-right;
+    }
 
     th {
-      @apply px-4 py-2 text-center;
-      &:not(:empty) {
-        @apply border-b-[2px];
-        border-color: var(--primary);
-      }
-
-      &:only-child {
-        @apply text-center;
-      }
+      @apply px-4 py-2;
     }
+
     td {
-      @apply min-w-24 px-4 py-1.5 text-center;
-
-      &:first-child {
-        @apply text-end;
-      }
-
-      &:only-child {
-        @apply text-center;
-      }
-    }
-
-    &:not(:has(td:nth-child(3))) {
-      th:not(:only-child):last-child,
-      td:not(:only-child):last-child {
-        @apply text-start;
-      }
+      @apply min-w-24 px-4 py-1.5;
     }
   }
 }
@@ -72,6 +69,18 @@
 
 @layer components {
   .readable {
-    max-width: 800px;
+    @apply max-w-[800px];
+  }
+
+  .hover-overlay {
+    @apply relative;
+
+    &::after {
+      @apply absolute inset-0 rounded-md bg-transparent transition-[background-color,inset] content-[''];
+    }
+
+    &:hover::after {
+      @apply bg-surface-50/10;
+    }
   }
 }

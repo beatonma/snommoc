@@ -84,6 +84,7 @@ export const getMembers = async (
     },
   });
 
+export type ElectionResult = schema["ResultsSchema"];
 export type Constituency = schema["ConstituencyFullSchema"];
 export const getConstituency = async (
   parliamentdotuk: number,

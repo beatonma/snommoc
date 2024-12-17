@@ -120,7 +120,7 @@ const _GenderDemographics = (props: { demographics: GenderDemographics[] }) => {
     <table>
       <thead>
         <tr>
-          <th></th>
+          <th />
           {demographics.map((it) => (
             <th key={it.house}>{it.house}</th>
           ))}
@@ -129,25 +129,25 @@ const _GenderDemographics = (props: { demographics: GenderDemographics[] }) => {
 
       <tbody>
         <tr>
-          <td>Male</td>
+          <th>Male</th>
           {demographics.map((it) => (
             <td key={it.house}>{it.male_member_count}</td>
           ))}
         </tr>
         <tr>
-          <td>Female</td>
+          <th>Female</th>
           {demographics.map((it) => (
             <td key={it.house}>{it.female_member_count}</td>
           ))}
         </tr>
         <tr>
-          <td>Non-Binary</td>
+          <th>Non-Binary</th>
           {demographics.map((it) => (
             <td key={it.house}>{it.non_binary_member_count}</td>
           ))}
         </tr>
         <tr>
-          <td>Total</td>
+          <th>Total</th>
           {demographics.map((it) => (
             <td key={it.house}>{it.total_member_count}</td>
           ))}
@@ -173,19 +173,19 @@ const _LordsDemographics = (props: {
 
       <tbody>
         <tr>
-          <td>Bishops</td>
+          <th>Bishops</th>
           <td>{demographics.bishop_count}</td>
         </tr>
         <tr>
-          <td>Hereditary</td>
+          <th>Hereditary</th>
           <td>{demographics.hereditary_count}</td>
         </tr>
         <tr>
-          <td>Life</td>
+          <th>Life</th>
           <td>{demographics.life_count}</td>
         </tr>
         <tr>
-          <td>Total</td>
+          <th>Total</th>
           <td>{demographics.total_count}</td>
         </tr>
       </tbody>

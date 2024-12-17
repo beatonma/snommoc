@@ -132,7 +132,7 @@ export interface paths {
         };
         /**
          * Constituencies
-         * @description List of currently active constituencies
+         * @description Searchable constituencies. If no query, returns current constituencies.
          */
         get: operations["api_routers_constituency_constituencies"];
         put?: never;
@@ -152,23 +152,6 @@ export interface paths {
         };
         /** Constituency */
         get: operations["api_routers_constituency_constituency"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/constituencies/{constituency_parliamentdotuk}/election/{election_parliamentdotuk}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Constituency Election Result */
-        get: operations["api_routers_constituency_constituency_election_result"];
         put?: never;
         post?: never;
         delete?: never;
@@ -765,6 +748,16 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** ConstituencyCandidateSchema */
+        ConstituencyCandidateSchema: {
+            name: components["schemas"]["Name"];
+            profile?: components["schemas"]["MemberMiniSchema"] | null;
+            party: components["schemas"]["PartyMiniSchema"] | null;
+            /** Order */
+            order: number;
+            /** Votes */
+            votes: number;
+        };
         /** ConstituencyFullSchema */
         ConstituencyFullSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -786,25 +779,12 @@ export interface components {
             /** Date */
             date: string | null;
             /** Election Type */
-            election_type: string;
+            election_type?: string | null;
         };
         /** ResultsSchema */
         ResultsSchema: {
             election: components["schemas"]["ElectionSchema"];
-            mp: components["schemas"]["MemberMiniSchema"] | null;
-        };
-        /** ConstituencyCandidateSchema */
-        ConstituencyCandidateSchema: {
-            name: components["schemas"]["Name"];
-            profile?: components["schemas"]["MemberMiniSchema"] | null;
-            party: components["schemas"]["PartyMiniSchema"] | null;
-            /** Order */
-            order: number;
-            /** Votes */
-            votes: number;
-        };
-        /** ConstituencyResultSchema */
-        ConstituencyResultSchema: {
+            winner: components["schemas"]["MemberMiniSchema"] | null;
             /** Electorate */
             electorate: number;
             /** Turnout */
@@ -813,8 +793,6 @@ export interface components {
             result: string;
             /** Majority */
             majority: number;
-            constituency: components["schemas"]["ConstituencyMiniSchema"];
-            election: components["schemas"]["ElectionSchema"];
             /** Candidates */
             candidates: components["schemas"]["ConstituencyCandidateSchema"][];
         };
@@ -1209,29 +1187,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConstituencyFullSchema"];
-                };
-            };
-        };
-    };
-    api_routers_constituency_constituency_election_result: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                constituency_parliamentdotuk: number;
-                election_parliamentdotuk: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConstituencyResultSchema"];
                 };
             };
         };

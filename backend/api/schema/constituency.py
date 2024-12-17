@@ -3,24 +3,10 @@ from datetime import date
 from ninja import Schema
 
 from .election import ElectionSchema
-from .includes import ConstituencyMiniSchema, MemberMiniSchema, PartyMiniSchema
+from .includes import MemberMiniSchema, PartyMiniSchema
 from .types import Name, ParliamentSchema, field
 
-__all__ = ["ConstituencyFullSchema", "ConstituencyResultSchema"]
-
-
-class ResultsSchema(Schema):
-    election: ElectionSchema
-    winner: MemberMiniSchema | None
-
-
-class ConstituencyFullSchema(ParliamentSchema):
-    name: Name
-    start: date | None
-    end: date | None
-    mp: MemberMiniSchema | None
-    boundary: dict | None = field("boundary.geo_json", default=None)
-    results: list[ResultsSchema]
+__all__ = ["ConstituencyFullSchema"]
 
 
 class ConstituencyCandidateSchema(Schema):
@@ -31,11 +17,24 @@ class ConstituencyCandidateSchema(Schema):
     votes: int
 
 
-class ConstituencyResultSchema(Schema):
-    electorate: int
-    turnout: int
-    result: str
-    majority: int
-    constituency: ConstituencyMiniSchema = field("constituency_result.constituency")
-    election: ElectionSchema = field("constituency_result.election")
+class ResultsSchema(Schema):
+    election: ElectionSchema
+    winner: MemberMiniSchema | None
+    electorate: int = field("detail.electorate")
+    turnout: int = field("detail.turnout")
+    result: str = field("detail.result")
+    majority: int = field("detail.majority")
     candidates: list[ConstituencyCandidateSchema]
+
+    @staticmethod
+    def resolve_candidates(obj):
+        return obj.detail.candidates.order_by("-votes")
+
+
+class ConstituencyFullSchema(ParliamentSchema):
+    name: Name
+    start: date | None
+    end: date | None
+    mp: MemberMiniSchema | None
+    boundary: dict | None = field("boundary.geo_json", default=None)
+    results: list[ResultsSchema]

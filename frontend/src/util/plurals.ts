@@ -1,3 +1,5 @@
+import { int } from "@/components/number";
+
 /**
  * [Single: ZeroOrMany]
  */
@@ -6,10 +8,11 @@ const Plurals = {
   Lord: ["Lord", "Lords"],
   Member: ["Member", "Members"],
   result: ["result", "results"],
+  vote: ["vote", "votes"],
 };
 
 export const plural = (key: keyof typeof Plurals, count: number) => {
   const index = count === 1 ? 0 : 1;
 
-  return `${count} ${Plurals[key][index]}`;
+  return `${int(count)} ${Plurals[key][index]}`;
 };

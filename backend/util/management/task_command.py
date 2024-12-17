@@ -25,6 +25,12 @@ class TaskCommand(BaseCommand):
                 "already know about."
             ),
         )
+        parser.add_argument(
+            "-historic",
+            action="store_true",
+            default=False,
+            help="Tell the task to update historic data (i.e. not related to current parliamentary session).",
+        )
 
         parser.add_argument(
             "--skip_items", type=int, default=0, help="Skip the first items of a task."
@@ -67,6 +73,7 @@ class TaskCommand(BaseCommand):
         func_kwargs["skip_items"] = command_options.pop("skip_items", 0)
         func_kwargs["max_items"] = command_options.pop("max_items", None)
         func_kwargs["items_per_page"] = command_options.pop("items_per_page", None)
+        func_kwargs["historic"] = command_options.pop("historic", False)
 
         if sync:
             log.info(

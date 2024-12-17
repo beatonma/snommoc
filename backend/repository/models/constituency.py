@@ -23,6 +23,9 @@ class ConstituencyQuerySet(BaseQuerySet):
     def current(self) -> Self:
         return self.filter(start__isnull=False, end__isnull=True)
 
+    def historic(self) -> Self:
+        return self.filter(end__isnull=False)
+
 
 class Constituency(
     SocialMixin,

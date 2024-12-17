@@ -30,7 +30,13 @@ def update_constituencies(context: TaskContext):
 
 @task_context(cache_name=caches.CONSTITUENCIES)
 def update_constituency_boundaries(context: TaskContext):
-    for constituency in Constituency.objects.filter(end__isnull=True):
+    qs = Constituency.objects.all()
+    if context.historic:
+        qs = qs.historic()
+    else:
+        qs = qs.current()
+
+    for constituency in qs:
         try:
             openapi_client.get(
                 endpoint_url=endpoints.constituency_boundary(
@@ -49,7 +55,13 @@ def update_constituency_boundaries(context: TaskContext):
 
 @task_context(cache_name=caches.ELECTION_RESULTS)
 def update_election_results(context: TaskContext):
-    for constituency in Constituency.objects.filter(end__isnull=True):
+    qs = Constituency.objects.all()
+    if context.historic:
+        qs = qs.historic()
+    else:
+        qs = qs.current()
+
+    for constituency in qs:
         openapi_client.get(
             endpoint_url=endpoints.constituency_election_results(
                 constituency.parliamentdotuk

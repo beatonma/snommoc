@@ -15,17 +15,32 @@ class TaskContext:
         notification: TaskNotification | None,
         session: Session | None = None,
         force_update: bool = False,
+        historic: bool = False,
         skip_items: int = 0,
         max_items: int = None,
         items_per_page: int | None = None,
         follow_pagination: bool = True,
     ):
+        """
+
+        Args:
+            cache: JsonCache used to avoid repeated network requests.
+            notification: TaskNotification for tracking task progress and reporting any issues.
+            session: Session for network requests.
+            force_update: If True, tasks should update data from the source even if we already have a local version.
+            historic: If True, tasks should update historical data: i.e. Anything that is not related to the current parliamentary session.
+            skip_items: Skip processing of the first n items.
+            max_items: Stop processing after this many items.
+            items_per_page: Ask API pagination to return this many items.
+            follow_pagination: If false, only process the first page of results.
+        """
         self.failed = False
         self.complete = False
         self.notification = notification
         self.cache = cache
         self.session = session or Session()
         self.force_update = force_update
+        self.historic = historic
         self.skip_items = skip_items
         self.max_items = max_items
         self.items_per_page = items_per_page
@@ -89,6 +104,7 @@ def task_context(
                     cache=cache,
                     notification=notification,
                     # TaskCommand kwargs
+                    historic=kwargs.pop("historic", False),
                     force_update=kwargs.pop("force_update", False),
                     skip_items=kwargs.pop("skip_items", 0),
                     max_items=kwargs.pop("max_items", None),

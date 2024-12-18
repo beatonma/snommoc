@@ -7,9 +7,14 @@ import * as Sample from "@/app/dev/sample";
 import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
 import { MaskedSvg } from "@/components/image";
+import Loading from "@/components/loading";
 
 export const ComponentsOverview = () => (
   <>
+    <Section component="Loading">
+      <Loading />
+    </Section>
+
     <ButtonComponents />
 
     <Section component="HeaderCard">

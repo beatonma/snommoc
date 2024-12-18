@@ -1,7 +1,12 @@
-import { ComponentPropsWithoutRef } from "react";
+import { DivPropsNoChildren } from "@/types/react";
+import { Icon } from "@/components/icon";
 
-export default function Loading(
-  props: Omit<ComponentPropsWithoutRef<"div">, "children">,
-) {
-  return <div {...props}>LOADING</div>;
+export default function Loading(props: DivPropsNoChildren) {
+  return (
+    <div className="loading" {...props}>
+      <Icon icon="CommonsPerson" />
+      <Icon icon="CommonsTie" />
+      <Icon icon="CommonsTie" />
+    </div>
+  );
 }

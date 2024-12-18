@@ -1,5 +1,5 @@
 import client from "@/lib/api";
-import { components, paths } from "@/lib/api/api";
+import api, { components, paths } from "@/lib/api/api";
 
 export type ExtraFilters = Record<string, any>;
 export type ApiFilters = paths[keyof paths]["get"]["parameters"]["query"];
@@ -60,6 +60,8 @@ export const getParties = async (
 
 export type MemberProfile = schema["MemberProfile"];
 export type MemberStatus = schema["MemberStatus"];
+export type PhysicalAddress =
+  api.components["schemas"]["PhysicalAddressSchema"];
 export type WebAddress = schema["WebAddressSchema"];
 export const getMember = async (
   parliamentdotuk: number,

@@ -5,7 +5,7 @@ import {
   MemberStatus,
   type Party,
 } from "@/api";
-import { PhysicalAddress } from "@/components/address";
+import { PhysicalAddress } from "@/app/members/components/address";
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import { MemberPortrait } from "@/components/member-portrait";
 import type { Metadata, ResolvingMetadata } from "next";

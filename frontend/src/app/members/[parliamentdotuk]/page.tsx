@@ -18,6 +18,8 @@ import { HeaderCard } from "@/components/card";
 import { LinkGroup } from "@/components/link";
 import { Nullish } from "@/types/common";
 import { Date } from "@/components/datetime";
+import { partyStyle } from "@/components/themed/party";
+import PageContent from "@/components/page";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -44,12 +46,14 @@ export default async function Page({ params }: PageProps) {
   if (!member) return <ErrorMessage />;
 
   return (
-    <main>
-      <MemberCard member={member} className="flex items-center" />
+    <PageContent style={partyStyle(member.party)}>
+      <main className="readable">
+        <MemberCard member={member} />
 
-      <MemberDetail member={member} className="p-2" />
-      <MemberCareer member={member} className="p-2" />
-    </main>
+        <MemberDetail member={member} className="p-2" />
+        <MemberCareer member={member} className="p-2" />
+      </main>
+    </PageContent>
   );
 }
 

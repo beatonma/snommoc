@@ -5,7 +5,7 @@ import React, { ReactNode } from "react";
 import { Date, DateRange } from "@/components/datetime";
 import { ConstituencyMap } from "./map";
 import { GeoJSON } from "geojson";
-import { partyThemeVariableStyle } from "@/components/themed/party";
+import { partyStyle } from "@/components/themed/party";
 import { Optional } from "@/components/optional";
 import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
@@ -13,6 +13,7 @@ import { int, Percentage } from "@/components/number";
 import { PartyLink, PersonLink } from "@/components/linked-data";
 import Links from "@/links";
 import { TextLink } from "@/components/link";
+import PageContent from "@/components/page";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -39,10 +40,7 @@ export default async function Page({ params }: PageProps) {
   if (!constituency) return <ErrorMessage />;
 
   return (
-    <div
-      style={partyThemeVariableStyle(constituency.mp?.party)}
-      className="flex flex-col items-center gap-y-16"
-    >
+    <PageContent style={partyStyle(constituency.mp?.party)}>
       <main className="readable w-full">
         <section className="overflow-hidden sm:rounded-lg">
           <ConstituencyMap
@@ -86,7 +84,7 @@ export default async function Page({ params }: PageProps) {
           <ElectionResults results={constituency.results} />
         </section>
       </main>
-    </div>
+    </PageContent>
   );
 }
 

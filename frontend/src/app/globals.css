@@ -69,7 +69,7 @@
 
 @layer components {
   .readable {
-    @apply max-w-[800px];
+    @apply w-full max-w-[800px];
   }
 
   .hover-overlay {

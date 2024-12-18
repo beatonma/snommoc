@@ -33,9 +33,7 @@ const partyTheme = (party: Party | PartyDetail | Nullish) => {
   };
 };
 
-export const partyThemeVariableStyle = (
-  party: Party | PartyDetail | Nullish,
-) => {
+export const partyStyle = (party: Party | PartyDetail | Nullish) => {
   const theme = party?.theme;
   return Object.fromEntries(
     Object.entries({
@@ -44,30 +42,10 @@ export const partyThemeVariableStyle = (
       accent: theme?.accent,
       on_accent: theme?.on_accent,
     })
-      .filter(([key, value]) => !!value)
+      .filter(([_, value]) => !!value)
       .map(([key, value]) => [`--${key}`, value]),
   );
 };
-
-// /**
-//  * Container with party primary theme.
-//  */
-// const PartyPrimary = (props: PartyProps & ComponentPropsWithoutRef<"div">) => {
-//   const { party, ...rest } = props;
-//   if (!party) return <div {...rest} />;
-//
-//   return <ThemedDiv theme={partyTheme(party).primary} {...rest} />;
-// };
-//
-// /**
-//  * Container with party accent theme.
-//  */
-// const PartyAccent = (props: PartyProps & ComponentPropsWithoutRef<"div">) => {
-//   const { party, ...rest } = props;
-//   if (!party) return <div {...rest} />;
-//
-//   return <ThemedDiv theme={partyTheme(party).accent} {...rest} />;
-// };
 
 export const PartyIconBackground = (
   props: PartyProps & ComponentPropsWithoutRef<"div">,

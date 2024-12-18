@@ -12,8 +12,9 @@ import { OptionalDiv } from "@/components/optional";
 import { LinkGroup } from "@/components/link";
 import MembersList from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
-import { partyThemeVariableStyle } from "@/components/themed/party";
+import { partyStyle } from "@/components/themed/party";
 import { plural } from "@/util/plurals";
+import PageContent from "@/components/page";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -40,11 +41,8 @@ export default async function Page({ params }: PageProps) {
   if (!party) return <ErrorMessage />;
 
   return (
-    <div
-      style={partyThemeVariableStyle(party)}
-      className="flex flex-col items-center gap-y-16"
-    >
-      <main className="readable flex w-full flex-col flex-wrap items-center">
+    <PageContent style={partyStyle(party)}>
+      <main className="readable">
         <section>
           <HeaderCard
             party={party}
@@ -94,7 +92,7 @@ export default async function Page({ params }: PageProps) {
           immutableFilters={{ party: party.parliamentdotuk }}
         />
       </aside>
-    </div>
+    </PageContent>
   );
 }
 

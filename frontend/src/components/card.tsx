@@ -19,7 +19,7 @@ export const HeaderCard = (props: HeaderCardProps) => {
     "sm:rounded-lg",
     "gap-4 p-2 sm:p-4",
     "sm:rounded-lg overflow-hidden",
-    "w-full sm:w-fit sm:min-w-[600px] readable",
+    "w-full sm:min-w-[600px] readable",
   );
 
   return (

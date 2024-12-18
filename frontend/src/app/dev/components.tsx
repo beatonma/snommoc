@@ -2,7 +2,7 @@
 import { TextButton, TintedButton } from "@/components/button";
 import React from "react";
 import { ChildrenProps } from "@/types/common";
-import { partyThemeVariableStyle } from "@/components/themed/party";
+import { partyStyle } from "@/components/themed/party";
 import * as Sample from "@/app/dev/sample";
 import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
@@ -64,7 +64,7 @@ const ButtonComponents = () => (
           TintedButton
         </TintedButton>
 
-        <div style={partyThemeVariableStyle(Sample.LabourParty)}>
+        <div style={partyStyle(Sample.LabourParty)}>
           <TintedButton href="#">Themed TintedButton</TintedButton>
         </div>
       </Row>

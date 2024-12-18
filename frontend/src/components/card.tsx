@@ -22,8 +22,8 @@ export const HeaderCard = (props: HeaderCardProps) => {
     "w-full sm:w-fit sm:min-w-[600px] readable",
   );
 
-  const content = (
-    <>
+  return (
+    <PartyIconBackground party={party} {...rest}>
       <Optional
         value={image}
         block={(it) => (
@@ -34,12 +34,6 @@ export const HeaderCard = (props: HeaderCardProps) => {
       />
 
       <div className="flex flex-col gap-1">{children}</div>
-    </>
-  );
-
-  return (
-    <PartyIconBackground party={party} {...rest}>
-      {content}
     </PartyIconBackground>
   );
 };

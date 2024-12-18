@@ -20,8 +20,7 @@ export const TextLink = (props: NextLinkProps) => {
   const styledProps = addClass(
     props,
     "transition-colors",
-    "text-accent-950 hover:text-accent-800",
-    "dark:text-accent-200 dark:hover:text-accent-300",
+    "text-accent hover:text-accent/90",
   );
 
   return (

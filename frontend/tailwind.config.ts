@@ -27,7 +27,6 @@ export default {
           ...colors.amber,
         },
         on_accent: "rgb(var(--on_accent))",
-        default_party: colors.stone,
         house: {
           commons: {
             DEFAULT: "#006e46",

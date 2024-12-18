@@ -2,9 +2,9 @@
 
 @layer base {
   :root {
-    --primary: 100 116 139;
+    --primary: 41 71 69;
     --on_primary: 255 255 255;
-    --accent: 253 230 138;
+    --accent: 186 229 226;
     --on_accent: 0 0 0;
   }
 

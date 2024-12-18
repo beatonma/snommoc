@@ -20,6 +20,7 @@ const OptionalElement = <E extends ElementType, T>(
   props: { element: E | null } & ElementProps<E> & OptionalProps<T>,
 ) => {
   const { element, value, condition, block, ...rest } = props;
+
   if (value == null) return null;
   if (condition && !condition(value)) return null;
   if (!condition && Array.isArray(value) && value.length === 0) return null;

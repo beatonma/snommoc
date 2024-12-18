@@ -60,13 +60,12 @@ export default async function Page({ params }: PageProps) {
           >
             <h1>{constituency.name}</h1>
 
-            {constituency.end == null ? (
-              <span>
-                Constituency updated <Date date={constituency.start} />
-              </span>
-            ) : (
-              <DateRange start={constituency.start} end={constituency.end} />
-            )}
+            <Optional
+              value={constituency.end != null}
+              block={() => (
+                <DateRange start={constituency.start} end={constituency.end} />
+              )}
+            />
             <Optional
               value={constituency.mp}
               block={(it) => (

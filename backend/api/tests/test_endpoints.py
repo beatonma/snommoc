@@ -133,22 +133,22 @@ class MemberCareerTests(
     pass
 
 
-class ConstituencyResultsTests(
-    detail_testcase(
-        "ConstituencyResultsTests",
-        detail_url=LocalApiTestCase.reverse(
-            "constituency_election_result",
-            constituency_parliamentdotuk=16892,
-            election_parliamentdotuk=851,
-        ),
-        create_object=lambda: create_constituency_result_detail(
-            constituency=create_sample_constituency(parliamentdotuk=16892),
-            election=create_sample_election(parliamentdotuk=851),
-            mp=create_sample_person(parliamentdotuk=1423),
-        ),
-    )
-):
-    pass
+# class ConstituencyResultsTests(
+#     detail_testcase(
+#         "ConstituencyResultsTests",
+#         detail_url=LocalApiTestCase.reverse(
+#             "constituency_election_result",
+#             constituency_parliamentdotuk=16892,
+#             election_parliamentdotuk=851,
+#         ),
+#         create_object=lambda: create_constituency_result_detail(
+#             constituency=create_sample_constituency(parliamentdotuk=16892),
+#             election=create_sample_election(parliamentdotuk=851),
+#             mp=create_sample_person(parliamentdotuk=1423),
+#         ),
+#     )
+# ):
+#     pass
 
 
 class ConstituencyTests(

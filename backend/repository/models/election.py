@@ -30,6 +30,9 @@ class Election(ParliamentDotUkMixin, BaseModel):
     def __str__(self):
         return f"{self.name} [{self.pk}]"
 
+    class Meta:
+        ordering = ["-date"]
+
 
 class ElectionNationalResult(ParliamentDotUkMixin, BaseModel):
     election = models.ForeignKey(

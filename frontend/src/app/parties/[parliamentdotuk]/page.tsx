@@ -122,12 +122,14 @@ const _GenderDemographics = (props: { demographics: GenderDemographics[] }) => {
         <tr>
           <th />
           {demographics.map((it) => (
-            <th key={it.house}>{it.house}</th>
+            <th key={it.house} className="text-right">
+              {it.house}
+            </th>
           ))}
         </tr>
       </thead>
 
-      <tbody>
+      <tbody className="[&_td]:text-right">
         <tr>
           <th>Male</th>
           {demographics.map((it) => (
@@ -167,11 +169,13 @@ const _LordsDemographics = (props: {
     <table>
       <thead>
         <tr>
-          <th colSpan={2}>Lords type</th>
+          <th colSpan={2} className="text-center">
+            Lords type
+          </th>
         </tr>
       </thead>
 
-      <tbody>
+      <tbody className="[&_td]:text-right">
         <tr>
           <th>Bishops</th>
           <td>{demographics.bishop_count}</td>

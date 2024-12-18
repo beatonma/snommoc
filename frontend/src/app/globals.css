@@ -47,7 +47,7 @@
     @apply card w-fit sm:rounded-lg;
 
     thead th:not(:empty) {
-      @apply border-b-[0.1px] border-primary/25 text-center;
+      @apply border-b-[0.1px] border-primary/25;
     }
 
     tbody th {
@@ -55,11 +55,11 @@
     }
 
     th {
-      @apply px-4 py-2;
+      @apply px-4 py-2 text-left;
     }
 
     td {
-      @apply min-w-24 px-4 py-1.5;
+      @apply min-w-16 px-4 py-1.5;
     }
   }
 }

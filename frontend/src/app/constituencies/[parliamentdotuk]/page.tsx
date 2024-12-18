@@ -1,5 +1,5 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { type ElectionResult, getConstituency, Party } from "@/api";
+import { type ElectionResult, getConstituency } from "@/api";
 import ErrorMessage from "@/components/error";
 import React, { ReactNode } from "react";
 import { Date, DateRange } from "@/components/datetime";
@@ -134,13 +134,13 @@ const ElectionResult = (props: { result: ElectionResult }) => {
           </div>
         </div>
 
-        <table>
+        <table className="w-full">
           <thead>
             <tr>
-              <th>Candidate</th>
-              <th>Party</th>
-              <th>Votes</th>
-              <th>%</th>
+              <th className="text-left">Candidate</th>
+              <th className="text-left">Party</th>
+              <th className="text-right">Votes</th>
+              <th className="text-right">%</th>
             </tr>
           </thead>
           <tbody>
@@ -172,8 +172,8 @@ const ElectionResult = (props: { result: ElectionResult }) => {
                     <td>
                       <PartyLink party={it.party} />
                     </td>
-                    <td>{int(it.votes)}</td>
-                    <td>
+                    <td className="text-right">{int(it.votes)}</td>
+                    <td className="text-right">
                       <Percentage value={(it.votes / result.turnout) * 100} />
                     </td>
                   </tr>

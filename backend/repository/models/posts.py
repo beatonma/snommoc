@@ -47,4 +47,4 @@ class PostHolder(PersonMixin, PeriodMixin, BaseModel):
     )
 
     class Meta:
-        ordering = ["-end", "-start"]
+        ordering = PeriodMixin.meta_ordering_recent()

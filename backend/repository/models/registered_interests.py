@@ -53,3 +53,4 @@ class RegisteredInterest(
                 fields=["parliamentdotuk", "person"], name="unique_id_per_person"
             )
         ]
+        ordering = ["-amended", "-created"]

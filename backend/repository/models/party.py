@@ -4,8 +4,12 @@ from typing import Self, Union, cast
 from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import Q
-from repository.models.mixins import (AsciiNameMixin, ParliamentDotUkMixin,
-                                      PeriodMixin, WikipediaMixin)
+from repository.models.mixins import (
+    AsciiNameMixin,
+    ParliamentDotUkMixin,
+    PeriodMixin,
+    WikipediaMixin,
+)
 
 _SUB_PARTY_ID_OFFSET = 100_000
 
@@ -197,6 +201,7 @@ class PartyAffiliation(PeriodMixin, BaseModel):
                 name="unique_party_per_person_per_startdate",
             )
         ]
+        ordering = PeriodMixin.meta_ordering_recent()
 
 
 class PartyTheme(BaseModel):

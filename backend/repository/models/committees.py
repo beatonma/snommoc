@@ -32,6 +32,7 @@ class CommitteeMember(PersonMixin, PeriodMixin, BaseModel):
                 name="unique_committee_per_person_per_start_date",
             )
         ]
+        ordering = PeriodMixin.meta_ordering_recent()
 
 
 class CommitteeChair(Deprecated, PeriodMixin, BaseModel):

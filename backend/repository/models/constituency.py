@@ -117,3 +117,4 @@ class ConstituencyRepresentative(PersonMixin, PeriodMixin, BaseModel):
                 name="unique_person_per_constituency_per_startdate",
             ),
         ]
+        ordering = PeriodMixin.meta_ordering_recent()

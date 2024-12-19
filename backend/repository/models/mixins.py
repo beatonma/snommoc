@@ -63,6 +63,10 @@ class PeriodMixin(models.Model):
             return f"since {self.start}"
         return ""
 
+    @staticmethod
+    def meta_ordering_recent():
+        return ["-end", "-start"]
+
     class Meta:
         abstract = True
 

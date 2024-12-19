@@ -34,8 +34,24 @@ from repository.models.posts import Post, PostHolder
 
 
 @task_context(cache_name=caches.MEMBERS)
-def update_current_members(context: TaskContext):
-    openapi_client.foreach(
+def update_members(context: TaskContext) -> None:
+    if context.item_id:
+        openapi_client.get(
+            endpoint_url=endpoints.member_basic(context.item_id),
+            item_func=_update_member_detail,
+            context=context,
+        )
+        return
+
+    if context.historic:
+        openapi_client.foreach(
+            endpoint_url=endpoints.MEMBERS_HISTORICAL,
+            item_func=_update_member_detail,
+            context=context,
+        )
+        return
+
+    return openapi_client.foreach(
         endpoint_url=endpoints.MEMBERS_CURRENT,
         item_func=_update_member_detail,
         context=context,

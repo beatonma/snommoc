@@ -19,6 +19,7 @@ class TaskContext:
         skip_items: int = 0,
         max_items: int = None,
         items_per_page: int | None = None,
+        item_id: int | None = None,
         follow_pagination: bool = True,
     ):
         """
@@ -32,6 +33,7 @@ class TaskContext:
             skip_items: Skip processing of the first n items.
             max_items: Stop processing after this many items.
             items_per_page: Ask API pagination to return this many items.
+            item_id: Only fetch data for a single item.
             follow_pagination: If false, only process the first page of results.
         """
         self.failed = False
@@ -44,6 +46,7 @@ class TaskContext:
         self.skip_items = skip_items
         self.max_items = max_items
         self.items_per_page = items_per_page
+        self.item_id = item_id
         self.follow_pagination = follow_pagination
 
     def limit_reached(self, item_count: int) -> bool:
@@ -109,6 +112,7 @@ def task_context(
                     skip_items=kwargs.pop("skip_items", 0),
                     max_items=kwargs.pop("max_items", None),
                     items_per_page=kwargs.pop("items_per_page", items_per_page),
+                    item_id=kwargs.pop("item_id", None),
                 ),
             )
             func(*args, context=context, **kwargs)

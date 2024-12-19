@@ -1,9 +1,7 @@
 from datetime import date
 
 from crawlers.context import TaskContext
-from crawlers.parliamentdotuk.tasks.openapi.members.member_detail import (
-    update_current_members,
-)
+from crawlers.parliamentdotuk.tasks.openapi.members.member_detail import update_members
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import Person
@@ -31,7 +29,7 @@ class UpdateMemberDetailTests(OpenApiTestCase):
 
     @classmethod
     def setUpTestData(cls):
-        update_current_members(context=CONTEXT)
+        update_members(context=CONTEXT)
 
     def setUp(self):
         self.person = Person.objects.get(parliamentdotuk=4514)

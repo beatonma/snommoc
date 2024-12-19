@@ -1,1 +1,1 @@
-from .member_detail import update_current_members
+from .member_detail import update_members

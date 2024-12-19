@@ -47,6 +47,12 @@ class TaskCommand(BaseCommand):
             default=None,
             help="Request this many items per page.",
         )
+        parser.add_argument(
+            "--item_id",
+            type=int,
+            default=None,
+            help="Update only the specified item.",
+        )
 
     def handle_async(self, func, func_kwargs: dict | None = None, **command_options):
         """Call from handle(), passing the function along with the received options.
@@ -74,6 +80,7 @@ class TaskCommand(BaseCommand):
         func_kwargs["max_items"] = command_options.pop("max_items", None)
         func_kwargs["items_per_page"] = command_options.pop("items_per_page", None)
         func_kwargs["historic"] = command_options.pop("historic", False)
+        func_kwargs["item_id"] = command_options.pop("item_id", None)
 
         if sync:
             log.info(

@@ -32,6 +32,7 @@ CONSTITUENCY_RESULTS_FULL = "https://members-api.parliament.uk/api/Location/Cons
 MEMBER_PORTRAIT_URL = (
     "https://members-api.parliament.uk/api/Members/{member_id}/PortraitUrl"
 )
+MEMBER_BASIC = "https://members-api.parliament.uk/api/Members/{member_id}"
 MEMBERS_CURRENT = "https://members-api.parliament.uk/api/Members/Search"
 MEMBERS_HISTORICAL = "https://members-api.parliament.uk/api/Members/SearchHistorical"
 MEMBER_BIOGRAPHY = "https://members-api.parliament.uk/api/Members/{member_id}/Biography"
@@ -104,6 +105,11 @@ def bill_stages(bill_id: int) -> str:
 def bill_publications(bill_id: int) -> str:
     """Sample: https://bills-api.parliament.uk/api/v1/Bills/512/Publications"""
     return BILL_PUBLICATIONS.format(bill_id=bill_id)
+
+
+def member_basic(member_id: int) -> str:
+    """Sample: https://members-api.parliament.uk/api/Members/4514"""
+    return MEMBER_BASIC.format(member_id=member_id)
 
 
 def member_portrait(member_id: int) -> str:

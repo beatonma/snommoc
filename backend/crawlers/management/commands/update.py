@@ -18,7 +18,6 @@ class Command(TaskCommand):
             "constituencies",
             help="Update constituency data, including boundaries and election results.",
         ).add_subparsers(dest="scope")
-        constituencies.add_parser("", help="Update core constituency data")
         constituencies.add_parser("boundaries", help="Update geographical boundaries")
         constituencies.add_parser("elections", help="Update election results")
 
@@ -38,7 +37,6 @@ class Command(TaskCommand):
             help="Update member data",
         ).add_subparsers(dest="scope")
         members.add_parser("active", help="Update detailed data for active members")
-        members.add_parser("all", help="Update basic data for all members")
         members.add_parser("portraits", help="Update member portraits")
 
     def handle(self, *args, command: str, **kwargs):
@@ -78,6 +76,6 @@ class Command(TaskCommand):
     @staticmethod
     def handle_members(scope: str, **kwargs) -> Callable:
         return {
-            "active": parliament.update_current_members,
+            "active": parliament.update_members,
             "portraits": multi_source.update_member_portraits,
-        }.get(scope, parliament.update_current_members)
+        }.get(scope, parliament.update_members)

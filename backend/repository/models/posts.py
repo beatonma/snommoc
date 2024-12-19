@@ -45,3 +45,6 @@ class PostHolder(PersonMixin, PeriodMixin, BaseModel):
         on_delete=models.CASCADE,
         related_name="holders",
     )
+
+    class Meta:
+        ordering = ["-end", "-start"]

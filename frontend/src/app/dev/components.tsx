@@ -8,6 +8,7 @@ import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
 import { MaskedSvg } from "@/components/image";
 import Loading from "@/components/loading";
+import { ButtonLink } from "@/components/link";
 
 export const ComponentsOverview = () => (
   <>
@@ -69,6 +70,15 @@ const ButtonComponents = () => (
         </div>
       </Row>
     </Section>
+
+    <Section component="ButtonLink">
+      <Row>
+        <ButtonLink href="https://beatonma.org">Home</ButtonLink>
+        <ButtonLink href="mailto:test@beatonma.org">Email</ButtonLink>
+        <ButtonLink href="tel:0800 800150">Phone</ButtonLink>
+        <ButtonLink href="#">Debug</ButtonLink>
+      </Row>
+    </Section>
   </>
 );
 
@@ -84,5 +94,5 @@ const Section = (props: { component: string } & ChildrenProps) => {
 };
 
 const Row = (props: ChildrenProps) => (
-  <div className="flex flex-wrap gap-2">{props.children}</div>
+  <div className="flex flex-wrap items-start gap-2">{props.children}</div>
 );

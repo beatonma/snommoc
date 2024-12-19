@@ -34,8 +34,24 @@
     @apply text-2xl;
   }
 
-  section:not(:last-child) {
-    @apply mb-16;
+  section {
+    @apply flex flex-col gap-y-1;
+    > h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply leading-relaxed;
+    }
+
+    &:not(:last-child) {
+      @apply mb-12;
+    }
+
+    section:not(:last-child) {
+      @apply mb-8;
+    }
   }
 
   input,

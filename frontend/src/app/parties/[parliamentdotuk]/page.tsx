@@ -81,7 +81,7 @@ export default async function Page({ params }: PageProps) {
           </HeaderCard>
         </section>
 
-        <section className="w-full items-center">
+        <section>
           <Demographics party={party} />
         </section>
       </main>
@@ -103,8 +103,8 @@ const Demographics = (props: { party: PartyDetail }) => {
 
   return (
     <>
-      <h2 className="py-2">Demographics</h2>
-      <div className="flex flex-row flex-wrap gap-16">
+      <h2>Demographics</h2>
+      <div className="flex flex-row flex-wrap gap-4">
         <_GenderDemographics demographics={party.gender_demographics} />
         <_LordsDemographics demographics={party.lords_demographics} />
       </div>

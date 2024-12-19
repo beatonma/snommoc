@@ -85,7 +85,7 @@ const ButtonComponents = () => (
 const Section = (props: { component: string } & ChildrenProps) => {
   return (
     <section className="border-2 border-dotted p-4">
-      <h1 className="mb-4">
+      <h1>
         <pre>{`<${props.component} />`}</pre>
       </h1>
       {props.children}

@@ -42,7 +42,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <PageContent style={partyStyle(constituency.mp?.party)}>
       <main className="readable w-full">
-        <section className="overflow-hidden sm:rounded-lg">
+        <section className="gap-y-0 overflow-hidden sm:rounded-lg">
           <ConstituencyMap
             className="aspect-square max-h-[50vh] w-full"
             geojson={
@@ -111,7 +111,7 @@ const ElectionResult = (props: { result: ElectionResult }) => {
   let depositLost = false;
 
   return (
-    <div className="mb-8 mt-4">
+    <section>
       <div className="flex flex-wrap items-baseline gap-2">
         <h3>{result.election.name}</h3>
         <Date date={result.election.date} />
@@ -181,6 +181,6 @@ const ElectionResult = (props: { result: ElectionResult }) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 };

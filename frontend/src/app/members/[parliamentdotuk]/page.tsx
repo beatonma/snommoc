@@ -49,9 +49,8 @@ export default async function Page({ params }: PageProps) {
     <PageContent style={partyStyle(member.party)}>
       <main className="readable">
         <MemberCard member={member} />
-
-        <MemberDetail member={member} className="p-2" />
-        <MemberCareer member={member} className="p-2" />
+        <MemberDetail member={member} />
+        <MemberCareer member={member} />
       </main>
     </PageContent>
   );
@@ -169,8 +168,8 @@ const MemberDetail = (props: MemberComponentProps) => {
   const { member, ...rest } = props;
   return (
     <section {...rest}>
-      <h2 className="py-2">Contact</h2>
-      <div className="flex gap-4 overflow-x-auto">
+      <h2>Contact</h2>
+      <div className="flex max-w-full flex-wrap gap-4 overflow-x-auto">
         {member.address.physical.map((it) => (
           <PhysicalAddress key={it.address} className="shrink-0 p-1" {...it} />
         ))}

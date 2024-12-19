@@ -186,8 +186,8 @@ def _update_posts(
     for item in posts:
         post, _ = Post.objects.update_or_create(
             parliamentdotuk=item.parliamentdotuk,
+            type=post_type,
             defaults={
-                "type": post_type,
                 "name": item.name,
                 "additional_info": item.additional_info,
                 "additional_info_link": item.additional_info_link,

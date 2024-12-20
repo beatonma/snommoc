@@ -1,8 +1,35 @@
-import type { ConstituencyMini, MemberMiniSchema, Party } from "@/api";
+import type {
+  Committee,
+  ConstituencyMini,
+  HouseType,
+  MemberMiniSchema,
+  Organisation,
+  Party,
+  Post,
+} from "@/api";
 import { TextButton } from "@/components/button";
 import React from "react";
 import { Nullish } from "@/types/common";
 import { rgb } from "@/components/themed/party";
+import { TextLink } from "@/components/link";
+
+interface DotTextProps {
+  color: string | undefined;
+  text: string;
+}
+const DotText = (props: DotTextProps) => {
+  const { color, text } = props;
+  if (!color) return <span>{text}</span>;
+  return (
+    <div className="flex items-baseline gap-1.5">
+      <span
+        className="size-[1ch] rounded-full align-middle"
+        style={{ backgroundColor: color }}
+      />
+      <span>{text}</span>
+    </div>
+  );
+};
 
 export const PartyLink = ({
   party,
@@ -12,24 +39,31 @@ export const PartyLink = ({
   showDot?: boolean;
 }) => {
   if (!party) return null;
-
-  const content = showDot ? (
-    <div className="flex items-center gap-1.5">
-      <div
-        className="size-2 rounded-full"
-        style={{ backgroundColor: rgb(party.theme?.primary) }}
-      ></div>
-      <div>{party.name}</div>
-    </div>
-  ) : (
-    party.name
-  );
+  const color = showDot ? rgb(party.theme?.primary) : undefined;
 
   return (
     <TextButton href={`/parties/${party.parliamentdotuk}/`}>
-      {content}
+      <DotText color={color} text={party.name} />
     </TextButton>
   );
+};
+
+export const HouseLink = (props: {
+  house: HouseType;
+  longFormat?: boolean;
+  showDot?: boolean;
+}) => {
+  const { house, longFormat = false, showDot = true } = props;
+
+  const text = longFormat ? `House of ${house}` : house;
+  const color = showDot
+    ? {
+        Commons: rgb("var(--commons)"),
+        Lords: rgb("var(--lords)"),
+      }[house]
+    : undefined;
+
+  return <DotText color={color} text={text} />;
 };
 
 export const PersonLink = ({
@@ -63,4 +97,28 @@ export const ConstituencyLink = ({
       {constituency.name}
     </TextButton>
   );
+};
+
+export const PostLink = ({ post }: { post: Post | Nullish }) => {
+  return post?.name ?? null;
+};
+
+export const CommitteeLink = ({
+  committee,
+}: {
+  committee: Committee | Nullish;
+}) => {
+  return committee?.name ?? null;
+};
+
+export const OrganisationLink = ({
+  organisation,
+}: {
+  organisation: Organisation | Nullish;
+}) => {
+  if (!organisation) return null;
+  if (organisation.url) {
+    return <TextLink href={organisation.url}>{organisation.name}</TextLink>;
+  }
+  return organisation.name;
 };

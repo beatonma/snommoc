@@ -7,7 +7,7 @@ export const SeparatedRow = (props: DivProps) => {
     <div
       {...addClass(
         props,
-        `[&>*:not(:last-child)]:after:content-['-'] [&>*:not(:last-child)]:after:mx-1 flex flex-wrap`,
+        `[&>*:not(:last-child)]:after:content-['·'] [&>*:not(:last-child)]:after:mx-1 flex flex-wrap`,
       )}
     />
   );

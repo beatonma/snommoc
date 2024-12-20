@@ -27,6 +27,10 @@ type PhoneNumber = Annotated[
 ]
 
 
+def SplitString(separator: str):
+    return Annotated[list[str], BeforeValidator(lambda x: x.split(separator))]
+
+
 class ParliamentSchema(Schema):
     """A schema which has an associated parliament.uk API ID"""
 

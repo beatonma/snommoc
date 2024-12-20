@@ -7,6 +7,7 @@ from .includes import (
     ConstituencyMiniSchema,
     DivisionMiniSchema,
     MemberMiniSchema,
+    OrganisationSchema,
     PartyMiniSchema,
 )
 from .types import (
@@ -15,6 +16,7 @@ from .types import (
     ParliamentId,
     ParliamentSchema,
     PhoneNumber,
+    SplitString,
     Url,
     WikipediaPath,
     field,
@@ -59,7 +61,7 @@ class ConstituencyRepresentation(Schema):
 
 class ExperienceSchema(Schema):
     category: str | None = field("category.name")
-    organisation: str | None
+    organisation: OrganisationSchema | None
     title: str | None
     start: date | None
     end: date | None
@@ -73,29 +75,23 @@ class CommitteeMemberSchema(ParliamentSchema):
 
 
 class HouseMembershipSchema(Schema):
-    house: Name = field("house.name")
+    house: HouseType = field("house.name")
     start: date | None
     end: date | None
 
 
 class DeclaredInterestsSchema(ParliamentSchema):
     category: str | None = field("category.name")
-    description: str | None
+    description: SplitString("\n")
     created: date | None
     amended: date | None
     deleted: date | None
-    registered_late: bool
 
 
 class PartyAffiliationSchema(Schema):
     party: PartyMiniSchema
     start: date | None
     end: date | None
-
-
-class SubjectOfInterestSchema(Schema):
-    category: str = field("category.title")
-    description: str
 
 
 class PostSchema(ParliamentSchema):
@@ -138,7 +134,6 @@ class MemberProfile(MemberMiniSchema, ParliamentSchema):
     place_of_birth: TownSchema | None = field("town_of_birth")
     current_committees: list[CommitteeMemberSchema]
     address: AddressSchema
-    subjects_of_interest: list[SubjectOfInterestSchema] = field("subjects_of_interest")
     wikipedia: WikipediaPath | None
 
     @staticmethod
@@ -157,7 +152,19 @@ class MemberCareerHistory(Schema):
     committees: list[CommitteeMemberSchema] = field("committees")
     experiences: list[ExperienceSchema] = field("experiences")
     houses: list[HouseMembershipSchema] = field("house_memberships")
+    subjects_of_interest: dict[str, list[str]]
     interests: list[DeclaredInterestsSchema] = field("registered_interests")
+
+    @staticmethod
+    def resolve_subjects_of_interest(obj) -> dict[str, list]:
+        qs = obj.subjects_of_interest.order_by("category__title")
+        grouped = {}
+
+        for item in qs:
+            current = grouped.get(item.category.title, [])
+            grouped[item.category.title] = current + [item.description]
+
+        return grouped
 
 
 class VoteSchema(Schema):

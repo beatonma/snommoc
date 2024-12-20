@@ -44,7 +44,7 @@ const LinkifiedAttribution = (props: LicenceDefinition) => {
 
   return (
     <>
-      {attribution.map((attr) => {
+      {attribution.map((attr, index) => {
         const parts = attr
           .split(name)
           .map((fragment, index) =>
@@ -60,7 +60,7 @@ const LinkifiedAttribution = (props: LicenceDefinition) => {
           }
         });
 
-        return <p key={attr}>{results}</p>;
+        return <p key={index}>{results}</p>;
       })}
     </>
   );

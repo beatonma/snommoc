@@ -1,14 +1,12 @@
 import { Nullish } from "@/types/common";
 import { DivPropsNoChildren } from "@/types/react";
-import { ComponentPropsWithoutRef, ReactNode } from "react";
-import { SeparatedRow } from "@/components/collection";
-import { addClass } from "@/util/transforms";
+import { ComponentPropsWithoutRef } from "react";
+import { addClass, capitalize } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
-const DateFormat: Intl.DateTimeFormatOptions = {
+const DefaultDateFormat: Intl.DateTimeFormatOptions = {
   year: "numeric",
   month: "long",
-  day: "numeric",
 };
 const parseDate = (dt: ParseableDate): Date | null => {
   if (!dt) return null;
@@ -26,29 +24,35 @@ export const DateRange = (
   props: {
     start: ParseableDate;
     end: ParseableDate;
-    prefix?: ReactNode;
-    suffix?: ReactNode;
+    dateFormat?: Intl.DateTimeFormatOptions;
+    capitalized?: boolean;
   } & DivPropsNoChildren,
 ) => {
   const {
     start: _start,
     end: _end,
-    prefix,
-    suffix,
+    dateFormat,
+    capitalized = true,
     ...rest
-  } = addClass(props, "flex gap-x-1");
+  } = addClass(props, "flex gap-x-0.5");
   const start = parseDate(props.start);
   const end = parseDate(props.end);
 
   if (start && end) {
     return (
       <div {...rest}>
-        {prefix}
-        <SeparatedRow>
-          <Date date={start} />
-          <Date date={end} />
-        </SeparatedRow>
-        {suffix}
+        <Date date={start} dateFormat={dateFormat} />-
+        <Date date={end} dateFormat={dateFormat} />
+      </div>
+    );
+  }
+
+  if (start) {
+    const prefix = "since";
+    return (
+      <div {...rest}>
+        {`${capitalized ? capitalize(prefix) : prefix}`}{" "}
+        <Date date={start} dateFormat={dateFormat} />
       </div>
     );
   }
@@ -60,7 +64,7 @@ export const Date = (
     dateFormat?: Intl.DateTimeFormatOptions;
   } & Omit<ComponentPropsWithoutRef<"time">, "dateTime" | "children" | "title">,
 ) => {
-  const { date, dateFormat = DateFormat, ...rest } = props;
+  const { date, dateFormat = DefaultDateFormat, ...rest } = props;
   const parsed = parseDate(date);
 
   if (parsed == null) return null;

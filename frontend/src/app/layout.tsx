@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full w-full">
-      <body className="grid h-full grid-rows-[min-content_1fr_min-content] items-start bg-surface-100 text-surface-900 dark:bg-surface-800 dark:text-surface-50">
+      <body className="grid h-full grid-rows-[min-content_1fr_min-content] items-start bg-surface text-on_surface">
         <header className="flex w-full flex-col items-center gap-2 p-8">
           <h1>Commons</h1>
           <Nav>
@@ -42,7 +42,7 @@ export default function RootLayout({
           <div id="side_right" />
         </div>
 
-        <footer className="flex flex-col items-center gap-2 p-8 text-center">
+        <footer className="flex flex-col items-center gap-2 p-8 pt-16 text-center">
           <License licence="OpenParliament" />
         </footer>
       </body>

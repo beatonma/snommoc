@@ -1,5 +1,11 @@
 from .color import Color
-from .common import DateOrNone, DateTimeOrNone, List, StringOrNone
+from .common import (
+    DateOrNone,
+    DateTimeOrNone,
+    List,
+    StringOrNone,
+    StringOrNoneKeepBreaks,
+)
 from .field import field
 from .house import House
 from .html import SafeHtmlOrNone
@@ -17,4 +23,5 @@ __all__ = [
     "PhoneNumber",
     "SafeHtmlOrNone",
     "StringOrNone",
+    "StringOrNoneKeepBreaks",
 ]

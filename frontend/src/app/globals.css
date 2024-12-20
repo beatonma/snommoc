@@ -1,11 +1,37 @@
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   :root {
-    --primary: 41 71 69;
-    --on_primary: 255 255 255;
-    --accent: 186 229 226;
-    --on_accent: 0 0 0;
+    --commons: 0 110 70;
+    --on_commons: 255 255 255;
+    --lords: 181 9 56;
+    --on_lords: 255 255 255;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --surface: 245 245 245;
+      --on_surface: 23 23 23;
+
+      --primary: 51 87 81;
+      --on_primary: 255 255 255;
+      --accent: 0 127 118;
+      --on_accent: 255 255 255;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    :root {
+      --surface: 41 37 36;
+      --on_surface: 250 250 249;
+
+      --primary: 41 71 69;
+      --on_primary: 255 255 255;
+      --accent: 186 229 226;
+      --on_accent: 0 0 0;
+    }
   }
 
   .card {
@@ -35,7 +61,7 @@
   }
 
   section {
-    @apply flex flex-col gap-y-1;
+    @apply flex flex-col gap-y-2;
     > h1,
     h2,
     h3,
@@ -52,6 +78,10 @@
     section:not(:last-child) {
       @apply mb-8;
     }
+  }
+
+  ul {
+    @apply list-inside list-disc;
   }
 
   input,
@@ -80,12 +110,16 @@
   }
 }
 
-@tailwind components;
-@tailwind utilities;
-
 @layer components {
   .readable {
     @apply w-full max-w-[800px];
+  }
+
+  .text-reduced {
+    /**
+     * Reduce emphasis by fading the currentColor.
+     */
+    color: color-mix(in srgb, currentColor 85%, transparent);
   }
 
   .hover-overlay {

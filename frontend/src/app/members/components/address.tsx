@@ -15,7 +15,12 @@ export const PhysicalAddress = (
       <OptionalDiv className="text-xs" value={description} />
 
       <div>
-        <OptionalDiv value={address} />
+        <OptionalDiv
+          value={address}
+          block={(it) =>
+            it.split(",").map((line, index) => <p key={index}>{line.trim()}</p>)
+          }
+        />
         <OptionalDiv value={postcode} />
       </div>
 

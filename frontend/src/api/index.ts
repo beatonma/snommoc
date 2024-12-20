@@ -1,5 +1,5 @@
 import client from "@/lib/api";
-import api, { components, paths } from "@/lib/api/api";
+import { components, paths } from "@/lib/api/api";
 
 export type ExtraFilters = Record<string, any>;
 export type ApiFilters = paths[keyof paths]["get"]["parameters"]["query"];
@@ -59,14 +59,36 @@ export const getParties = async (
   });
 
 export type MemberProfile = schema["MemberProfile"];
-export type MemberStatus = schema["MemberStatus"];
-export type PhysicalAddress =
-  api.components["schemas"]["PhysicalAddressSchema"];
+export type PhysicalAddress = schema["PhysicalAddressSchema"];
 export type WebAddress = schema["WebAddressSchema"];
 export const getMember = async (
   parliamentdotuk: number,
 ): ApiPromise<MemberProfile> =>
   client.GET("/api/members/{parliamentdotuk}/", {
+    params: {
+      path: {
+        parliamentdotuk: parliamentdotuk,
+      },
+    },
+  });
+
+export type MemberCareer = schema["MemberCareerHistory"];
+export const getMemberCareer = async (
+  parliamentdotuk: number,
+): ApiPromise<MemberCareer> =>
+  client.GET("/api/members/{parliamentdotuk}/career/", {
+    params: {
+      path: {
+        parliamentdotuk: parliamentdotuk,
+      },
+    },
+  });
+
+export type MemberVotes = schema["MemberVotesSchema"];
+export const getMemberVotes = async (
+  parliamentdotuk: number,
+): ApiPromise<any> =>
+  client.GET("/api/members/{parliamentdotuk}/votes/", {
     params: {
       path: {
         parliamentdotuk: parliamentdotuk,
@@ -110,6 +132,10 @@ export const getConstituencies = async (
       query: query,
     },
   });
+
+export type Organisation = schema["OrganisationSchema"];
+export type Post = Omit<schema["PostSchema"], "start" | "end">;
+export type Committee = Omit<schema["CommitteeMemberSchema"], "start" | "end">;
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Fixtures {

@@ -11,6 +11,7 @@ __all__ = [
     "BillMiniSchema",
     "DivisionMiniSchema",
     "MemberMiniSchema",
+    "OrganisationSchema",
     "PartyMiniSchema",
     "PartyThemeSchema",
 ]
@@ -98,3 +99,8 @@ class BillMiniSchema(ParliamentSchema):
     title: str
     description: str | None = field("summary", default=None)
     last_update: datetime
+
+
+class OrganisationSchema(Schema):
+    name: str
+    url: str | None

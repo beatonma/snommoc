@@ -10,6 +10,7 @@ from crawlers.parliamentdotuk.tasks.types import (
     PersonName,
     PhoneNumber,
     StringOrNone,
+    StringOrNoneKeepBreaks,
     field,
 )
 from pydantic import BaseModel as Schema
@@ -121,7 +122,6 @@ class ContestedElection(Schema):
 
 
 class HouseMembership(Schema):
-    # house_id: House = field("id")
     house_name: House = field("name")
     start: DateOrNone = field("startDate")
     end: DateOrNone = field("endDate")
@@ -221,7 +221,7 @@ class Experience(Schema):
 
 class RegisteredInterest(Schema):
     interest_id: int = field("id")
-    interest_title: StringOrNone = field("interest")
+    interest_title: StringOrNoneKeepBreaks = field("interest")
     created_at: DateTimeOrNone = field("createdWhen")
     last_amended_at: DateTimeOrNone = field("lastAmendedWhen")
     deleted_at: DateTimeOrNone = field("deletedWhen")

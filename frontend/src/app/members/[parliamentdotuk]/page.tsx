@@ -1,10 +1,4 @@
-import {
-  ConstituencyMini,
-  HouseType,
-  MemberProfile,
-  MemberStatus,
-  type Party,
-} from "@/api";
+import { ConstituencyMini, HouseType, MemberProfile, type Party } from "@/api";
 import { PhysicalAddress } from "@/app/members/components/address";
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import { MemberPortrait } from "@/components/member-portrait";
@@ -20,6 +14,7 @@ import { Nullish } from "@/types/common";
 import { Date } from "@/components/datetime";
 import { partyStyle } from "@/components/themed/party";
 import PageContent from "@/components/page";
+import Career from "@/app/members/[parliamentdotuk]/career";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -80,19 +75,20 @@ const MemberCard = (props: MemberComponentProps) => {
 
         <LinkGroup links={[...member.address.web, member.wikipedia]} />
 
-        <div>
-          <OptionalDiv value={member.current_posts} title="Current post" />
-
-          <div className="flex flex-wrap gap-1">
-            <Party party={member.party} />
-            <Status
-              status={member.status}
-              house={member.house}
-              constituency={member.constituency}
-              lordType={member.lord_type}
-            />
-          </div>
+        <div className="flex flex-wrap gap-1">
+          <Party party={member.party} />
+          <Status
+            status={member.status}
+            house={member.house}
+            constituency={member.constituency}
+            lordType={member.lord_type}
+          />
         </div>
+
+        <CurrentPositions
+          posts={member.current_posts}
+          committees={member.current_committees}
+        />
       </HeaderCard>
     </section>
   );
@@ -108,7 +104,7 @@ const Party = ({ party }: { party: Party | null }) => {
 };
 
 const Status = (props: {
-  status: MemberStatus;
+  status: MemberProfile["status"];
   house: HouseType | Nullish;
   constituency: ConstituencyMini | null;
   lordType: string | Nullish;
@@ -144,8 +140,7 @@ const Status = (props: {
         value={status.since}
         block={(it) => (
           <>
-            Inactive since{" "}
-            <Date date={it} dateFormat={{ month: "long", year: "numeric" }} />
+            Inactive since <Date date={it} />
             <OptionalSpan
               value={status.description}
               block={(it) => `: ${it}`}
@@ -161,6 +156,29 @@ const Status = (props: {
       {titleParts}
       {inactivityStatus}
     </>
+  );
+};
+
+const CurrentPositions = (props: {
+  posts: MemberProfile["current_posts"];
+  committees: MemberProfile["current_committees"];
+}) => {
+  const { posts, committees } = props;
+
+  if (!posts.length && !committees.length) {
+    return null;
+  }
+
+  return (
+    <div className="text-sm">
+      {posts.map((post, index) => (
+        <p key={index}>{post}</p>
+      ))}
+
+      {committees.map((it, index) => (
+        <p key={index}>{it.name}</p>
+      ))}
+    </div>
   );
 };
 
@@ -180,5 +198,9 @@ const MemberDetail = (props: MemberComponentProps) => {
 
 const MemberCareer = (props: MemberComponentProps) => {
   const { member, ...rest } = props;
-  return <section {...rest}>todo member career</section>;
+  return (
+    <section {...rest}>
+      <Career parliamentdotuk={member.parliamentdotuk} />
+    </section>
+  );
 };

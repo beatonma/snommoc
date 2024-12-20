@@ -447,8 +447,6 @@ export interface components {
             /** Current Committees */
             current_committees: components["schemas"]["CommitteeMemberSchema"][];
             address: components["schemas"]["AddressSchema"];
-            /** Subjects Of Interest */
-            subjects_of_interest: components["schemas"]["SubjectOfInterestSchema"][];
             wikipedia: components["schemas"]["WikipediaPath"] | null;
         };
         /** MemberStatus */
@@ -487,13 +485,6 @@ export interface components {
             wide?: string | null;
             /** Tall */
             tall?: string | null;
-        };
-        /** SubjectOfInterestSchema */
-        SubjectOfInterestSchema: {
-            /** Category */
-            category: string;
-            /** Description */
-            description: string;
         };
         /** TownSchema */
         TownSchema: {
@@ -534,22 +525,19 @@ export interface components {
             /** Category */
             category: string | null;
             /** Description */
-            description: string | null;
+            description: string[];
             /** Created */
             created: string | null;
             /** Amended */
             amended: string | null;
             /** Deleted */
             deleted: string | null;
-            /** Registered Late */
-            registered_late: boolean;
         };
         /** ExperienceSchema */
         ExperienceSchema: {
             /** Category */
             category: string | null;
-            /** Organisation */
-            organisation: string | null;
+            organisation: components["schemas"]["OrganisationSchema"] | null;
             /** Title */
             title: string | null;
             /** Start */
@@ -559,7 +547,7 @@ export interface components {
         };
         /** HouseMembershipSchema */
         HouseMembershipSchema: {
-            house: components["schemas"]["Name"];
+            house: components["schemas"]["HouseType"];
             /** Start */
             start: string | null;
             /** End */
@@ -579,8 +567,19 @@ export interface components {
             experiences: components["schemas"]["ExperienceSchema"][];
             /** Houses */
             houses: components["schemas"]["HouseMembershipSchema"][];
+            /** Subjects Of Interest */
+            subjects_of_interest: {
+                [key: string]: string[];
+            };
             /** Interests */
             interests: components["schemas"]["DeclaredInterestsSchema"][];
+        };
+        /** OrganisationSchema */
+        OrganisationSchema: {
+            /** Name */
+            name: string;
+            /** Url */
+            url: string | null;
         };
         /** PartyAffiliationSchema */
         PartyAffiliationSchema: {

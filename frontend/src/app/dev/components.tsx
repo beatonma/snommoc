@@ -9,6 +9,7 @@ import { HeaderCard } from "@/components/card";
 import { MaskedSvg } from "@/components/image";
 import Loading from "@/components/loading";
 import { ButtonLink } from "@/components/link";
+import { useSortable } from "@/components/sortable";
 
 export const ComponentsOverview = () => (
   <>
@@ -41,6 +42,8 @@ export const ComponentsOverview = () => (
 
 const ButtonComponents = () => (
   <>
+    <SortableComponents />
+
     <Section component="TextButton">
       <Row>
         <TextButton>TextButton</TextButton>
@@ -81,6 +84,42 @@ const ButtonComponents = () => (
     </Section>
   </>
 );
+
+const SortableComponents = () => {
+  const { sortedData, sortBySelectElement } = useSortable({
+    data: Sample.MemberList,
+    defaultSort: "parliamentdotuk",
+    sortOptions: {
+      parliamentdotuk: {
+        name: "ID",
+        sort: (a, b) => a.parliamentdotuk - b.parliamentdotuk,
+      },
+      name: {
+        name: "Name",
+        sort: (a, b) => a.name.localeCompare(b.name),
+      },
+      party: {
+        name: "Party",
+        sort: (a, b) =>
+          (a.party?.name ?? "")?.localeCompare(b.party?.name ?? ""),
+      },
+    },
+  });
+
+  return (
+    <Section component="Sortable">
+      <div>
+        {sortBySelectElement}
+
+        {sortedData?.map((it) => (
+          <div key={it.parliamentdotuk}>
+            {it.parliamentdotuk} {it.name} {it.party?.name}
+          </div>
+        )) ?? <Loading />}
+      </div>
+    </Section>
+  );
+};
 
 const Section = (props: { component: string } & ChildrenProps) => {
   return (

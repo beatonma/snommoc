@@ -2,8 +2,13 @@ from common.admin import BaseAdmin, register_models_to_default_admin
 from django.contrib import admin
 from django.db.models import QuerySet
 from repository.apps import RepositoryConfig
-from repository.models import (Constituency, Party, PartyAlsoKnownAs, Person,
-                               PersonAlsoKnownAs)
+from repository.models import (
+    Constituency,
+    Party,
+    PartyAlsoKnownAs,
+    Person,
+    PersonAlsoKnownAs,
+)
 from repository.models.party import PartyTheme
 
 
@@ -17,6 +22,7 @@ class RepositoryAdmin(BaseAdmin):
         "parliamentdotuk",
         "date",
         "url",
+        "house",
     ]
 
     default_ordering = [

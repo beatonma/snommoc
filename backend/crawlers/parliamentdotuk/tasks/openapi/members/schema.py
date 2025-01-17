@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from typing import Self
 
@@ -230,9 +231,33 @@ class RegisteredInterest(Schema):
 
 
 class RegisteredInterestCategory(Schema):
-    category_id: int = field("id")
+    sort_order: int = field("sortOrder")
     name: StringOrNone
+    codename_major: int
+    codename_minor: StringOrNone
     interests: List[RegisteredInterest]
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_codename(cls, obj):
+        """Extract codename values from category name.
+
+        Codename values are used for sorting categories correctly.
+        e.g. "2. (b) Any other support not included in Category 2(a)" should
+             yield codename_major=2, codename_minor="b"
+        """
+        name = obj["name"].removeprefix("Category ")
+
+        match = re.match(
+            r"^(?P<major>\d+)[:.] (\((?P<minor_start>[a-z]+)\) )?.*?( \((?P<minor_end>[a-z]+)\))?$",
+            name,
+        )
+        groups = match.groupdict() if match else {}
+        obj["codename_major"] = int(groups.get("major", 0))
+        obj["codename_minor"] = groups.get("minor_start") or groups.get("minor_end")
+        obj["name"] = name
+
+        return obj
 
 
 class SubjectOfInterest(Schema):

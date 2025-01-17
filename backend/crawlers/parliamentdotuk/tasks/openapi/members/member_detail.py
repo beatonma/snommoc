@@ -35,27 +35,21 @@ from repository.models.posts import Post, PostHolder
 
 @task_context(cache_name=caches.MEMBERS)
 def update_members(context: TaskContext) -> None:
+    client_func = openapi_client.foreach
     if context.item_id:
-        openapi_client.get(
-            endpoint_url=endpoints.member_basic(context.item_id),
-            item_func=_update_member_detail,
-            context=context,
-        )
-        return
+        endpoint_url = endpoints.member_basic(context.item_id)
+        client_func = openapi_client.get
+    elif context.historic:
+        endpoint_url = endpoints.MEMBERS_HISTORICAL
+    else:
+        endpoint_url = endpoints.MEMBERS_CURRENT
 
-    if context.historic:
-        openapi_client.foreach(
-            endpoint_url=endpoints.MEMBERS_HISTORICAL,
-            item_func=_update_member_detail,
-            context=context,
-        )
-        return
-
-    return openapi_client.foreach(
-        endpoint_url=endpoints.MEMBERS_CURRENT,
+    client_func(
+        endpoint_url=endpoint_url,
         item_func=_update_member_detail,
         context=context,
     )
+    finalize_members_update()
 
 
 def _update_member_detail(response_data: dict, context: TaskContext):
@@ -319,11 +313,10 @@ def _update_registered_interests(
         .value
     )
     person = func_kwargs["person"]
+    house = person.house
 
     for item in categories:
-        category, _ = RegisteredInterestCategory.objects.update_or_create(
-            parliamentdotuk=item.category_id, defaults={"name": item.name}
-        )
+        category = _get_registered_interest_category(house, item)
 
         for index, interest in enumerate(item.interests):
             parent, _ = RegisteredInterest.objects.update_or_create(
@@ -353,6 +346,18 @@ def _update_registered_interests(
                         "is_correction": child.is_correction,
                     },
                 )
+
+
+def _get_registered_interest_category(
+    house: House, item: schema.RegisteredInterestCategory
+):
+    category, _ = RegisteredInterestCategory.objects.update_or_create(
+        codename_major=item.codename_major,
+        codename_minor=item.codename_minor,
+        house=house,
+        defaults={"name": item.name, "sort_order": item.sort_order},
+    )
+    return category
 
 
 def _update_subjects_of_interest(
@@ -406,3 +411,24 @@ def _update_experiences(response_data: dict, context: TaskContext, func_kwargs: 
                 "end": item.end,
             },
         )
+
+
+def finalize_members_update():
+    """Apply any post-processing required after updating member data"""
+    _finalize_registered_interest_category_order()
+    pass
+
+
+def _finalize_registered_interest_category_order():
+    """RegisteredInterestCategory data from the API provides a sort_order
+    field but its values for the HoC are not usable (Lords values are fine).
+
+    Here we use the parsed values (codename_major, codename_minor) to sort
+    the complete set of categories, then persist that order via sort_order."""
+    categories = RegisteredInterestCategory.objects.filter(
+        house=House.objects.commons()
+    ).order_by("codename_major", "codename_minor")
+
+    for order, category in enumerate(categories):
+        category.sort_order = order
+        category.save(update_fields=("sort_order",))

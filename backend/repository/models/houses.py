@@ -1,6 +1,6 @@
 from typing import Literal
 
-from common.models import BaseModel
+from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from repository.models.mixins import PeriodMixin, PersonMixin
 
@@ -9,7 +9,16 @@ HOUSE_OF_COMMONS: HouseType = "Commons"
 HOUSE_OF_LORDS: HouseType = "Lords"
 
 
+class HouseQuerySet(BaseQuerySet):
+    def commons(self) -> "House":
+        return self.get(name=HOUSE_OF_COMMONS)
+
+    def lords(self) -> "House":
+        return self.get(name=HOUSE_OF_LORDS)
+
+
 class House(BaseModel):
+    objects = HouseQuerySet.as_manager()
     name = models.CharField(
         max_length=16,
         unique=True,

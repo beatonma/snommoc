@@ -18,6 +18,7 @@ from repository.models import (
     Person,
 )
 from repository.models.bill import Bill, BillStageType, BillType, BillTypeCategory
+from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.person import PersonStatus
 from repository.tests.data.sample_bills import (
     any_sample_bill_stage_type,
@@ -418,15 +419,20 @@ def create_sample_commons_division(
     )
 
 
-def _coerce_house(house: str = "Commons") -> House:
+def _coerce_house(house: str = HOUSE_OF_COMMONS) -> House:
     house, _ = House.objects.get_or_create(name=house)
 
     return house
 
 
+def create_houses():
+    create_sample_house(HOUSE_OF_COMMONS)
+    create_sample_house(HOUSE_OF_LORDS)
+
+
 def create_sample_house(name: str | None = None) -> House:
     if name is None:
-        name = random.choice(["Commons", "Lords", "Unassigned"])
+        name = random.choice([HOUSE_OF_COMMONS, HOUSE_OF_LORDS, "Unassigned"])
 
     house, _ = House.objects.get_or_create(name=name)
 

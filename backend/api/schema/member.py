@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Self
 
 from ninja import Schema
 from repository.models.houses import HouseType
@@ -86,6 +87,7 @@ class DeclaredInterestsSchema(ParliamentSchema):
     created: date | None
     amended: date | None
     deleted: date | None
+    children: list[Self] = field("children")
 
 
 class PartyAffiliationSchema(Schema):
@@ -153,7 +155,7 @@ class MemberCareerHistory(Schema):
     experiences: list[ExperienceSchema] = field("experiences")
     houses: list[HouseMembershipSchema] = field("house_memberships")
     subjects_of_interest: dict[str, list[str]]
-    interests: list[DeclaredInterestsSchema] = field("registered_interests")
+    interests: list[DeclaredInterestsSchema]  # = field("registered_interests")
 
     @staticmethod
     def resolve_subjects_of_interest(obj) -> dict[str, list]:
@@ -165,6 +167,11 @@ class MemberCareerHistory(Schema):
             grouped[item.category.title] = current + [item.description]
 
         return grouped
+
+    @staticmethod
+    def resolve_interests(obj) -> list[DeclaredInterestsSchema]:
+        qs = obj.registered_interests.filter(parent__isnull=True)
+        return qs
 
 
 class VoteSchema(Schema):

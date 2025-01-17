@@ -532,6 +532,8 @@ export interface components {
             amended: string | null;
             /** Deleted */
             deleted: string | null;
+            /** Children */
+            children: components["schemas"]["DeclaredInterestsSchema"][];
         };
         /** ExperienceSchema */
         ExperienceSchema: {

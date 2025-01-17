@@ -4,17 +4,36 @@ import { ComponentPropsWithoutRef } from "react";
 import { addClass, capitalize } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
-const DefaultDateFormat: Intl.DateTimeFormatOptions = {
-  year: "numeric",
-  month: "long",
-};
-const parseDate = (dt: ParseableDate): Date | null => {
+
+export namespace DateFormat {
+  export const Default: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+  };
+  export const FullDate: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    year: "numeric",
+    month: "long",
+  };
+}
+
+export const parseDate = (dt: ParseableDate): Date | null => {
   if (!dt) return null;
   if (dt instanceof globalThis.Date) return dt;
 
   const result = new globalThis.Date(dt);
 
   return isNaN(result.valueOf()) ? null : result;
+};
+
+export const formatDate = (
+  dt: ParseableDate,
+  dateFormat: Intl.DateTimeFormatOptions = DateFormat.Default,
+): string | null => {
+  const parsed = parseDate(dt);
+  if (!parsed) return null;
+
+  return parsed.toLocaleDateString(undefined, dateFormat);
 };
 
 /**
@@ -64,7 +83,7 @@ export const Date = (
     dateFormat?: Intl.DateTimeFormatOptions;
   } & Omit<ComponentPropsWithoutRef<"time">, "dateTime" | "children" | "title">,
 ) => {
-  const { date, dateFormat = DefaultDateFormat, ...rest } = props;
+  const { date, dateFormat = DateFormat.Default, ...rest } = props;
   const parsed = parseDate(date);
 
   if (parsed == null) return null;
@@ -75,7 +94,7 @@ export const Date = (
       title={parsed.toDateString()}
       {...rest}
     >
-      {parsed.toLocaleDateString(undefined, dateFormat)}
+      {formatDate(parsed, dateFormat)}
     </time>
   );
 };

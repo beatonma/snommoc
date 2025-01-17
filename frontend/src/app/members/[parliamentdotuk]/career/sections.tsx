@@ -1,7 +1,10 @@
-import { getMemberCareer, MemberCareer } from "@/api";
-import ErrorMessage from "@/components/error";
-import { Date, DateRange } from "@/components/datetime";
+"use client";
+
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
+import { Optional } from "@/components/optional";
+import { Nullish } from "@/types/common";
+import Loading from "@/components/loading";
+import { MemberCareer } from "@/api";
 import {
   CommitteeLink,
   ConstituencyLink,
@@ -10,11 +13,18 @@ import {
   PartyLink,
   PostLink,
 } from "@/components/linked-data";
+import {
+  Date,
+  DateFormat,
+  DateRange,
+  formatDate,
+  parseDate,
+} from "@/components/datetime";
 import { SeparatedRow } from "@/components/collection";
-import { Nullish } from "@/types/common";
-import { Optional } from "@/components/optional";
+import { useSortable } from "@/components/sortable";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import { HighlightMoney } from "@/components/highlight";
 
 const SecondaryStyle = "text-reduced text-sm";
 
@@ -31,41 +41,10 @@ type CareerSummary = Pick<
 type CareerHouse = MemberCareer["houses"][number];
 type CareerConstituency = MemberCareer["constituencies"][number];
 type CareerParty = MemberCareer["parties"][number];
-
-export default async function Career(props: { parliamentdotuk: number }) {
-  const { parliamentdotuk } = props;
-  const response = await getMemberCareer(parliamentdotuk);
-  const career = response.data;
-  if (!career) return <ErrorMessage error="Career not available." />;
-
-  return (
-    <>
-      <h2>Career</h2>
-
-      <Summary
-        houses={career.houses}
-        parties={career.parties}
-        constituencies={career.constituencies}
-      />
-
-      <Houses houses={career.houses} />
-      <Parties parties={career.parties} />
-      <Constituencies constituencies={career.constituencies} />
-
-      <SubjectsOfInterest subjects={career.subjects_of_interest} />
-
-      <Posts posts={career.posts} />
-      <Committees committees={career.committees} />
-      <Interests interests={career.interests} />
-      <Experiences experiences={career.experiences} />
-    </>
-  );
-}
-
 /**
  * Display a reduced UI for sections that don't have much to say.
  */
-const Summary = (props: CareerSummary) => {
+export const Summary = (props: CareerSummary) => {
   const { houses, parties, constituencies } = props;
 
   const SummaryItem = <T,>(props: {
@@ -96,28 +75,40 @@ const Summary = (props: CareerSummary) => {
   );
 };
 
-interface SectionProps<T> {
+interface SectionHeaderProps {
   title: string;
+  toolbar?: ReactNode;
   description?: string;
+}
+interface BlockProps<T> extends SectionHeaderProps {
   data: T | Nullish;
   block: (data: T) => ReactNode;
 }
+interface ListSectionProps<T> extends SectionHeaderProps {
+  data: T[] | Nullish;
+  block: (item: T, index: number, lst: T[]) => ReactNode;
+}
+type SectionProps<T> = T &
+  Omit<ComponentPropsWithoutRef<"section">, keyof T | "id" | "children">;
 
-const Section = <T,>(
-  props: SectionProps<T> &
-    Omit<
-      ComponentPropsWithoutRef<"section">,
-      keyof SectionProps<T> | "id" | "children"
-    >,
-) => {
-  const { title, description, data, block, ...rest } = props;
+const Section = <T,>(props: SectionProps<BlockProps<T>>) => {
+  const { title, toolbar, description, data, block, ...rest } = props;
 
   if (!data) return null;
   if (typeof data === "object" && !Object.keys(data).length) return null;
 
+  const titleHeader = <h3>{title}</h3>;
+
   return (
     <section id={title.toLowerCase().replaceAll(/\s/g, "")} {...rest}>
-      <h3>{title}</h3>
+      {toolbar ? (
+        <div className="flex flex-row justify-between">
+          {titleHeader}
+          <div className="flex flex-row items-center gap-x-2">{toolbar}</div>
+        </div>
+      ) : (
+        titleHeader
+      )}
 
       <Optional
         value={description}
@@ -129,18 +120,8 @@ const Section = <T,>(
   );
 };
 
-interface ListProps<T> {
-  title: string;
-  description?: string;
-  data: T[];
-  block: (item: T) => ReactNode;
-}
-type ListSectionProps<T> = ListProps<T> &
-  Omit<
-    ComponentPropsWithoutRef<"section">,
-    keyof ListProps<T> | "id" | "children"
-  >;
-const ListSection = <T,>(props: ListSectionProps<T>) => {
+const ListSection = <T,>(props: SectionProps<ListSectionProps<T>>) => {
+  if (props.data == null) return <Loading />;
   if (!props.data.length) return null;
 
   const { data, block, ...rest } = props;
@@ -149,8 +130,8 @@ const ListSection = <T,>(props: ListSectionProps<T>) => {
     <Section
       data={data}
       block={(items) =>
-        items.map((it, index) => (
-          <React.Fragment key={index}>{block(it)}</React.Fragment>
+        items.map((it, index, lst) => (
+          <React.Fragment key={index}>{block(it, index, lst)}</React.Fragment>
         ))
       }
       {...rest}
@@ -165,14 +146,15 @@ const ListSection = <T,>(props: ListSectionProps<T>) => {
  * Data with a single item will instead be rendered in <Summary />
  */
 const SummaryListSection = <T extends keyof CareerSummary>(
-  props: ListSectionProps<CareerSummary[T][number]>,
+  props: SectionProps<ListSectionProps<CareerSummary[T][number]>>,
 ) => {
+  if (props.data == null) return <Loading />;
   if (props.data.length <= 1) return null;
 
   return <ListSection {...props} />;
 };
 
-const Parties = ({ parties }: { parties: CareerParty[] }) => (
+export const Parties = ({ parties }: { parties: CareerParty[] }) => (
   <SummaryListSection
     title="Parties"
     data={parties}
@@ -180,7 +162,7 @@ const Parties = ({ parties }: { parties: CareerParty[] }) => (
   />
 );
 
-const Constituencies = ({
+export const Constituencies = ({
   constituencies,
 }: {
   constituencies: CareerConstituency[];
@@ -192,7 +174,7 @@ const Constituencies = ({
   />
 );
 
-const Houses = ({ houses }: { houses: CareerHouse[] }) => (
+export const Houses = ({ houses }: { houses: CareerHouse[] }) => (
   <SummaryListSection
     title="Houses"
     data={houses}
@@ -200,7 +182,7 @@ const Houses = ({ houses }: { houses: CareerHouse[] }) => (
   />
 );
 
-const Posts = ({ posts }: { posts: MemberCareer["posts"] }) => (
+export const Posts = ({ posts }: { posts: MemberCareer["posts"] }) => (
   <ListSection
     title="Posts"
     data={posts}
@@ -217,7 +199,7 @@ const Posts = ({ posts }: { posts: MemberCareer["posts"] }) => (
   />
 );
 
-const Committees = ({
+export const Committees = ({
   committees,
 }: {
   committees: MemberCareer["committees"];
@@ -234,32 +216,34 @@ const Committees = ({
   />
 );
 
-const Experiences = ({
+export const Experiences = ({
   experiences,
 }: {
   experiences: MemberCareer["experiences"];
-}) => (
-  <ListSection
-    title="Non-parliamentary experience"
-    data={experiences}
-    block={(it) => (
-      <BlockItem>
-        <div>
-          <span>{it.title}</span>
-          <span> at </span>
-          <OrganisationLink organisation={it.organisation} />
-        </div>
+}) => {
+  return (
+    <ListSection
+      title="Non-parliamentary experience"
+      data={experiences}
+      block={(it) => (
+        <BlockItem>
+          <div>
+            <span>{it.title}</span>
+            <span> at </span>
+            <OrganisationLink organisation={it.organisation} />
+          </div>
 
-        <SeparatedRow className={SecondaryStyle}>
-          <span>{it.category}</span>
-          <DateRange start={it.start} end={it.end} />
-        </SeparatedRow>
-      </BlockItem>
-    )}
-  />
-);
+          <SeparatedRow className={SecondaryStyle}>
+            <span>{it.category}</span>
+            <DateRange start={it.start} end={it.end} />
+          </SeparatedRow>
+        </BlockItem>
+      )}
+    />
+  );
+};
 
-const SubjectsOfInterest = ({
+export const SubjectsOfInterest = ({
   subjects,
 }: {
   subjects: MemberCareer["subjects_of_interest"];
@@ -283,25 +267,114 @@ const SubjectsOfInterest = ({
   />
 );
 
-const Interests = ({ interests }: { interests: MemberCareer["interests"] }) => (
-  <ListSection
-    className="gap-y-4"
-    title="Registered Interests"
-    data={interests}
-    block={(it) => (
-      <BlockItem>
-        <Date date={it.created} />
-        <div>{it.category}</div>
-        <div>
-          {it.description.map((par, index) => {
-            return <p key={index}>{par}</p>;
-          })}
-        </div>
-      </BlockItem>
-    )}
-  />
-);
+type Interest = MemberCareer["interests"][number];
+export const RegisteredInterests = ({
+  interests,
+}: {
+  interests: MemberCareer["interests"];
+}) => {
+  const { sortedData, sortBySelectElement, sortedBy } = useSortable({
+    data: interests,
+    defaultSort: "date",
+    sortOptions: {
+      category: {
+        name: "Category",
+        sort: (a, b) => (a.category ?? "").localeCompare(b.category ?? ""),
+      },
+      date: {
+        name: "Recent",
+        sort: (a, b) =>
+          (parseDate(b.created)?.getTime() ?? 0) -
+          (parseDate(a.created)?.getTime() ?? 0),
+      },
+    },
+  });
 
+  const subheader: ListSubheader<Interest, typeof sortedBy> = {
+    category: {
+      subheader: (obj) => obj.category,
+      compare: (obj) => obj?.category,
+    },
+    date: {
+      subheader: (obj) => <Date date={obj.created} />,
+      compare: (obj) => formatDate(obj?.created),
+    },
+  };
+
+  return (
+    <ListSection
+      className="gap-y-4"
+      title="Registered Interests"
+      toolbar={<>Sort: {sortBySelectElement}</>}
+      data={sortedData}
+      block={(it, index, lst) => {
+        return (
+          <>
+            <ListSubheader
+              previous={lst[index - 1]}
+              current={lst[index]}
+              compare={(it) => subheader[sortedBy].compare(it)}
+              subheader={(it) => <h4>{subheader[sortedBy].subheader(it)}</h4>}
+            />
+
+            <RegisteredInterest interest={it} />
+          </>
+        );
+      }}
+    />
+  );
+};
+const RegisteredInterest = (props: { interest: Interest } & DivProps) => {
+  const { interest, ...rest } = props;
+  return (
+    <BlockItem {...rest}>
+      <SeparatedRow className="text-sm">
+        <Date date={interest.created} dateFormat={DateFormat.FullDate} />
+        <div>{interest.category}</div>
+      </SeparatedRow>
+      <div>
+        {interest.description.map((par, index) => {
+          return (
+            <p key={index}>
+              <HighlightMoney text={par} className="font-bold" />
+            </p>
+          );
+        })}
+      </div>
+
+      {interest.children.map((child, index) => (
+        <RegisteredInterest
+          key={index}
+          interest={child}
+          className="my-2 border-l-2 border-primary pl-2"
+        />
+      ))}
+    </BlockItem>
+  );
+};
+
+type ListSubheader<T, S extends string> = Record<
+  S,
+  {
+    subheader: (obj: T) => ReactNode;
+
+    // The subheader will be displayed only if consecutive items return
+    // different values from this function.
+    compare: (obj: T | Nullish) => unknown;
+  }
+>;
+const ListSubheader = <T,>(props: {
+  previous: T;
+  current: T;
+  compare: (obj: T) => unknown;
+  subheader: (item: NonNullable<T>) => ReactNode;
+}) => {
+  const { previous, current, compare } = props;
+
+  if (compare(previous) === compare(current)) return null;
+
+  return props.subheader(current!);
+};
 const BlockItem = (props: DivProps) => {
   return <div {...props} />;
 };

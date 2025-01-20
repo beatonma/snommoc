@@ -220,14 +220,61 @@ class Experience(Schema):
         return obj
 
 
+class SubjectOfInterest(Schema):
+    category: StringOrNone
+    descriptions: List[StringOrNone] = field("focus")
+
+
 class RegisteredInterest(Schema):
     interest_id: int = field("id")
-    interest_title: StringOrNoneKeepBreaks = field("interest")
+    description: StringOrNoneKeepBreaks = field("interest")
+    description_data: dict = None
     created_at: DateTimeOrNone = field("createdWhen")
     last_amended_at: DateTimeOrNone = field("lastAmendedWhen")
     deleted_at: DateTimeOrNone = field("deletedWhen")
     is_correction: bool = field("isCorrection")
     child_interests: List[Self] = field("childInterests")
+
+    @model_validator(mode="after")
+    @classmethod
+    def validate_description_data(cls, obj: Self):
+        """Parse as many known fields from the description as possible."""
+
+        table: list[tuple[str, str | int]] = []
+        additional_values: list[str] = []
+
+        def _append(key: str, value: str | int):
+            key = registered_interest_description_keys.get(key) or key
+            table.append(
+                (
+                    key,
+                    value.strip(),
+                )
+            )
+
+        for line in obj.description.split("\n"):
+            if ":" not in line:
+                if line.startswith("("):
+                    line = line.removeprefix("(").removesuffix(")")
+
+                additional_values.append(line)
+                continue
+
+            if match := re.match(
+                r"(Received on|From): (.*?\.) (Hours|Until): (.*)", line
+            ):
+                _append(match.group(1), match.group(2))
+                _append(match.group(3), match.group(4))
+                continue
+
+            _append(*line.split(":", maxsplit=1))
+
+        obj.description_data = {
+            "table": table,
+            "additional_values": additional_values,
+        }
+
+        return obj
 
 
 class RegisteredInterestCategory(Schema):
@@ -260,6 +307,80 @@ class RegisteredInterestCategory(Schema):
         return obj
 
 
-class SubjectOfInterest(Schema):
-    category: StringOrNone
-    descriptions: List[StringOrNone] = field("focus")
+registered_interest_description_keys = {
+    "ACOBA consulted": None,
+    "Additional information": None,
+    "Address of donor": None,
+    "Amount of donation or nature and value if donation in kind": "Donation value",
+    "Completed or provided on": None,
+    "Date accepted": None,
+    "Date interest arose": None,
+    "Date interest ended": None,
+    "Date received": None,
+    "Dates of visit": None,
+    "Destination of visit": None,
+    "Donated to": None,
+    "Donor status": None,
+    "End date": None,
+    "Estimate of the probable value (or amount of any donation)": "Donation value",
+    "From": None,
+    "Held jointly with or on behalf of": None,
+    "Hours": None,
+    "Interest held": None,
+    "Location": None,
+    "Name of company or organisation": None,
+    "Name of donor": None,
+    "Name of employer": None,
+    "Name": None,
+    "Nature of business": None,
+    "Number of properties": None,
+    "Ownership details": None,
+    "Paid directly to": None,
+    "Payer": None,
+    "Payment expected": None,
+    "Payment": None,
+    "Purpose of visit": None,
+    "Received on": None,
+    "Relationship": None,
+    "Remuneration": None,
+    "Rental income details": None,
+    "Rental income": None,
+    "Role": None,
+    "Role, work or services": None,
+    "Type of land/property": None,
+    "Ultimate payer": None,
+    "Unpaid Directorship at": "Unpaid Directorship",
+    "Unpaid Directorship of": "Unpaid Directorship",
+    "Until": None,
+    "Work or services": None,
+    "Working pattern": None,
+}
+
+"""TODO split
+Received on: 20 November 2024. Hours: 5 hrs.
+From: 5 May 2022. Until: 30 August 2024.
+Completed or provided on: 8 August 2024. Hours: 2 hrs.
+
+"""
+
+# ### RegisteredInterest description parsers
+# # noinspection PyPep8Naming
+# class _RegisteredInterest_Donor(Schema):
+#     name: StringOrNone
+#     address: StringOrNone
+#     status: StringOrNone
+#
+#     @model_validator(mode="before")
+#     @classmethod
+#     def validate(cls, obj):
+#         pass
+#
+# # noinspection PyPep8Naming
+# class _RegisteredInterest_Donation(Schema):
+#     """Categories 2-5"""
+#     donor: _RegisteredInterest_Donor | None
+#     value: str
+#     date_received: StringOrNone
+#     date_accepted: StringOrNone
+#
+#

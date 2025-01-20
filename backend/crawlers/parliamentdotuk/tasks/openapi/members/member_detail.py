@@ -324,7 +324,8 @@ def _update_registered_interests(
                 category=category,
                 person=person,
                 defaults={
-                    "description": interest.interest_title,
+                    "description": interest.description,
+                    "description_data": interest.description_data,
                     "created": interest.created_at,
                     "amended": interest.last_amended_at,
                     "deleted": interest.deleted_at,
@@ -339,7 +340,8 @@ def _update_registered_interests(
                     person=person,
                     parent=parent,
                     defaults={
-                        "description": child.interest_title,
+                        "description": child.description,
+                        "description_data": child.description_data,
                         "created": child.created_at,
                         "amended": child.last_amended_at,
                         "deleted": child.deleted_at,

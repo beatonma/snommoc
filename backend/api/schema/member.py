@@ -81,9 +81,14 @@ class HouseMembershipSchema(Schema):
     end: date | None
 
 
-class DeclaredInterestsSchema(ParliamentSchema):
+class RegisteredInterestDescriptionData(Schema):
+    table: dict[str, str | int]
+    additional_values: list[str]
+
+
+class RegisteredInterestSchema(ParliamentSchema):
     category: str | None = field("category.name")
-    description: SplitString("\n")
+    description: RegisteredInterestDescriptionData = field("description_data")
     created: date | None
     amended: date | None
     deleted: date | None
@@ -155,7 +160,7 @@ class MemberCareerHistory(Schema):
     experiences: list[ExperienceSchema] = field("experiences")
     houses: list[HouseMembershipSchema] = field("house_memberships")
     subjects_of_interest: dict[str, list[str]]
-    interests: list[DeclaredInterestsSchema]  # = field("registered_interests")
+    interests: list[RegisteredInterestSchema]
 
     @staticmethod
     def resolve_subjects_of_interest(obj) -> dict[str, list]:
@@ -169,7 +174,7 @@ class MemberCareerHistory(Schema):
         return grouped
 
     @staticmethod
-    def resolve_interests(obj) -> list[DeclaredInterestsSchema]:
+    def resolve_interests(obj) -> list[RegisteredInterestSchema]:
         qs = obj.registered_interests.filter(parent__isnull=True)
         return qs
 

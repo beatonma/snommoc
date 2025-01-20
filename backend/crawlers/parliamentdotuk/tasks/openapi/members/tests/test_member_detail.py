@@ -78,6 +78,24 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(interest.created, date(2024, 10, 2))
         self.assertTrue("4 Battle Bridge Lane" in interest.parent.description)
 
+        table = interest.description_data["table"]
+        table = {x[0]: x[1] for x in table}
+
+        self.assertEqual(
+            table["Payment"],
+            "£205.86 Copyright payments for books written before my election to Parliament",
+        )
+        self.assertEqual(
+            table["Received on"],
+            "25 September 2024.",
+        )
+        self.assertEqual(table["Hours"], "no hours entered.")
+
+        self.assertListEqual(
+            interest.description_data["additional_values"],
+            ["Registered 30 September 2024"],
+        )
+
     def test_subjects_of_interest(self):
         person = self.person
         self.assertQuerysetSize(person.subjects_of_interest.all(), 2)

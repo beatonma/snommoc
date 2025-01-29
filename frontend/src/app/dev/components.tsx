@@ -10,11 +10,22 @@ import { MaskedSvg } from "@/components/image";
 import Loading from "@/components/loading";
 import { ButtonLink } from "@/components/link";
 import { useSortable } from "@/components/sortable";
+import { TabLayout } from "@/components/tabs";
 
 export const ComponentsOverview = () => (
   <>
     <Section component="Loading">
       <Loading />
+    </Section>
+
+    <Section component="TabLayout">
+      <TabLayout
+        tabs={[
+          ["One", () => <>One</>],
+          ["Two", () => <>Two</>],
+          ["Three", () => <>Three</>],
+        ]}
+      />
     </Section>
 
     <ButtonComponents />

@@ -1,22 +1,14 @@
 import { getMemberCareer } from "@/api";
 import ErrorMessage from "@/components/error";
 import React from "react";
-import {
-  Posts,
-  Parties,
-  Houses,
-  Constituencies,
-  Experiences,
-  Committees,
-  SubjectsOfInterest,
-  Summary,
-  RegisteredInterests,
-} from "./sections";
+import CareerSections from "./career-sections";
+import { Summary } from "@/app/members/[parliamentdotuk]/career/sections";
 
 export default async function Career(props: { parliamentdotuk: number }) {
   const { parliamentdotuk } = props;
   const response = await getMemberCareer(parliamentdotuk);
   const career = response.data;
+
   if (!career) return <ErrorMessage error="Career not available." />;
 
   return (
@@ -29,16 +21,20 @@ export default async function Career(props: { parliamentdotuk: number }) {
         constituencies={career.constituencies}
       />
 
-      <Houses houses={career.houses} />
-      <Parties parties={career.parties} />
-      <Constituencies constituencies={career.constituencies} />
+      <CareerSections career={career} />
 
-      <SubjectsOfInterest subjects={career.subjects_of_interest} />
+      {/*<TabLayout tabs={sections} />*/}
 
-      <Posts posts={career.posts} />
-      <Committees committees={career.committees} />
-      <RegisteredInterests interests={career.interests} />
-      <Experiences experiences={career.experiences} />
+      {/*<Houses houses={career.houses} />*/}
+      {/*<Parties parties={career.parties} />*/}
+      {/*<Constituencies constituencies={career.constituencies} />*/}
+
+      {/*<SubjectsOfInterest subjects={career.subjects_of_interest} />*/}
+
+      {/*<Posts posts={career.posts} />*/}
+      {/*<Committees committees={career.committees} />*/}
+      {/*<RegisteredInterests interests={career.interests} />*/}
+      {/*<Experiences experiences={career.experiences} />*/}
     </>
   );
 }

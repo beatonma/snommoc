@@ -2,9 +2,12 @@ from datetime import date
 
 from crawlers.context import TaskContext
 from crawlers.parliamentdotuk.tasks.openapi.members.member_detail import update_members
+from crawlers.parliamentdotuk.tasks.openapi.members.schema.registeredinterest import (
+    ParsedInterestDescription,
+)
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
-from repository.models import Person
+from repository.models import Person, RegisteredInterest
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 
 CONTEXT = TaskContext(None, TaskNotification())
@@ -68,32 +71,6 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(
             post.additional_info_link,
             "https://www.gov.uk/government/organisations/home-office",
-        )
-
-    def test_registered_interests(self):
-        person = self.person
-        self.assertQuerysetSize(person.registered_interests.all(), 36)
-        interest = person.registered_interests.get(parliamentdotuk=10850)
-        self.assertTrue("Payment: £205.86" in interest.description)
-        self.assertEqual(interest.created, date(2024, 10, 2))
-        self.assertTrue("4 Battle Bridge Lane" in interest.parent.description)
-
-        table = interest.description_data["table"]
-        table = {x[0]: x[1] for x in table}
-
-        self.assertEqual(
-            table["Payment"],
-            "£205.86 Copyright payments for books written before my election to Parliament",
-        )
-        self.assertEqual(
-            table["Received on"],
-            "25 September 2024.",
-        )
-        self.assertEqual(table["Hours"], "no hours entered.")
-
-        self.assertListEqual(
-            interest.description_data["additional_values"],
-            ["Registered 30 September 2024"],
         )
 
     def test_subjects_of_interest(self):
@@ -182,3 +159,60 @@ class UpdateMemberDetailTests(OpenApiTestCase):
         self.assertEqual(person.house.name, HOUSE_OF_LORDS)
         self.assertEqual(person.status.description, "Leave of Absence")
         self.assertEqual(person.status.start, date(2022, 12, 6))
+
+    def test_registered_interests(self):
+        person = self.person
+        self.assertQuerysetSize(person.registered_interests.all(), 36)
+        interest = person.registered_interests.get(parliamentdotuk=10850)
+        self.assertTrue("Payment: £205.86" in interest.description)
+        self.assertEqual(interest.created, date(2024, 10, 2))
+        self.assertTrue("4 Battle Bridge Lane" in interest.parent.description)
+
+        description = ParsedInterestDescription.model_validate(
+            interest.description_data
+        )
+        table = dict(description.table)
+
+        self.assertEqual(
+            table["Payment"],
+            "£205.86 Copyright payments for books written before my election to Parliament",
+        )
+        self.assertEqual(
+            table["Received on"],
+            "2024-09-25",
+        )
+        self.assertEqual(table["Hours"], "No hours entered")
+
+        self.assertListEqual(
+            description.registration_dates,
+            [
+                ("Registered", "2024-09-30"),
+            ],
+        )
+
+        interest = RegisteredInterest.objects.get(parliamentdotuk=5469)
+        description = ParsedInterestDescription.model_validate(
+            interest.description_data
+        )
+
+        self.assertListEqual(
+            sorted(description.registration_dates, key=lambda x: x[0]),
+            [
+                ("Accepted", "2024-02-21"),
+                ("Registered", "2024-02-26"),
+            ],
+        )
+
+    def test_registered_interest_dates(self):
+        interest = RegisteredInterest.objects.get(parliamentdotuk=5469)
+        description = ParsedInterestDescription.model_validate(
+            interest.description_data
+        )
+
+        self.assertListEqual(
+            sorted(description.registration_dates, key=lambda x: x[0]),
+            [
+                ("Accepted", "2024-02-21"),
+                ("Registered", "2024-02-26"),
+            ],
+        )

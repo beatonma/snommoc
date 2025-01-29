@@ -68,7 +68,7 @@ def _any_date_period() -> tuple[datetime.date, datetime.date | None]:
     start = _any_date()
     end = (
         datetime.date(
-            year=random.randint(start.year + 1, 2030),
+            year=random.randint(start.year + 1, start.year + 10),
             month=random.randint(1, 12),
             day=random.randint(1, 28),
         )

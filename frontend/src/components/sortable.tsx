@@ -1,6 +1,9 @@
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useId, useState } from "react";
+import { Optional } from "@/components/optional";
+import ol from "ol/dist/ol";
+import condition = ol.events.condition;
 
 interface SortBy<T> {
   name: string;
@@ -17,6 +20,7 @@ interface SortableProps<T, O extends SortOptions<T>> {
   sortOptions: O;
   defaultSort?: keyof O;
   uiElementOptions?: {
+    label?: string;
     selectClass?: string;
     optionClass?: string;
   };
@@ -38,6 +42,7 @@ export const useSortable = <T, O extends SortOptions<T>>(
 ): SortedResult<T, keyof O> => {
   const { data, defaultSort, uiElementOptions } = props;
   const [sortedData, setSortedData] = useState<T[]>();
+  const selectElementId = useId();
 
   // Map props.sortOptions (a Record<string, SortBy>) to InternalSortBy[].
   const [sortOptions] = useState<InternalSortBy<T>[]>(() =>
@@ -56,25 +61,32 @@ export const useSortable = <T, O extends SortOptions<T>>(
     sortedBy: sortBy.key,
     sortedData: sortedData,
     sortBySelectElement: (
-      <select
-        value={sortBy.key}
-        className={uiElementOptions?.selectClass}
-        onChange={(event) =>
-          setSortBy(chooseSort(sortOptions, event.target.value))
-        }
-      >
-        {sortOptions.map(({ key, name }) => {
-          return (
-            <option
-              key={key}
-              value={key}
-              className={uiElementOptions?.optionClass}
-            >
-              {name}
-            </option>
-          );
-        })}
-      </select>
+      <>
+        <Optional
+          value={uiElementOptions?.label}
+          block={(label) => <label htmlFor={selectElementId}>{label}</label>}
+        />
+        <select
+          id={selectElementId}
+          value={sortBy.key}
+          className={uiElementOptions?.selectClass}
+          onChange={(event) =>
+            setSortBy(chooseSort(sortOptions, event.target.value))
+          }
+        >
+          {sortOptions.map(({ key, name }) => {
+            return (
+              <option
+                key={key}
+                value={key}
+                className={uiElementOptions?.optionClass}
+              >
+                {name}
+              </option>
+            );
+          })}
+        </select>
+      </>
     ),
   };
 };

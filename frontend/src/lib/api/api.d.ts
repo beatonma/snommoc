@@ -519,22 +519,6 @@ export interface components {
             /** End */
             end: string | null;
         };
-        /** DeclaredInterestsSchema */
-        DeclaredInterestsSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            /** Category */
-            category: string | null;
-            /** Description */
-            description: string[];
-            /** Created */
-            created: string | null;
-            /** Amended */
-            amended: string | null;
-            /** Deleted */
-            deleted: string | null;
-            /** Children */
-            children: components["schemas"]["DeclaredInterestsSchema"][];
-        };
         /** ExperienceSchema */
         ExperienceSchema: {
             /** Category */
@@ -574,7 +558,7 @@ export interface components {
                 [key: string]: string[];
             };
             /** Interests */
-            interests: components["schemas"]["DeclaredInterestsSchema"][];
+            interests: components["schemas"]["RegisteredInterestSchema"][];
         };
         /** OrganisationSchema */
         OrganisationSchema: {
@@ -603,6 +587,40 @@ export interface components {
             start: string | null;
             /** End */
             end: string | null;
+        };
+        /** RegisteredInterestDescriptionData */
+        RegisteredInterestDescriptionData: {
+            /** Table */
+            table: [
+                string,
+                string | number
+            ][];
+            /** Additional Values */
+            additional_values: string[];
+            /** Registration Dates */
+            registration_dates: [
+                string,
+                string
+            ][];
+            /** Start */
+            start: string | null;
+            /** End */
+            end: string | null;
+        };
+        /** RegisteredInterestSchema */
+        RegisteredInterestSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            /** Category */
+            category: string | null;
+            description: components["schemas"]["RegisteredInterestDescriptionData"];
+            /** Created */
+            created: string | null;
+            /** Amended */
+            amended: string | null;
+            /** Deleted */
+            deleted: string | null;
+            /** Children */
+            children: components["schemas"]["RegisteredInterestSchema"][];
         };
         /** DivisionMiniSchema */
         DivisionMiniSchema: {

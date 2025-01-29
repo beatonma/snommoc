@@ -82,17 +82,27 @@ class HouseMembershipSchema(Schema):
 
 
 class RegisteredInterestDescriptionData(Schema):
-    table: dict[str, str | int]
+    table: list[tuple[str, str | int]]
     additional_values: list[str]
+    registration_dates: list[tuple[str, str]]
+    start: str | None
+    end: str | None
 
 
 class RegisteredInterestSchema(ParliamentSchema):
     category: str | None = field("category.name")
-    description: RegisteredInterestDescriptionData = field("description_data")
+    description: RegisteredInterestDescriptionData
     created: date | None
     amended: date | None
     deleted: date | None
     children: list[Self] = field("children")
+
+    @staticmethod
+    def resolve_description(obj):
+        if not obj.description_data:
+            raise ValueError(f"RegisteredInterests.description_data is not set: {obj}")
+
+        return RegisteredInterestDescriptionData.model_validate(obj.description_data)
 
 
 class PartyAffiliationSchema(Schema):

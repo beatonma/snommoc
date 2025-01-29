@@ -36,6 +36,7 @@ class RepositoryAdmin(BaseAdmin):
         "parliamentdotuk",
         "person__name",
         "url",
+        "description",
     ]
 
     editable_fields = []

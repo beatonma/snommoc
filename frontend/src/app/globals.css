@@ -14,6 +14,7 @@
     :root {
       --surface: 245 245 245;
       --on_surface: 23 23 23;
+      --surface_hover: 235 235 235;
 
       --primary: 51 87 81;
       --on_primary: 255 255 255;
@@ -26,6 +27,7 @@
     :root {
       --surface: 41 37 36;
       --on_surface: 250 250 249;
+      --surface_hover: 45 41 40;
 
       --primary: 41 71 69;
       --on_primary: 255 255 255;
@@ -35,11 +37,10 @@
   }
 
   .card {
-    @apply bg-surface-50 text-surface-900 drop-shadow-sm dark:bg-surface-900 dark:text-surface-50;
+    @apply bg-surface-50 text-surface-900 drop-shadow-sm sm:rounded-lg dark:bg-surface-900 dark:text-surface-50;
   }
-
-  body {
-    @apply overflow-x-hidden;
+  .card-content {
+    @apply px-4 py-2;
   }
 
   img {
@@ -96,19 +97,26 @@
     @apply card w-fit sm:rounded-lg;
 
     thead th:not(:empty) {
-      @apply border-b-[0.1px] border-primary/25;
+      @apply border-b-[0.1px] border-primary/25 py-2;
+    }
+    tfoot {
+      @apply border-t-[0.1px] border-primary/25 py-2;
     }
 
     tbody th {
       @apply border-r-[0.1px] border-primary/25 text-right;
     }
 
-    th {
-      @apply px-4 py-2 text-left;
+    tbody tr {
+      @apply transition-colors;
+      &:hover {
+        @apply bg-surface-100 dark:bg-surface-950;
+      }
     }
 
+    th,
     td {
-      @apply min-w-16 px-4 py-1.5;
+      @apply px-4 py-1.5 text-left;
     }
   }
 }

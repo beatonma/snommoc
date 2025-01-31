@@ -54,7 +54,7 @@ export default async function Page({ params }: PageProps) {
 
           <HeaderCard
             party={constituency.mp?.party}
-            className="!w-full !rounded-none"
+            className="w-full! rounded-none!"
           >
             <h1>{constituency.name}</h1>
 
@@ -70,7 +70,7 @@ export default async function Page({ params }: PageProps) {
                 <div className="mt-4">
                   <div className="text-sm">Current MP:</div>
                   <MemberItem
-                    className="w-fit !max-w-none [&>*]:!p-0 [&]:hover:after:inset-[-0.5rem]"
+                    className="w-fit max-w-none! *:p-0! [&]:hover:after:inset-[-0.5rem]"
                     member={it}
                     showConstituency={false}
                   />

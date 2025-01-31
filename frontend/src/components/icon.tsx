@@ -10,6 +10,9 @@ import HomeIcon from "@/svg/material/home.svg";
 import PhoneIcon from "@/svg/material/phone.svg";
 import MailIcon from "@/svg/material/mail.svg";
 import FaxIcon from "@/svg/material/fax.svg";
+import DarkModeIcon from "@/svg/material/theme_darkmode.svg";
+import LightModeIcon from "@/svg/material/theme_lightmode.svg";
+import SystemDefaultThemeIcon from "@/svg/material/theme_default.svg";
 import { ComponentPropsWithoutRef } from "react";
 import { addClass } from "@/util/transforms";
 
@@ -26,6 +29,10 @@ const Icons = {
   Commons: CommonsIcon,
   CommonsPerson: CommonsPersonIcon,
   CommonsTie: CommonsTieIcon,
+
+  ThemeLightMode: LightModeIcon,
+  ThemeDarkMode: DarkModeIcon,
+  ThemeSystemDefault: SystemDefaultThemeIcon,
 };
 export type AppIcon = keyof typeof Icons;
 

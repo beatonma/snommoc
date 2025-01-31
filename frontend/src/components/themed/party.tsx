@@ -8,14 +8,16 @@ interface PartyProps {
   party: Party | PartyDetail | null | undefined;
 }
 
-export const rgb = (value: string | undefined) =>
-  value ? `rgb(${value})` : undefined;
+export const rgb = (value: string | undefined) => {
+  if (value?.match(/^\d+ \d+ \d+$/)) return `rgb(${value})`;
+  return value;
+};
 
 const DefaultTheme: PartyTheme = {
-  primary: "var(--primary)",
-  on_primary: "var(--on_primary)",
-  accent: "var(--accent)",
-  on_accent: "var(--on_accent)",
+  primary: "var(--surface)",
+  on_primary: "var(--on_surface)",
+  accent: "var(--primary)",
+  on_accent: "var(--on_primary)",
 };
 
 const partyTheme = (party: Party | PartyDetail | Nullish) => {
@@ -24,44 +26,58 @@ const partyTheme = (party: Party | PartyDetail | Nullish) => {
   return {
     primary: {
       backgroundColor: rgb(theme?.primary),
-      color: rgb(theme?.on_primary),
+      color: getOnColor(theme?.primary),
     },
     accent: {
       backgroundColor: rgb(theme?.accent),
-      color: rgb(theme?.on_accent),
+      color: getOnColor(theme?.accent),
     },
   };
 };
 
+const getOnColor = (
+  backgroundColorRgb: string | undefined,
+): string | undefined => {
+  if (!backgroundColorRgb) return undefined;
+
+  const components = backgroundColorRgb
+    .match(/^(\d+),? (\d+),? (\d+)$/)
+    ?.slice(1);
+  if (!components || !components.length) return undefined;
+  const mean =
+    components.reduce((acc, it) => parseInt(it) + acc, 0) / components.length;
+  const mixer = mean > 127 ? "black" : "white";
+
+  return `color-mix(in srgb, rgb(${backgroundColorRgb}) 10%, ${mixer})`;
+};
 export const partyStyle = (party: Party | PartyDetail | Nullish) => {
   const theme = party?.theme;
   return Object.fromEntries(
     Object.entries({
-      primary: theme?.primary,
-      on_primary: theme?.on_primary,
-      accent: theme?.accent,
-      on_accent: theme?.on_accent,
-    })
-      .filter(([_, value]) => !!value)
-      .map(([key, value]) => [`--${key}`, value]),
+      "--primary": rgb(theme?.primary),
+      "--on_primary": getOnColor(theme?.primary),
+      "--accent": rgb(theme?.accent),
+      "--on_accent": getOnColor(theme?.accent),
+      accentColor: rgb(theme?.primary),
+    }).filter(([_, value]) => !!value),
   );
 };
 
 export const PartyIconBackground = (
   props: PartyProps & ComponentPropsWithoutRef<"div">,
 ) => {
-  const { party, children, ...rest } = props;
+  const { party, children, style, ...rest } = props;
+  // const style = partyStyle(party)
   const theme = partyTheme(party);
+
+  const themedStyle = {
+    ...style,
+    ...partyStyle(party),
+  };
 
   if (!party?.logo)
     return (
-      <div
-        style={{
-          color: theme.primary.color,
-          backgroundColor: theme.primary.backgroundColor,
-        }}
-        {...rest}
-      >
+      <div style={{ ...theme.primary, ...themedStyle }} {...rest}>
         {children}
       </div>
     );
@@ -69,6 +85,7 @@ export const PartyIconBackground = (
   return (
     <div
       style={{
+        ...themedStyle,
         color: theme.primary.color,
       }}
       {...addClass(rest, "relative overflow-hidden")}

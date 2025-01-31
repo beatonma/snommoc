@@ -24,7 +24,7 @@ export const MemberItem = (props: MemberItemProps & ClassNameProps) => {
         <MemberPortrait
           name={member.name}
           src={member.portrait}
-          className="size-16 shrink-0 overflow-hidden rounded-md bg-primary-900"
+          className="size-16 shrink-0 overflow-hidden rounded-md"
         />
       }
       {...rest}

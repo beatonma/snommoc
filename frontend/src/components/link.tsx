@@ -26,7 +26,7 @@ export const TextLink = (props: NextLinkProps) => {
   const styledProps = addClass(
     props,
     "transition-colors",
-    "text-accent hover:text-accent/90",
+    "text-primary hover:text-primary-hover",
   );
 
   return (
@@ -122,7 +122,7 @@ const ConfirmButtonLink = (
       <TextButton
         href={values.url}
         title={values.title}
-        {...addClass(rest, "text-accent self-end")}
+        {...addClass(rest, "text-primary self-end")}
       >
         {values.confirmAction}
       </TextButton>

@@ -47,7 +47,7 @@ export const Section = <T,>(props: SectionProps<BlockProps<T>>) => {
       {toolbar ? (
         <div className="flex flex-row justify-between">
           {titleHeader}
-          <div className="flex flex-row items-center gap-x-8 [&>*]:flex [&>*]:flex-row [&>*]:items-center [&>*]:gap-x-2">
+          <div className="flex flex-row items-center gap-x-8 *:flex *:flex-row *:items-center *:gap-x-2">
             {toolbar}
           </div>
         </div>

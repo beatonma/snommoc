@@ -50,7 +50,7 @@ export default async function Page({ params }: PageProps) {
               <OptionalSvg
                 src={party.logo}
                 alt={party.name}
-                className="w-32 shrink-0 overflow-hidden rounded-md bg-primary-50 p-2"
+                className="w-32 shrink-0 overflow-hidden rounded-md bg-white/75 p-2"
                 priority
               />
             }

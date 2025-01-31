@@ -81,7 +81,7 @@ const Tab = (
     props,
     "cursor-pointer px-2 pb-1 pt-2 transition-colors whitespace-nowrap",
     "border-b-2",
-    "[&[aria-selected=true]]:border-primary [&[aria-selected=true]]:font-bold",
+    "aria-selected:border-primary aria-selected:font-bold",
   );
   const tabId = useId();
 

@@ -17,6 +17,7 @@ export const MemberPortrait = (props: PortraitProps) => {
       className={classes(
         className,
         src ? aspectClassName : "aspect-square",
+        "bg-primary-background/75",
         "relative max-h-[173px] max-w-[260px]", // Size from api source
       )}
     >

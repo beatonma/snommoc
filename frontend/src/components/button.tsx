@@ -7,25 +7,26 @@ import { ChildrenProps } from "@/types/common";
 export const TextButton = (props: ButtonProps) => {
   return (
     <BaseButton
-      {...addClass(
-        props,
-        "rounded font-bold tracking-tight hover:bg-surface-50/15",
-      )}
+      {...addClass(props, "rounded-sm font-bold tracking-tight hover:bg-hover")}
     />
   );
 };
 
 export const TintedButton = (props: ButtonProps) => {
-  return (
-    <BaseButton
-      {...addClass(
-        props,
-        "rounded-md px-2 py-1",
-        "bg-accent text-on_accent",
-        "hover:bg-accent/90",
-      )}
-    />
+  const { style, ...rest } = addClass(
+    props,
+    "rounded-md px-2 py-1",
+    "bg-surface text-on_surface",
+    "hover:bg-surface-hover",
   );
+
+  const themedStyle = {
+    ...style,
+    "--surface": "var(--accent)",
+    "--on_surface": "var(--on_accent)",
+  };
+
+  return <BaseButton style={themedStyle} {...rest} />;
 };
 
 interface ButtonContentProps {

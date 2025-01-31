@@ -66,8 +66,8 @@ const MemberCard = (props: MemberComponentProps) => {
           <MemberPortrait
             name={member.name}
             src={member.portrait?.wide}
-            aspectClassName="aspect-[3/2]"
-            className="[:has(>img)]:w-full h-[220px] bg-surface-900/10 sm:w-auto"
+            aspectClassName="aspect-3/2"
+            className="h-[220px] sm:w-auto [:has(>img)]:w-full"
           />
         }
       >

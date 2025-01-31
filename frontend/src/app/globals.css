@@ -1,48 +1,207 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+:root {
+  /** Theme colors */
+  --_black_: oklch(0.141 0.005 285.823);
+  --_white_: oklch(0.985 0 0);
+
+  --_light_background: oklch(0.92 0.004 286.32);
+  --_dark_background: oklch(0.21 0.006 285.885);
+
+  --_light_on_background: var(--_black_);
+  --_dark_on_background: white;
+
+  --_light_surface: var(--_white_);
+  --_dark_surface: oklch(0.274 0.006 286.033);
+
+  --_light_surface_alt: rgb(255 255 255);
+  --_dark_surface_alt: oklch(0.442 0.017 285.786);
+
+  --_light_on_surface: var(--_black_);
+  --_dark_on_surface: var(--_white_);
+
+  --_light_primary: rgb(51, 136, 85);
+  --_dark_primary: rgb(66, 172, 108);
+
+  --_light_on_primary: var(--_white_);
+  --_dark_on_primary: var(--_white_);
+
+  --_light_accent: rgb(206, 218, 245);
+  --_dark_accent: rgb(206, 218, 245);
+
+  --_light_on_accent: rgb(40, 71, 119);
+  --_dark_on_accent: rgb(40, 71, 119);
+
+  --_light_hover-mixer: var(--_black_);
+  --_dark_hover-mixer: var(--_white_);
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--surface), var(--primary));
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: var(--_light_background);
+    --on_background: var(--_light_on_background);
+    --surface: var(--_light_surface);
+    --surface_alt: var(--_light_surface_alt);
+    --on_surface: var(--_light_on_surface);
+    --primary: var(--_light_primary);
+    --on_primary: var(--_light_on_primary);
+    --accent: var(--_light_accent);
+    --on_accent: var(--_light_on_accent);
+    --hover-mixer: var(--_light_hover-mixer);
+  }
+}
+[data-theme="light"] {
+  --background: var(--_light_background);
+  --on_background: var(--_light_on_background);
+  --surface: var(--_light_surface);
+  --surface_alt: var(--_light_surface_alt);
+  --on_surface: var(--_light_on_surface);
+  --primary: var(--_light_primary);
+  --on_primary: var(--_light_on_primary);
+  --accent: var(--_light_accent);
+  --on_accent: var(--_light_on_accent);
+  --hover-mixer: var(--_light_hover-mixer);
+}
+
+@media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+  :root {
+    --background: var(--_dark_background);
+    --on_background: var(--_dark_on_background);
+    --surface: var(--_dark_surface);
+    --surface_alt: var(--_dark_surface_alt);
+    --on_surface: var(--_dark_on_surface);
+    --primary: var(--_dark_primary);
+    --on_primary: var(--_dark_on_primary);
+    --accent: var(--_dark_accent);
+    --on_accent: var(--_dark_on_accent);
+    --hover-mixer: var(--_dark_hover-mixer);
+  }
+}
+[data-theme="dark"] {
+  --background: var(--_dark_background);
+  --on_background: var(--_dark_on_background);
+  --surface: var(--_dark_surface);
+  --surface_alt: var(--_dark_surface_alt);
+  --on_surface: var(--_dark_on_surface);
+  --primary: var(--_dark_primary);
+  --on_primary: var(--_dark_on_primary);
+  --accent: var(--_dark_accent);
+  --on_accent: var(--_dark_on_accent);
+  --hover-mixer: var(--_dark_hover-mixer);
+}
+
+@theme inline {
+  --color-*: initial; /* Disable tailwind color definitions. */
+
+  --color-black: var(--_black_);
+  --color-white: var(--_white_);
+  --color-background: var(--background);
+  --color-on_background: var(--on_background);
+  --color-surface: var(--surface);
+  --color-on_surface: var(--on_surface);
+  --color-primary: var(--primary);
+  --color-on_primary: var(--on_primary);
+  --color-accent: var(--accent);
+  --color-on_accent: var(--on_accent);
+
+  --color-primary-hover: color-mix(
+    in srgb,
+    var(--primary) 80%,
+    var(--hover-mixer)
+  );
+  --color-surface-hover: color-mix(in srgb, var(--surface) 95%, currentColor);
+  --color-primary-background: color-mix(
+    in srgb,
+    var(--primary),
+    var(--background)
+  );
+  --color-hover: color-mix(in srgb, currentColor 5%, transparent);
+}
+
+@theme {
+  --breakpoint-md: 863px;
+
+  --color-house-commons: rgb(0 110 70);
+  --color-house-commons-dark: #005434;
+  --color-house-commons-darker: #004229;
+  --color-house-on_commons: #fff;
+
+  --color-house-lords: rgb(181 9 56);
+  --color-house-lords-dark: #540016;
+  --color-house-lords-darker: #420012;
+  --color-house-on_lords: #fff;
+
+  --list-style-type-square: square;
+
+  --transition-duration: 220ms;
+}
+
+@utility surface {
+  @apply bg-surface text-on_surface;
+}
+@utility card {
+  @apply surface drop-shadow-xs sm:rounded-lg;
+}
+@utility card-content {
+  @apply px-4 py-2;
+}
+
+@utility readable {
+  @apply w-full max-w-[800px];
+}
+
+@utility text-reduced {
+  /**
+   * Reduce emphasis by fading the currentColor.
+   */
+  color: color-mix(in srgb, currentColor 85%, transparent);
+}
+
+@utility hover-overlay {
+  @apply relative;
+
+  &::after {
+    @apply absolute inset-0 rounded-md bg-transparent transition-[background-color,inset] content-[''];
+  }
+
+  &:hover::after {
+    @apply bg-surface/10;
+  }
+}
+
+@utility loading {
+  @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
+
+  > * {
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+  }
+
+  > *:first-child {
+    @apply absolute justify-self-center fill-current;
+  }
+
+  > *:not(:first-child) {
+    @apply fill-primary z-10 inline-block shrink-0;
+  }
+
+  & > :nth-child(2) {
+    animation-name: loading-first;
+    animation-timing-function: ease-in-out;
+  }
+
+  & > :last-child {
+    animation-name: loading-last;
+    animation-timing-function: ease-in-out;
+  }
+}
 
 @layer base {
-  :root {
-    --commons: 0 110 70;
-    --on_commons: 255 255 255;
-    --lords: 181 9 56;
-    --on_lords: 255 255 255;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      --surface: 245 245 245;
-      --on_surface: 23 23 23;
-      --surface_hover: 235 235 235;
-
-      --primary: 51 87 81;
-      --on_primary: 255 255 255;
-      --accent: 0 127 118;
-      --on_accent: 255 255 255;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-    :root {
-      --surface: 41 37 36;
-      --on_surface: 250 250 249;
-      --surface_hover: 45 41 40;
-
-      --primary: 41 71 69;
-      --on_primary: 255 255 255;
-      --accent: 186 229 226;
-      --on_accent: 0 0 0;
-    }
-  }
-
-  .card {
-    @apply bg-surface-50 text-surface-900 drop-shadow-sm sm:rounded-lg dark:bg-surface-900 dark:text-surface-50;
-  }
-  .card-content {
-    @apply px-4 py-2;
-  }
-
   img {
     @apply object-cover;
   }
@@ -90,27 +249,28 @@
 
   input,
   select {
-    @apply bg-surface-200 px-2 py-1 text-surface-950 dark:bg-surface-700 dark:text-surface-50;
+    --surface: var(--surface_alt);
+    @apply bg-surface text-on_surface px-2 py-1;
   }
 
   table {
     @apply card w-fit sm:rounded-lg;
 
     thead th:not(:empty) {
-      @apply border-b-[0.1px] border-primary/25 py-2;
+      @apply border-primary/25 border-b-[0.1px] py-2;
     }
     tfoot {
-      @apply border-t-[0.1px] border-primary/25 py-2;
+      @apply border-primary/25 border-t-[0.1px] py-2;
     }
 
     tbody th {
-      @apply border-r-[0.1px] border-primary/25 text-right;
+      @apply border-primary/25 border-r-[0.1px] text-right;
     }
 
     tbody tr {
       @apply transition-colors;
       &:hover {
-        @apply bg-surface-100 dark:bg-surface-950;
+        @apply bg-hover;
       }
     }
 
@@ -122,57 +282,6 @@
 }
 
 @layer components {
-  .readable {
-    @apply w-full max-w-[800px];
-  }
-
-  .text-reduced {
-    /**
-     * Reduce emphasis by fading the currentColor.
-     */
-    color: color-mix(in srgb, currentColor 85%, transparent);
-  }
-
-  .hover-overlay {
-    @apply relative;
-
-    &::after {
-      @apply absolute inset-0 rounded-md bg-transparent transition-[background-color,inset] content-[''];
-    }
-
-    &:hover::after {
-      @apply bg-surface-50/10;
-    }
-  }
-
-  .loading {
-    @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
-
-    > * {
-      animation-duration: 1000ms;
-      animation-iteration-count: infinite;
-      animation-fill-mode: both;
-    }
-
-    > *:first-child {
-      @apply absolute justify-self-center fill-current;
-    }
-
-    > *:not(:first-child) {
-      @apply z-10 inline-block shrink-0 fill-primary;
-    }
-
-    & > :nth-child(2) {
-      animation-name: loading-first;
-      animation-timing-function: ease-in-out;
-    }
-
-    & > :last-child {
-      animation-name: loading-last;
-      animation-timing-function: ease-in-out;
-    }
-  }
-
   @keyframes loading-first {
     0%,
     40% {

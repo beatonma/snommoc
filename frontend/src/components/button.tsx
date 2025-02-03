@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import React, { ComponentPropsWithoutRef } from "react";
 import { addClass } from "@/util/transforms";
 import { AppIcon, Icon } from "@/components/icon";
 import Link from "next/link";
@@ -43,38 +43,53 @@ export type ButtonProps =
   | ButtonDivProps
   | ButtonLinkProps;
 
+const isLink = (
+  obj: any,
+): obj is ComponentPropsWithoutRef<"a"> & { href: string } => {
+  return "href" in obj && obj.href;
+};
+const isButton = (obj: any): obj is ComponentPropsWithoutRef<"button"> => {
+  return "onClick" in obj && typeof obj.onClick === "function";
+};
+
 const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
   const { icon, children } = props;
 
+  if (icon && React.Children.count(children) === 0)
+    return <ButtonIcon icon={icon} />;
+
   return (
     <div className="flex items-center gap-1">
-      <Icon icon={icon} className="fill-current opacity-90" />
+      <ButtonIcon icon={icon} />
       {children}
     </div>
   );
 };
 
+const ButtonIcon = (props: ButtonContentProps) => (
+  <Icon className="fill-current/90" {...props} />
+);
+
 const BaseButton = (props: ButtonProps) => {
-  const { icon, children, ...rest } = addClass(
+  const { icon, children, ..._rest } = addClass(
     props,
-    "inline-block align-top hover:cursor-pointer transition-all",
+    "inline-flex items-center hover:cursor-pointer transition-all",
   );
 
-  const content = <ButtonContent icon={icon}>{children}</ButtonContent>;
+  const isIconOnly = icon && React.Children.count(children) === 0;
+  const content = isIconOnly ? (
+    <ButtonIcon icon={icon} />
+  ) : (
+    <ButtonContent icon={icon}>{children}</ButtonContent>
+  );
 
-  if ("href" in rest && rest.href) {
-    return (
-      <Link href={rest.href} {...(rest as ComponentPropsWithoutRef<"a">)}>
-        {content}
-      </Link>
-    );
+  const rest = isIconOnly ? addClass(_rest, "aspect-square") : _rest;
+
+  if (isLink(rest)) {
+    return <Link {...rest}>{content}</Link>;
   }
-  if (rest.type || ("onClick" in rest && typeof rest.onClick === "function")) {
-    return (
-      <button {...(rest as ComponentPropsWithoutRef<"button">)}>
-        {content}
-      </button>
-    );
+  if (isButton(rest)) {
+    return <button {...rest}>{content}</button>;
   }
 
   // No usable href or onClick - render as simple div.

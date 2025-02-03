@@ -65,7 +65,7 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
     search,
   );
   const [loader, setLoader] = useState<PaginationLoader<T>>();
-  const previousSearchParams = useRef<string>();
+  const previousSearchParams = useRef<string>(undefined);
   const isInitialized = useRef<boolean>(false);
 
   const { loader: propsLoader, immutableFilters } = props;

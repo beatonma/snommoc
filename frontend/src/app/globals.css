@@ -23,7 +23,7 @@
   --_light_primary: rgb(51, 136, 85);
   --_dark_primary: rgb(66, 172, 108);
 
-  --_light_on_primary: var(--_white_);
+  --_light_on_primary: var(--_black_);
   --_dark_on_primary: var(--_white_);
 
   --_light_accent: rgb(206, 218, 245);
@@ -34,9 +34,33 @@
 
   --_light_hover-mixer: var(--_black_);
   --_dark_hover-mixer: var(--_white_);
+}
 
-  ::selection {
-    background-color: color-mix(in srgb, var(--surface), var(--primary));
+::selection {
+  background-color: color-mix(in srgb, var(--surface), var(--primary));
+  color: var(--on_primary);
+}
+
+.overflow-x-auto {
+  @media (pointer: coarse) {
+    scrollbar-width: none;
+  }
+  @media (pointer: fine) {
+    scrollbar-width: thin;
+  }
+}
+
+.px-edge {
+  .px-edge {
+    /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
+    --spacing-edge: 0;
+  }
+}
+
+.px-edge-sm {
+  .px-edge-sm {
+    /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
+    --spacing-edge-sm: 0;
   }
 }
 
@@ -138,6 +162,9 @@
   --list-style-type-square: square;
 
   --transition-duration: 220ms;
+
+  --spacing-edge: 8px;
+  --spacing-edge-sm: 16px;
 }
 
 @utility surface {
@@ -201,6 +228,29 @@
   }
 }
 
+@layer components {
+  @keyframes loading-first {
+    0%,
+    40% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      scale: 1;
+      translate: 50%;
+    }
+  }
+  @keyframes loading-last {
+    0% {
+      translate: -50%;
+    }
+    70%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
 @layer base {
   img {
     @apply object-cover;
@@ -250,7 +300,7 @@
   input,
   select {
     --surface: var(--surface_alt);
-    @apply bg-surface text-on_surface px-2 py-1;
+    @apply bg-surface text-on_surface rounded-sm px-2 py-1;
   }
 
   table {
@@ -277,29 +327,6 @@
     th,
     td {
       @apply px-4 py-1.5 text-left;
-    }
-  }
-}
-
-@layer components {
-  @keyframes loading-first {
-    0%,
-    40% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-      scale: 1;
-      translate: 50%;
-    }
-  }
-  @keyframes loading-last {
-    0% {
-      translate: -50%;
-    }
-    70%,
-    100% {
-      opacity: 0;
     }
   }
 }

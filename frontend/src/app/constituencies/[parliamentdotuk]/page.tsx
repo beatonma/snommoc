@@ -14,6 +14,7 @@ import { PartyLink, PersonLink } from "@/components/linked-data";
 import Links from "@/links";
 import { TextLink } from "@/components/link";
 import PageContent from "@/components/page";
+import WindowInsets from "@/components/insets";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -93,7 +94,7 @@ const ElectionResults = ({ results }: { results: ElectionResult[] }) => {
 
   return (
     <>
-      <h2>Election results</h2>
+      <h2 className={WindowInsets}>Election results</h2>
       {results.map((it) => (
         <ElectionResult key={it.election.parliamentdotuk} result={it} />
       ))}
@@ -112,12 +113,12 @@ const ElectionResult = (props: { result: ElectionResult }) => {
 
   return (
     <section>
-      <div className="flex flex-wrap items-baseline gap-2">
+      <div className={`${WindowInsets} flex flex-wrap items-baseline gap-2`}>
         <h3>{result.election.name}</h3>
         <Date date={result.election.date} />
       </div>
 
-      <div className="my-2 border-l border-l-primary pl-2 sm:pl-4">
+      <div className="border-l-primary my-2 border-l pl-2 sm:pl-4">
         <div className="pb-4 text-lg">
           <div className="font-bold">
             <PartyLink party={result.winner?.party} />{" "}

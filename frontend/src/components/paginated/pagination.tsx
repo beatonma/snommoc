@@ -11,6 +11,7 @@ import { TintedButton } from "@/components/button";
 import { addClass } from "@/util/transforms";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
 import { plural } from "@/util/plurals";
+import WindowInsets from "@/components/insets";
 
 const FullSpan = "col-start-1 col-span-full";
 
@@ -45,7 +46,7 @@ export const InfiniteScroll = <T,>(
     <div {...rest}>
       {header}
 
-      <GridSpan className="font-bold">
+      <GridSpan className={`${WindowInsets} font-bold`}>
         {pagination.availableItems >= 0
           ? plural("result", pagination.availableItems)
           : null}

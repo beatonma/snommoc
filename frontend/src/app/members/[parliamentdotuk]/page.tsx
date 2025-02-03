@@ -15,6 +15,7 @@ import { Date } from "@/components/datetime";
 import { partyStyle } from "@/components/themed/party";
 import PageContent from "@/components/page";
 import Career from "@/app/members/[parliamentdotuk]/career";
+import WindowInsets from "@/components/insets";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -44,8 +45,8 @@ export default async function Page({ params }: PageProps) {
     <PageContent style={partyStyle(member.party)}>
       <main className="readable">
         <MemberCard member={member} />
-        <MemberDetail member={member} />
-        <MemberCareer member={member} />
+        <MemberDetail member={member} className={WindowInsets} />
+        <MemberCareer member={member} className={WindowInsets} />
       </main>
     </PageContent>
   );

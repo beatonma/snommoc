@@ -15,6 +15,7 @@ import { HeaderCard } from "@/components/card";
 import { partyStyle } from "@/components/themed/party";
 import { plural } from "@/util/plurals";
 import PageContent from "@/components/page";
+import WindowInsets from "@/components/insets";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -81,7 +82,7 @@ export default async function Page({ params }: PageProps) {
           </HeaderCard>
         </section>
 
-        <section>
+        <section className={WindowInsets}>
           <Demographics party={party} />
         </section>
       </main>

@@ -8,7 +8,7 @@ interface TabLayoutProps<T extends string> {
   defaultTab?: T;
 }
 export const TabLayout = <T extends string>(props: TabLayoutProps<T>) => {
-  const { tabs, defaultTab, ...rest } = props;
+  const { tabs, defaultTab } = props;
   const tabNames: T[] = useMemo(() => tabs.map((it) => it[0]), [tabs]);
 
   const [currentTab, setCurrentTab] = useState<T>(defaultTab ?? tabNames[0]!);
@@ -21,7 +21,7 @@ export const TabLayout = <T extends string>(props: TabLayoutProps<T>) => {
   );
 
   return (
-    <div {...rest}>
+    <>
       <TabBar
         currentTab={currentTab}
         tabs={tabNames}
@@ -37,7 +37,7 @@ export const TabLayout = <T extends string>(props: TabLayoutProps<T>) => {
       <div role="tabpanel" aria-labelledby={currentTabId}>
         {content?.()}
       </div>
-    </div>
+    </>
   );
 };
 
@@ -79,9 +79,9 @@ const Tab = (
 ) => {
   const { onClick, ...rest } = addClass(
     props,
-    "cursor-pointer px-2 pb-1 pt-2 transition-colors whitespace-nowrap",
-    "border-b-2",
-    "aria-selected:border-primary aria-selected:font-bold",
+    "shrink-0 cursor-pointer px-2 pb-1 pt-2 transition-colors",
+    "border-b-2 text-current/85 hover:bg-hover",
+    "aria-selected:text-current aria-selected:border-primary aria-selected:font-bold",
   );
   const tabId = useId();
 

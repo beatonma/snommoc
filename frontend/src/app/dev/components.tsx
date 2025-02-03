@@ -18,43 +18,15 @@ export const ComponentsOverview = () => (
       <Loading />
     </Section>
 
-    <Section component="TabLayout">
-      <TabLayout
-        tabs={[
-          ["One", () => <>One</>],
-          ["Two", () => <>Two</>],
-          ["Three", () => <>Three</>],
-        ]}
-      />
-    </Section>
-
+    <TabComponents />
     <ButtonComponents />
-
-    <Section component="HeaderCard">
-      <HeaderCard
-        party={Sample.LabourParty}
-        image={
-          <MaskedSvg
-            src={Sample.LabourParty.logo}
-            className="size-64 bg-white"
-          />
-        }
-      >
-        <h1>Header card</h1>
-        <p>Text content</p>
-      </HeaderCard>
-    </Section>
-
-    <Section component="MemberItem">
-      <MemberItem member={Sample.KeirStarmerItem} />
-    </Section>
+    <SortableComponents />
+    <CardComponents />
   </>
 );
 
 const ButtonComponents = () => (
   <>
-    <SortableComponents />
-
     <Section component="TextButton">
       <Row>
         <TextButton>TextButton</TextButton>
@@ -65,6 +37,9 @@ const ButtonComponents = () => (
         <TextButton onClick={() => console.log("Click!")} icon="Wikipedia">
           TextButton
         </TextButton>
+        |
+        <TextButton href="#" icon="Wikipedia" />
+        <TextButton onClick={() => console.log("Click!")} icon="Wikipedia" />
       </Row>
     </Section>
 
@@ -78,7 +53,9 @@ const ButtonComponents = () => (
         <TintedButton onClick={() => console.log("Click!")} icon="Wikipedia">
           TintedButton
         </TintedButton>
-
+        |
+        <TintedButton href="#" icon="Wikipedia" />
+        <TintedButton onClick={() => console.log("Click!")} icon="Wikipedia" />
         <div style={partyStyle(Sample.LabourParty)}>
           <TintedButton href="#">Themed TintedButton</TintedButton>
         </div>
@@ -144,5 +121,41 @@ const Section = (props: { component: string } & ChildrenProps) => {
 };
 
 const Row = (props: ChildrenProps) => (
-  <div className="flex flex-wrap items-start gap-2">{props.children}</div>
+  <div className="flex flex-wrap items-center gap-2">{props.children}</div>
+);
+
+const CardComponents = () => (
+  <>
+    {" "}
+    <Section component="HeaderCard">
+      <HeaderCard
+        party={Sample.LabourParty}
+        image={
+          <MaskedSvg
+            src={Sample.LabourParty.logo}
+            className="size-64 bg-white"
+          />
+        }
+      >
+        <h1>Header card</h1>
+        <p>Text content</p>
+      </HeaderCard>
+    </Section>
+    <Section component="MemberItem">
+      <MemberItem member={Sample.KeirStarmerItem} />
+    </Section>
+  </>
+);
+
+const TabComponents = () => (
+  <>
+    <Section component="TabLayout">
+      <TabLayout
+        tabs={Sample.MemberList.map((it) => [
+          it.name,
+          () => <>{it.party?.name}</>,
+        ])}
+      />
+    </Section>
+  </>
 );

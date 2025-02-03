@@ -17,14 +17,14 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full w-full">
-      <body className="bg-background text-on_background grid h-full grid-rows-[min-content_1fr_min-content] items-start">
-        <header className="flex w-full flex-col items-center gap-2 p-8">
-          <div className="grid w-full grid-cols-[1fr_max-content_1fr]">
+    <html lang="en" className="h-full">
+      <body className="bg-background text-on_background grid h-full grid-cols-1 grid-rows-[min-content_1fr_min-content]">
+        <header className="flex flex-col items-center gap-x-2 p-8">
+          <div className="grid w-full grid-cols-[1fr_max-content_1fr] items-center">
             <div />
             <h1>Commons</h1>
-            <div className="flex flex-row justify-end">
-              <ThemeController className="sm:p-4" />
+            <div className="flex flex-row items-center justify-end">
+              <ThemeController className="p-2 sm:p-4" />
             </div>
           </div>
           <Nav>
@@ -40,6 +40,9 @@ export default function RootLayout({
             <TextLink href="https://tailwindcss.com/docs/" target="_blank">
               tailwind docs
             </TextLink>
+            <TextLink href="/dev/" target="_blank">
+              components
+            </TextLink>
           </Nav>
         </header>
 
@@ -52,10 +55,6 @@ export default function RootLayout({
         <footer className="flex flex-col items-center gap-2 p-8 pt-16 text-center">
           <License licence="OpenParliament" />
         </footer>
-
-        {/*<script type="application/javascript">*/}
-        {/*  window.addEventListener("load", () => { document.body.dataset.theme = window.localStorage.getItem("theme"); })*/}
-        {/*</script>*/}
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { AppIcon } from "@/components/icon";
-import { ComponentProps, useEffect, useMemo, useState } from "react";
+import { ComponentProps, useEffect, useMemo, useRef, useState } from "react";
 import { TextButton } from "@/components/button";
 
 const StorageKey = "theme";
@@ -9,9 +9,8 @@ type Theme = "light" | "dark" | "system";
 const ThemeController = (
   props: Omit<ComponentProps<"button">, "onClick" | "title">,
 ) => {
-  const [mode, setMode] = useState<Theme>(
-    (localStorage.getItem(StorageKey) ?? "system") as Theme,
-  );
+  const isInitialized = useRef<boolean>(false);
+  const [mode, setMode] = useState<Theme>("system");
   const icon: AppIcon = useMemo(() => {
     switch (mode) {
       case "light":
@@ -25,6 +24,12 @@ const ThemeController = (
   }, [mode]);
 
   useEffect(() => {
+    if (!isInitialized.current) {
+      setMode((localStorage.getItem(StorageKey) ?? "system") as Theme);
+      isInitialized.current = true;
+      return;
+    }
+
     document.body.dataset.theme = mode;
     localStorage.setItem(StorageKey, mode);
   }, [mode]);

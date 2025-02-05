@@ -1,6 +1,7 @@
 import { ComponentPropsWithoutRef, ReactNode } from "react";
 import { TextLink } from "@/components/link";
 import { Licence, licence, LicenceDefinition } from "@/licensing";
+import React from "react";
 
 interface LicenseProps {
   licence: Licence;
@@ -60,7 +61,13 @@ const LinkifiedAttribution = (props: LicenceDefinition) => {
           }
         });
 
-        return <p key={index}>{results}</p>;
+        return (
+          <p key={index}>
+            {results.map((it, i) => (
+              <React.Fragment key={i}>{it}</React.Fragment>
+            ))}
+          </p>
+        );
       })}
     </>
   );

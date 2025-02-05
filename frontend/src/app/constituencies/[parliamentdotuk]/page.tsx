@@ -5,7 +5,7 @@ import React, { ReactNode } from "react";
 import { Date, DateRange } from "@/components/datetime";
 import { ConstituencyMap } from "./map";
 import { GeoJSON } from "geojson";
-import { partyStyle } from "@/components/themed/party";
+import { partyStyle, rgb } from "@/components/themed/party";
 import { Optional } from "@/components/optional";
 import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
@@ -46,11 +46,13 @@ export default async function Page({ params }: PageProps) {
         <section className="gap-y-0 overflow-hidden sm:rounded-lg">
           <ConstituencyMap
             className="aspect-square max-h-[50vh] w-full"
-            geojson={
+            key={constituency.parliamentdotuk}
+            geoJson={
               constituency.boundary
                 ? (constituency.boundary as unknown as GeoJSON)
                 : undefined
             }
+            color={rgb(constituency.mp?.party?.theme?.primary)}
           />
 
           <HeaderCard

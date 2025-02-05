@@ -12,7 +12,7 @@ from social.tests import reverse_api
 from social.tests.util import create_sample_usertoken
 
 _COMMENT = "This is a simple comment"
-_TEST_USERNAME = "testuser-comments"
+_TEST_USERNAME = "comments"
 
 
 VIEWNAME_CREATE_COMMENT = reverse_api("create_comment")

@@ -39,9 +39,7 @@ class VoteTests(DatabaseTestCase):
 
         create_sample_person(parliamentdotuk=1423, name="Boris Johnson")
 
-        self.valid_user = create_sample_usertoken(
-            "VoteTests-username", self.valid_token
-        )
+        self.valid_user = create_sample_usertoken("VoteTests", self.valid_token)
 
     def post_json(self, data: dict):
         return self.client.post(

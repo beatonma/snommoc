@@ -9,7 +9,7 @@ from social.tests.util import (
     create_sample_vote,
 )
 
-_VALID_USER = "get-social-valid-user"
+_VALID_USER = "valid-user"
 
 VIEWNAME_GET = reverse_api("get_social_content")
 

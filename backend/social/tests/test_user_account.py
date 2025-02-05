@@ -23,7 +23,7 @@ class UserAccountViewTests(DatabaseTestCase):
         valid_user_token = uuid.uuid4()
         self.valid_user_token = str(valid_user_token)
         self.valid_google_id = str(uuid.uuid4().hex)
-        self.original_username = "useraccount-username"
+        self.original_username = "useraccount"
 
         create_sample_usertoken(
             username=self.original_username,

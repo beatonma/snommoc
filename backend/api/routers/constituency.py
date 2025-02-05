@@ -1,4 +1,4 @@
-from api.schema.constituency import ConstituencyFullSchema
+from api.schema.constituency import ConstituencyFullSchema, ConstituencyMapSchema
 from api.schema.includes import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
 from django.db.models import F
@@ -26,6 +26,12 @@ def constituencies(request: HttpRequest, query: str = None):
         qs = qs.current()
 
     return qs.order_by(F("end").desc(nulls_first=True), "name")
+
+
+@router.get("/maps/", response=list[ConstituencyMapSchema])
+@paginate
+def maps(request: HttpRequest):
+    return Constituency.objects.current()
 
 
 @router.get("/{parliamentdotuk}/", response=ConstituencyFullSchema)

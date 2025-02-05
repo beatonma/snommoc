@@ -82,7 +82,9 @@ interface Paginated<T> {
   error: any | undefined;
   reset: () => Promise<void>;
 }
-const usePagination = <T,>(loader: PaginationLoader<T>): Paginated<T> => {
+export const usePagination = <T,>(
+  loader: PaginationLoader<T>,
+): Paginated<T> => {
   const [items, setItems] = useState<T[]>([]);
   const [error, setError] = useState<any>();
   const totalItemsAvailable = useRef(-1);

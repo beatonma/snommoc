@@ -143,6 +143,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/constituencies/maps/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Maps */
+        get: operations["api_routers_constituency_maps"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/constituencies/{parliamentdotuk}/": {
         parameters: {
             query?: never;
@@ -767,6 +784,25 @@ export interface components {
             /** Count */
             count: number;
         };
+        /** ConstituencyMapSchema */
+        ConstituencyMapSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Start */
+            start: string | null;
+            /** End */
+            end: string | null;
+            mp: components["schemas"]["MemberMiniSchema"] | null;
+            /** Boundary */
+            boundary?: Record<string, never> | null;
+        };
+        /** PagedConstituencyMapSchema */
+        PagedConstituencyMapSchema: {
+            /** Items */
+            items: components["schemas"]["ConstituencyMapSchema"][];
+            /** Count */
+            count: number;
+        };
         /** ConstituencyCandidateSchema */
         ConstituencyCandidateSchema: {
             name: components["schemas"]["Name"];
@@ -1184,6 +1220,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PagedConstituencyMiniSchema"];
+                };
+            };
+        };
+    };
+    api_routers_constituency_maps: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedConstituencyMapSchema"];
                 };
             };
         };

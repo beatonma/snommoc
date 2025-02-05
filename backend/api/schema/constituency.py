@@ -6,7 +6,7 @@ from .election import ElectionSchema
 from .includes import MemberMiniSchema, PartyMiniSchema
 from .types import Name, ParliamentSchema, field
 
-__all__ = ["ConstituencyFullSchema"]
+__all__ = ["ConstituencyFullSchema", "ConstituencyMapSchema"]
 
 
 class ConstituencyCandidateSchema(Schema):
@@ -38,3 +38,11 @@ class ConstituencyFullSchema(ParliamentSchema):
     mp: MemberMiniSchema | None
     boundary: dict | None = field("boundary.geo_json", default=None)
     results: list[ResultsSchema]
+
+
+class ConstituencyMapSchema(ParliamentSchema):
+    name: Name
+    start: date | None
+    end: date | None
+    mp: MemberMiniSchema | None
+    boundary: dict | None = field("simple_boundary.geo_json", default=None)

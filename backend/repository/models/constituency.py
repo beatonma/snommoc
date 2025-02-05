@@ -84,6 +84,47 @@ class ConstituencyBoundary(BaseModel):
         verbose_name_plural = "Constituency Boundaries"
 
 
+class SimplifiedConstituencyBoundaryQuerySet(BaseQuerySet):
+    def for_constituency(self, constituency: Constituency, source_geojson: dict):
+        return self.update_or_create(
+            constituency=constituency,
+            defaults={
+                "geo_json": SimplifiedConstituencyBoundary.simplify_geojson(
+                    source_geojson
+                ),
+            },
+        )
+
+
+class SimplifiedConstituencyBoundary(BaseModel):
+    objects = SimplifiedConstituencyBoundaryQuerySet.as_manager()
+    constituency = models.OneToOneField(
+        "Constituency",
+        on_delete=models.CASCADE,
+        related_name="simple_boundary",
+    )
+    geo_json = models.JSONField()
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.geo_json = self.simplify_geojson(self.geo_json)
+
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def simplify_geojson(geojson: dict, tolerance=0.01) -> dict:
+        from shapely.geometry.geo import mapping, shape
+
+        shape_data = shape(geojson)
+        return mapping(shape_data.simplify(tolerance=tolerance, preserve_topology=True))
+
+    def __str__(self):
+        return self.constituency.name
+
+    class Meta:
+        verbose_name_plural = "Simplified Constituency Boundaries"
+
+
 class ConstituencyRepresentative(PersonMixin, PeriodMixin, BaseModel):
     person = models.ForeignKey(
         "Person",

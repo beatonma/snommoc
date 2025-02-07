@@ -1,4 +1,3 @@
-import json
 from typing import Annotated
 
 from crawlers.parliamentdotuk.tasks.openapi.members.schema import MemberBasic
@@ -11,7 +10,6 @@ from crawlers.parliamentdotuk.tasks.types import (
 )
 from pydantic import AfterValidator
 from pydantic import BaseModel as Schema
-from pydantic import BeforeValidator
 
 
 class Constituency(Schema):
@@ -23,7 +21,7 @@ class Constituency(Schema):
 
 
 class ConstituencyBoundary(Schema):
-    geo_json: Annotated[dict, BeforeValidator(json.loads)] = field("value")
+    geojson: StringOrNone = field("value", default=None)
 
 
 class ElectionCandidate(Schema):

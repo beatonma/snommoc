@@ -96,12 +96,11 @@ def _update_constituency(response_data: dict, context: TaskContext):
 def _update_boundary(response_data: dict, context: TaskContext, func_kwargs: dict):
     data = schema.ConstituencyBoundary.model_validate(response_data)
 
-    ConstituencyBoundary.objects.update_or_create(
-        constituency_id=func_kwargs["constituency_id"],
-        defaults={
-            "geo_json": data.geo_json,
-        },
-    )
+    if geojson := data.geojson:
+        ConstituencyBoundary.objects.update(
+            geojson=geojson,
+            constituency_id=func_kwargs["constituency_id"],
+        )
 
 
 def _update_election_result(

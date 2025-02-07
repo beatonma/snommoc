@@ -88,7 +88,7 @@ export const PersonLink = ({
 export const ConstituencyLink = ({
   constituency,
 }: {
-  constituency: ConstituencyMini | Nullish;
+  constituency: Pick<ConstituencyMini, "name" | "parliamentdotuk"> | Nullish;
 }) => {
   if (!constituency) return null;
 

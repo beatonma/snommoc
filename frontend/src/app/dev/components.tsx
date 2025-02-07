@@ -2,7 +2,7 @@
 import { TextButton, TintedButton } from "@/components/button";
 import React from "react";
 import { ChildrenProps } from "@/types/common";
-import { partyStyle } from "@/components/themed/party";
+import { partyColors } from "@/components/themed/party";
 import * as Sample from "@/app/dev/sample";
 import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
@@ -56,7 +56,7 @@ const ButtonComponents = () => (
         |
         <TintedButton href="#" icon="Wikipedia" />
         <TintedButton onClick={() => console.log("Click!")} icon="Wikipedia" />
-        <div style={partyStyle(Sample.LabourParty)}>
+        <div style={partyColors(Sample.LabourParty)}>
           <TintedButton href="#">Themed TintedButton</TintedButton>
         </div>
       </Row>

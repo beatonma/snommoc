@@ -29,7 +29,7 @@ import { MaybeString } from "@/types/common";
 
 const QueryParam = "query";
 const DefaultGridClass =
-  "grid-cols-[repeat(auto-fit,minmax(300px,400px))] gap-x-8 gap-y-4";
+  "grid-cols-[repeat(auto-fit,var(--spacing-listitem_card))] gap-x-8 gap-y-4";
 
 export interface SearchFilters {
   singleChoice?: Record<string, SingleChoiceFilter>;

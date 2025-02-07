@@ -2,26 +2,30 @@
 
 import { DivPropsNoChildren } from "@/types/react";
 
-import { GeoJsonLayer, Map, useMap } from "@/components/map";
+import { Map, useMap } from "@/components/map";
 import { useEffect } from "react";
-import { GeoJSON } from "geojson";
+import { Constituency } from "@/api";
+import { rgb } from "@/components/themed/party";
 
-interface OptionalGeoJsonLayer extends Pick<GeoJsonLayer, "key" | "color"> {
-  geoJson: GeoJSON | undefined;
-}
-
-type ConstituencyMapProps = OptionalGeoJsonLayer &
-  Omit<DivPropsNoChildren, "id">;
+type ConstituencyMapProps = {
+  constituency: Constituency;
+} & Omit<DivPropsNoChildren, "id">;
 export const ConstituencyMap = (props: ConstituencyMapProps) => {
-  const { key, geoJson, color, ...rest } = props;
-
+  const { constituency, ...rest } = props;
   const map = useMap();
 
   useEffect(() => {
+    const geoJson = constituency.boundary
+      ? JSON.parse(constituency.boundary)
+      : null;
     if (map && geoJson) {
-      map.addOverlay({ key: key, geoJson: geoJson, color: color });
+      map.addOverlay({
+        layerKey: constituency.parliamentdotuk,
+        geoJson: geoJson,
+        color: rgb(constituency.mp?.party?.theme?.primary),
+      });
     }
-  }, [map, key, geoJson, color]);
+  }, [map, constituency]);
 
   return <Map map={map} {...rest} />;
 };

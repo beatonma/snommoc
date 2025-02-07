@@ -12,7 +12,7 @@ def _get_default_database(engine: DatabaseEngine):
 
     if engine == DatabaseEngine.POSTGRES:
         return {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "ENGINE": "django.contrib.gis.db.backends.postgis",
             "NAME": environment.DATABASE_NAME,
             "USER": environment.POSTGRES_USER,
             "PASSWORD": environment.POSTGRES_PASSWORD,

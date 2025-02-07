@@ -1,24 +1,43 @@
-import type { MemberMiniSchema } from "@/api";
+import { MemberMiniSchema } from "@/api";
 import { ListItemCard } from "@/components/card";
 import { MemberPortrait } from "@/components/member-portrait";
 import { OptionalDiv } from "@/components/optional";
 import { SeparatedRow } from "@/components/collection";
 import React from "react";
 import { ClassNameProps } from "@/types/common";
+import { PartyThemeableProps } from "@/components/themed/party";
+
+type OptionalMemberFields = Pick<
+  Partial<MemberMiniSchema>,
+  "current_posts" | "constituency"
+>;
+type MemberLike = Omit<MemberMiniSchema, keyof OptionalMemberFields> &
+  OptionalMemberFields;
 
 interface MemberItemProps {
-  member: MemberMiniSchema;
+  member: MemberLike;
   label?: string;
   showParty?: boolean;
   showConstituency?: boolean;
+  usePartyTheme?: boolean;
 }
-export const MemberItem = (props: MemberItemProps & ClassNameProps) => {
-  const { member, label, showParty, showConstituency, ...rest } = props;
+export const MemberItem = (
+  props: MemberItemProps &
+    Pick<PartyThemeableProps, "defaultPartyTheme"> &
+    ClassNameProps,
+) => {
+  const {
+    member,
+    showParty,
+    showConstituency,
+    usePartyTheme = true,
+    ...rest
+  } = props;
+
   return (
     <ListItemCard
       href={`/members/${member.parliamentdotuk}/`}
-      party={member.party}
-      label={label}
+      party={usePartyTheme ? member.party : null}
       title={`${member.parliamentdotuk}`}
       image={
         <MemberPortrait

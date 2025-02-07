@@ -133,16 +133,15 @@ export const getConstituencies = async (
     },
   });
 
-export type NationalBoundary = schema["ConstituencyMapSchema"];
-export const getNationalConstituencyMaps = //paginatedGet("/api/constituencies/maps/")
-  async (
-    query: paths["/api/constituencies/maps/"]["get"]["parameters"]["query"],
-  ): ApiPaginatedPromise<NationalBoundary> =>
-    client.GET("/api/constituencies/maps/", {
-      params: {
-        query: query,
-      },
-    });
+export type NationalBoundary = schema["NationalMapSchema"];
+export const getNationalConstituencyMaps = async (
+  query: paths["/api/constituencies/maps/"]["get"]["parameters"]["query"],
+): ApiPaginatedPromise<NationalBoundary> =>
+  client.GET("/api/constituencies/maps/", {
+    params: {
+      query: query,
+    },
+  });
 
 export type Organisation = schema["OrganisationSchema"];
 export type Post = Omit<schema["PostSchema"], "start" | "end">;

@@ -47,34 +47,23 @@ class UpdateConstituenciesTest(_BaseTestCase):
 
 
 class UpdateConstituencyBoundariesTest(_BaseTestCase):
+    def assertAlmostEqual(self, first, second, places=2, msg=None, delta=None):
+        super().assertAlmostEqual(first, second, places=places, msg=msg, delta=delta)
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         update_constituency_boundaries(context=CONTEXT)
 
     def test_update_constituency_boundaries(self):
-        boundary_json = self.constituency.boundary.geo_json
+        boundary = self.constituency.boundary
 
-        match boundary_json:
-            case {
-                "type": "MultiPolygon",
-                "coordinates": list(coordinates),
-            }:
-                # match first coordinate
-                latitude, longitude = coordinates[0][0][0]
-                self.assertEqual(latitude, -6.683869292366397)
-                self.assertEqual(longitude, 56.97145915072452)
-
-                # match last coordinate
-                latitude, longitude = coordinates[-1][-1][-1]
-                self.assertEqual(latitude, -4.288692136669457)
-                self.assertEqual(longitude, 57.48458249179726)
-
-            case _:
-                raise AssertionError(
-                    "ConstituencyBoundary.geo_json does not match expected structure",
-                    boundary_json,
-                )
+        self.assertAlmostEqual(boundary.centroid.x, -5.286)
+        self.assertAlmostEqual(boundary.centroid.y, 57.253)
+        self.assertAlmostEqual(boundary.north, 57.875)
+        self.assertAlmostEqual(boundary.south, 56.708)
+        self.assertAlmostEqual(boundary.east, -3.843)
+        self.assertAlmostEqual(boundary.west, -6.789)
 
 
 class UpdateElectionResultsTest(_BaseTestCase):

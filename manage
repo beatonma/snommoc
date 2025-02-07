@@ -13,6 +13,11 @@ COMPOSE_DEV="compose.dev.yml"
 DOT_ENV_PRODUCTION=".env"
 DOT_ENV_DEV=".dev.env"
 
+# Data import/export
+ARCHIVE_DIRNAME="data-archive"
+ARCHIVE_DB="backup.sql"
+DOCKER_CONTAINER_POSTGRES="snommoc_postgres"
+
 compose_file="NOT_SET"
 env_file="NOT_SET"
 
@@ -75,7 +80,6 @@ certbot_renew() {
   docker_certbot sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
 }
 certbot() {
-  source "$DOT_ENV_PRODUCTION"
   certbot_args_list=(
     "-d ${DOMAIN_NAME}"
     "-d www.${DOMAIN_NAME}"
@@ -116,21 +120,71 @@ create_superuser() {
   run_command docker exec -it "$container_name" python manage.py createsuperuser
 }
 
-setenv() {
+set_env() {
   env_file="$*"
   source "$env_file"
 }
 
+export_data() {
+  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
+  output_filename="archive-$(date +%F).tar.gz"
+  docker_temp_db_path="/tmp/$ARCHIVE_DB"
+
+  # copy important files
+  run_command mkdir -p "$local_temp_path/"
+
+  # dump database
+  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
+    pg_dump --clean --create --no-owner \
+    --format=custom \
+    --username="$POSTGRES_USER" \
+    --file="$docker_temp_db_path" \
+    "$POSTGRES_DB"
+  run_command docker cp "${DOCKER_CONTAINER_POSTGRES}:$docker_temp_db_path" "$local_temp_path"
+
+  # build archive
+  run_command tar -czvf "$output_filename" -C "/tmp" "$ARCHIVE_DIRNAME"
+
+  # cleanup
+  run_command rm -r "$local_temp_path"
+  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
+    rm "$docker_temp_db_path"
+
+  exit 0
+}
+
+import_data() {
+  archive_file="$1"
+  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
+  docker_temp_db_path="/tmp/$ARCHIVE_DB"
+
+  # extract archive
+  run_command tar -xzvf "$archive_file" -C "/tmp"
+
+  # restore database
+  run_command docker cp "$local_temp_path/$ARCHIVE_DB" "$DOCKER_CONTAINER_POSTGRES:$docker_temp_db_path"
+  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" \
+    pg_restore --clean \
+    --verbose \
+    --no-owner \
+    --username="$POSTGRES_USER" \
+    --dbname="$POSTGRES_DB" \
+    "$docker_temp_db_path"
+
+  # cleanup
+  run_command rm -r "$local_temp_path"
+  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" rm "$docker_temp_db_path"
+
+  exit 0
+}
+
 dev() {
-  setenv "$DOT_ENV_DEV"
   case "$1" in
   "up" | "down" | "--")
-#    (cd "$BASE_DIR/frontend" || exit 1; npm install)
     docker_compose "$@"
     exit 0
     ;;
   "build")
-#    (cd "$BASE_DIR/frontend" || exit 1; npm install)
     shift
     docker_compose_build "$@"
     exit 0
@@ -146,7 +200,6 @@ dev() {
 }
 
 production() {
-  setenv "$DOT_ENV_PRODUCTION"
   case "$1" in
   "build")
     production_build "$@"
@@ -167,17 +220,40 @@ production() {
 }
 case $flavor in
 "production")
+  set_env "$DOT_ENV_PRODUCTION"
   compose_file=$COMPOSE_PRODUCTION
   production "$@"
   exit 0
   ;;
 "dev")
+  set_env "$DOT_ENV_DEV"
   compose_file=$COMPOSE_DEV
   dev "$@"
   exit 0
   ;;
 "certbot")
+  source "$DOT_ENV_PRODUCTION"
   certbot "$@"
+  exit 0
+  ;;
+"export")
+  set_env "$DOT_ENV_PRODUCTION"
+  export_data
+  exit 0
+  ;;
+"import")
+  set_env "$DOT_ENV_PRODUCTION"
+  import_data "$@"
+  exit 0
+  ;;
+"openapi")
+  npx openapi-typescript http://localhost:8000/api/openapi.json -o frontend/src/lib/api/api.d.ts
+  exit 0
+  ;;
+"shell")
+  set_env "$DOT_ENV_DEV"
+  compose_file=$COMPOSE_DEV
+  docker_compose --profile manage run --rm "$@" django_manage
   exit 0
   ;;
 *)

@@ -22,8 +22,8 @@ volumes:
 services:
   postgres:
     <<: *common
-    image: postgres:17-alpine
-    container_name: postgres_snommoc
+    image: postgis/postgis:17-3.5
+    container_name: snommoc_postgres
     volumes:
       - postgres_snommoc:/var/lib/postgresql/data
     ports:
@@ -32,8 +32,9 @@ services:
       test: pg_isready
       <<: *healthcheck
 
-  django:
+  django: &django
     <<: *common
+    container_name: snommoc_django
     build:
       <<: *dockerfile
       target: django
@@ -43,7 +44,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/django:ro
+      - ./backend:/django:rw
       - ./runtime-dev:/tmp/runtime:rw
       - ./runtime-dev/log:/var/log/snommoc:rw
       - ./runtime-dev/media:/var/www/media:rw
@@ -52,8 +53,25 @@ services:
       test: curl --header --fail http://localhost:8000/api/ping/ || exit 1
       <<: *healthcheck
 
+  django_manage:
+    <<: *django
+    container_name: snommoc_django_manage
+    profiles:
+      - "manage"
+    ports: []
+    volumes:
+      - ./backend:/django:rw
+      - ./runtime-dev:/tmp/runtime:rw
+      - ./runtime-dev/log:/var/log/snommoc:rw
+      - ./runtime-dev/media:/var/www/media:rw
+      - ./runtime-dev/static:/var/www/static:rw
+    healthcheck:
+      test: ["NONE"]
+    entrypoint: ["sh"]
+
   next:
     <<: *common
+    container_name: snommoc_next
     build:
       <<: *dockerfile
       target: next

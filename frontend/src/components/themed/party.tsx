@@ -4,24 +4,23 @@ import { addClass } from "@/util/transforms";
 import { Nullish } from "@/types/common";
 import { MaskedSvg } from "@/components/image";
 
-interface PartyProps {
-  party: Party | PartyDetail | null | undefined;
+type PartyLike = Party | PartyDetail | Nullish;
+export interface PartyThemeableProps {
+  party: PartyLike;
+  defaultPartyTheme?: PartyTheme | Nullish;
 }
 
 export const rgb = (value: string | undefined) => {
-  if (value?.match(/^\d+ \d+ \d+$/)) return `rgb(${value})`;
+  if (value?.match(/^\d+,? \d+,? \d+$/)) return `rgb(${value})`;
   return value;
 };
 
-const DefaultTheme: PartyTheme = {
-  primary: "var(--surface)",
-  on_primary: "var(--on_surface)",
-  accent: "var(--primary)",
-  on_accent: "var(--on_primary)",
-};
-
-const partyTheme = (party: Party | PartyDetail | Nullish) => {
-  const theme = party?.theme ?? DefaultTheme;
+const partySurfaceThemes = (
+  party: PartyLike,
+  defaultTheme?: PartyTheme | Nullish,
+): { primary: React.CSSProperties; accent: React.CSSProperties } | null => {
+  const theme = party?.theme ?? (defaultTheme === null ? null : defaultTheme);
+  if (!theme) return null;
 
   return {
     primary: {
@@ -50,58 +49,53 @@ const getOnColor = (
 
   return `color-mix(in srgb, rgb(${backgroundColorRgb}) 10%, ${mixer})`;
 };
-export const partyStyle = (party: Party | PartyDetail | Nullish) => {
+
+export const partyColors = (
+  party: PartyLike,
+  merge?: object,
+): React.CSSProperties => {
   const theme = party?.theme;
-  return Object.fromEntries(
-    Object.entries({
-      "--primary": rgb(theme?.primary),
-      "--on_primary": getOnColor(theme?.primary),
-      "--accent": rgb(theme?.accent),
-      "--on_accent": getOnColor(theme?.accent),
-      accentColor: rgb(theme?.primary),
-    }).filter(([_, value]) => !!value),
-  );
+  return {
+    ...(merge ?? {}),
+    ...Object.fromEntries(
+      Object.entries({
+        "--primary": rgb(theme?.primary),
+        "--on_primary": getOnColor(theme?.primary),
+        "--accent": rgb(theme?.accent),
+        "--on_accent": getOnColor(theme?.accent),
+        accentColor: rgb(theme?.primary),
+      }).filter(([_, value]) => !!value),
+    ),
+  };
 };
 
 export const PartyIconBackground = (
-  props: PartyProps & ComponentPropsWithoutRef<"div">,
+  props: PartyThemeableProps & ComponentPropsWithoutRef<"div">,
 ) => {
-  const { party, children, style, ...rest } = props;
-  // const style = partyStyle(party)
-  const theme = partyTheme(party);
+  const { party, children, style, defaultPartyTheme, ...rest } = props;
+  const theme = partySurfaceThemes(party, defaultPartyTheme)?.primary;
+  const themedStyle = partyColors(party, style);
 
-  const themedStyle = {
-    ...style,
-    ...partyStyle(party),
-  };
-
-  if (!party?.logo)
+  if (!party?.logo_mask && !party?.logo)
     return (
-      <div style={{ ...theme.primary, ...themedStyle }} {...rest}>
+      <div style={{ ...theme, ...themedStyle }} {...rest}>
         {children}
       </div>
     );
-
   return (
     <div
       style={{
         ...themedStyle,
-        color: theme.primary.color,
+        ...theme,
       }}
       {...addClass(rest, "relative overflow-hidden")}
     >
-      <div
-        className="absolute inset-0 z-[-1] size-full"
-        style={{
-          backgroundColor: theme.primary.backgroundColor,
-        }}
-      >
-        <MaskedSvg
-          src={party.logo_mask ?? party.logo}
-          className="inset-0 size-full translate-x-1/2 bg-black/[0.08]"
-        />
-      </div>
-      {children}
+      <MaskedSvg
+        src={party.logo_mask ?? party.logo}
+        className="absolute inset-0 size-full translate-x-1/2 bg-black/[0.08]"
+      />
+
+      <div className="relative">{children}</div>
     </div>
   );
 };

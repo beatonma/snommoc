@@ -4,7 +4,6 @@ isort
 pytest
 pytest-django
 
-nh3~=0.2
 celery~=5.4
 Django~=5.1
 django-debug-toolbar~=4.4
@@ -15,14 +14,12 @@ django-phonenumber-field~=8.0
 fuzzywuzzy~=0.18
 google-auth~=2.35
 Markdown~=3.7
+nh3~=0.2
 phonenumberslite~=8.13
 psycopg2-binary~=2.9
 pydantic~=2.9
 python-dateutil~=2.9
 python-Levenshtein~=0.26
-rich~=13.9
 requests~=2.32
+rich~=13.9
 Werkzeug~=3.0
-
-# GeoJSON simplification
-shapely~=2.0

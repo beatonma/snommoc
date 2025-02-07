@@ -165,6 +165,8 @@
 
   --spacing-edge: 8px;
   --spacing-edge-sm: 16px;
+
+  --spacing-listitem_card: min(100%, 400px);
 }
 
 @utility surface {

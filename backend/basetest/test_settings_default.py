@@ -2,7 +2,7 @@ import uuid
 from datetime import timedelta
 
 import util.settings_contract as contract
-from snommoc.settings import INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF  # noqa
+from snommoc.settings import DATABASES, INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF  # noqa
 
 TEST_RUNNER = "basetest.runner.PytestTestRunner"
 
@@ -13,8 +13,8 @@ SECRET_KEY = "some-test-key"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db.test.sqlite3",
+        **DATABASES["default"],
+        "NAME": "pytest",
     }
 }
 

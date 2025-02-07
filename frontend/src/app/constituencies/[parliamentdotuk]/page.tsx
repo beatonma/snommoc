@@ -4,8 +4,7 @@ import ErrorMessage from "@/components/error";
 import React, { ReactNode } from "react";
 import { Date, DateRange } from "@/components/datetime";
 import { ConstituencyMap } from "./map";
-import { GeoJSON } from "geojson";
-import { partyStyle, rgb } from "@/components/themed/party";
+import { partyColors } from "@/components/themed/party";
 import { Optional } from "@/components/optional";
 import { MemberItem } from "@/components/item-member";
 import { HeaderCard } from "@/components/card";
@@ -41,18 +40,12 @@ export default async function Page({ params }: PageProps) {
   if (!constituency) return <ErrorMessage />;
 
   return (
-    <PageContent style={partyStyle(constituency.mp?.party)}>
+    <PageContent style={partyColors(constituency.mp?.party)}>
       <main className="readable w-full">
         <section className="gap-y-0 overflow-hidden sm:rounded-lg">
           <ConstituencyMap
+            constituency={constituency}
             className="aspect-square max-h-[50vh] w-full"
-            key={constituency.parliamentdotuk}
-            geoJson={
-              constituency.boundary
-                ? (constituency.boundary as unknown as GeoJSON)
-                : undefined
-            }
-            color={rgb(constituency.mp?.party?.theme?.primary)}
           />
 
           <HeaderCard

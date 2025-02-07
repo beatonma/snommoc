@@ -12,7 +12,7 @@ import { OptionalDiv } from "@/components/optional";
 import { LinkGroup } from "@/components/link";
 import MembersList from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
-import { partyStyle } from "@/components/themed/party";
+import { partyColors } from "@/components/themed/party";
 import { plural } from "@/util/plurals";
 import PageContent from "@/components/page";
 import WindowInsets from "@/components/insets";
@@ -42,7 +42,7 @@ export default async function Page({ params }: PageProps) {
   if (!party) return <ErrorMessage />;
 
   return (
-    <PageContent style={partyStyle(party)}>
+    <PageContent style={partyColors(party)}>
       <main className="readable">
         <section>
           <HeaderCard

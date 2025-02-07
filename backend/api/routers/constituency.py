@@ -1,4 +1,5 @@
-from api.schema.constituency import ConstituencyFullSchema, ConstituencyMapSchema
+from api.pagination import offset_pagination
+from api.schema.constituency import ConstituencyFullSchema, NationalMapSchema
 from api.schema.includes import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
 from django.db.models import F
@@ -28,10 +29,14 @@ def constituencies(request: HttpRequest, query: str = None):
     return qs.order_by(F("end").desc(nulls_first=True), "name")
 
 
-@router.get("/maps/", response=list[ConstituencyMapSchema])
-@paginate
+@router.get("/maps/", response=list[NationalMapSchema])
+@paginate(offset_pagination(50))
 def maps(request: HttpRequest):
-    return Constituency.objects.current()
+    return (
+        Constituency.objects.current()
+        .prefetch_related("boundary", "mp", "mp__party", "mp__party__theme")
+        .order_by("-boundary__north")
+    )
 
 
 @router.get("/{parliamentdotuk}/", response=ConstituencyFullSchema)

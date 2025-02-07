@@ -355,14 +355,14 @@ export interface components {
         MemberMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
+            /** Portrait */
+            portrait?: string | null;
             /** Current Posts */
             current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["_MemberConstituencySchema"] | null;
             /** Lord Type */
             lord_type?: string | null;
-            /** Portrait */
-            portrait?: string | null;
         };
         Name: string;
         /** PagedMemberMiniSchema */
@@ -441,13 +441,13 @@ export interface components {
         MemberProfile: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
+            portrait?: components["schemas"]["PortraitSchema"] | null;
             /** Current Posts */
             current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["ConstituencyMiniSchema"] | null;
             /** Lord Type */
             lord_type?: string | null;
-            portrait?: components["schemas"]["PortraitSchema"] | null;
             /** Full Title */
             full_title: string | null;
             status: components["schemas"]["MemberStatus"];
@@ -784,22 +784,26 @@ export interface components {
             /** Count */
             count: number;
         };
-        /** ConstituencyMapSchema */
-        ConstituencyMapSchema: {
+        /** NationalMapMP */
+        NationalMapMP: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
-            /** Start */
-            start: string | null;
-            /** End */
-            end: string | null;
-            mp: components["schemas"]["MemberMiniSchema"] | null;
-            /** Boundary */
-            boundary?: Record<string, never> | null;
+            /** Portrait */
+            portrait?: string | null;
+            party: components["schemas"]["PartyMiniSchema"] | null;
         };
-        /** PagedConstituencyMapSchema */
-        PagedConstituencyMapSchema: {
+        /** NationalMapSchema */
+        NationalMapSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            mp: components["schemas"]["NationalMapMP"] | null;
+            /** Boundary */
+            boundary?: string | null;
+        };
+        /** PagedNationalMapSchema */
+        PagedNationalMapSchema: {
             /** Items */
-            items: components["schemas"]["ConstituencyMapSchema"][];
+            items: components["schemas"]["NationalMapSchema"][];
             /** Count */
             count: number;
         };
@@ -823,7 +827,7 @@ export interface components {
             end: string | null;
             mp: components["schemas"]["MemberMiniSchema"] | null;
             /** Boundary */
-            boundary?: Record<string, never> | null;
+            boundary?: string | null;
             /** Results */
             results: components["schemas"]["ResultsSchema"][];
         };
@@ -1242,7 +1246,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PagedConstituencyMapSchema"];
+                    "application/json": components["schemas"]["PagedNationalMapSchema"];
                 };
             };
         };

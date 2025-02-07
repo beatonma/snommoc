@@ -1,14 +1,23 @@
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import { addClass } from "@/util/transforms";
-import { Party, PartyDetail } from "@/api";
-import { PartyIconBackground } from "@/components/themed/party";
+import { type PartyTheme } from "@/api";
+import {
+  PartyIconBackground,
+  PartyThemeableProps,
+} from "@/components/themed/party";
 import Link from "next/link";
 import { NextLinkProps } from "@/components/link";
 import { Optional } from "@/components/optional";
 
 type CardProps = {
   image?: ReactNode;
-  party?: Party | PartyDetail | null;
+} & PartyThemeableProps;
+
+const DefaultTheme: PartyTheme = {
+  primary: "var(--surface)",
+  on_primary: "var(--on_surface)",
+  accent: "var(--primary)",
+  on_accent: "var(--on_primary)",
 };
 
 type HeaderCardProps = CardProps & ComponentPropsWithoutRef<"div">;
@@ -40,16 +49,16 @@ export const HeaderCard = (props: HeaderCardProps) => {
 
 type ListItemCardProps = { label?: string } & CardProps & NextLinkProps;
 export const ListItemCard = (props: ListItemCardProps) => {
-  const { image, children, party, label, ...rest } = addClass(
-    props,
-    "flex max-w-[400px]",
-    "hover-overlay",
-  );
+  const { image, children, party, defaultPartyTheme, label, ...rest } =
+    addClass(props, "flex max-w-listitem_card", "hover-overlay");
 
   return (
     <Link {...rest}>
       <PartyIconBackground
         party={party}
+        defaultPartyTheme={
+          defaultPartyTheme === undefined ? DefaultTheme : defaultPartyTheme
+        }
         className="flex w-full flex-col overflow-hidden p-3 sm:rounded-lg"
       >
         <div className="flex w-full gap-3">

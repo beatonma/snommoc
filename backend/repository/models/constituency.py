@@ -1,7 +1,10 @@
+import json
+import re
 from typing import Self
 
 from common.models import BaseModel, BaseQuerySet
-from django.db import models
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import GEOSGeometry
 from django.db.models import Q
 from repository.models.mixins import (
     AsciiNameMixin,
@@ -69,60 +72,73 @@ class Constituency(
         verbose_name_plural = "Constituencies"
 
 
+class BoundaryQuerySet(BaseQuerySet):
+    def update(
+        self,
+        *,
+        geojson: str | dict,
+        **kwargs,
+    ) -> tuple["ConstituencyBoundary", bool]:
+        if isinstance(geojson, dict):
+            geojson = json.dumps(geojson)
+
+        geometry = GEOSGeometry(self._reduce_decimal_precision(geojson, 5))
+        [west, south, east, north] = geometry.extent
+
+        return super().update_or_create(
+            **kwargs,
+            defaults={
+                "geometry": geometry,
+                "simple_json": self._build_simple_json(geometry),
+                "north": north,
+                "south": south,
+                "east": east,
+                "west": west,
+                "centroid": geometry.centroid,
+            },
+        )
+
+    @staticmethod
+    def _reduce_decimal_precision(geojson: str, precision: int) -> str:
+        return re.sub(
+            r"(?P<integer>\d+)\.(?P<fraction>\d+)",
+            lambda match: f"{match.group("integer")}.{match.group("fraction")[:precision]}",
+            geojson,
+        )
+
+    def _build_simple_json(self, geom: GEOSGeometry, tolerance: float = 0.01) -> str:
+        simplified = geom.simplify(tolerance=tolerance)
+        serialized = self._reduce_decimal_precision(
+            simplified.geojson, precision=2
+        ).replace(" ", "")
+
+        return serialized
+
+
 class ConstituencyBoundary(BaseModel):
+    objects = BoundaryQuerySet.as_manager()
     constituency = models.OneToOneField(
         "Constituency",
         on_delete=models.CASCADE,
         related_name="boundary",
     )
-    geo_json = models.JSONField()
+    geometry = models.MultiPolygonField(tolerance=1)
+
+    # Extents of the geometry
+    north = models.FloatField()
+    south = models.FloatField()
+    east = models.FloatField()
+    west = models.FloatField()
+    centroid = models.PointField()
+
+    # Pre-serialized, simplified approximation of geometry
+    simple_json = models.TextField()
 
     def __str__(self):
         return self.constituency.name
 
     class Meta:
         verbose_name_plural = "Constituency Boundaries"
-
-
-class SimplifiedConstituencyBoundaryQuerySet(BaseQuerySet):
-    def for_constituency(self, constituency: Constituency, source_geojson: dict):
-        return self.update_or_create(
-            constituency=constituency,
-            defaults={
-                "geo_json": SimplifiedConstituencyBoundary.simplify_geojson(
-                    source_geojson
-                ),
-            },
-        )
-
-
-class SimplifiedConstituencyBoundary(BaseModel):
-    objects = SimplifiedConstituencyBoundaryQuerySet.as_manager()
-    constituency = models.OneToOneField(
-        "Constituency",
-        on_delete=models.CASCADE,
-        related_name="simple_boundary",
-    )
-    geo_json = models.JSONField()
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.geo_json = self.simplify_geojson(self.geo_json)
-
-        super().save(*args, **kwargs)
-
-    @staticmethod
-    def simplify_geojson(geojson: dict, tolerance=0.01) -> dict:
-        from shapely.geometry.geo import mapping, shape
-
-        shape_data = shape(geojson)
-        return mapping(shape_data.simplify(tolerance=tolerance, preserve_topology=True))
-
-    def __str__(self):
-        return self.constituency.name
-
-    class Meta:
-        verbose_name_plural = "Simplified Constituency Boundaries"
 
 
 class ConstituencyRepresentative(PersonMixin, PeriodMixin, BaseModel):

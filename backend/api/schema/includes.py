@@ -11,6 +11,7 @@ __all__ = [
     "BillMiniSchema",
     "DivisionMiniSchema",
     "MemberMiniSchema",
+    "MinimalMemberSchema",
     "OrganisationSchema",
     "PartyMiniSchema",
     "PartyThemeSchema",
@@ -67,7 +68,13 @@ class _MemberConstituencySchema(ParliamentSchema):
     end: date | None
 
 
-class MemberMiniSchema(ParliamentSchema):
+class MinimalMemberSchema(ParliamentSchema):
+    name: Name
+    portrait: str | None = None
+    # portrait: str | None = field("memberportrait.square_url", default=None)
+
+
+class MemberMiniSchema(MinimalMemberSchema):
     name: Name
     current_posts: list[str]
     party: PartyMiniSchema | None

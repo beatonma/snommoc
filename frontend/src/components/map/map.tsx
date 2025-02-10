@@ -18,7 +18,12 @@ import { get as getProjection } from "ol/proj";
 import { addClass } from "@/util/transforms";
 import { FeatureLike } from "ol/Feature";
 import { Nullish } from "@/types/common";
-import { Extents, UkSquareExtents } from "./geography";
+import {
+  combineExtents,
+  Extents,
+  padExtents,
+  UkSquareExtents,
+} from "./geography";
 
 const MapProjectionCode = "EPSG:27700"; // British National Grid
 
@@ -37,6 +42,7 @@ interface MapOptions {
   provider?: MapProvider | Nullish;
   viewOptions?: ViewOptions;
   events?: MapEventHandlers;
+  fitToExtents?: boolean;
 }
 export const useMap = (options?: MapOptions) => {
   const [map, setMap] = useState<MapRenderer>();
@@ -89,10 +95,17 @@ class MapRenderer {
   #extents: Extents | null = null;
   #layers: Record<LayerKey, VectorLayer> = {};
   #eventHandlers: MapEventHandlers | Nullish;
+  #fitToExtents: boolean;
 
   constructor(options?: MapOptions) {
     this.#eventHandlers = options?.events;
     this.#map = this.#initializeMap(options);
+    this.#fitToExtents = options?.fitToExtents || false;
+
+    if (!this.#fitToExtents) {
+      // Show fully zoomed-out map.
+      this.#map.getView().fit(options?.viewOptions?.extent ?? UkSquareExtents);
+    }
   }
 
   setEventHandlers(handlers: MapEventHandlers | Nullish) {
@@ -126,7 +139,9 @@ class MapRenderer {
 
     this.#layers[layerKey] = layer;
     this.#map.addLayer(layer);
-    this.#addExtents(source.getExtent() as Extents);
+    if (this.#fitToExtents) {
+      this.#addExtents(source.getExtent() as Extents);
+    }
   }
 
   /**
@@ -134,14 +149,9 @@ class MapRenderer {
    */
   #addExtents(extents: Extents) {
     const before: Extents = [...(this.#extents ?? extents)];
-    const expanded: Extents = [
-      Math.min(before[0], extents[0]),
-      Math.min(before[1], extents[1]),
-      Math.max(before[2], extents[2]),
-      Math.max(before[3], extents[3]),
-    ];
+    const expanded: Extents = combineExtents(before, extents);
     this.#extents = expanded;
-    this.#map.getView().fit(expanded, { duration: 500 });
+    this.#map.getView().fit(padExtents(expanded, 0.1), { duration: 500 });
   }
 
   #initializeMap(options: MapOptions | undefined): OlMap {

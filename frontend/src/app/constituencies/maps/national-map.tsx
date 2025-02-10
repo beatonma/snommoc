@@ -64,7 +64,7 @@ export default function NationalMap() {
   }, [map, pagination.items, pagination.loadNext]);
 
   return (
-    <Map map={map} className="aspect-square max-h-[80vh] w-full">
+    <Map map={map} className="card aspect-square max-h-[80vh] w-full">
       <ConstituencyHoverInfo info={focussedConstituency} />
     </Map>
   );

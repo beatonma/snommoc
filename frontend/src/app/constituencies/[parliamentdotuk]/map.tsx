@@ -12,7 +12,7 @@ type ConstituencyMapProps = {
 } & Omit<DivPropsNoChildren, "id">;
 export const ConstituencyMap = (props: ConstituencyMapProps) => {
   const { constituency, ...rest } = props;
-  const map = useMap();
+  const map = useMap({ fitToExtents: true });
 
   useEffect(() => {
     const geoJson = constituency.boundary

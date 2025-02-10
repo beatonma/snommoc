@@ -1,7 +1,7 @@
 "use client";
 
 import { getNationalConstituencyMaps, NationalBoundary } from "@/api";
-import { LayerKey, Map, useMap } from "@/components/map";
+import { type LayerKey, Map, useMap } from "@/components/map";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PartyIconBackground, rgb } from "@/components/themed/party";
 import { usePagination } from "@/components/paginated/pagination";

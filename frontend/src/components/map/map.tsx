@@ -18,14 +18,8 @@ import { get as getProjection } from "ol/proj";
 import { addClass } from "@/util/transforms";
 import { FeatureLike } from "ol/Feature";
 import { Nullish } from "@/types/common";
+import { Extents, UkSquareExtents } from "./geography";
 
-// A rect with the min/max boundaries of a feature: [minX, minY, maxX, maxY]
-type Extents = [number, number, number, number];
-
-// An approximation of a square (relative to the projection), so that a fully
-// zoomed-out map is able to show the full UK when the map is rendered in a
-// square element.
-const UkExtents: Extents = [-19.5, 49.4, 8.8, 61.2];
 const MapProjectionCode = "EPSG:27700"; // British National Grid
 
 export type LayerKey = string | number;
@@ -35,6 +29,7 @@ interface GeoJsonLayer {
   color?: string;
   replace?: boolean;
 }
+
 type LayerEventHandler = ((id: LayerKey | undefined) => void) | Nullish;
 type OnFeatureHover = LayerEventHandler;
 type OnFeatureClick = LayerEventHandler;
@@ -43,11 +38,47 @@ interface MapOptions {
   viewOptions?: ViewOptions;
   events?: MapEventHandlers;
 }
+export const useMap = (options?: MapOptions) => {
+  const [map, setMap] = useState<MapRenderer>();
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current) return;
+
+    initialized.current = true;
+    setMap(new MapRenderer(options));
+  }, []);
+
+  useEffect(() => {
+    map?.setEventHandlers(options?.events);
+  }, [map, options?.events]);
+
+  return map;
+};
+
+export const Map = (props: MapProps) => (
+  <RemoteContent
+    provider="openstreetmap.org"
+    content={() => <MapView {...props} />}
+  />
+);
 
 interface MapProvider {
   source: () => ImageTile | TileImage;
   attribution: () => HTMLElement;
 }
+export const MapProvider = {
+  OSM: {
+    source: () => new OSM(),
+    attribution: () => {
+      const element = document.createElement("div");
+      element.innerHTML = "© OpenStreetMap contributors";
+      element.className =
+        "text-sm m-1 px-2 py-1 text-black bg-white/75 w-fit rounded-md absolute";
+      return element;
+    },
+  } as MapProvider,
+};
 
 interface MapEventHandlers {
   onHover?: OnFeatureHover;
@@ -119,7 +150,7 @@ class MapRenderer {
 
     const map = new OlMap({
       view: new View({
-        extent: UkExtents,
+        extent: UkSquareExtents,
         projection: getProjection(MapProjectionCode) ?? undefined,
         ...(options?.viewOptions ?? {}),
       }),
@@ -151,6 +182,7 @@ class MapRenderer {
     return map;
   }
 }
+
 const getStyle = (color: string | undefined) =>
   new Style({
     stroke: new Stroke({
@@ -162,32 +194,7 @@ const getStyle = (color: string | undefined) =>
     }),
   });
 
-export const useMap = (options?: MapOptions) => {
-  const [map, setMap] = useState<MapRenderer>();
-  const initialized = useRef(false);
-
-  useEffect(() => {
-    if (initialized.current) return;
-
-    initialized.current = true;
-    setMap(new MapRenderer(options));
-  }, []);
-
-  useEffect(() => {
-    map?.setEventHandlers(options?.events);
-  }, [map, options?.events]);
-
-  return map;
-};
-
-export const Map = (props: MapProps) => (
-  <RemoteContent
-    provider="openstreetmap.org"
-    content={() => <MapView {...props} />}
-  />
-);
-
-export type MapProps = {
+type MapProps = {
   map: MapRenderer | undefined;
 } & Omit<DivProps, "id">;
 const MapView = (props: MapProps) => {
@@ -204,14 +211,6 @@ const MapView = (props: MapProps) => {
       {children}
     </div>
   );
-};
-
-const OpenStreetMapOverlay = () => {
-  const element = document.createElement("div");
-  element.innerHTML = "© OpenStreetMap contributors";
-  element.className =
-    "text-sm m-1 px-2 py-1 text-black bg-white/75 w-fit rounded-md absolute";
-  return element;
 };
 
 const setId = (feature: Feature, layerKey: LayerKey, suffix: number) => {
@@ -236,11 +235,4 @@ const withFeature = (
 
   const layerId = getLayerId(feature);
   action?.(layerId);
-};
-
-export const MapProvider = {
-  OSM: {
-    source: () => new OSM(),
-    attribution: OpenStreetMapOverlay,
-  } as MapProvider,
 };

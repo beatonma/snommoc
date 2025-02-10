@@ -256,6 +256,12 @@ case $flavor in
   docker_compose --profile manage run --rm "$@" django_manage
   exit 0
   ;;
+"jest")
+  set_env "$DOT_ENV_DEV"
+  compose_file=$COMPOSE_DEV
+  docker_compose --profile manage run --rm "$@" next_manage
+  exit 0
+  ;;
 *)
   command_error "$flavor"
   ;;

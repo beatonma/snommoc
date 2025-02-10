@@ -69,7 +69,7 @@ services:
       test: ["NONE"]
     entrypoint: ["sh"]
 
-  next:
+  next: &next
     <<: *common
     container_name: snommoc_next
     build:
@@ -83,3 +83,11 @@ services:
     volumes:
       - ./frontend:/frontend
     entrypoint: "npm run dev"
+
+  next_manage:
+    <<: *next
+    profiles:
+      - "manage"
+    container_name: snommoc_next_manage
+    ports: []
+    entrypoint: "npm run test"

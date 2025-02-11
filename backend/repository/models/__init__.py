@@ -13,7 +13,7 @@ from .bill import (
     BillTypeCategory,
 )
 from .committees import Committee, CommitteeChair, CommitteeMember
-from .constituency import Constituency, ConstituencyBoundary, ConstituencyRepresentative
+from .constituency import Constituency, ConstituencyRepresentative
 from .demographics import PartyGenderDemographics, PartyLordsDemographics
 from .divisions import (
     CommonsDivision,
@@ -29,7 +29,7 @@ from .election_result import (
     ConstituencyResultDetail,
 )
 from .experiences import Experience, ExperienceCategory
-from .geography import Country, Town
+from .geography import ConstituencyBoundary, Country, Town
 from .houses import House, HouseMembership
 from .lords_type import LordsType
 from .maiden_speech import MaidenSpeech

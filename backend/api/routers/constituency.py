@@ -1,6 +1,7 @@
 from api.pagination import offset_pagination
-from api.schema.constituency import ConstituencyFullSchema, NationalMapSchema
+from api.schema.constituency import ConstituencyFullSchema
 from api.schema.includes import ConstituencyMiniSchema
+from api.schema.maps import ConstituencyMapSchema
 from api.schema.types import ParliamentId
 from django.db.models import F
 from django.http import HttpRequest
@@ -29,9 +30,10 @@ def constituencies(request: HttpRequest, query: str = None):
     return qs.order_by(F("end").desc(nulls_first=True), "name")
 
 
-@router.get("/maps/", response=list[NationalMapSchema])
+@router.get("/maps/", response=list[ConstituencyMapSchema])
 @paginate(offset_pagination(50))
-def maps(request: HttpRequest):
+def deprecated_maps(request: HttpRequest):
+    """Deprecated: replace with /maps/constituencies/"""
     return (
         Constituency.objects.current()
         .prefetch_related("boundary", "mp", "mp__party", "mp__party__theme")

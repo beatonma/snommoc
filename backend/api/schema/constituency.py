@@ -3,10 +3,10 @@ from datetime import date
 from ninja import Schema
 
 from .election import ElectionSchema
-from .includes import MemberMiniSchema, MinimalMemberSchema, PartyMiniSchema
+from .includes import MemberMiniSchema, PartyMiniSchema
 from .types import Name, ParliamentSchema, field
 
-__all__ = ["ConstituencyFullSchema", "NationalMapSchema"]
+__all__ = ["ConstituencyFullSchema"]
 
 
 class ConstituencyCandidateSchema(Schema):
@@ -38,13 +38,3 @@ class ConstituencyFullSchema(ParliamentSchema):
     mp: MemberMiniSchema | None
     boundary: str | None = field("boundary.geometry.json", default=None)
     results: list[ResultsSchema]
-
-
-class NationalMapMP(MinimalMemberSchema):
-    party: PartyMiniSchema | None
-
-
-class NationalMapSchema(ParliamentSchema):
-    name: Name
-    mp: NationalMapMP | None
-    boundary: str | None = field("boundary.simple_json", default=None)

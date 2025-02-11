@@ -5,6 +5,7 @@ from api.routers import (
     constituency_router,
     division_router,
     election_router,
+    maps_router,
     members_router,
     party_router,
     zeitgeist_router,
@@ -31,6 +32,7 @@ proxy_router.add_router("bills/", bills_router)
 proxy_router.add_router("constituencies/", constituency_router)
 proxy_router.add_router("divisions/", division_router)
 proxy_router.add_router("elections/", election_router)
+proxy_router.add_router("maps/", maps_router)
 proxy_router.add_router("parties/", party_router)
 proxy_router.add_router("zeitgeist/", zeitgeist_router)
 

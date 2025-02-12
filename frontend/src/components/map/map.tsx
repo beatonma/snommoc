@@ -8,7 +8,7 @@ import { default as OlGeoJSON } from "ol/format/GeoJSON.js";
 import TileLayer from "ol/layer/Tile";
 import { ImageTile, OSM, TileImage } from "ol/source";
 import VectorLayer from "ol/layer/Vector";
-import { Fill, Stroke, Style } from "ol/style";
+import { Fill, Icon, Stroke, Style } from "ol/style";
 import { useGeographic } from "ol/proj";
 import { RemoteContent } from "@/components/remote-content";
 import { Control } from "ol/control";
@@ -24,8 +24,11 @@ import {
   padExtents,
   UkSquareExtents,
 } from "./geography";
+import { Point } from "ol/geom";
+import { useGeoLocationPrompt } from "./geolocation";
 
 const MapProjectionCode = "EPSG:27700"; // British National Grid
+const UserLocationMarkerId = "user_location";
 
 export type LayerKey = string | number;
 interface GeoJsonLayer {
@@ -144,6 +147,34 @@ class MapRenderer {
     }
   }
 
+  addUserLocation({
+    longitude,
+    latitude,
+  }: {
+    longitude: number;
+    latitude: number;
+  }) {
+    const marker = new Feature({
+      geometry: new Point([longitude, latitude]),
+    });
+    marker.setId(UserLocationMarkerId);
+
+    const layer = new VectorLayer({
+      source: new VectorSource({
+        features: [marker],
+      }),
+      style: new Style({
+        image: new Icon({
+          src: "/user-location.svg",
+          anchor: [0.5, 1],
+          color: "white",
+        }),
+      }),
+      zIndex: 1000,
+    });
+    this.#map.addLayer(layer);
+  }
+
   /**
    * Update the map view to show the full extents of all added layers.
    */
@@ -193,14 +224,14 @@ class MapRenderer {
   }
 }
 
-const getStyle = (color: string | undefined) =>
+const getStyle = (color: string | undefined, opacityPercent: number = 50) =>
   new Style({
     stroke: new Stroke({
       color: `color-mix(in srgb, black 90%, transparent)`,
       width: 1,
     }),
     fill: new Fill({
-      color: `color-mix(in srgb, ${color ?? "var(--primary)"} 50%, transparent)`,
+      color: `color-mix(in srgb, ${color ?? "var(--primary)"} ${opacityPercent}%, transparent)`,
     }),
   });
 
@@ -211,13 +242,22 @@ const MapView = (props: MapProps) => {
   const { map, children, ...rest } = addClass(props, "relative");
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
+  const { geoLocation, GeoLocationPromptButton: GeoLocationPromptButton } =
+    useGeoLocationPrompt();
 
   useEffect(() => {
     map?.setContainer(id);
   }, [map, id]);
 
+  useEffect(() => {
+    if (geoLocation) {
+      map?.addUserLocation(geoLocation);
+    }
+  }, [map, geoLocation]);
+
   return (
     <div id={id} ref={ref} {...rest}>
+      <GeoLocationPromptButton className="absolute top-0 right-0 m-2" />
       {children}
     </div>
   );

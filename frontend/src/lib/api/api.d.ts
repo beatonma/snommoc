@@ -143,23 +143,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/constituencies/maps/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Maps */
-        get: operations["api_routers_constituency_maps"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/constituencies/{parliamentdotuk}/": {
         parameters: {
             query?: never;
@@ -271,6 +254,40 @@ export interface paths {
         };
         /** Election */
         get: operations["api_routers_elections_election"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/maps/constituencies/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Constituencies */
+        get: operations["api_routers_maps_constituencies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/maps/parties/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Parties */
+        get: operations["api_routers_maps_parties"];
         put?: never;
         post?: never;
         delete?: never;
@@ -784,29 +801,6 @@ export interface components {
             /** Count */
             count: number;
         };
-        /** NationalMapMP */
-        NationalMapMP: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            name: components["schemas"]["Name"];
-            /** Portrait */
-            portrait?: string | null;
-            party: components["schemas"]["PartyMiniSchema"] | null;
-        };
-        /** NationalMapSchema */
-        NationalMapSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            name: components["schemas"]["Name"];
-            mp: components["schemas"]["NationalMapMP"] | null;
-            /** Boundary */
-            boundary?: string | null;
-        };
-        /** PagedNationalMapSchema */
-        PagedNationalMapSchema: {
-            /** Items */
-            items: components["schemas"]["NationalMapSchema"][];
-            /** Count */
-            count: number;
-        };
         /** ConstituencyCandidateSchema */
         ConstituencyCandidateSchema: {
             name: components["schemas"]["Name"];
@@ -933,6 +927,52 @@ export interface components {
             items: components["schemas"]["ElectionSchema"][];
             /** Count */
             count: number;
+        };
+        /** MapQuery */
+        MapQuery: {
+            /** Locus Latitude */
+            locus_latitude?: number;
+            /** Locus Longitude */
+            locus_longitude?: number;
+        };
+        /** ConstituencyMapMP */
+        ConstituencyMapMP: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Portrait */
+            portrait?: string | null;
+            party: components["schemas"]["PartyMiniSchema"] | null;
+        };
+        /** ConstituencyMapSchema */
+        ConstituencyMapSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            mp: components["schemas"]["ConstituencyMapMP"] | null;
+            /** Boundary */
+            boundary?: string | null;
+        };
+        /** PagedConstituencyMapSchema */
+        PagedConstituencyMapSchema: {
+            /** Items */
+            items: components["schemas"]["ConstituencyMapSchema"][];
+            /** Count */
+            count: number;
+        };
+        /** PartyMapSchema */
+        PartyMapSchema: {
+            parliamentdotuk: components["schemas"]["ParliamentId"];
+            name: components["schemas"]["Name"];
+            /** Logo */
+            logo: string | null;
+            /** Logo Mask */
+            logo_mask: string | null;
+            theme: components["schemas"]["PartyThemeSchema"] | null;
+            /** Active Member Count */
+            active_member_count: number;
+            /** Active Commons Members */
+            active_commons_members?: number | null;
+            /** Territory */
+            territory?: string | null;
         };
         /** PagedPartyMiniSchema */
         PagedPartyMiniSchema: {
@@ -1228,29 +1268,6 @@ export interface operations {
             };
         };
     };
-    api_routers_constituency_maps: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PagedNationalMapSchema"];
-                };
-            };
-        };
-    };
     api_routers_constituency_constituency: {
         parameters: {
             query?: never;
@@ -1404,6 +1421,51 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ElectionSchema"];
+                };
+            };
+        };
+    };
+    api_routers_maps_constituencies: {
+        parameters: {
+            query?: {
+                locus_latitude?: number;
+                locus_longitude?: number;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedConstituencyMapSchema"];
+                };
+            };
+        };
+    };
+    api_routers_maps_parties: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartyMapSchema"][];
                 };
             };
         };

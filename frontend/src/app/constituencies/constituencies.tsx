@@ -1,6 +1,6 @@
 "use client";
 
-import { getConstituencies, type ConstituencyMini } from "@/api";
+import { type ConstituencyMini } from "@/api";
 import React from "react";
 import { SearchList } from "@/components/paginated/search-list";
 import { ListItemCard } from "@/components/card";
@@ -11,7 +11,7 @@ import { SeparatedRow } from "@/components/collection";
 export default function ConstituencyList() {
   return (
     <SearchList
-      loader={getConstituencies}
+      path="/api/constituencies/"
       itemComponent={(constituency) => (
         <Constituency key={constituency.parliamentdotuk} {...constituency} />
       )}

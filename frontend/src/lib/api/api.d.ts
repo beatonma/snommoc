@@ -930,10 +930,10 @@ export interface components {
         };
         /** MapQuery */
         MapQuery: {
-            /** Locus Latitude */
-            locus_latitude?: number;
-            /** Locus Longitude */
-            locus_longitude?: number;
+            /** Latitude */
+            latitude?: number;
+            /** Longitude */
+            longitude?: number;
         };
         /** ConstituencyMapMP */
         ConstituencyMapMP: {
@@ -1428,8 +1428,8 @@ export interface operations {
     api_routers_maps_constituencies: {
         parameters: {
             query?: {
-                locus_latitude?: number;
-                locus_longitude?: number;
+                latitude?: number;
+                longitude?: number;
                 limit?: number;
                 offset?: number;
             };

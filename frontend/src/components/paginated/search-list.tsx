@@ -1,9 +1,3 @@
-import {
-  GridSpan,
-  InfiniteScroll,
-  type PaginationItemComponent,
-  PaginationLoader,
-} from "@/components/paginated/pagination";
 import React, {
   Dispatch,
   ReactNode,
@@ -16,16 +10,17 @@ import React, {
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ApiPaginatedPromise,
-  ExtraFilters,
-  ApiFilters,
-  PaginatedQuery,
+  type _DeprExtraFilters,
+  type SearchablePath,
+  type PageItemType,
+  type Query,
 } from "@/api";
 import { TintedButton } from "@/components/button";
-import Loading from "@/components/loading";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 import { MaybeString } from "@/types/common";
+import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
+import { GridSpan } from "@/components/grid";
 
 const QueryParam = "query";
 const DefaultGridClass =
@@ -36,13 +31,11 @@ export interface SearchFilters {
   bool?: Record<string, SearchFilter<boolean>>;
 }
 
-type SearchLoader<T> = (
-  query: PaginatedQuery & ApiFilters,
-) => ApiPaginatedPromise<T>;
-interface ListPageProps<T> {
-  loader: SearchLoader<T>;
+interface ListPageProps<P extends SearchablePath> {
+  path: P;
+  query?: Query<P> | undefined;
   header?: ReactNode;
-  itemComponent: PaginationItemComponent<T>;
+  itemComponent: PaginationItemComponent<PageItemType<P>>;
   gridClassName?: string;
 
   /**
@@ -53,9 +46,13 @@ interface ListPageProps<T> {
   /**
    * Filters that are always applied to search results.
    */
-  immutableFilters?: ExtraFilters;
+  immutableFilters?: _DeprExtraFilters;
 }
-export const SearchList = <T,>(props: ListPageProps<T>) => {
+export const SearchList = <P extends SearchablePath>(
+  props: ListPageProps<P>,
+) => {
+  const { path, query: queryFromProps, immutableFilters } = props;
+
   const router = useRouter();
   const search = useSearchParams();
   const [query, setQuery] = useState<string>(search.get(QueryParam) ?? "");
@@ -64,18 +61,17 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
     props.searchFilters,
     search,
   );
-  const [loader, setLoader] = useState<PaginationLoader<T>>();
+  const [composedQuery, setComposedQuery] = useState<Query<P> | undefined>();
+
   const previousSearchParams = useRef<string>(undefined);
   const isInitialized = useRef<boolean>(false);
-
-  const { loader: propsLoader, immutableFilters } = props;
 
   const updateSearchParams = useCallback(
     /**
      * Update the browser location to reflect current state of query and filters.
      * Return true if there was a meaningful change.
      */
-    (query: string, filters: ExtraFilters): boolean => {
+    (query: string, filters: _DeprExtraFilters): boolean => {
       const params = new URLSearchParams();
       Object.entries({ [QueryParam]: query, ...filters }).forEach(
         ([key, value]) => {
@@ -109,44 +105,38 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
   }, [search, updateSearchParams]);
 
   useEffect(() => {
-    /**
-     * Create a PaginationLoader using the current query and filter values.
-     */
-
     /* Don't build loader until filtersQuery is populated. */
     if (filtersQuery == null) return;
 
     const paramsChanged = updateSearchParams(currentQuery, filtersQuery);
     if (!paramsChanged) return;
 
-    setLoader(
-      () => (q: PaginatedQuery) =>
-        propsLoader({
-          query: currentQuery || undefined,
-          ...filtersQuery,
-          ...immutableFilters,
-          ...q,
-        }),
-    );
+    const fullQuery: Query<P> = {
+      query: currentQuery,
+      ...filtersQuery,
+      ...immutableFilters,
+    };
+    setComposedQuery(fullQuery);
     isInitialized.current = true;
   }, [
     updateSearchParams,
-    propsLoader,
+    queryFromProps,
     immutableFilters,
     currentQuery,
     filtersQuery,
   ]);
 
-  if (!loader) return <Loading />;
+  if (composedQuery === undefined) return;
 
   return (
     <_SearchList
-      loader={loader}
+      path={path}
+      composedQuery={composedQuery}
       header={props.header}
       gridClassName={props.gridClassName}
       itemComponent={props.itemComponent}
-      query={query}
-      setQuery={setQuery}
+      searchQuery={query}
+      setSearchQuery={setQuery}
       onConfirmSearch={() => setCurrentQuery(query)}
       filters={filters}
       setFilters={setFilters}
@@ -154,13 +144,14 @@ export const SearchList = <T,>(props: ListPageProps<T>) => {
   );
 };
 
-const _SearchList = <T,>(props: {
-  loader: PaginationLoader<T>;
+const _SearchList = <P extends SearchablePath>(props: {
+  path: P;
+  composedQuery: Query<P> | undefined;
   header: ReactNode | undefined;
-  itemComponent: PaginationItemComponent<T>;
+  itemComponent: PaginationItemComponent<PageItemType<P>>;
   gridClassName: string | undefined;
-  query: string;
-  setQuery: (q: string) => void;
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
   onConfirmSearch: () => void;
   filters: SearchFilters;
   setFilters: (value: SearchFilters) => void;
@@ -169,7 +160,8 @@ const _SearchList = <T,>(props: {
 
   return (
     <InfiniteScroll
-      loader={props.loader}
+      path={props.path}
+      query={props.composedQuery}
       itemComponent={props.itemComponent}
       className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 grid justify-center sm:mx-2`}
       header={
@@ -187,8 +179,8 @@ const _SearchList = <T,>(props: {
             >
               <input
                 type="search"
-                value={props.query}
-                onChange={(e) => props.setQuery(e.target.value)}
+                value={props.searchQuery}
+                onChange={(e) => props.setSearchQuery(e.target.value)}
               />
               <TintedButton type="submit">Search</TintedButton>
             </form>
@@ -239,16 +231,16 @@ const useFilters = (
 ): [
   SearchFilters,
   Dispatch<SetStateAction<SearchFilters>>,
-  ExtraFilters | undefined,
+  _DeprExtraFilters | undefined,
 ] => {
   const [filters, setFilters] = useState<SearchFilters>(() =>
     initFilters(init, initUrlParams),
   );
-  const [queryFilters, setQueryFilters] = useState<ExtraFilters>();
+  const [queryFilters, setQueryFilters] = useState<_DeprExtraFilters>();
 
   useEffect(() => {
     // Build a flat {key:value} map suitable for use in URLSearchParams.
-    const results: ExtraFilters = {};
+    const results: _DeprExtraFilters = {};
 
     Object.values(filters).forEach((filterType: SearchFilter<unknown>) => {
       Object.entries(filterType).forEach(([key, value]) => {

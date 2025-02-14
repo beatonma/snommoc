@@ -1,17 +1,18 @@
 "use client";
-import { getParties, type Party } from "@/api";
+
+import { type Party } from "@/api";
 import React, { ComponentPropsWithoutRef } from "react";
 import { SearchList } from "@/components/paginated/search-list";
-import { GridSectionHeader } from "@/components/paginated/pagination";
 import { OptionalSvg } from "@/components/image";
 import { ListItemCard } from "@/components/card";
 import { plural } from "@/util/plurals";
+import { GridSectionHeader } from "@/components/grid";
 
 export default function PartyList() {
   return (
     <main>
       <SearchList
-        loader={getParties}
+        path="/api/parties/"
         itemComponent={(party, index, arr) => {
           if (
             index > 0 &&

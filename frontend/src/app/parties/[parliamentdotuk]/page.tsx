@@ -1,10 +1,5 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import {
-  GenderDemographics,
-  getParty,
-  LordsDemographics,
-  PartyDetail,
-} from "@/api";
+import { GenderDemographics, get, LordsDemographics, PartyDetail } from "@/api";
 import ErrorMessage from "@/components/error";
 import React from "react";
 import { OptionalSvg } from "@/components/image";
@@ -21,6 +16,11 @@ type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
 };
 
+const getParty = async (parliamentdotuk: number) =>
+  get("/api/parties/{parliamentdotuk}/", {
+    path: { parliamentdotuk },
+  });
+
 export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata,
@@ -36,8 +36,7 @@ export async function generateMetadata(
 
 export default async function Page({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const response = await getParty(parliamentdotuk);
-  const party = response.data;
+  const party = (await getParty(parliamentdotuk)).data;
 
   if (!party) return <ErrorMessage />;
 

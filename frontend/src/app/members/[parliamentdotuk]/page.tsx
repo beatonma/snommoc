@@ -1,10 +1,15 @@
-import { ConstituencyMini, HouseType, MemberProfile, type Party } from "@/api";
+import {
+  ConstituencyMini,
+  get,
+  HouseType,
+  MemberProfile,
+  type Party,
+} from "@/api";
 import { PhysicalAddress } from "@/app/members/components/address";
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import { MemberPortrait } from "@/components/member-portrait";
 import type { Metadata, ResolvingMetadata } from "next";
 import ErrorMessage from "@/components/error";
-import { getMember } from "@/api";
 import { TextButton } from "@/components/button";
 import { addClass } from "@/util/transforms";
 import { OptionalDiv, OptionalSpan } from "@/components/optional";
@@ -20,6 +25,11 @@ import WindowInsets from "@/components/insets";
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
 };
+
+const getMember = async (parliamentdotuk: number) =>
+  get("/api/members/{parliamentdotuk}/", {
+    path: { parliamentdotuk },
+  });
 
 export async function generateMetadata(
   { params }: PageProps,

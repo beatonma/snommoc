@@ -1,5 +1,5 @@
 "use client";
-import { Fixtures, getMembers, type MemberFilters } from "@/api";
+import { Fixtures, Query } from "@/api";
 import React, { ReactNode } from "react";
 import { SearchFilters, SearchList } from "@/components/paginated/search-list";
 import { MemberItem } from "@/components/item-member";
@@ -7,10 +7,10 @@ import { MemberItem } from "@/components/item-member";
 export default function MembersList(props: {
   header?: ReactNode;
   searchFilters?: SearchFilters;
-  immutableFilters?: MemberFilters;
+  immutableFilters?: Query<"/api/members/">;
 }) {
-  const propSearchFilters: SearchFilters = props.searchFilters ?? {};
-  const searchFilters: SearchFilters = {
+  const propFilters = props.searchFilters ?? {};
+  const searchFilters = {
     singleChoice: {
       house: {
         label: "House",
@@ -25,15 +25,15 @@ export default function MembersList(props: {
         value: "current",
         values: Fixtures.MemberStatusValues,
       },
-      ...propSearchFilters.singleChoice,
+      ...propFilters.singleChoice,
     },
-    bool: { ...propSearchFilters.bool },
+    bool: { ...propFilters.bool },
   };
 
   return (
     <SearchList
       header={props.header}
-      loader={getMembers}
+      path="/api/members/"
       searchFilters={searchFilters}
       immutableFilters={props.immutableFilters}
       itemComponent={(member) => (

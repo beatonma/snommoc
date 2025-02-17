@@ -10,7 +10,6 @@ import type {
 import { TextButton } from "@/components/button";
 import React from "react";
 import { Nullish } from "@/types/common";
-import { rgb } from "@/components/themed/party";
 import { TextLink } from "@/components/link";
 
 interface DotTextProps {
@@ -39,7 +38,7 @@ export const PartyLink = ({
   showDot?: boolean;
 }) => {
   if (!party) return null;
-  const color = showDot ? rgb(party.theme?.primary) : undefined;
+  const color = showDot ? party.theme?.primary : undefined;
 
   return (
     <TextButton href={`/parties/${party.parliamentdotuk}/`}>
@@ -58,8 +57,8 @@ export const HouseLink = (props: {
   const text = longFormat ? `House of ${house}` : house;
   const color = showDot
     ? {
-        Commons: rgb("var(--commons)"),
-        Lords: rgb("var(--lords)"),
+        Commons: "var(--color-house-commons)",
+        Lords: "var(--color-house-lords)",
       }[house]
     : undefined;
 

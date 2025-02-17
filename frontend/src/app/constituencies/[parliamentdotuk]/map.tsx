@@ -5,7 +5,6 @@ import { DivPropsNoChildren } from "@/types/react";
 import { Map, useMap } from "@/components/map";
 import { useEffect } from "react";
 import { Constituency } from "@/api";
-import { rgb } from "@/components/themed/party";
 
 type ConstituencyMapProps = {
   constituency: Constituency;
@@ -22,7 +21,11 @@ export const ConstituencyMap = (props: ConstituencyMapProps) => {
       map.addOverlay({
         layerKey: constituency.parliamentdotuk,
         geoJson: geoJson,
-        color: rgb(constituency.mp?.party?.theme?.primary),
+        style: {
+          fill: {
+            color: constituency.mp?.party?.theme?.primary,
+          },
+        },
       });
     }
   }, [map, constituency]);

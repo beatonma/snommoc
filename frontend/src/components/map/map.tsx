@@ -34,8 +34,16 @@ export type LayerKey = string | number;
 interface GeoJsonLayer {
   layerKey: LayerKey;
   geoJson: GeoJSON;
-  color?: string;
+  style?: StyleOptions;
   replace?: boolean;
+  zIndex?: number;
+}
+interface StyleOptions {
+  stroke?: boolean;
+  fill?: {
+    color?: string;
+    opacityPercent?: number;
+  };
 }
 
 type LayerEventHandler = ((id: LayerKey | undefined) => void) | Nullish;
@@ -119,7 +127,13 @@ class MapRenderer {
     this.#map.setTarget(containerId);
   }
 
-  addOverlay({ layerKey, geoJson, color, replace = false }: GeoJsonLayer) {
+  addOverlay({
+    layerKey,
+    geoJson,
+    style,
+    zIndex = undefined,
+    replace = false,
+  }: GeoJsonLayer) {
     if (layerKey in this.#layers) {
       if (!replace) return; // Layer already exists and should not be replaced.
       const existing = this.#layers[layerKey];
@@ -137,7 +151,8 @@ class MapRenderer {
     });
     const layer = new VectorLayer({
       source: source,
-      style: getStyle(color),
+      style: getStyle(style),
+      zIndex: zIndex,
     });
 
     this.#layers[layerKey] = layer;
@@ -224,15 +239,20 @@ class MapRenderer {
   }
 }
 
-const getStyle = (color: string | undefined, opacityPercent: number = 50) =>
-  new Style({
-    stroke: new Stroke({
-      color: `color-mix(in srgb, black 90%, transparent)`,
-      width: 1,
-    }),
-    fill: new Fill({
-      color: `color-mix(in srgb, ${color ?? "var(--primary)"} ${opacityPercent}%, transparent)`,
-    }),
+const getStyle = (options?: StyleOptions) => {
+  const opts = options ?? ({ stroke: true } as StyleOptions);
+  return new Style({
+    stroke: opts.stroke
+      ? new Stroke({
+          color: `color-mix(in srgb, black 90%, transparent)`,
+          width: 0.25,
+        })
+      : undefined,
+    fill: opts?.fill?.color
+      ? new Fill({
+          color: `color-mix(in srgb, ${opts.fill.color} ${opts.fill.opacityPercent ?? 50}%, transparent)`,
+        })
+      : undefined,
   });
 
 type MapProps = {

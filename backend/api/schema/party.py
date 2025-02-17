@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from api.schema.includes import PartyThemeSchema
-from api.schema.types import Name, ParliamentSchema, Url, WikipediaPath, field
+from api.schema.includes import BasePartySchema
+from api.schema.types import Name, Url, WikipediaPath, field
 from ninja import Schema
 
 __all__ = ["PartyFullSchema"]
@@ -24,7 +24,7 @@ class LordsDemographics(Schema):
     total_count: int
 
 
-class PartyFullSchema(ParliamentSchema):
+class PartyFullSchema(BasePartySchema):
     name: Name
     short_name: Name | None
     long_name: Name | None
@@ -38,12 +38,3 @@ class PartyFullSchema(ParliamentSchema):
     lords_demographics: LordsDemographics | None = field(
         "lords_demographics", default=None
     )
-    theme: PartyThemeSchema | None
-
-    @staticmethod
-    def resolve_theme(obj):
-        try:
-            return obj.theme
-        except AttributeError:
-            # One-to-one rel Does not exist
-            pass

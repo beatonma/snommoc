@@ -3,17 +3,13 @@ import React, { ComponentPropsWithoutRef } from "react";
 import { addClass } from "@/util/transforms";
 import { Nullish } from "@/types/common";
 import { MaskedSvg } from "@/components/image";
+import { getOnColor } from "@/components/themed/color";
 
 type PartyLike = Party | PartyDetail | Nullish;
 export interface PartyThemeableProps {
   party: PartyLike;
   defaultPartyTheme?: PartyTheme | Nullish;
 }
-
-export const rgb = (value: string | undefined) => {
-  if (value?.match(/^\d+,? \d+,? \d+$/)) return `rgb(${value})`;
-  return value;
-};
 
 const partySurfaceThemes = (
   party: PartyLike,
@@ -22,32 +18,23 @@ const partySurfaceThemes = (
   const theme = party?.theme ?? (defaultTheme === null ? null : defaultTheme);
   if (!theme) return null;
 
+  const { primary, on_primary, accent, on_accent } = theme;
+
+  // If both components of a theme are CSS variables, use them directly.
+  // Otherwise, generate a suitable content color.
+  const primaryIsVariable = primary.includes("--") && on_primary.includes("--");
+  const accentIsVariable = accent.includes("--") && on_accent.includes("--");
+
   return {
     primary: {
-      backgroundColor: rgb(theme?.primary),
-      color: getOnColor(theme?.primary),
+      backgroundColor: primary,
+      color: primaryIsVariable ? on_primary : getOnColor(primary),
     },
     accent: {
-      backgroundColor: rgb(theme?.accent),
-      color: getOnColor(theme?.accent),
+      backgroundColor: accent,
+      color: accentIsVariable ? on_accent : getOnColor(accent),
     },
   };
-};
-
-const getOnColor = (
-  backgroundColorRgb: string | undefined,
-): string | undefined => {
-  if (!backgroundColorRgb) return undefined;
-
-  const components = backgroundColorRgb
-    .match(/^(\d+),? (\d+),? (\d+)$/)
-    ?.slice(1);
-  if (!components || !components.length) return undefined;
-  const mean =
-    components.reduce((acc, it) => parseInt(it) + acc, 0) / components.length;
-  const mixer = mean > 127 ? "black" : "white";
-
-  return `color-mix(in srgb, rgb(${backgroundColorRgb}) 10%, ${mixer})`;
 };
 
 export const partyColors = (
@@ -59,11 +46,11 @@ export const partyColors = (
     ...(merge ?? {}),
     ...Object.fromEntries(
       Object.entries({
-        "--primary": rgb(theme?.primary),
+        "--primary": theme?.primary,
         "--on_primary": getOnColor(theme?.primary),
-        "--accent": rgb(theme?.accent),
+        "--accent": theme?.accent,
         "--on_accent": getOnColor(theme?.accent),
-        accentColor: rgb(theme?.primary),
+        accentColor: theme?.primary,
       }).filter(([_, value]) => !!value),
     ),
   };

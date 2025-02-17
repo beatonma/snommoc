@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { PartyIconBackground, rgb } from "@/components/themed/party";
+import { PartyIconBackground } from "@/components/themed/party";
 import { usePagination } from "@/components/paginated/pagination";
 import { MemberItem } from "@/components/item-member";
 import { ConstituencyLink } from "@/components/linked-data";
@@ -47,7 +47,17 @@ export default function NationalMap() {
         map?.addOverlay({
           layerKey: party.parliamentdotuk,
           geoJson: JSON.parse(boundary),
-          color: rgb(party.theme?.primary),
+          style: {
+            stroke: false,
+            fill: {
+              color:
+                party.theme?.primary ??
+                document.body
+                  .computedStyleMap()
+                  .get("--color-house-commons")
+                  ?.toString(),
+            },
+          },
         });
       }
     });
@@ -90,7 +100,13 @@ export default function NationalMap() {
         map?.addOverlay({
           layerKey: constituency.parliamentdotuk,
           geoJson: JSON.parse(boundary),
-          // color: rgb(constituency.mp?.party?.theme?.primary),
+          style: {
+            stroke: true,
+            fill: {
+              color: "transparent",
+            },
+          },
+          zIndex: 10,
         });
       }
     });
@@ -146,7 +162,7 @@ const TerritoryInfo = (
         >
           <div
             className="size-em rounded-sm border-1"
-            style={{ backgroundColor: rgb(party.theme?.primary) }}
+            style={{ backgroundColor: party.theme?.primary }}
           />
           <div>{party.name}</div>
         </li>

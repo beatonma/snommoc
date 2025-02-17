@@ -19,23 +19,14 @@ __all__ = [
 
 
 class PartyThemeSchema(Schema):
-    primary: str = field("rgb_primary")
-    on_primary: str = field("rgb_on_primary")
-    accent: str = field("rgb_accent")
-    on_accent: str = field("rgb_on_accent")
+    primary: str = field("primary")
+    on_primary: str = field("on_primary")
+    accent: str = field("accent")
+    on_accent: str = field("on_accent")
 
 
-class PartyMiniSchema(ParliamentSchema):
-    name: Name
-    logo: str | None
-    logo_mask: str | None
+class BasePartySchema(ParliamentSchema):
     theme: PartyThemeSchema | None
-    active_member_count: int
-    active_commons_members: int | None = Field(default=None)
-
-    @staticmethod
-    def resolve_name(obj):
-        return obj.short_name or obj.name
 
     @staticmethod
     def resolve_theme(obj):
@@ -44,6 +35,18 @@ class PartyMiniSchema(ParliamentSchema):
         except AttributeError:
             # One-to-one rel Does not exist
             pass
+
+
+class PartyMiniSchema(BasePartySchema):
+    name: Name
+    logo: str | None
+    logo_mask: str | None
+    active_member_count: int
+    active_commons_members: int | None = Field(default=None)
+
+    @staticmethod
+    def resolve_name(obj):
+        return obj.short_name or obj.name
 
 
 class _ConstituencyMemberSchema(ParliamentSchema):

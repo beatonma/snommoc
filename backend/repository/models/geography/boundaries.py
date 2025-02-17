@@ -8,7 +8,7 @@ from django.contrib.gis.geos import GEOSGeometry, Point
 
 
 class ConstituencyBoundaryQuerySet(BaseQuerySet):
-    def update(
+    def update_geometry(
         self,
         *,
         geojson: str | dict,
@@ -24,12 +24,23 @@ class ConstituencyBoundaryQuerySet(BaseQuerySet):
             },
         )
 
+    def resimplify(self, tolerance: float, precision: int):
+        for b in self.all():
+            b.simple_json = self._build_simple_json(
+                b.geometry, tolerance=tolerance, precision=precision
+            )
+            b.save(update_fields=("simple_json",))
+
     @staticmethod
-    def _build_simple_json(geom: GEOSGeometry, tolerance: float = 0.01) -> str:
+    def _build_simple_json(
+        geom: GEOSGeometry,
+        tolerance: float = 0.001,
+        precision: int = 3,
+    ) -> str:
         simplified = geom.simplify(tolerance=tolerance)
-        serialized = _reduce_decimal_precision(simplified.geojson, precision=2).replace(
-            " ", ""
-        )
+        serialized = _reduce_decimal_precision(
+            simplified.geojson, precision=precision
+        ).replace(" ", "")
 
         return serialized
 
@@ -75,6 +86,8 @@ def _reduce_decimal_precision(geojson: str, precision: int) -> str:
 class BaseBoundary(BaseModel):
     class Meta:
         abstract = True
+
+    SRID = 4326
 
     geometry = models.GeometryField(tolerance=1)
 
@@ -144,3 +157,6 @@ class PartyTerritory(BaseBoundary):
         on_delete=models.CASCADE,
         related_name="territory",
     )
+
+    def __str__(self):
+        return self.party.name

@@ -97,7 +97,7 @@ def _update_boundary(response_data: dict, context: TaskContext, func_kwargs: dic
     data = schema.ConstituencyBoundary.model_validate(response_data)
 
     if geojson := data.geojson:
-        ConstituencyBoundary.objects.update(
+        ConstituencyBoundary.objects.update_geometry(
             geojson=geojson,
             constituency_id=func_kwargs["constituency_id"],
         )

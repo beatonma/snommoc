@@ -232,6 +232,9 @@ class MapRenderer {
     });
 
     map.on("singleclick", (ev) => {
+      console.debug(
+        `Clicked coordinate lat=${ev.coordinate[1]?.toFixed(3)}, long=${ev.coordinate[0]?.toFixed(3)}`,
+      );
       withFeature(map, ev, this.#eventHandlers?.onClick);
     });
 
@@ -254,6 +257,7 @@ const getStyle = (options?: StyleOptions) => {
         })
       : undefined,
   });
+};
 
 type MapProps = {
   map: MapRenderer | undefined;

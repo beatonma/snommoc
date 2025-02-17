@@ -1,6 +1,11 @@
 // A rect with the min/max boundaries of a feature: [minX, minY, maxX, maxY]
 export type Extents = [number, number, number, number];
 
+export interface GeoLocation {
+  latitude: number;
+  longitude: number;
+}
+
 export const combineExtents = (a: Extents, b: Extents): Extents => [
   Math.min(a[0], b[0]),
   Math.min(a[1], b[1]),
@@ -36,3 +41,8 @@ export const UkSquareExtents: Extents = padExtents([
   5.94,
   UkNorth,
 ]);
+
+export const UkParliamentLocation: GeoLocation = {
+  latitude: 51.5,
+  longitude: -0.13,
+};

@@ -6,6 +6,7 @@ import {
   ComponentPropsWithoutRef,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -14,16 +15,16 @@ import { usePagination } from "@/components/paginated/pagination";
 import { MemberItem } from "@/components/item-member";
 import { ConstituencyLink } from "@/components/linked-data";
 import { addClass } from "@/util/transforms";
-import {
-  GeoLocation,
-  usePassiveGeoLocation,
-} from "@/components/map/geolocation";
+import { usePassiveGeoLocation } from "@/components/map/geolocation";
+import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
+import { DivPropsNoChildren } from "@/types/react";
 
 export default function NationalMap() {
   const [territories, setTerritories] = useState<PartyTerritory[]>();
   const [focus, setFocus] = useState<LayerKey | undefined>();
   const isFocusLocked = useRef<boolean>(false);
-  const userLocation: GeoLocation | undefined = usePassiveGeoLocation();
+  const userLocation: GeoLocation | undefined =
+    usePassiveGeoLocation(UkParliamentLocation);
   const constituencies = usePagination(
     "/api/maps/constituencies/",
     userLocation,
@@ -34,11 +35,11 @@ export default function NationalMap() {
       setTerritories(it.data);
     });
   }, []);
-  // const focussedConstituency = useMemo(() => {
-  //   if (focus) {
-  //     return constituencies.items.find((it) => it.parliamentdotuk === focus);
-  //   }
-  // }, [focus, constituencies.items]);
+  const focussedConstituency = useMemo(() => {
+    if (focus) {
+      return constituencies.items.find((it) => it.parliamentdotuk === focus);
+    }
+  }, [focus, constituencies.items]);
 
   useEffect(() => {
     territories?.forEach((party) => {
@@ -81,7 +82,7 @@ export default function NationalMap() {
   const map = useMap({
     provider: null,
     viewOptions: {
-      minResolution: 300,
+      minResolution: 75,
     },
     events: {
       onHover: (id) => {
@@ -116,19 +117,23 @@ export default function NationalMap() {
   return (
     <Map map={map} className="card aspect-square max-h-[80vh] w-full">
       <TerritoryInfo parties={territories} className="absolute top-0 left-0" />
-      {/*<ConstituencyHoverInfo info={focussedConstituency} />*/}
+      <ConstituencyHoverInfo
+        info={focussedConstituency}
+        className="absolute right-0 bottom-0 m-2"
+      />
     </Map>
   );
 }
 
-const ConstituencyHoverInfo = ({
-  info,
-}: {
-  info: ConstituencyMap | undefined;
-}) => {
+const ConstituencyHoverInfo = (
+  props: {
+    info: ConstituencyMap | undefined;
+  } & DivPropsNoChildren,
+) => {
+  const { info, ...rest } = addClass(props, "card w-listitem_card");
   if (!info) return null;
   return (
-    <div className="w-listitem_card absolute right-0 bottom-0">
+    <div {...rest}>
       <PartyIconBackground party={info.mp?.party} className="w-listitem_card">
         <h2 className="card-content">
           <ConstituencyLink constituency={info} />

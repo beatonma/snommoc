@@ -163,6 +163,7 @@
 
   --transition-duration: 220ms;
 
+  --spacing-em: 1em;
   --spacing-edge: 8px;
   --spacing-edge-sm: 16px;
 
@@ -173,10 +174,14 @@
   @apply bg-surface text-on_surface;
 }
 @utility card {
-  @apply surface drop-shadow-xs sm:rounded-lg;
+  @apply surface overflow-hidden drop-shadow-xs sm:rounded-lg;
 }
 @utility card-content {
   @apply px-4 py-2;
+}
+
+@utility row {
+  @apply flex flex-row items-center;
 }
 
 @utility readable {
@@ -330,5 +335,12 @@
     td {
       @apply px-4 py-1.5 text-left;
     }
+  }
+}
+
+@layer components {
+  .map-placemark_user {
+    fill: var(--color-surface);
+    stroke: var(--color-on_surface);
   }
 }

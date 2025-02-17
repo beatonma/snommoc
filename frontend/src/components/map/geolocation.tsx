@@ -1,11 +1,8 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
 import { ClassNameProps } from "@/types/common";
+import { GeoLocation } from "@/components/map/geography";
 
-export interface GeoLocation {
-  latitude: number;
-  longitude: number;
-}
 interface GeoLocationOptions {
   enabled: boolean;
 }
@@ -20,14 +17,7 @@ export const useGeoLocation = (options: GeoLocationOptions) => {
       .query({ name: "geolocation" })
       .then((status: PermissionStatus) => {
         if (status.state === "denied") return;
-        window.navigator.geolocation.getCurrentPosition(
-          (position: GeolocationPosition) => {
-            setLocation({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            });
-          },
-        );
+        getCurrentPosition().then(setLocation);
       });
   }, [options.enabled]);
 
@@ -99,3 +89,44 @@ export const useGeoLocationPrompt = (): GeoLocationPrompt => {
     GeoLocationPromptButton: promptButton,
   };
 };
+
+/**
+ * Get the user's location only if they have already given permission for it.
+ * This is for times when location is a nice-to-have but not worth bothering
+ * the user about.
+ */
+export const usePassiveGeoLocation = (_default?: GeoLocation) => {
+  const [location, setLocation] = useState<GeoLocation>();
+
+  useEffect(() => {
+    if (!("geolocation" in window.navigator)) return;
+
+    window.navigator.permissions
+      .query({ name: "geolocation" })
+      .then((status: PermissionStatus) => {
+        if (status.state === "granted") {
+          getCurrentPosition().then(setLocation);
+        } else {
+          setLocation(_default);
+        }
+      });
+  }, []);
+
+  return location;
+};
+
+const getCurrentPosition = async () =>
+  new Promise<GeoLocation>((resolve, reject) => {
+    window.navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      (error) => reject(new Error(`[${error.code}] ${error.message}`)),
+      {
+        maximumAge: 1000 * 60 * 10, // 10 minutes
+      },
+    );
+  });

@@ -20,11 +20,22 @@ import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
 import { DivPropsNoChildren } from "@/types/react";
 
 export default function NationalMap() {
+  const userLocation: GeoLocation | undefined =
+    usePassiveGeoLocation(UkParliamentLocation);
+
+  if (!userLocation) return <Loading />;
+
+  return <NationalMapWithLocation userLocation={userLocation} />;
+}
+
+const NationalMapWithLocation = ({
+  userLocation,
+}: {
+  userLocation: GeoLocation;
+}) => {
   const [territories, setTerritories] = useState<PartyTerritory[]>();
   const [focus, setFocus] = useState<LayerKey | undefined>();
   const isFocusLocked = useRef<boolean>(false);
-  const userLocation: GeoLocation | undefined =
-    usePassiveGeoLocation(UkParliamentLocation);
   const constituencies = usePagination(
     "/api/maps/constituencies/",
     userLocation,

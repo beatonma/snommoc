@@ -20,11 +20,13 @@ import { FeatureLike } from "ol/Feature";
 import { Nullish } from "@/types/common";
 import {
   combineExtents,
+  asFeature,
   Extents,
+  mutateCombineExtents,
   padExtents,
   UkSquareExtents,
 } from "./geography";
-import { Point } from "ol/geom";
+import { LinearRing, Point, Polygon } from "ol/geom";
 import { useGeoLocationPrompt } from "./geolocation";
 import { Select } from "ol/interaction";
 import { click } from "ol/events/condition";
@@ -110,9 +112,13 @@ class MapRenderer {
   #eventHandlers: MapEventHandlers | Nullish;
   #fitToExtents: boolean;
 
+  #select: Select;
+
   constructor(options?: MapOptions) {
     this.#eventHandlers = options?.events;
     this.#map = this.#initializeMap(options);
+    this.#select = this.#initializeSelect(this.#map);
+
     this.#fitToExtents = options?.fitToExtents || false;
 
     if (!this.#fitToExtents) {
@@ -127,6 +133,44 @@ class MapRenderer {
 
   setContainer(containerId: string) {
     this.#map.setTarget(containerId);
+  }
+
+  selectFeatures<K extends keyof FeatureProperties>(
+    property: K,
+    value: FeatureProperties[K],
+    options?: { fit: boolean },
+  ) {
+    const fitView = options?.fit === true;
+    const extent: Extents = [NaN, NaN, NaN, NaN];
+
+    const selected: Feature[] = this.#map
+      .getLayers()
+      .getArray()
+      .map((layer) => {
+        const source = (layer as VectorLayer).getSource();
+
+        return source?.getFeatures()?.filter((feature: Feature) => {
+          const result = getProperty(feature, property) === value;
+          if (result && fitView) {
+            mutateCombineExtents(extent, source.getExtent() as Extents);
+          }
+
+          return result;
+        });
+      })
+      .flat();
+
+    if (fitView) {
+      this.#zoomToExtent(padExtents([...extent], 0.1));
+    }
+
+    const features = this.#select.getFeatures();
+    features.clear();
+    selected.forEach((it) => features.push(it));
+  }
+
+  #zoomToExtent(extents: Extents) {
+    this.#map.getView().fit(extents, { duration: 500 });
   }
 
   addOverlay({
@@ -206,7 +250,7 @@ class MapRenderer {
     const before: Extents = [...(this.#extents ?? extents)];
     const expanded: Extents = combineExtents(before, extents);
     this.#extents = expanded;
-    this.#map.getView().fit(padExtents(expanded, 0.1), { duration: 500 });
+    this.#zoomToExtent(padExtents(expanded, 0.1));
   }
 
   #initializeMap(options: MapOptions | undefined): OlMap {
@@ -240,6 +284,10 @@ class MapRenderer {
       withFeature(map, ev, this.#eventHandlers?.onHover);
     });
 
+    return map;
+  }
+
+  #initializeSelect(map: OlMap): Select {
     const selectClick = new Select({
       condition: click,
       style: (feature) => {
@@ -266,8 +314,21 @@ class MapRenderer {
     });
 
     map.addInteraction(selectClick);
+    return selectClick;
+  }
 
-    return map;
+  #debugShowExtent(extent: Extents) {
+    this.#map.addLayer(
+      new VectorLayer({
+        source: new VectorSource({
+          features: [asFeature(extent)],
+        }),
+        style: new Style({
+          stroke: new Stroke({ color: "black", width: 2 }),
+          fill: new Fill({ color: "red" }),
+        }),
+      }),
+    );
   }
 }
 
@@ -330,7 +391,8 @@ const getLayerId = (feature: FeatureLike | undefined): LayerKey | undefined => {
 
 interface FeatureProperties {
   color?: string | undefined;
-  selectable?: boolean;
+  selectable?: boolean | undefined;
+  partyId?: number | undefined;
 }
 type FeatureProperty = keyof FeatureProperties;
 const setProperty = <K extends keyof FeatureProperties>(

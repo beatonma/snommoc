@@ -23,7 +23,7 @@
   --_light_primary: rgb(51, 136, 85);
   --_dark_primary: rgb(66, 172, 108);
 
-  --_light_on_primary: var(--_black_);
+  --_light_on_primary: var(--_white_);
   --_dark_on_primary: var(--_white_);
 
   --_light_accent: rgb(206, 218, 245);
@@ -39,29 +39,6 @@
 ::selection {
   background-color: color-mix(in srgb, var(--surface), var(--primary));
   color: var(--on_primary);
-}
-
-.overflow-x-auto {
-  @media (pointer: coarse) {
-    scrollbar-width: none;
-  }
-  @media (pointer: fine) {
-    scrollbar-width: thin;
-  }
-}
-
-.px-edge {
-  .px-edge {
-    /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
-    --spacing-edge: 0;
-  }
-}
-
-.px-edge-sm {
-  .px-edge-sm {
-    /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
-    --spacing-edge-sm: 0;
-  }
 }
 
 @media (prefers-color-scheme: light) {
@@ -170,94 +147,6 @@
   --spacing-listitem_card: min(100%, 400px);
 }
 
-@utility surface {
-  @apply bg-surface text-on_surface;
-}
-@utility card {
-  @apply surface overflow-hidden drop-shadow-xs sm:rounded-lg;
-}
-@utility card-content {
-  @apply px-4 py-2;
-}
-
-@utility row {
-  @apply flex flex-row items-center;
-}
-
-@utility readable {
-  @apply w-full max-w-[800px];
-}
-
-@utility text-reduced {
-  /**
-   * Reduce emphasis by fading the currentColor.
-   */
-  color: color-mix(in srgb, currentColor 85%, transparent);
-}
-
-@utility hover-overlay {
-  @apply relative;
-
-  &::after {
-    @apply absolute inset-0 rounded-md bg-transparent transition-[background-color,inset] content-[''];
-  }
-
-  &:hover::after {
-    @apply bg-surface/10;
-  }
-}
-
-@utility loading {
-  @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
-
-  > * {
-    animation-duration: 1000ms;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
-  }
-
-  > *:first-child {
-    @apply absolute justify-self-center fill-current;
-  }
-
-  > *:not(:first-child) {
-    @apply fill-primary z-10 inline-block shrink-0;
-  }
-
-  & > :nth-child(2) {
-    animation-name: loading-first;
-    animation-timing-function: ease-in-out;
-  }
-
-  & > :last-child {
-    animation-name: loading-last;
-    animation-timing-function: ease-in-out;
-  }
-}
-
-@layer components {
-  @keyframes loading-first {
-    0%,
-    40% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-      scale: 1;
-      translate: 50%;
-    }
-  }
-  @keyframes loading-last {
-    0% {
-      translate: -50%;
-    }
-    70%,
-    100% {
-      opacity: 0;
-    }
-  }
-}
-
 @layer base {
   img {
     @apply object-cover;
@@ -339,8 +228,129 @@
 }
 
 @layer components {
+  .overflow-x-auto {
+    @media (pointer: coarse) {
+      scrollbar-width: none;
+    }
+    @media (pointer: fine) {
+      scrollbar-width: thin;
+    }
+  }
+
+  .px-edge {
+    .px-edge {
+      /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
+      --spacing-edge: 0;
+    }
+  }
+
+  .px-edge-sm {
+    .px-edge-sm {
+      /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
+      --spacing-edge-sm: 0;
+    }
+  }
+}
+
+@layer components {
+  .loading {
+    @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
+
+    > * {
+      animation-duration: 1000ms;
+      animation-iteration-count: infinite;
+      animation-fill-mode: both;
+    }
+
+    > *:first-child {
+      @apply absolute justify-self-center fill-current;
+    }
+
+    > *:not(:first-child) {
+      @apply fill-primary z-10 inline-block shrink-0;
+    }
+
+    & > :nth-child(2) {
+      animation-name: loading-first;
+      animation-timing-function: ease-in-out;
+    }
+
+    & > :last-child {
+      animation-name: loading-last;
+      animation-timing-function: ease-in-out;
+    }
+  }
+
+  @keyframes loading-first {
+    0%,
+    40% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      scale: 1;
+      translate: 50%;
+    }
+  }
+  @keyframes loading-last {
+    0% {
+      translate: -50%;
+    }
+    70%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+@layer components {
+  .readable {
+    @apply w-full max-w-[800px];
+  }
+
+  .text-reduced {
+    /**
+   * Reduce emphasis by fading the currentColor.
+   */
+    color: color-mix(in srgb, currentColor 85%, transparent);
+  }
+
+  .hover-overlay {
+    @apply relative;
+
+    &::after {
+      @apply absolute inset-0 rounded-md bg-transparent transition-[background-color,inset] content-[''];
+    }
+
+    &:hover::after {
+      @apply bg-surface/10;
+    }
+  }
+}
+
+@layer components {
   .map-placemark_user {
     fill: var(--color-surface);
     stroke: var(--color-on_surface);
   }
+}
+
+@utility surface {
+  @apply bg-surface text-on_surface;
+}
+@utility card {
+  @apply surface overflow-hidden shadow-md sm:rounded-lg;
+}
+@utility card-content {
+  @apply px-4 py-2;
+}
+@utility chip {
+  @apply surface overflow-hidden rounded-md shadow-md;
+}
+@utility chip-content {
+  @apply px-2 py-0.5 text-sm;
+}
+
+@utility row {
+  @apply flex flex-row items-center;
 }

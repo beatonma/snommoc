@@ -12,6 +12,16 @@ import React from "react";
 import { Nullish } from "@/types/common";
 import { TextLink } from "@/components/link";
 
+export const hrefFor = (
+  type: "party" | "constituency" | "person",
+  parliamentdotuk: number,
+): string =>
+  ({
+    constituency: () => `/constituencies/${parliamentdotuk}/`,
+    party: () => `/parties/${parliamentdotuk}/`,
+    person: () => `/members/${parliamentdotuk}/`,
+  })[type]();
+
 interface DotTextProps {
   color: string | undefined;
   text: string;
@@ -41,7 +51,7 @@ export const PartyLink = ({
   const color = showDot ? party.theme?.primary : undefined;
 
   return (
-    <TextButton href={`/parties/${party.parliamentdotuk}/`}>
+    <TextButton href={hrefFor("party", party.parliamentdotuk)}>
       <DotText color={color} text={party.name} />
     </TextButton>
   );
@@ -78,7 +88,7 @@ export const PersonLink = ({
   }
 
   return (
-    <TextButton href={`/members/${person.parliamentdotuk}/`}>
+    <TextButton href={hrefFor("person", person.parliamentdotuk)}>
       {person.name}
     </TextButton>
   );
@@ -92,7 +102,7 @@ export const ConstituencyLink = ({
   if (!constituency) return null;
 
   return (
-    <TextButton href={`/constituencies/${constituency.parliamentdotuk}/`}>
+    <TextButton href={hrefFor("constituency", constituency.parliamentdotuk)}>
       {constituency.name}
     </TextButton>
   );

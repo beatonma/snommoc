@@ -51,7 +51,6 @@ interface StyleOptions {
 
 type LayerEventHandler = ((id: LayerKey | undefined) => void) | Nullish;
 type OnFeatureHover = LayerEventHandler;
-type OnFeatureClick = LayerEventHandler;
 interface MapOptions {
   provider?: MapProvider | Nullish;
   viewOptions?: ViewOptions;
@@ -102,7 +101,7 @@ export const MapProvider = {
 
 interface MapEventHandlers {
   onHover?: OnFeatureHover;
-  onClick?: OnFeatureClick;
+  onSelect?: (layers: LayerKey[]) => void;
 }
 class MapRenderer {
   #map: OlMap;
@@ -241,14 +240,8 @@ class MapRenderer {
       withFeature(map, ev, this.#eventHandlers?.onHover);
     });
 
-    map.on("singleclick", (ev) => {
-      console.debug(
-        `Clicked coordinate lat=${ev.coordinate[1]?.toFixed(3)}, long=${ev.coordinate[0]?.toFixed(3)}`,
-      );
-      withFeature(map, ev, this.#eventHandlers?.onClick);
-    });
-
     const selectClick = new Select({
+      condition: click,
       style: (feature) => {
         const color = getProperty(feature, "color");
         return new Style({
@@ -261,9 +254,17 @@ class MapRenderer {
           }),
         });
       },
-      condition: click,
       filter: (feature) => getProperty(feature, "selectable") === true,
     });
+    selectClick.on("select", (ev) => {
+      const selectedLayers = selectClick
+        .getFeatures()
+        .getArray()
+        .map((it) => getLayerId(it))
+        .filter((it) => it !== undefined);
+      this.#eventHandlers?.onSelect?.(selectedLayers);
+    });
+
     map.addInteraction(selectClick);
 
     return map;

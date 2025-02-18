@@ -18,6 +18,8 @@ import { addClass } from "@/util/transforms";
 import { usePassiveGeoLocation } from "@/components/map/geolocation";
 import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
 import { DivPropsNoChildren } from "@/types/react";
+import Loading from "@/components/loading";
+import Row from "@/components/row";
 
 export default function NationalMap() {
   const userLocation: GeoLocation | undefined =
@@ -34,25 +36,46 @@ const NationalMapWithLocation = ({
   userLocation: GeoLocation;
 }) => {
   const [territories, setTerritories] = useState<PartyTerritory[]>();
-  const [focus, setFocus] = useState<LayerKey | undefined>();
+  const [focus, setFocus] = useState<LayerKey[]>([]);
   const isFocusLocked = useRef<boolean>(false);
   const constituencies = usePagination(
     "/api/maps/constituencies/",
     userLocation,
   );
+  const focussedConstituency = useMemo(
+    () =>
+      constituencies.items.filter((it) => focus.includes(it.parliamentdotuk)),
+    [focus, constituencies.items],
+  );
+
+  const map = useMap({
+    provider: null,
+    viewOptions: {
+      minResolution: 75,
+    },
+    events: {
+      onHover: (id) => {
+        if (!isFocusLocked.current) {
+          setFocus(id === undefined ? [] : [id]);
+        }
+      },
+      onSelect: (ids) => onSelectFeatures(ids),
+    },
+  });
+
+  const onSelectFeatures = useCallback((layers: LayerKey[]) => {
+    isFocusLocked.current = layers.length > 0;
+    setFocus(layers);
+  }, []);
 
   useEffect(() => {
     get("/api/maps/parties/").then((it) => {
       setTerritories(it.data);
     });
   }, []);
-  const focussedConstituency = useMemo(() => {
-    if (focus) {
-      return constituencies.items.find((it) => it.parliamentdotuk === focus);
-    }
-  }, [focus, constituencies.items]);
 
   useEffect(() => {
+    if (!map) return;
     territories?.forEach((party) => {
       const boundary = party.territory;
       if (boundary) {
@@ -73,37 +96,7 @@ const NationalMapWithLocation = ({
         });
       }
     });
-  }, [territories]);
-
-  const onClickFeature = useCallback(
-    (id: LayerKey | undefined) => {
-      if (id) {
-        if (id === focus) isFocusLocked.current = !isFocusLocked.current;
-        else {
-          isFocusLocked.current = true;
-        }
-      } else {
-        isFocusLocked.current = false;
-      }
-      setFocus(id);
-    },
-    [focus],
-  );
-
-  const map = useMap({
-    provider: null,
-    viewOptions: {
-      minResolution: 75,
-    },
-    events: {
-      onHover: (id) => {
-        if (!isFocusLocked.current) {
-          setFocus(id);
-        }
-      },
-      onClick: (id) => onClickFeature(id),
-    },
-  });
+  }, [map, territories]);
 
   useEffect(() => {
     constituencies.items.forEach((constituency) => {
@@ -134,35 +127,56 @@ const NationalMapWithLocation = ({
       <TerritoryInfo parties={territories} className="absolute top-0 left-0" />
       <ConstituencyHoverInfo
         info={focussedConstituency}
-        className="absolute right-0 bottom-0 m-2 shadow-lg"
+        className="absolute right-0 bottom-0 m-2"
       />
     </Map>
   );
-}
+};
 
 const ConstituencyHoverInfo = (
   props: {
-    info: ConstituencyMap | undefined;
+    info: ConstituencyMap[];
   } & DivPropsNoChildren,
 ) => {
-  const { info, ...rest } = addClass(props, "card w-listitem_card");
-  if (!info) return null;
+  const { info, ...rest } = addClass(props, "w-listitem_card");
+  const MaxVisibleItems = 3;
+
+  if (info.length === 0) return null;
+  if (info.length === 1) {
+    const item = info[0]!;
+    return (
+      <div {...addClass(rest, "card")}>
+        <PartyIconBackground party={item.mp?.party} className="w-listitem_card">
+          <h2 className="card-content">
+            <ConstituencyLink constituency={item} />
+          </h2>
+          {item.mp ? (
+            <MemberItem
+              member={item.mp}
+              showConstituency={false}
+              usePartyTheme={false}
+              defaultPartyTheme={null}
+            />
+          ) : null}
+        </PartyIconBackground>
+      </div>
+    );
+  }
+
+  const hiddenItems = info.length - MaxVisibleItems;
   return (
-    <div {...rest}>
-      <PartyIconBackground party={info.mp?.party} className="w-listitem_card">
-        <h2 className="card-content">
-          <ConstituencyLink constituency={info} />
-        </h2>
-        {info.mp ? (
-          <MemberItem
-            member={info.mp}
-            showConstituency={false}
-            usePartyTheme={false}
-            defaultPartyTheme={null}
-          />
-        ) : null}
-      </PartyIconBackground>
-    </div>
+    <Row {...addClass(rest, "gap-2 flex-wrap")}>
+      {info.slice(0, MaxVisibleItems).map((item) => (
+        <PartyIconBackground
+          className="card card-content shrink-0"
+          party={item.mp?.party}
+          key={item.parliamentdotuk}
+        >
+          <ConstituencyLink constituency={item} />
+        </PartyIconBackground>
+      ))}
+      {hiddenItems > 0 ? `and ${hiddenItems} more` : null}
+    </Row>
   );
 };
 

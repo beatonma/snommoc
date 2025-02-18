@@ -76,7 +76,6 @@ export const usePagination = <P extends PathWithPagination>(
   }, [path, query]);
 
   useEffect(() => {
-    console.log(`reset ${path} ${JSON.stringify(query)}`);
     reset().then(loadNext);
   }, [loadNext]);
 

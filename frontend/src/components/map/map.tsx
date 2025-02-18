@@ -26,6 +26,8 @@ import {
 } from "./geography";
 import { Point } from "ol/geom";
 import { useGeoLocationPrompt } from "./geolocation";
+import { Select } from "ol/interaction";
+import { click } from "ol/events/condition";
 
 const MapProjectionCode = "EPSG:27700"; // British National Grid
 const UserLocationMarkerId = "user_location";
@@ -35,6 +37,7 @@ interface GeoJsonLayer {
   layerKey: LayerKey;
   geoJson: GeoJSON;
   style?: StyleOptions;
+  properties?: FeatureProperties;
   replace?: boolean;
   zIndex?: number;
 }
@@ -131,7 +134,8 @@ class MapRenderer {
     layerKey,
     geoJson,
     style,
-    zIndex = undefined,
+    properties,
+    zIndex,
     replace = false,
   }: GeoJsonLayer) {
     if (layerKey in this.#layers) {
@@ -146,6 +150,12 @@ class MapRenderer {
     const source = new VectorSource({
       features: new OlGeoJSON().readFeatures(geoJson).map((feature, index) => {
         setId(feature, layerKey, index);
+        if (properties) {
+          let key: FeatureProperty;
+          for (key in properties) {
+            setProperty(feature, key, properties[key]);
+          }
+        }
         return feature;
       }),
     });
@@ -238,26 +248,27 @@ class MapRenderer {
       withFeature(map, ev, this.#eventHandlers?.onClick);
     });
 
+    const selectClick = new Select({
+      style: (feature) => {
+        const color = getProperty(feature, "color");
+        return new Style({
+          fill: new Fill({
+            color: `color-mix(in srgb, ${color} 90%, transparent)`,
+          }),
+          stroke: new Stroke({
+            color: `color-mix(in srgb, black 90%, transparent)`,
+            width: 1.5,
+          }),
+        });
+      },
+      condition: click,
+      filter: (feature) => getProperty(feature, "selectable") === true,
+    });
+    map.addInteraction(selectClick);
+
     return map;
   }
 }
-
-const getStyle = (options?: StyleOptions) => {
-  const opts = options ?? ({ stroke: true } as StyleOptions);
-  return new Style({
-    stroke: opts.stroke
-      ? new Stroke({
-          color: `color-mix(in srgb, black 90%, transparent)`,
-          width: 0.25,
-        })
-      : undefined,
-    fill: opts?.fill?.color
-      ? new Fill({
-          color: `color-mix(in srgb, ${opts.fill.color} ${opts.fill.opacityPercent ?? 50}%, transparent)`,
-        })
-      : undefined,
-  });
-};
 
 type MapProps = {
   map: MapRenderer | undefined;
@@ -287,6 +298,24 @@ const MapView = (props: MapProps) => {
   );
 };
 
+const getStyle = (options?: StyleOptions) => {
+  const opts = options ?? ({ stroke: true } as StyleOptions);
+  return new Style({
+    stroke: opts.stroke
+      ? new Stroke({
+          color: `color-mix(in srgb, black 90%, transparent)`,
+          width: 0.25,
+        })
+      : undefined,
+    fill: opts?.fill?.color
+      ? new Fill({
+          color: `color-mix(in srgb, ${opts.fill.color} ${opts.fill.opacityPercent ?? 50}%, transparent)`,
+        })
+      : undefined,
+  });
+};
+
+/** Feature functions */
 const setId = (feature: Feature, layerKey: LayerKey, suffix: number) => {
   feature.setId(`${layerKey}_${suffix}`);
 };
@@ -297,6 +326,22 @@ const getLayerId = (feature: FeatureLike | undefined): LayerKey | undefined => {
   const asInt = parseInt(asString);
   return isNaN(asInt) ? asString : asInt;
 };
+
+interface FeatureProperties {
+  color?: string | undefined;
+  selectable?: boolean;
+}
+type FeatureProperty = keyof FeatureProperties;
+const setProperty = <K extends keyof FeatureProperties>(
+  feature: Feature,
+  key: K,
+  value: FeatureProperties[K],
+) => feature.set(key, value);
+
+const getProperty = <K extends keyof FeatureProperties>(
+  feature: FeatureLike,
+  key: K,
+): FeatureProperties[K] => feature.get(key);
 
 const withFeature = (
   map: OlMap,

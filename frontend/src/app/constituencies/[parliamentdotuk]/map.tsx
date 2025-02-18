@@ -22,6 +22,7 @@ export const ConstituencyMap = (props: ConstituencyMapProps) => {
         layerKey: constituency.parliamentdotuk,
         geoJson: geoJson,
         style: {
+          stroke: true,
           fill: {
             color: constituency.mp?.party?.theme?.primary,
           },

@@ -101,6 +101,10 @@ export default function NationalMap() {
         map?.addOverlay({
           layerKey: constituency.parliamentdotuk,
           geoJson: JSON.parse(boundary),
+          properties: {
+            color: constituency.mp?.party?.theme?.primary,
+            selectable: true,
+          },
           style: {
             stroke: true,
             fill: {
@@ -119,7 +123,7 @@ export default function NationalMap() {
       <TerritoryInfo parties={territories} className="absolute top-0 left-0" />
       <ConstituencyHoverInfo
         info={focussedConstituency}
-        className="absolute right-0 bottom-0 m-2"
+        className="absolute right-0 bottom-0 m-2 shadow-lg"
       />
     </Map>
   );
@@ -156,7 +160,7 @@ const TerritoryInfo = (
     parties: PartyTerritory[] | undefined;
   } & ComponentPropsWithoutRef<"ul">,
 ) => {
-  const { parties, ...rest } = addClass(props, "text-sm");
+  const { parties, ...rest } = addClass(props, "text-sm pointer-events-none");
   if (!parties) return null;
   return (
     <ul {...rest}>

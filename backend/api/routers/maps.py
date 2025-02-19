@@ -40,7 +40,7 @@ def parties(request: HttpRequest, query: Query[MapQuery]):
         qs,
         geometry_field="territory__geometry",
         query=query,
-        default_order_by="-territory__north",
+        default_order_by="name",
     )
 
 

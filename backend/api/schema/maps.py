@@ -13,5 +13,4 @@ class ConstituencyMapSchema(ParliamentSchema):
 
 
 class PartyMapSchema(PartyMiniSchema):
-    name: Name
     territory: str | None = field("territory.geometry.json", default=None)

@@ -1,6 +1,6 @@
 "use client";
 
-import { ConstituencyMap, PartyTerritory, get } from "@/api";
+import { ConstituencyMiniBoundary, PartyTerritory, get } from "@/api";
 import { type LayerKey, Map, useMap } from "@/components/map";
 import {
   ComponentPropsWithoutRef,
@@ -21,6 +21,7 @@ import { DivPropsNoChildren } from "@/types/react";
 import Loading from "@/components/loading";
 import Row from "@/components/row";
 import Link from "next/link";
+import { MapRenderer } from "@/components/map/map";
 
 export default function NationalMap() {
   const userLocation: GeoLocation | undefined =
@@ -89,50 +90,13 @@ const NationalMapWithLocation = ({
 
   useEffect(() => {
     if (!map) return;
-    territories?.forEach((party) => {
-      const boundary = party.territory;
-      if (boundary) {
-        map?.addOverlay({
-          layerKey: party.parliamentdotuk,
-          geoJson: JSON.parse(boundary),
-          style: {
-            stroke: false,
-            fill: {
-              color:
-                party.theme?.primary ??
-                document.body
-                  .computedStyleMap()
-                  .get("--color-house-commons")
-                  ?.toString(),
-            },
-          },
-        });
-      }
-    });
+    if (!territories) return;
+    addPartyTerritories(territories, map);
   }, [map, territories]);
 
   useEffect(() => {
-    constituencies.items.forEach((constituency) => {
-      const boundary = constituency.boundary;
-      if (boundary) {
-        map?.addOverlay({
-          layerKey: constituency.parliamentdotuk,
-          geoJson: JSON.parse(boundary),
-          properties: {
-            color: constituency.mp?.party?.theme?.primary,
-            selectable: true,
-            partyId: constituency.mp?.party?.parliamentdotuk,
-          },
-          style: {
-            stroke: true,
-            fill: {
-              color: "transparent",
-            },
-          },
-          zIndex: 10,
-        });
-      }
-    });
+    if (!map) return;
+    addConstituencyBoundaries(constituencies.items, map);
     constituencies.loadNext?.();
   }, [map, constituencies.items, constituencies.loadNext]);
 
@@ -152,9 +116,92 @@ const NationalMapWithLocation = ({
   );
 };
 
+const addPartyTerritories = (
+  territories: PartyTerritory[],
+  map: MapRenderer,
+) => {
+  territories?.forEach((party) => {
+    const boundary = party.territory;
+    if (boundary) {
+      map?.addOverlay({
+        layerKey: party.parliamentdotuk,
+        geoJson: JSON.parse(boundary),
+        style: {
+          stroke: false,
+          fill: {
+            color:
+              party.theme?.primary ??
+              document.body
+                .computedStyleMap()
+                .get("--color-house-commons")
+                ?.toString(),
+          },
+        },
+      });
+    }
+  });
+};
+
+const TerritoryInfo = (
+  props: {
+    parties: PartyTerritory[] | undefined;
+    onClickParty: (partyId: number) => void;
+  } & ComponentPropsWithoutRef<"ul">,
+) => {
+  const { parties, onClickParty, ...rest } = addClass(
+    props,
+    "text-sm pointer-events-none",
+  );
+  if (!parties) return null;
+  return (
+    <ul {...rest}>
+      {parties.map((party) => (
+        <li
+          key={party.parliamentdotuk}
+          className="row bg-surface/80 pointer-events-auto w-fit cursor-pointer list-none gap-1 px-2 py-1"
+          onClick={() => onClickParty(party.parliamentdotuk)}
+        >
+          <div
+            className="size-em rounded-sm border-1"
+            style={{ backgroundColor: party.theme?.primary }}
+          />
+          <div>{party.name}</div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const addConstituencyBoundaries = (
+  constituencies: ConstituencyMiniBoundary[],
+  map: MapRenderer,
+) => {
+  constituencies.forEach((constituency) => {
+    const boundary = constituency.boundary;
+    if (boundary) {
+      map?.addOverlay({
+        layerKey: constituency.parliamentdotuk,
+        geoJson: JSON.parse(boundary),
+        properties: {
+          color: constituency.mp?.party?.theme?.primary,
+          selectable: true,
+          partyId: constituency.mp?.party?.parliamentdotuk,
+        },
+        style: {
+          stroke: true,
+          fill: {
+            color: "transparent",
+          },
+        },
+        zIndex: 10,
+      });
+    }
+  });
+};
+
 const ConstituencyHoverInfo = (
   props: {
-    constituencies: ConstituencyMap[];
+    constituencies: ConstituencyMiniBoundary[];
   } & DivPropsNoChildren,
 ) => {
   const { constituencies, ...rest } = addClass(props, "w-listitem_card");
@@ -206,7 +253,7 @@ const ConstituencyHoverInfo = (
   // Many items selected
   return (
     <div {...addClass(rest, "card card-content")}>
-      <h3>{constituencies.length} items</h3>
+      <h3>{constituencies.length} selected</h3>
       <div className="max-h-64 overflow-auto">
         {constituencies
           .sort((a, b) => a.name.localeCompare(b.name))
@@ -219,35 +266,5 @@ const ConstituencyHoverInfo = (
           ))}
       </div>
     </div>
-  );
-};
-
-const TerritoryInfo = (
-  props: {
-    parties: PartyTerritory[] | undefined;
-    onClickParty: (partyId: number) => void;
-  } & ComponentPropsWithoutRef<"ul">,
-) => {
-  const { parties, onClickParty, ...rest } = addClass(
-    props,
-    "text-sm pointer-events-none",
-  );
-  if (!parties) return null;
-  return (
-    <ul {...rest}>
-      {parties.map((party) => (
-        <li
-          key={party.parliamentdotuk}
-          className="row bg-surface/80 pointer-events-auto w-fit cursor-pointer list-none gap-1 px-2 py-1"
-          onClick={() => onClickParty(party.parliamentdotuk)}
-        >
-          <div
-            className="size-em rounded-sm border-1"
-            style={{ backgroundColor: party.theme?.primary }}
-          />
-          <div>{party.name}</div>
-        </li>
-      ))}
-    </ul>
   );
 };

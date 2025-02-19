@@ -26,7 +26,7 @@ import {
   padExtents,
   UkSquareExtents,
 } from "./geography";
-import { LinearRing, Point, Polygon } from "ol/geom";
+import { Point } from "ol/geom";
 import { useGeoLocationPrompt } from "./geolocation";
 import { Select } from "ol/interaction";
 import { click } from "ol/events/condition";
@@ -105,7 +105,7 @@ interface MapEventHandlers {
   onHover?: OnFeatureHover;
   onSelect?: (layers: LayerKey[]) => void;
 }
-class MapRenderer {
+export class MapRenderer {
   #map: OlMap;
   #extents: Extents | null = null;
   #layers: Record<LayerKey, VectorLayer> = {};

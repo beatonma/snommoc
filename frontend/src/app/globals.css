@@ -32,6 +32,8 @@
   --_light_on_accent: rgb(40, 71, 119);
   --_dark_on_accent: rgb(40, 71, 119);
 
+  --color-list-marker: currentColor;
+
   @media (prefers-color-scheme: light) {
     @apply colorscheme-light;
   }
@@ -77,6 +79,7 @@
   --color-on_background: var(--on_background);
   --color-surface: var(--surface);
   --color-on_surface: var(--on_surface);
+  --color-surface_alt: var(--surface_alt);
   --color-primary: var(--primary);
   --color-on_primary: var(--on_primary);
   --color-accent: var(--accent);
@@ -169,6 +172,10 @@
 
   ul {
     @apply list-inside list-disc;
+
+    li::marker {
+      color: var(--color-list-marker);
+    }
   }
 
   input,
@@ -206,7 +213,9 @@
 }
 
 @layer components {
-  .overflow-x-auto {
+  .overflow-auto,
+  .overflow-x-auto,
+  .overflow-y-auto {
     @media (pointer: coarse) {
       scrollbar-width: none;
     }

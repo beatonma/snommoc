@@ -33,6 +33,7 @@ import { click } from "ol/events/condition";
 
 const MapProjectionCode = "EPSG:27700"; // British National Grid
 const UserLocationMarkerId = "user_location";
+const FillMixColor = "white";
 
 export type LayerKey = string | number;
 interface GeoJsonLayer {
@@ -294,7 +295,7 @@ export class MapRenderer {
         const color = getProperty(feature, "color");
         return new Style({
           fill: new Fill({
-            color: `color-mix(in srgb, ${color} 90%, transparent)`,
+            color: `color-mix(in srgb, ${color} 90%, ${FillMixColor})`,
           }),
           stroke: new Stroke({
             color: `color-mix(in srgb, black 90%, transparent)`,
@@ -371,7 +372,7 @@ const getStyle = (options?: StyleOptions) => {
       : undefined,
     fill: opts?.fill?.color
       ? new Fill({
-          color: `color-mix(in srgb, ${opts.fill.color} ${opts.fill.opacityPercent ?? 50}%, transparent)`,
+          color: `color-mix(in srgb, ${opts.fill.color} ${opts.fill.opacityPercent ?? 50}%, ${FillMixColor})`,
         })
       : undefined,
   });

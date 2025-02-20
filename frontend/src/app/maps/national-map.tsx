@@ -207,7 +207,6 @@ const SelectedConstituenciesInfo = (
   } & DivPropsNoChildren,
 ) => {
   const { constituencies, ...rest } = addClass(props, "sm:w-listitem_card");
-  const MaxVisibleItems = 3;
 
   if (constituencies.length === 0) return null;
   if (constituencies.length === 1) {
@@ -232,7 +231,7 @@ const SelectedConstituenciesInfo = (
     );
   }
 
-  if (constituencies.length <= MaxVisibleItems) {
+  if (constituencies.length <= 3) {
     // A few items selected
     return (
       <Row {...addClass(rest, "gap-2 flex-wrap")}>

@@ -14,7 +14,7 @@ import { PartyIconBackground } from "@/components/themed/party";
 import { usePagination } from "@/components/paginated/pagination";
 import { MemberItem } from "@/components/item-member";
 import { ConstituencyLink, hrefFor } from "@/components/linked-data";
-import { addClass } from "@/util/transforms";
+import { addClass, classes } from "@/util/transforms";
 import { usePassiveGeoLocation } from "@/components/map/geolocation";
 import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
 import { DivPropsNoChildren } from "@/types/react";
@@ -101,18 +101,20 @@ const NationalMapWithLocation = ({
   }, [map, constituencies.items, constituencies.loadNext]);
 
   return (
-    <Map map={map} className="card aspect-square max-h-[80vh] w-full">
-      <TerritoryInfo
+    <div className="relative w-full">
+      <Map map={map} className="card aspect-square max-h-[80vh] w-full" />
+
+      <PartyTerritoryKey
         parties={territories}
-        className="absolute top-0 left-0"
+        className="row gap-2 overflow-auto sm:pointer-events-none sm:absolute sm:top-0 sm:left-0 sm:block [&>*]:shrink-0"
         onClickParty={filterByParty}
       />
 
-      <ConstituencyHoverInfo
+      <SelectedConstituenciesInfo
         constituencies={focussedConstituencies}
-        className="absolute right-0 bottom-0 m-2"
+        className="sm:absolute sm:right-0 sm:bottom-0 sm:m-2"
       />
-    </Map>
+    </div>
   );
 };
 
@@ -129,12 +131,7 @@ const addPartyTerritories = (
         style: {
           stroke: false,
           fill: {
-            color:
-              party.theme?.primary ??
-              document.body
-                .computedStyleMap()
-                .get("--color-house-commons")
-                ?.toString(),
+            color: party.theme?.primary,
           },
         },
       });
@@ -142,7 +139,7 @@ const addPartyTerritories = (
   });
 };
 
-const TerritoryInfo = (
+const PartyTerritoryKey = (
   props: {
     parties: PartyTerritory[] | undefined;
     onClickParty: (partyId: number) => void;
@@ -150,7 +147,7 @@ const TerritoryInfo = (
 ) => {
   const { parties, onClickParty, ...rest } = addClass(
     props,
-    "text-sm pointer-events-none",
+    "text-sm max-sm:py-4 max-sm:px-edge",
   );
   if (!parties) return null;
   return (
@@ -158,14 +155,18 @@ const TerritoryInfo = (
       {parties.map((party) => (
         <li
           key={party.parliamentdotuk}
-          className="row bg-surface/80 pointer-events-auto w-fit cursor-pointer list-none gap-1 px-2 py-1"
+          className={classes(
+            "row hover:bg-surface-hover chip-content pointer-events-auto w-fit cursor-pointer list-none gap-1",
+            "sm:bg-surface/80",
+            "max-sm:chip",
+          )}
           onClick={() => onClickParty(party.parliamentdotuk)}
         >
           <div
             className="size-em rounded-sm border-1"
             style={{ backgroundColor: party.theme?.primary }}
           />
-          <div>{party.name}</div>
+          <div className="line-clamp-1">{party.name}</div>
         </li>
       ))}
     </ul>
@@ -191,6 +192,7 @@ const addConstituencyBoundaries = (
           stroke: true,
           fill: {
             color: "transparent",
+            opacityPercent: 100,
           },
         },
         zIndex: 10,
@@ -199,33 +201,34 @@ const addConstituencyBoundaries = (
   });
 };
 
-const ConstituencyHoverInfo = (
+const SelectedConstituenciesInfo = (
   props: {
     constituencies: ConstituencyMiniBoundary[];
   } & DivPropsNoChildren,
 ) => {
-  const { constituencies, ...rest } = addClass(props, "w-listitem_card");
+  const { constituencies, ...rest } = addClass(props, "sm:w-listitem_card");
   const MaxVisibleItems = 3;
 
   if (constituencies.length === 0) return null;
   if (constituencies.length === 1) {
     const item = constituencies[0]!;
     return (
-      <div {...addClass(rest, "card")}>
-        <PartyIconBackground party={item.mp?.party} className="w-listitem_card">
-          <h2 className="card-content">
-            <ConstituencyLink constituency={item} />
-          </h2>
-          {item.mp ? (
-            <MemberItem
-              member={item.mp}
-              showConstituency={false}
-              usePartyTheme={false}
-              defaultPartyTheme={null}
-            />
-          ) : null}
-        </PartyIconBackground>
-      </div>
+      <PartyIconBackground
+        party={item.mp?.party}
+        {...addClass(rest, "card sm:w-listitem_card w-full")}
+      >
+        <h2 className="card-content">
+          <ConstituencyLink constituency={item} />
+        </h2>
+        {item.mp ? (
+          <MemberItem
+            member={item.mp}
+            showConstituency={false}
+            usePartyTheme={false}
+            defaultPartyTheme={null}
+          />
+        ) : null}
+      </PartyIconBackground>
     );
   }
 
@@ -254,17 +257,17 @@ const ConstituencyHoverInfo = (
   return (
     <div {...addClass(rest, "card card-content")}>
       <h3>{constituencies.length} selected</h3>
-      <div className="max-h-64 overflow-auto">
+      <ul className="max-h-64 overflow-auto">
         {constituencies
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((item) => (
-            <p key={item.parliamentdotuk}>
+            <li key={item.parliamentdotuk}>
               <Link href={hrefFor("constituency", item.parliamentdotuk)}>
                 {item.name}
               </Link>
-            </p>
+            </li>
           ))}
-      </div>
+      </ul>
     </div>
   );
 };

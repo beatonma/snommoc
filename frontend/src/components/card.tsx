@@ -50,7 +50,7 @@ export const HeaderCard = (props: HeaderCardProps) => {
 type ListItemCardProps = { label?: string } & CardProps & NextLinkProps;
 export const ListItemCard = (props: ListItemCardProps) => {
   const { image, children, party, defaultPartyTheme, label, ...rest } =
-    addClass(props, "flex max-w-listitem_card", "hover-overlay");
+    addClass(props, "flex max-w-listitem_card sm:rounded-lg overflow-hidden ");
 
   return (
     <Link {...rest}>
@@ -59,7 +59,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
         defaultPartyTheme={
           defaultPartyTheme === undefined ? DefaultTheme : defaultPartyTheme
         }
-        className="flex w-full flex-col overflow-hidden p-3 sm:rounded-lg"
+        className="hover-overlay flex w-full flex-col p-3"
       >
         <div className="flex w-full gap-3">
           {image}

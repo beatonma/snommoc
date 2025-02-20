@@ -2,29 +2,29 @@
 
 :root {
   /** Theme colors */
-  --_black_: rgb(9, 9, 11);
-  --_white_: rgb(250, 250, 250);
+  --_black: rgb(9, 9, 11);
+  --_white: rgb(250, 250, 250);
 
   --_light_background: rgb(228, 228, 231);
   --_dark_background: rgb(24, 24, 27);
 
-  --_light_on_background: var(--_black_);
+  --_light_on_background: var(--_black);
   --_dark_on_background: white;
 
-  --_light_surface: var(--_white_);
+  --_light_surface: var(--_white);
   --_dark_surface: rgb(39, 39, 42);
 
   --_light_surface_alt: rgb(255 255 255);
   --_dark_surface_alt: rgb(82, 82, 92);
 
-  --_light_on_surface: var(--_black_);
-  --_dark_on_surface: var(--_white_);
+  --_light_on_surface: var(--_black);
+  --_dark_on_surface: var(--_white);
 
   --_light_primary: rgb(51, 136, 85);
   --_dark_primary: rgb(66, 172, 108);
 
-  --_light_on_primary: var(--_white_);
-  --_dark_on_primary: var(--_white_);
+  --_light_on_primary: var(--_white);
+  --_dark_on_primary: var(--_white);
 
   --_light_accent: rgb(206, 218, 245);
   --_dark_accent: rgb(206, 218, 245);
@@ -32,30 +32,15 @@
   --_light_on_accent: rgb(40, 71, 119);
   --_dark_on_accent: rgb(40, 71, 119);
 
-  --_light_hover-mixer: var(--_black_);
-  --_dark_hover-mixer: var(--_white_);
-}
-
-::selection {
-  background-color: color-mix(in srgb, var(--surface), var(--primary));
-  color: var(--on_primary);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: var(--_light_background);
-    --on_background: var(--_light_on_background);
-    --surface: var(--_light_surface);
-    --surface_alt: var(--_light_surface_alt);
-    --on_surface: var(--_light_on_surface);
-    --primary: var(--_light_primary);
-    --on_primary: var(--_light_on_primary);
-    --accent: var(--_light_accent);
-    --on_accent: var(--_light_on_accent);
-    --hover-mixer: var(--_light_hover-mixer);
+  @media (prefers-color-scheme: light) {
+    @apply colorscheme-light;
+  }
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    @apply colorscheme-dark;
   }
 }
-[data-theme="light"] {
+
+@utility colorscheme-light {
   --background: var(--_light_background);
   --on_background: var(--_light_on_background);
   --surface: var(--_light_surface);
@@ -65,24 +50,8 @@
   --on_primary: var(--_light_on_primary);
   --accent: var(--_light_accent);
   --on_accent: var(--_light_on_accent);
-  --hover-mixer: var(--_light_hover-mixer);
 }
-
-@media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-  :root {
-    --background: var(--_dark_background);
-    --on_background: var(--_dark_on_background);
-    --surface: var(--_dark_surface);
-    --surface_alt: var(--_dark_surface_alt);
-    --on_surface: var(--_dark_on_surface);
-    --primary: var(--_dark_primary);
-    --on_primary: var(--_dark_on_primary);
-    --accent: var(--_dark_accent);
-    --on_accent: var(--_dark_on_accent);
-    --hover-mixer: var(--_dark_hover-mixer);
-  }
-}
-[data-theme="dark"] {
+@utility colorscheme-dark {
   --background: var(--_dark_background);
   --on_background: var(--_dark_on_background);
   --surface: var(--_dark_surface);
@@ -92,14 +61,18 @@
   --on_primary: var(--_dark_on_primary);
   --accent: var(--_dark_accent);
   --on_accent: var(--_dark_on_accent);
-  --hover-mixer: var(--_dark_hover-mixer);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--surface), var(--primary));
+  color: var(--on_primary);
 }
 
 @theme inline {
   --color-*: initial; /* Disable tailwind color definitions. */
 
-  --color-black: var(--_black_);
-  --color-white: var(--_white_);
+  --color-black: var(--_black);
+  --color-white: var(--_white);
   --color-background: var(--background);
   --color-on_background: var(--on_background);
   --color-surface: var(--surface);
@@ -109,11 +82,7 @@
   --color-accent: var(--accent);
   --color-on_accent: var(--on_accent);
 
-  --color-primary-hover: color-mix(
-    in srgb,
-    var(--primary) 80%,
-    var(--hover-mixer)
-  );
+  --color-primary-hover: color-mix(in srgb, var(--primary) 95%, currentColor);
   --color-surface-hover: color-mix(in srgb, var(--surface) 95%, currentColor);
   --color-primary-background: color-mix(
     in srgb,
@@ -148,6 +117,15 @@
 }
 
 @layer base {
+  body {
+    &[data-theme="light"] {
+      @apply colorscheme-light;
+    }
+    &[data-theme="dark"] {
+      @apply colorscheme-dark;
+    }
+  }
+
   img {
     @apply object-cover;
   }
@@ -319,11 +297,11 @@
     @apply relative;
 
     &::after {
-      @apply absolute inset-0 rounded-md bg-transparent transition-[background-color,inset] content-[''];
+      @apply absolute inset-0 bg-transparent transition-[background-color] content-[''];
     }
 
     &:hover::after {
-      @apply bg-surface/10;
+      @apply bg-current/10;
     }
   }
 }
@@ -337,6 +315,12 @@
 
 @utility surface {
   @apply bg-surface text-on_surface;
+}
+@utility surface-primary {
+  @apply bg-primary text-on_primary;
+}
+@utility surface-accent {
+  @apply bg-accent text-on_accent;
 }
 @utility card {
   @apply surface overflow-hidden shadow-md sm:rounded-lg;

@@ -393,12 +393,12 @@ export interface components {
         /** PartyMiniSchema */
         PartyMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
+            theme: components["schemas"]["PartyThemeSchema"] | null;
             name: components["schemas"]["Name"];
             /** Logo */
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
-            theme: components["schemas"]["PartyThemeSchema"] | null;
             /** Active Member Count */
             active_member_count: number;
             /** Active Commons Members */
@@ -961,12 +961,12 @@ export interface components {
         /** PartyMapSchema */
         PartyMapSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
+            theme: components["schemas"]["PartyThemeSchema"] | null;
             name: components["schemas"]["Name"];
             /** Logo */
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
-            theme: components["schemas"]["PartyThemeSchema"] | null;
             /** Active Member Count */
             active_member_count: number;
             /** Active Commons Members */
@@ -1018,6 +1018,7 @@ export interface components {
         /** PartyFullSchema */
         PartyFullSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
+            theme: components["schemas"]["PartyThemeSchema"] | null;
             name: components["schemas"]["Name"];
             short_name: components["schemas"]["Name"] | null;
             long_name: components["schemas"]["Name"] | null;
@@ -1034,7 +1035,6 @@ export interface components {
             /** Gender Demographics */
             gender_demographics: components["schemas"]["GenderDemographics"][];
             lords_demographics?: components["schemas"]["LordsDemographics"] | null;
-            theme: components["schemas"]["PartyThemeSchema"] | null;
         };
         /** Motd */
         Motd: {
@@ -1452,7 +1452,10 @@ export interface operations {
     };
     api_routers_maps_parties: {
         parameters: {
-            query?: never;
+            query?: {
+                latitude?: number;
+                longitude?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;

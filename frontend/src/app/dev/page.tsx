@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 import React from "react";
 import { ComponentsOverview } from "@/app/dev/components";
-import PageContent from "@/components/page";
+import PageLayout from "@/components/page";
 
 export const metadata: Metadata = {
   title: "UI component preview",
@@ -11,10 +11,8 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <PageContent>
-      <main className="readable">
-        <ComponentsOverview />
-      </main>
-    </PageContent>
+    <PageLayout layout="CenteredReadable">
+      <ComponentsOverview />
+    </PageLayout>
   );
 }

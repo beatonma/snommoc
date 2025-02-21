@@ -12,7 +12,7 @@ import { int, Percentage } from "@/components/number";
 import { PartyLink, PersonLink } from "@/components/linked-data";
 import Links from "@/links";
 import { TextLink } from "@/components/link";
-import PageContent from "@/components/page";
+import PageLayout from "@/components/page";
 import WindowInsets from "@/components/insets";
 
 const getConstituency = async (parliamentdotuk: number) =>
@@ -45,47 +45,48 @@ export default async function Page({ params }: PageProps) {
   if (!constituency) return <ErrorMessage />;
 
   return (
-    <PageContent style={partyColors(constituency.mp?.party)}>
-      <main className="readable w-full">
-        <section className="gap-y-0 overflow-hidden sm:rounded-lg">
-          <ConstituencyMap
-            constituency={constituency}
-            className="aspect-square max-h-[50vh] w-full"
+    <PageLayout
+      layout="CenteredReadable"
+      style={partyColors(constituency.mp?.party)}
+    >
+      <section className="gap-y-0 overflow-hidden sm:rounded-lg">
+        <ConstituencyMap
+          constituency={constituency}
+          className="aspect-square max-h-[50vh] w-full"
+        />
+
+        <HeaderCard
+          party={constituency.mp?.party}
+          className="w-full! rounded-none!"
+        >
+          <h1>{constituency.name}</h1>
+
+          <Optional
+            value={constituency.end != null}
+            block={() => (
+              <DateRange start={constituency.start} end={constituency.end} />
+            )}
           />
+          <Optional
+            value={constituency.mp}
+            block={(it) => (
+              <div className="mt-4">
+                <div className="text-sm">Current MP:</div>
+                <MemberItem
+                  className="w-fit max-w-none! *:p-0! [&]:hover:after:inset-[-0.5rem]"
+                  member={it}
+                  showConstituency={false}
+                />
+              </div>
+            )}
+          />
+        </HeaderCard>
+      </section>
 
-          <HeaderCard
-            party={constituency.mp?.party}
-            className="w-full! rounded-none!"
-          >
-            <h1>{constituency.name}</h1>
-
-            <Optional
-              value={constituency.end != null}
-              block={() => (
-                <DateRange start={constituency.start} end={constituency.end} />
-              )}
-            />
-            <Optional
-              value={constituency.mp}
-              block={(it) => (
-                <div className="mt-4">
-                  <div className="text-sm">Current MP:</div>
-                  <MemberItem
-                    className="w-fit max-w-none! *:p-0! [&]:hover:after:inset-[-0.5rem]"
-                    member={it}
-                    showConstituency={false}
-                  />
-                </div>
-              )}
-            />
-          </HeaderCard>
-        </section>
-
-        <section>
-          <ElectionResults results={constituency.results} />
-        </section>
-      </main>
-    </PageContent>
+      <section>
+        <ElectionResults results={constituency.results} />
+      </section>
+    </PageLayout>
   );
 }
 

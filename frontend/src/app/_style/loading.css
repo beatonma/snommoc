@@ -1,0 +1,50 @@
+@layer components {
+  .loading {
+    @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
+
+    > * {
+      animation-duration: 1000ms;
+      animation-iteration-count: infinite;
+      animation-fill-mode: both;
+    }
+
+    > *:first-child {
+      @apply absolute justify-self-center fill-current;
+    }
+
+    > *:not(:first-child) {
+      @apply fill-primary z-10 inline-block shrink-0;
+    }
+
+    & > :nth-child(2) {
+      animation-name: loading-first;
+      animation-timing-function: ease-in-out;
+    }
+
+    & > :last-child {
+      animation-name: loading-last;
+      animation-timing-function: ease-in-out;
+    }
+  }
+
+  @keyframes loading-first {
+    0%,
+    40% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      scale: 1;
+      translate: 50%;
+    }
+  }
+  @keyframes loading-last {
+    0% {
+      translate: -50%;
+    }
+    70%,
+    100% {
+      opacity: 0;
+    }
+  }
+}

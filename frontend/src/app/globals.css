@@ -1,98 +1,11 @@
 @import "tailwindcss";
-
-:root {
-  /** Theme colors */
-  --_black: rgb(9, 9, 11);
-  --_white: rgb(250, 250, 250);
-
-  --_light_background: rgb(228, 228, 231);
-  --_dark_background: rgb(24, 24, 27);
-
-  --_light_on_background: var(--_black);
-  --_dark_on_background: white;
-
-  --_light_surface: var(--_white);
-  --_dark_surface: rgb(39, 39, 42);
-
-  --_light_surface_alt: rgb(255 255 255);
-  --_dark_surface_alt: rgb(82, 82, 92);
-
-  --_light_on_surface: var(--_black);
-  --_dark_on_surface: var(--_white);
-
-  --_light_primary: rgb(51, 136, 85);
-  --_dark_primary: rgb(66, 172, 108);
-
-  --_light_on_primary: var(--_white);
-  --_dark_on_primary: var(--_white);
-
-  --_light_accent: rgb(206, 218, 245);
-  --_dark_accent: rgb(206, 218, 245);
-
-  --_light_on_accent: rgb(40, 71, 119);
-  --_dark_on_accent: rgb(40, 71, 119);
-
-  --color-list-marker: currentColor;
-
-  @media (prefers-color-scheme: light) {
-    @apply colorscheme-light;
-  }
-  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-    @apply colorscheme-dark;
-  }
-}
-
-@utility colorscheme-light {
-  --background: var(--_light_background);
-  --on_background: var(--_light_on_background);
-  --surface: var(--_light_surface);
-  --surface_alt: var(--_light_surface_alt);
-  --on_surface: var(--_light_on_surface);
-  --primary: var(--_light_primary);
-  --on_primary: var(--_light_on_primary);
-  --accent: var(--_light_accent);
-  --on_accent: var(--_light_on_accent);
-}
-@utility colorscheme-dark {
-  --background: var(--_dark_background);
-  --on_background: var(--_dark_on_background);
-  --surface: var(--_dark_surface);
-  --surface_alt: var(--_dark_surface_alt);
-  --on_surface: var(--_dark_on_surface);
-  --primary: var(--_dark_primary);
-  --on_primary: var(--_dark_on_primary);
-  --accent: var(--_dark_accent);
-  --on_accent: var(--_dark_on_accent);
-}
+@import "./_style/page-layout.css";
+@import "./_style/loading.css";
+@import "./_style/theme.css";
 
 ::selection {
   background-color: color-mix(in srgb, var(--surface), var(--primary));
   color: var(--on_primary);
-}
-
-@theme inline {
-  --color-*: initial; /* Disable tailwind color definitions. */
-
-  --color-black: var(--_black);
-  --color-white: var(--_white);
-  --color-background: var(--background);
-  --color-on_background: var(--on_background);
-  --color-surface: var(--surface);
-  --color-on_surface: var(--on_surface);
-  --color-surface_alt: var(--surface_alt);
-  --color-primary: var(--primary);
-  --color-on_primary: var(--on_primary);
-  --color-accent: var(--accent);
-  --color-on_accent: var(--on_accent);
-
-  --color-primary-hover: color-mix(in srgb, var(--primary) 95%, currentColor);
-  --color-surface-hover: color-mix(in srgb, var(--surface) 95%, currentColor);
-  --color-primary-background: color-mix(
-    in srgb,
-    var(--primary),
-    var(--background)
-  );
-  --color-hover: color-mix(in srgb, currentColor 5%, transparent);
 }
 
 @theme {
@@ -115,20 +28,13 @@
   --spacing-em: 1em;
   --spacing-edge: 8px;
   --spacing-edge-sm: 16px;
+  --spacing-readable: 800px; /* js */
+  --spacing-max-grid-width: 1350px; /* js */
 
   --spacing-listitem_card: min(100%, 400px);
 }
 
 @layer base {
-  body {
-    &[data-theme="light"] {
-      @apply colorscheme-light;
-    }
-    &[data-theme="dark"] {
-      @apply colorscheme-dark;
-    }
-  }
-
   img {
     @apply object-cover;
   }
@@ -222,6 +128,10 @@
     @media (pointer: fine) {
       scrollbar-width: thin;
     }
+
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
   }
 
   .px-edge {
@@ -240,59 +150,8 @@
 }
 
 @layer components {
-  .loading {
-    @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
-
-    > * {
-      animation-duration: 1000ms;
-      animation-iteration-count: infinite;
-      animation-fill-mode: both;
-    }
-
-    > *:first-child {
-      @apply absolute justify-self-center fill-current;
-    }
-
-    > *:not(:first-child) {
-      @apply fill-primary z-10 inline-block shrink-0;
-    }
-
-    & > :nth-child(2) {
-      animation-name: loading-first;
-      animation-timing-function: ease-in-out;
-    }
-
-    & > :last-child {
-      animation-name: loading-last;
-      animation-timing-function: ease-in-out;
-    }
-  }
-
-  @keyframes loading-first {
-    0%,
-    40% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-      scale: 1;
-      translate: 50%;
-    }
-  }
-  @keyframes loading-last {
-    0% {
-      translate: -50%;
-    }
-    70%,
-    100% {
-      opacity: 0;
-    }
-  }
-}
-
-@layer components {
   .readable {
-    @apply w-full max-w-[800px];
+    @apply max-w-readable w-full;
   }
 
   .text-reduced {
@@ -312,13 +171,6 @@
     &:hover::after {
       @apply bg-current/10;
     }
-  }
-}
-
-@layer components {
-  .map-placemark_user {
-    fill: var(--color-surface);
-    stroke: var(--color-on_surface);
   }
 }
 

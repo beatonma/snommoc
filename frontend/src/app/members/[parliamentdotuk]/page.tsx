@@ -18,7 +18,7 @@ import { LinkGroup } from "@/components/link";
 import { Nullish } from "@/types/common";
 import { Date } from "@/components/datetime";
 import { partyColors } from "@/components/themed/party";
-import PageContent from "@/components/page";
+import PageLayout from "@/components/page";
 import Career from "@/app/members/[parliamentdotuk]/career";
 import WindowInsets from "@/components/insets";
 
@@ -52,13 +52,11 @@ export default async function Page({ params }: PageProps) {
   if (!member) return <ErrorMessage />;
 
   return (
-    <PageContent style={partyColors(member.party)}>
-      <main className="readable">
-        <MemberCard member={member} />
-        <MemberDetail member={member} className={WindowInsets} />
-        <MemberCareer member={member} className={WindowInsets} />
-      </main>
-    </PageContent>
+    <PageLayout layout="CenteredReadable" style={partyColors(member.party)}>
+      <MemberCard member={member} />
+      <MemberDetail member={member} className={WindowInsets} />
+      <MemberCareer member={member} className={WindowInsets} />
+    </PageLayout>
   );
 }
 

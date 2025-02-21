@@ -17,6 +17,7 @@ import { MapRenderer } from "@/components/map/map";
 import { SelectedConstituenciesInfo } from "@/app/maps/components/selected";
 import { PartyTerritoryKey } from "./components/party-filter";
 import { classes } from "@/util/transforms";
+import PageLayout from "@/components/page";
 
 export default function NationalMap() {
   const userLocation: GeoLocation | undefined =
@@ -96,24 +97,26 @@ const NationalMapWithLocation = ({
   }, [map, constituencies.items, constituencies.loadNext]);
 
   return (
-    <div className="relative w-full">
-      <Map map={map} className="card aspect-square max-h-[80vh] w-full" />
+    <PageLayout layout="CenteredFeed">
+      <div className="relative w-full">
+        <Map map={map} className="card aspect-square max-h-[80vh] w-full" />
 
-      <PartyTerritoryKey
-        parties={territories}
-        className={classes(
-          "row gap-2 overflow-auto",
-          "sm:pointer-events-none sm:absolute sm:top-0 sm:left-0 sm:block",
-          "[&>*]:shrink-0",
-        )}
-        onClickParty={filterByParty}
-      />
+        <PartyTerritoryKey
+          parties={territories}
+          className={classes(
+            "row gap-2 overflow-auto",
+            "sm:pointer-events-none sm:absolute sm:top-0 sm:left-0 sm:block",
+            "[&>*]:shrink-0",
+          )}
+          onClickParty={filterByParty}
+        />
 
-      <SelectedConstituenciesInfo
-        constituencies={focussedConstituencies}
-        className="sm:absolute sm:right-0 sm:bottom-0 sm:m-2"
-      />
-    </div>
+        <SelectedConstituenciesInfo
+          constituencies={focussedConstituencies}
+          className="sm:absolute sm:right-0 sm:bottom-0 sm:m-2"
+        />
+      </div>
+    </PageLayout>
   );
 };
 

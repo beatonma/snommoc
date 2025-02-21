@@ -46,11 +46,7 @@ export default function RootLayout({
           </Nav>
         </header>
 
-        <div className="grid w-full grid-cols-[1fr_minmax(auto,1350px)_1fr]">
-          <div id="side_left" />
-          {children}
-          <div id="side_right" />
-        </div>
+        {children}
 
         <footer className="flex flex-col items-center gap-2 p-8 pt-16 text-center">
           <License licence="OpenParliament" />

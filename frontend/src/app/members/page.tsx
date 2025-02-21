@@ -1,6 +1,7 @@
 import React from "react";
 import { Metadata } from "next";
 import MembersList from "@/app/members/members";
+import PageLayout from "@/components/page";
 
 export const metadata: Metadata = {
   title: "Members",
@@ -9,8 +10,8 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <main>
+    <PageLayout layout="CenteredFeed">
       <MembersList />
-    </main>
+    </PageLayout>
   );
 }

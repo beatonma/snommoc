@@ -9,7 +9,7 @@ import MembersList from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
 import { partyColors } from "@/components/themed/party";
 import { plural } from "@/util/plurals";
-import PageContent from "@/components/page";
+import PageLayout from "@/components/page";
 import WindowInsets from "@/components/insets";
 
 type PageProps = {
@@ -41,8 +41,8 @@ export default async function Page({ params }: PageProps) {
   if (!party) return <ErrorMessage />;
 
   return (
-    <PageContent style={partyColors(party)}>
-      <main className="readable">
+    <>
+      <PageLayout layout="CenteredReadable" style={partyColors(party)}>
         <section>
           <HeaderCard
             party={party}
@@ -84,15 +84,15 @@ export default async function Page({ params }: PageProps) {
         <section className={WindowInsets}>
           <Demographics party={party} />
         </section>
-      </main>
+      </PageLayout>
 
-      <aside className="[align-self:normal]">
+      <PageLayout layout="CenteredFeed" mainElement="aside">
         <MembersList
           header={<h2>Members</h2>}
           immutableFilters={{ party: party.parliamentdotuk }}
         />
-      </aside>
-    </PageContent>
+      </PageLayout>
+    </>
   );
 }
 

@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="bg-background text-on_background grid h-full grid-cols-1 grid-rows-[min-content_1fr_min-content]">
-        <header className="flex flex-col items-center gap-x-2 p-8">
+        <header className="column items-center gap-x-2 p-8">
           <div className="grid w-full grid-cols-[1fr_max-content_1fr] items-center">
             <div />
             <h1>Commons</h1>
@@ -49,7 +49,7 @@ export default function RootLayout({
 
         {children}
 
-        <footer className="flex flex-col items-center gap-2 p-8 pt-16 text-center">
+        <footer className="column items-center gap-2 p-8 pt-16 text-center">
           <License licence="OpenParliament" />
         </footer>
       </body>

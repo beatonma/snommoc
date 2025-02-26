@@ -86,7 +86,7 @@
   }
 
   section {
-    @apply flex flex-col gap-y-2;
+    @apply column gap-y-2;
     > h1,
     h2,
     h3,

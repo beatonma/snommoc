@@ -198,7 +198,7 @@ const HoveredConstituency = (
         party={constituency?.mp?.party}
         className="chip chip-content"
       >
-        <div className="flex flex-col items-end">
+        <div className="column items-end">
           <ConstituencyLink constituency={constituency} className="text-lg" />
 
           {onlyIf(constituency?.mp, (mp) => (

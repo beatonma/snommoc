@@ -8,7 +8,7 @@ export const PhysicalAddress = (
   props: PhysicalAddressData & ComponentPropsWithoutRef<"address">,
 ) => {
   const { description, address, postcode, phone, fax, email, ...rest } =
-    addClass(props, "flex flex-col gap-y-1.5");
+    addClass(props, "column gap-y-1.5");
 
   return (
     <address {...rest}>
@@ -25,7 +25,7 @@ export const PhysicalAddress = (
       </div>
 
       <LinkGroup
-        className="flex-col"
+        className="column"
         links={[
           transformString(phone, (it) => `tel:${it}`),
           transformString(fax, (it) => `fax:${it}`),

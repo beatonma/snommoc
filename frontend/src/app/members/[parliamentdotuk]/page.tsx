@@ -65,7 +65,7 @@ interface MemberComponentProps extends ComponentPropsWithoutRef<"section"> {
 }
 
 const MemberCard = (props: MemberComponentProps) => {
-  const { member, ...rest } = addClass(props, "flex-col");
+  const { member, ...rest } = addClass(props, "column");
 
   return (
     <section {...rest}>

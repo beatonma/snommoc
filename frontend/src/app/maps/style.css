@@ -10,7 +10,7 @@
     }
 
     .map-layout--overlays {
-      @apply flex flex-col gap-2;
+      @apply column gap-2;
 
       .map-layout--key {
         @apply row px-edge gap-2 overflow-auto py-4 text-base;

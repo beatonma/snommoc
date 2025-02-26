@@ -171,10 +171,10 @@ const _SearchList = <P extends SearchablePath>(props: {
           {props.header}
 
           <div
-            className={`flex max-w-[600px] flex-col items-center gap-4 p-4 ${hasHeader ? "md:items-end" : ""}`}
+            className={`column max-w-[600px] items-center gap-4 p-4 ${hasHeader ? "md:items-end" : ""}`}
           >
             <form
-              className="flex items-center justify-center gap-2"
+              className="row flex-wrap items-center justify-center gap-2"
               action={() => props.onConfirmSearch()}
             >
               <input

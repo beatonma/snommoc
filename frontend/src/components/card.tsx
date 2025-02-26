@@ -58,13 +58,13 @@ export const ListItemCard = (props: ListItemCardProps) => {
         defaultPartyTheme={
           defaultPartyTheme === undefined ? DefaultTheme : defaultPartyTheme
         }
-        className="hover-overlay flex w-full flex-col p-3"
+        className="hover-overlay column w-full p-3"
       >
         <div className="flex w-full gap-3">
           {image}
           <div className="w-full">
             <div className="float-right w-fit text-sm opacity-50">{label}</div>
-            <div className="flex flex-col gap-0.5 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
+            <div className="column gap-0.5 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
               {children}
             </div>
           </div>

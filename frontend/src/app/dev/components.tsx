@@ -181,7 +181,7 @@ const BreakpointsPreview = () => (
         <section>
             <h2>Breakpoints</h2>
 
-            <div className="[&>*]:surface [&>*]:card [&>*]:card-content flex flex-col gap-2 overflow-x-auto">
+            <div className="[&>*]:surface [&>*]:card [&>*]:card-content column gap-2 overflow-x-auto">
                 <div className="w-[var(--breakpoint-sm)]">breakpoint-sm</div>
                 <div className="w-[var(--breakpoint-md)]">breakpoint-md</div>
                 <div className="w-[var(--breakpoint-lg)]">breakpoint-lg</div>
@@ -192,7 +192,7 @@ const BreakpointsPreview = () => (
 
         <section>
             <h2>Container breakpoints</h2>
-            <div className="[&>*]:surface [&>*]:card [&>*]:card-content flex flex-col gap-2 overflow-x-auto">
+            <div className="[&>*]:surface [&>*]:card [&>*]:card-content column gap-2 overflow-x-auto">
                 <div className="w-[var(--container-3xs)]">container-3xs</div>
                 <div className="w-[var(--container-2xs)]">container-2xs</div>
                 <div className="w-[var(--container-xs)]">container-xs</div>

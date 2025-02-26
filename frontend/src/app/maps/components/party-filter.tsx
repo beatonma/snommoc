@@ -1,6 +1,6 @@
 import { PartyTerritory } from "@/api";
 import React, { ComponentPropsWithoutRef } from "react";
-import { addClass, classes } from "@/util/transforms";
+import { classes } from "@/util/transforms";
 
 export const PartyTerritoryKey = (
   props: {
@@ -8,10 +8,7 @@ export const PartyTerritoryKey = (
     onClickParty: (partyId: number) => void;
   } & ComponentPropsWithoutRef<"ul">,
 ) => {
-  const { parties, onClickParty, ...rest } = addClass(
-    props,
-    "text-sm max-sm:py-4 max-sm:px-edge",
-  );
+  const { parties, onClickParty, ...rest } = props;
   if (!parties) return null;
   return (
     <ul {...rest}>
@@ -19,9 +16,9 @@ export const PartyTerritoryKey = (
         <li
           key={party.parliamentdotuk}
           className={classes(
-            "row hover:bg-surface-hover chip-content pointer-events-auto w-fit cursor-pointer list-none gap-1.5",
-            "sm:bg-surface/80",
-            "max-sm:chip",
+            "row surface-hover chip-content pointer-events-auto w-fit cursor-pointer list-none gap-1.5",
+            "md:bg-surface/80",
+            "max-md:chip",
           )}
           onClick={() => onClickParty(party.parliamentdotuk)}
         >

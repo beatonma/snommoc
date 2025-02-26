@@ -102,7 +102,7 @@ const Card = (props: DivProps) => (
   <div
     {...addClass(
       props,
-      "card card-content size-full min-h-100 flex flex-col gap-2",
+      "card card-content surface size-full min-h-100 flex flex-col gap-2",
     )}
   />
 );

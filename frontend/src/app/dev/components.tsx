@@ -22,6 +22,8 @@ export const ComponentsOverview = () => (
     <ButtonComponents />
     <SortableComponents />
     <CardComponents />
+
+    <BreakpointsPreview />
   </>
 );
 
@@ -157,5 +159,40 @@ const TabComponents = () => (
         ])}
       />
     </Section>
+  </>
+);
+
+const BreakpointsPreview = () => (
+  <>
+    <section>
+      <h2>Breakpoints</h2>
+
+      <div className="[&>*]:surface [&>*]:card [&>*]:card-content flex flex-col gap-2 overflow-x-auto">
+        <div className="w-[var(--breakpoint-sm)]">breakpoint-sm</div>
+        <div className="w-[var(--breakpoint-md)]">breakpoint-md</div>
+        <div className="w-[var(--breakpoint-lg)]">breakpoint-lg</div>
+        <div className="w-[var(--breakpoint-xl)]">breakpoint-xl</div>
+        <div className="w-[var(--breakpoint-2xl)]">breakpoint-2xl</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Container breakpoints</h2>
+      <div className="[&>*]:surface [&>*]:card [&>*]:card-content flex flex-col gap-2 overflow-x-auto">
+        <div className="w-[var(--container-3xs)]">container-3xs</div>
+            <div className="w-[var(--container-2xs)]">container-2xs</div>
+            <div className="w-[var(--container-xs)]">container-xs</div>
+            <div className="w-[var(--container-sm)]">container-sm</div>
+            <div className="w-[var(--container-md)]">container-md</div>
+            <div className="w-[var(--container-lg)]">container-lg</div>
+            <div className="w-[var(--container-xl)]">container-xl</div>
+            <div className="w-[var(--container-2xl)]">container-2xl</div>
+            <div className="w-[var(--container-3xl)]">container-3xl</div>
+            <div className="w-[var(--container-4xl)]">container-4xl</div>
+            <div className="w-[var(--container-5xl)]">container-5xl</div>
+            <div className="w-[var(--container-6xl)]">container-6xl</div>
+            <div className="w-[var(--)]container-7xl)]">container-7xl</div>
+      </div>
+    </section>
   </>
 );

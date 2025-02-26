@@ -17,7 +17,16 @@ import { MapRenderer } from "@/components/map/map";
 import { SelectedConstituenciesInfo } from "@/app/maps/components/selected";
 import { PartyTerritoryKey } from "./components/party-filter";
 import { classes } from "@/util/transforms";
-import PageLayout from "@/components/page";
+import "./style.css";
+import { DivPropsNoChildren } from "@/types/react";
+import {
+  ConstituencyLink,
+  PartyLink,
+  PersonLink,
+} from "@/components/linked-data";
+import { PartyIconBackground } from "@/components/themed/party";
+import { onlyIf } from "@/components/optional";
+import Row from "@/components/row";
 
 export default function NationalMap() {
   const userLocation: GeoLocation | undefined =
@@ -34,17 +43,28 @@ const NationalMapWithLocation = ({
   userLocation: GeoLocation;
 }) => {
   const [territories, setTerritories] = useState<PartyTerritory[]>();
-  const [focus, setFocus] = useState<LayerKey[]>([]);
-  const isFocusLocked = useRef<boolean>(false);
   const constituencies = usePagination(
     "/api/maps/constituencies/",
     userLocation,
   );
+
+  const [focus, setFocus] = useState<LayerKey[]>([]);
   const focussedConstituencies = useMemo(
     () =>
       constituencies.items.filter((it) => focus.includes(it.parliamentdotuk)),
     [focus, constituencies.items],
   );
+
+  const [hovered, setHovered] = useState<LayerKey>();
+  const hoveredConstituency: ConstituencyMiniBoundary | undefined =
+    useMemo(() => {
+      if (!hovered) return undefined;
+      const result = constituencies.items.find(
+        (it) => it.parliamentdotuk === hovered,
+      );
+      console.log(`${hovered} found ${result}`);
+      return result;
+    }, [hovered, constituencies.items]);
 
   const map = useMap({
     provider: null,
@@ -52,17 +72,12 @@ const NationalMapWithLocation = ({
       minResolution: 75,
     },
     events: {
-      onHover: (id) => {
-        if (!isFocusLocked.current) {
-          setFocus(id === undefined ? [] : [id]);
-        }
-      },
+      onHover: (id) => setHovered(id),
       onSelect: (ids) => onSelectFeatures(ids),
     },
   });
 
   const onSelectFeatures = useCallback((layers: LayerKey[]) => {
-    isFocusLocked.current = layers.length > 0;
     setFocus(layers);
   }, []);
 
@@ -97,26 +112,27 @@ const NationalMapWithLocation = ({
   }, [map, constituencies.items, constituencies.loadNext]);
 
   return (
-    <PageLayout layout="CenteredFeed">
-      <div className="relative w-full">
-        <Map map={map} className="card aspect-square max-h-[80vh] w-full" />
+    <div className="map-layout">
+      <Map map={map} className="map-layout--map">
+        <HoveredConstituency
+          constituency={hoveredConstituency}
+          className="touch:hidden absolute right-0 bottom-0 z-10 m-2"
+        />
+      </Map>
 
+      <div className="map-layout--overlays">
         <PartyTerritoryKey
           parties={territories}
-          className={classes(
-            "row gap-2 overflow-auto",
-            "sm:pointer-events-none sm:absolute sm:top-0 sm:left-0 sm:block",
-            "[&>*]:shrink-0",
-          )}
+          className="map-layout--key"
           onClickParty={filterByParty}
         />
 
         <SelectedConstituenciesInfo
           constituencies={focussedConstituencies}
-          className="sm:absolute sm:right-0 sm:bottom-0 sm:m-2"
+          className="map-layout--info"
         />
       </div>
-    </PageLayout>
+    </div>
   );
 };
 
@@ -167,4 +183,33 @@ const addConstituencyBoundaries = (
       });
     }
   });
+};
+
+const HoveredConstituency = (
+  props: DivPropsNoChildren & {
+    constituency: ConstituencyMiniBoundary | undefined;
+  },
+) => {
+  const { constituency, ...rest } = props;
+
+  return (
+    <div {...rest}>
+      <PartyIconBackground
+        party={constituency?.mp?.party}
+        className="chip chip-content"
+      >
+        <div className="flex flex-col items-end">
+          <ConstituencyLink constituency={constituency} className="text-lg" />
+
+          {onlyIf(constituency?.mp, (mp) => (
+            <div>
+              <PersonLink person={mp} />
+              {", "}
+              <PartyLink party={mp?.party} />
+            </div>
+          ))}
+        </div>
+      </PartyIconBackground>
+    </div>
+  );
 };

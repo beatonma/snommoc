@@ -7,10 +7,13 @@ import type {
   Party,
   Post,
 } from "@/api";
-import { TextButton } from "@/components/button";
+import { ButtonProps, TextButton } from "@/components/button";
 import React from "react";
 import { Nullish } from "@/types/common";
 import { TextLink } from "@/components/link";
+import Row from "@/components/row";
+import { DivPropsNoChildren } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
 export const hrefFor = (
   type: "party" | "constituency" | "person",
@@ -26,32 +29,33 @@ interface DotTextProps {
   color: string | undefined;
   text: string;
 }
-const DotText = (props: DotTextProps) => {
-  const { color, text } = props;
+export const DotText = (props: DotTextProps & DivPropsNoChildren) => {
+  const { color, text, ...rest } = addClass(props, "items-baseline gap-1.5");
   if (!color) return <span>{text}</span>;
   return (
-    <div className="flex items-baseline gap-1.5">
+    <Row {...rest}>
       <span
-        className="size-[1ch] rounded-full align-middle"
+        className="size-ch rounded-full align-middle"
         style={{ backgroundColor: color }}
       />
       <span>{text}</span>
-    </div>
+    </Row>
   );
 };
 
 export const PartyLink = ({
   party,
   showDot = true,
+  ...rest
 }: {
   party: Party | Nullish;
   showDot?: boolean;
-}) => {
+} & ButtonProps) => {
   if (!party) return null;
   const color = showDot ? party.theme?.primary : undefined;
 
   return (
-    <TextButton href={hrefFor("party", party.parliamentdotuk)}>
+    <TextButton href={hrefFor("party", party.parliamentdotuk)} {...rest}>
       <DotText color={color} text={party.name} />
     </TextButton>
   );
@@ -78,17 +82,18 @@ export const HouseLink = (props: {
 export const PersonLink = ({
   person,
   fallback,
+  ...rest
 }: {
   fallback?: string;
-  person: MemberMiniSchema | Nullish;
-}) => {
+  person: Pick<MemberMiniSchema, "name" | "parliamentdotuk"> | Nullish;
+} & ButtonProps) => {
   if (!person) {
     if (fallback) return <>{fallback}</>;
     return null;
   }
 
   return (
-    <TextButton href={hrefFor("person", person.parliamentdotuk)}>
+    <TextButton href={hrefFor("person", person.parliamentdotuk)} {...rest}>
       {person.name}
     </TextButton>
   );
@@ -96,13 +101,17 @@ export const PersonLink = ({
 
 export const ConstituencyLink = ({
   constituency,
+  ...rest
 }: {
   constituency: Pick<ConstituencyMini, "name" | "parliamentdotuk"> | Nullish;
-}) => {
+} & ButtonProps) => {
   if (!constituency) return null;
 
   return (
-    <TextButton href={hrefFor("constituency", constituency.parliamentdotuk)}>
+    <TextButton
+      href={hrefFor("constituency", constituency.parliamentdotuk)}
+      {...rest}
+    >
       {constituency.name}
     </TextButton>
   );

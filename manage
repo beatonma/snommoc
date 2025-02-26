@@ -180,7 +180,7 @@ import_data() {
 
 dev() {
   case "$1" in
-  "up" | "down" | "--")
+  "up" | "down" | "restart" | "--")
     docker_compose "$@"
     exit 0
     ;;

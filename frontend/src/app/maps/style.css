@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@reference "../globals.css";
+
+@layer component {
+  .map-layout {
+    @apply block;
+
+    .map-layout--map {
+      @apply card surface size-full max-h-[60%] min-h-48;
+    }
+
+    .map-layout--overlays {
+      @apply flex flex-col gap-2;
+
+      .map-layout--key {
+        @apply row px-edge gap-2 overflow-auto py-4 text-base;
+      }
+
+      .map-layout--info {
+        align-self: center;
+      }
+    }
+
+    @media (aspect-ratio >= 1/1) {
+      --sidebar-width: 300px;
+      @apply px-edge;
+
+      @media (width >= 600px) {
+        @apply grid max-h-full items-start gap-2;
+        grid-template-columns: auto var(--sidebar-width);
+
+        .map-layout--map {
+          @apply max-h-full;
+        }
+
+        .map-layout--overlays {
+          display: block;
+          .map-layout--key {
+            @apply px-0 pt-0;
+          }
+
+          .map-layout--info {
+            align-self: inherit;
+          }
+        }
+      }
+
+      @media (width >= 1400px) {
+        grid-template-columns:
+          1fr var(--sidebar-width) auto var(--sidebar-width)
+          1fr;
+        grid-template-areas: ". key map info .";
+
+        .map-layout--map {
+          grid-area: map;
+          aspect-ratio: 1;
+        }
+
+        .map-layout--overlays {
+          display: contents;
+
+          .map-layout--key {
+            @apply flex-col items-end;
+            grid-area: key;
+          }
+          .map-layout--info {
+            grid-area: info;
+          }
+        }
+      }
+    }
+  }
+}

@@ -133,7 +133,7 @@ const RegisteredInterestDateRangeItem = (props: RegisteredInterestsProps) => {
     <DateRangeItem
       start={description.start}
       end={description.end}
-      className="card card-content"
+      className="card card-content surface"
       {...rest}
     >
       {description.additional_values[0]}
@@ -192,7 +192,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
           interest={child}
           showDates={showDates}
           showCategory={false}
-          className="my-2 ml-1 border-l-4 border-primary pl-4"
+          className="border-primary my-2 ml-1 border-l-4 pl-4"
         />
       ))}
     </BlockItem>

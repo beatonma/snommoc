@@ -4,7 +4,9 @@ import { addClass } from "@/util/transforms";
 import { PartyIconBackground } from "@/components/themed/party";
 import { ConstituencyLink, PartyLink } from "@/components/linked-data";
 import { MemberItem } from "@/components/item-member";
-import { CSSProperties, useMemo } from "react";
+import React, { useMemo } from "react";
+import Row from "@/components/row";
+import Todo from "@/components/dev";
 
 type Single = {
   constituency: ConstituencyMiniBoundary;
@@ -14,9 +16,9 @@ type Multi = {
 } & DivPropsNoChildren;
 
 export const SelectedConstituenciesInfo = (props: Multi) => {
-  const { constituencies, ...rest } = addClass(props, "sm:w-listitem_card");
+  const { constituencies, ...rest } = addClass(props, "md:w-listitem_card");
 
-  if (constituencies.length === 0) return null;
+  if (constituencies.length === 0) return <NoSelection {...rest} />;
   if (constituencies.length === 1) {
     return <SingleSelection constituency={constituencies[0]!} {...rest} />;
   }
@@ -24,12 +26,21 @@ export const SelectedConstituenciesInfo = (props: Multi) => {
   return <ManySelected constituencies={constituencies} {...rest} />;
 };
 
+const NoSelection = (props: DivPropsNoChildren) => {
+  return (
+    <div {...addClass(props, "card card-content surface-accent")}>
+      <p>Tap a constituency for more information.</p>
+      <Todo message="general basic info about constituencies" />
+    </div>
+  );
+};
+
 const SingleSelection = (props: Single) => {
   const { constituency, ...rest } = props;
   return (
     <PartyIconBackground
       party={constituency.mp?.party}
-      {...addClass(rest, "card sm:w-listitem_card w-full")}
+      {...addClass(rest, "card surface md:w-listitem_card w-full")}
     >
       <h2 className="card-content">
         <ConstituencyLink constituency={constituency} />
@@ -78,23 +89,23 @@ const ManySelected = (props: Multi) => {
   }, [constituencies]);
 
   return (
-    <div {...addClass(rest, "card card-content bg-surface_alt")}>
+    <div {...addClass(rest, "card card-content surface-accent")}>
       <h3>{constituencies.length} selected</h3>
       <ul className="list-none overflow-auto sm:max-h-48">
         {groupedByParty.map((group) => (
           <li key={group.party.parliamentdotuk} className="my-2">
             <PartyLink party={group.party} />
-            <ul
-              className="list-inside pl-1"
-              style={
-                {
-                  "--color-list-marker": group.party.theme?.primary,
-                } as CSSProperties
-              }
-            >
+
+            <ul className="list-none pl-1">
               {group.constituencies.map((item) => (
                 <li key={item.parliamentdotuk}>
-                  <ConstituencyLink constituency={item} />
+                  <Row className="gap-2">
+                    <div
+                      className="size-1 rounded-sm"
+                      style={{ backgroundColor: group.party.theme?.primary }}
+                    />
+                    <ConstituencyLink constituency={item} />
+                  </Row>
                 </li>
               ))}
             </ul>

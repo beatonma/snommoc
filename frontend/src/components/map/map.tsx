@@ -414,7 +414,11 @@ const withFeature = (
 ) => {
   const feature = ev.originalEvent.target?.closest(".ol-control")
     ? undefined
-    : map.forEachFeatureAtPixel(ev.pixel, (f) => f);
+    : map.forEachFeatureAtPixel(ev.pixel, (f) => {
+        if (getProperty(f, "selectable")) {
+          return f;
+        }
+      });
 
   const layerId = getLayerId(feature);
   action?.(layerId);

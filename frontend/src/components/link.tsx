@@ -138,7 +138,7 @@ const ConfirmButtonLink = (
     </TextButton>
   );
 
-  const expandedClasses = isExpanded ? "card min-w-48 p-2" : "";
+  const expandedClasses = isExpanded ? "card surface min-w-48 p-2" : "";
 
   return (
     <div className={`${expandedClasses} flex flex-col gap-2 transition-all`}>

@@ -23,7 +23,7 @@ export default function RootLayout({
           <div className="grid w-full grid-cols-[1fr_max-content_1fr] items-center">
             <div />
             <h1>Commons</h1>
-            <div className="flex flex-row items-center justify-end">
+            <div className="row justify-end">
               <ThemeController className="p-2 sm:p-4" />
             </div>
           </div>
@@ -31,6 +31,7 @@ export default function RootLayout({
             <TextLink href="/members/">Members</TextLink>
             <TextLink href="/parties/">Parties</TextLink>
             <TextLink href="/constituencies/">Constituencies</TextLink>
+            <TextLink href="/maps/">Maps</TextLink>
           </Nav>
 
           <Nav>

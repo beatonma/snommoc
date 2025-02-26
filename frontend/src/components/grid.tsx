@@ -13,7 +13,7 @@ export const GridSpacer = (props: DivPropsNoChildren) => {
 export const GridSectionHeader = (props: DivProps) => {
   return (
     <div
-      {...addClass(props, FullSpan, "text-md pt-4 text-center sm:text-start")}
+      {...addClass(props, FullSpan, "text-base pt-4 text-center sm:text-start")}
     />
   );
 };

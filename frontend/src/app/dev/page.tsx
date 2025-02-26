@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <PageLayout layout="CenteredReadable">
+    <PageLayout layout="CenteredFeed">
       <ComponentsOverview />
     </PageLayout>
   );

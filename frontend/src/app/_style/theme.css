@@ -12,7 +12,7 @@
   --_light_surface: var(--_white);
   --_dark_surface: rgb(39, 39, 42);
 
-  --_light_surface_alt: rgb(255 255 255);
+  --_light_surface_alt: rgb(215, 221, 226);
   --_dark_surface_alt: rgb(82, 82, 92);
 
   --_light_on_surface: var(--_black);
@@ -50,6 +50,16 @@
   --on_primary: var(--_light_on_primary);
   --accent: var(--_light_accent);
   --on_accent: var(--_light_on_accent);
+
+  --invert_background: var(--_dark_background);
+  --invert_on_background: var(--_dark_on_background);
+  --invert_surface: var(--_dark_surface);
+  --invert_surface_alt: var(--_dark_surface_alt);
+  --invert_on_surface: var(--_dark_on_surface);
+  --invert_primary: var(--_dark_primary);
+  --invert_on_primary: var(--_dark_on_primary);
+  --invert_accent: var(--_dark_accent);
+  --invert_on_accent: var(--_dark_on_accent);
 }
 @utility colorscheme-dark {
   --background: var(--_dark_background);
@@ -61,6 +71,16 @@
   --on_primary: var(--_dark_on_primary);
   --accent: var(--_dark_accent);
   --on_accent: var(--_dark_on_accent);
+
+  --invert_background: var(--_light_background);
+  --invert_on_background: var(--_light_on_background);
+  --invert_surface: var(--_light_surface);
+  --invert_surface_alt: var(--_light_surface_alt);
+  --invert_on_surface: var(--_light_on_surface);
+  --invert_primary: var(--_light_primary);
+  --invert_on_primary: var(--_light_on_primary);
+  --invert_accent: var(--_light_accent);
+  --invert_on_accent: var(--_light_on_accent);
 }
 
 @theme inline {
@@ -77,6 +97,16 @@
   --color-on_primary: var(--on_primary);
   --color-accent: var(--accent);
   --color-on_accent: var(--on_accent);
+
+  --color-invert_background: var(--invert_background);
+  --color-invert_on_background: var(--invert_on_background);
+  --color-invert_surface: var(--invert_surface);
+  --color-invert_surface_alt: var(--invert_surface_alt);
+  --color-invert_on_surface: var(--invert_on_surface);
+  --color-invert_primary: var(--invert_primary);
+  --color-invert_on_primary: var(--invert_on_primary);
+  --color-invert_accent: var(--invert_accent);
+  --color-invert_on_accent: var(--invert_on_accent);
 
   --color-primary-hover: color-mix(in srgb, var(--primary) 95%, currentColor);
   --color-surface-hover: color-mix(in srgb, var(--surface) 95%, currentColor);

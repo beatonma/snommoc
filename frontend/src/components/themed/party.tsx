@@ -82,7 +82,7 @@ export const PartyIconBackground = (
         className="absolute inset-0 size-full translate-x-1/2 bg-black/[0.08]"
       />
 
-      <div className="relative">{children}</div>
+      {children}
     </div>
   );
 };

@@ -3,7 +3,7 @@
   --_black: rgb(9, 9, 11);
   --_white: rgb(250, 250, 250);
 
-  --_light_background: rgb(228, 228, 231);
+  --_light_background: rgb(228, 231, 230);
   --_dark_background: rgb(24, 24, 27);
 
   --_light_on_background: var(--_black);
@@ -12,7 +12,7 @@
   --_light_surface: var(--_white);
   --_dark_surface: rgb(39, 39, 42);
 
-  --_light_surface_alt: rgb(215, 221, 226);
+  --_light_surface_alt: rgb(209, 212, 226);
   --_dark_surface_alt: rgb(82, 82, 92);
 
   --_light_on_surface: var(--_black);

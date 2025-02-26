@@ -24,11 +24,10 @@ type HeaderCardProps = CardProps & ComponentPropsWithoutRef<"div">;
 export const HeaderCard = (props: HeaderCardProps) => {
   const { image, children, party, ...rest } = addClass(
     props,
-    "flex flex-col sm:flex-row",
-    "sm:rounded-lg",
-    "gap-4 p-2 sm:p-4",
-    "sm:rounded-lg overflow-hidden",
-    "w-full sm:min-w-[600px] readable",
+    "@container HeaderCard card surface-alt overflow-hidden w-full readable gap-4",
+    "py-2 sm:p-4",
+    "sm:rounded-lg sm:min-w-[600px]",
+    "grid md:grid-cols-[auto_1fr]",
   );
 
   return (
@@ -36,13 +35,13 @@ export const HeaderCard = (props: HeaderCardProps) => {
       <Optional
         value={image}
         block={(it) => (
-          <div className="flex w-full justify-center self-center overflow-hidden rounded-lg sm:w-auto">
+          <div className="flex justify-center overflow-hidden md:rounded-lg">
             {it}
           </div>
         )}
       />
 
-      <div className="flex flex-col gap-1">{children}</div>
+      <div className="column max-sm:px-edge">{children}</div>
     </PartyIconBackground>
   );
 };

@@ -48,6 +48,7 @@
 
   --transition-duration: 220ms;
 
+  --spacing-ch: 1ch;
   --spacing-em: 1em;
   --spacing-edge: 8px;
   --spacing-edge-sm: 16px;
@@ -235,6 +236,9 @@
 
 @utility row {
   @apply flex flex-row items-center [&>*]:shrink-0;
+}
+@utility column {
+  @apply flex flex-col;
 }
 
 @custom-variant touch (@media(pointer: coarse));

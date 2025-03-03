@@ -1,8 +1,8 @@
-import React, { ComponentPropsWithoutRef } from "react";
-import { addClass } from "@/util/transforms";
-import { AppIcon, Icon } from "@/components/icon";
 import Link from "next/link";
+import React, { ComponentPropsWithoutRef } from "react";
+import { AppIcon, Icon } from "@/components/icon";
 import { ChildrenProps } from "@/types/common";
+import { addClass } from "@/util/transforms";
 
 export const TextButton = (props: ButtonProps) => {
   return (
@@ -17,7 +17,7 @@ export const TintedButton = (props: ButtonProps) => {
     props,
     "rounded-md px-2 py-1",
     "bg-surface text-on_surface",
-    "hover:bg-surface-hover",
+    "hover:bg-tint_surface_current",
   );
 
   const themedStyle = {
@@ -73,7 +73,7 @@ const ButtonIcon = (props: ButtonContentProps) => (
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ..._rest } = addClass(
     props,
-    "inline-flex items-center hover:cursor-pointer transition-all",
+    "inline-flex items-center justify-center hover:cursor-pointer transition-all touch-target",
   );
 
   const isIconOnly = icon && React.Children.count(children) === 0;

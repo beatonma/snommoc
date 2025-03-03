@@ -2,7 +2,7 @@
 import { Fixtures, Query } from "@/api";
 import React, { ReactNode } from "react";
 import { SearchFilters, SearchList } from "@/components/paginated/search-list";
-import { MemberItem } from "@/components/item-member";
+import { MemberItemCard } from "@/components/models/list-item";
 
 export default function MembersList(props: {
   header?: ReactNode;
@@ -37,7 +37,7 @@ export default function MembersList(props: {
       searchFilters={searchFilters}
       immutableFilters={props.immutableFilters}
       itemComponent={(member) => (
-        <MemberItem key={member.parliamentdotuk} member={member} />
+        <MemberItemCard key={member.parliamentdotuk} member={member} />
       )}
     />
   );

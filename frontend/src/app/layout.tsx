@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ReactNode } from "react";
-import { License } from "@/components/licence";
+import { License } from "./_components/licence";
 import { Nav } from "@/components/nav";
 import { TextLink } from "@/components/link";
 import ThemeController from "@/components/themed/light-dark";

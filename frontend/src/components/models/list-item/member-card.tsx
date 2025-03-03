@@ -1,11 +1,12 @@
 import { MemberMiniSchema } from "@/api";
 import { ListItemCard } from "@/components/card";
-import { MemberPortrait } from "@/components/member-portrait";
+import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv } from "@/components/optional";
 import { SeparatedRow } from "@/components/collection";
 import React from "react";
 import { ClassNameProps } from "@/types/common";
 import { PartyThemeableProps } from "@/components/themed/party";
+import { navigationHref } from "@/components/models/navigation";
 
 type OptionalMemberFields = Pick<
   Partial<MemberMiniSchema>,
@@ -21,11 +22,12 @@ interface MemberItemProps {
   showConstituency?: boolean;
   usePartyTheme?: boolean;
 }
-export const MemberItem = (
+
+export default function MemberItemCard(
   props: MemberItemProps &
     Pick<PartyThemeableProps, "defaultPartyTheme"> &
     ClassNameProps,
-) => {
+) {
   const {
     member,
     showParty,
@@ -36,16 +38,10 @@ export const MemberItem = (
 
   return (
     <ListItemCard
-      href={`/members/${member.parliamentdotuk}/`}
+      href={navigationHref("person", member.parliamentdotuk)}
       party={usePartyTheme ? member.party : null}
       title={`${member.parliamentdotuk}`}
-      image={
-        <MemberPortrait
-          name={member.name}
-          src={member.portrait}
-          className="size-16 shrink-0 overflow-hidden rounded-md"
-        />
-      }
+      image={<MemberPortrait name={member.name} src={member.portrait} />}
       {...rest}
     >
       <h2>{member.name}</h2>
@@ -70,4 +66,4 @@ export const MemberItem = (
       </SeparatedRow>
     </ListItemCard>
   );
-};
+}

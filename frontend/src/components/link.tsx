@@ -26,7 +26,7 @@ export const TextLink = (props: NextLinkProps) => {
   const styledProps = addClass(
     props,
     "transition-colors",
-    "text-primary hover:text-primary-hover",
+    "text-primary hover:text-mix_primary_current",
   );
 
   return (

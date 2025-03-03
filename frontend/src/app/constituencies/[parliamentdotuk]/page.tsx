@@ -6,10 +6,10 @@ import { Date, DateRange } from "@/components/datetime";
 import { ConstituencyMap } from "./map";
 import { partyColors } from "@/components/themed/party";
 import { Optional } from "@/components/optional";
-import { MemberItem } from "@/components/item-member";
+import MemberItemCard from "@/components/models/list-item/member-card";
 import { HeaderCard } from "@/components/card";
 import { int, Percentage } from "@/components/number";
-import { PartyLink, PersonLink } from "@/components/linked-data";
+import { PartyLink, PersonLink } from "@/components/models/linked-data";
 import Links from "@/links";
 import { TextLink } from "@/components/link";
 import PageLayout from "@/components/page";
@@ -72,7 +72,7 @@ export default async function Page({ params }: PageProps) {
             block={(it) => (
               <div className="mt-4">
                 <div className="text-sm">Current MP:</div>
-                <MemberItem
+                <MemberItemCard
                   className="w-fit max-w-none! *:p-0! [&]:hover:after:inset-[-0.5rem]"
                   member={it}
                   showConstituency={false}

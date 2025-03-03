@@ -1,32 +1,24 @@
 "use client";
 
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstituencyMiniBoundary, PartyTerritory, get } from "@/api";
-import { type LayerKey, Map, useMap } from "@/components/map";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { usePagination } from "@/components/paginated/pagination";
-import { usePassiveGeoLocation } from "@/components/map/geolocation";
-import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
 import Loading from "@/components/loading";
+import { type LayerKey, Map, useMap } from "@/components/map";
+import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
+import { usePassiveGeoLocation } from "@/components/map/geolocation";
 import { MapRenderer } from "@/components/map/map";
-import { SelectedConstituenciesInfo } from "@/app/maps/components/selected";
-import { PartyTerritoryKey } from "./components/party-filter";
-import { classes } from "@/util/transforms";
-import "./style.css";
-import { DivPropsNoChildren } from "@/types/react";
 import {
   ConstituencyLink,
   PartyLink,
   PersonLink,
-} from "@/components/linked-data";
-import { PartyIconBackground } from "@/components/themed/party";
+} from "@/components/models/linked-data";
 import { onlyIf } from "@/components/optional";
-import Row from "@/components/row";
+import { usePagination } from "@/components/paginated/pagination";
+import { PartyIconBackground } from "@/components/themed/party";
+import { DivPropsNoChildren } from "@/types/react";
+import { PartyTerritoryKey } from "./_components/party-filter";
+import { SelectedConstituenciesInfo } from "./_components/selected";
+import "./style.css";
 
 export default function NationalMap() {
   const userLocation: GeoLocation | undefined =
@@ -59,11 +51,7 @@ const NationalMapWithLocation = ({
   const hoveredConstituency: ConstituencyMiniBoundary | undefined =
     useMemo(() => {
       if (!hovered) return undefined;
-      const result = constituencies.items.find(
-        (it) => it.parliamentdotuk === hovered,
-      );
-      console.log(`${hovered} found ${result}`);
-      return result;
+      return constituencies.items.find((it) => it.parliamentdotuk === hovered);
     }, [hovered, constituencies.items]);
 
   const map = useMap({
@@ -116,7 +104,7 @@ const NationalMapWithLocation = ({
       <Map map={map} className="map-layout--map">
         <HoveredConstituency
           constituency={hoveredConstituency}
-          className="touch:hidden absolute right-0 bottom-0 z-10 m-2"
+          className="touch:hidden absolute bottom-0 right-0 z-10 m-2"
         />
       </Map>
 
@@ -148,9 +136,7 @@ const addPartyTerritories = (
         geoJson: JSON.parse(boundary),
         style: {
           stroke: false,
-          fill: {
-            color: party.theme?.primary,
-          },
+          cssColor: `color-mix(in srgb, ${party.theme?.primary}, white)`,
         },
       });
     }
@@ -174,10 +160,7 @@ const addConstituencyBoundaries = (
         },
         style: {
           stroke: true,
-          fill: {
-            color: "transparent",
-            opacityPercent: 100,
-          },
+          cssColor: `transparent`,
         },
         zIndex: 10,
       });
@@ -196,17 +179,16 @@ const HoveredConstituency = (
     <div {...rest}>
       <PartyIconBackground
         party={constituency?.mp?.party}
-        className="chip chip-content"
+        className="chip chip-content pointer-events-none"
       >
         <div className="column items-end">
           <ConstituencyLink constituency={constituency} className="text-lg" />
 
           {onlyIf(constituency?.mp, (mp) => (
-            <div>
+            <>
               <PersonLink person={mp} />
-              {", "}
-              <PartyLink party={mp?.party} />
-            </div>
+              <PartyLink party={mp?.party} showDot={false} />
+            </>
           ))}
         </div>
       </PartyIconBackground>

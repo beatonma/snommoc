@@ -1,16 +1,16 @@
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
-import { Nullish } from "@/types/common";
-import { DivProps } from "@/types/react";
-import { addClass } from "@/util/transforms";
+import { MemberCareer } from "@/api";
 import { DateRange } from "@/components/datetime";
+import Loading from "@/components/loading";
 import {
   ConstituencyLink,
   HouseLink,
   PartyLink,
-} from "@/components/linked-data";
-import { MemberCareer } from "@/api";
+} from "@/components/models/linked-data";
 import { Optional } from "@/components/optional";
-import Loading from "@/components/loading";
+import { Nullish } from "@/types/common";
+import { DivProps } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
 export type CareerHouse = MemberCareer["houses"][number];
 export type CareerConstituency = MemberCareer["constituencies"][number];

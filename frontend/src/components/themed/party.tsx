@@ -1,21 +1,33 @@
-import type { Party, PartyDetail, PartyTheme } from "@/api";
-import React, { ComponentPropsWithoutRef } from "react";
+import type { Party, PartyDetail, PartyTheme as Theme } from "@/api";
+import React from "react";
 import { addClass } from "@/util/transforms";
 import { Nullish } from "@/types/common";
 import { MaskedSvg } from "@/components/image";
 import { getOnColor } from "@/components/themed/color";
+import { DivProps } from "@/types/react";
 
-type PartyLike = Party | PartyDetail | Nullish;
+type PartyLike = Party | PartyDetail | Theme | Nullish;
 export interface PartyThemeableProps {
   party: PartyLike;
-  defaultPartyTheme?: PartyTheme | Nullish;
+  defaultPartyTheme?: Theme | Nullish;
 }
+
+const isTheme = (obj: PartyLike): obj is Theme =>
+  obj != null && "primary" in obj;
+
+const resolveTheme = (
+  obj: PartyLike,
+  defaultTheme?: Theme | Nullish,
+): Theme | null => {
+  if (!obj) return defaultTheme ?? null;
+  return isTheme(obj) ? obj : obj.theme;
+};
 
 const partySurfaceThemes = (
   party: PartyLike,
-  defaultTheme?: PartyTheme | Nullish,
+  defaultTheme?: Theme | Nullish,
 ): { primary: React.CSSProperties; accent: React.CSSProperties } | null => {
-  const theme = party?.theme ?? (defaultTheme === null ? null : defaultTheme);
+  const theme = resolveTheme(party, defaultTheme);
   if (!theme) return null;
 
   const { primary, on_primary, accent, on_accent } = theme;
@@ -39,9 +51,10 @@ const partySurfaceThemes = (
 
 export const partyColors = (
   party: PartyLike,
+  defaultTheme?: Theme | Nullish,
   merge?: object,
 ): React.CSSProperties => {
-  const theme = party?.theme;
+  const theme = resolveTheme(party);
   return {
     ...(merge ?? {}),
     ...Object.fromEntries(
@@ -56,19 +69,30 @@ export const partyColors = (
   };
 };
 
-export const PartyIconBackground = (
-  props: PartyThemeableProps & ComponentPropsWithoutRef<"div">,
-) => {
+export const PartyTheme = (props: PartyThemeableProps & DivProps) => {
+  const { party, children, style, defaultPartyTheme, ...rest } = props;
+  const themedStyle = partyColors(party, defaultPartyTheme, style);
+
+  return (
+    <div style={{ ...themedStyle }} {...rest}>
+      {children}
+    </div>
+  );
+};
+
+export const PartyIconBackground = (props: PartyThemeableProps & DivProps) => {
   const { party, children, style, defaultPartyTheme, ...rest } = props;
   const theme = partySurfaceThemes(party, defaultPartyTheme)?.primary;
-  const themedStyle = partyColors(party, style);
+  const themedStyle = partyColors(party, defaultPartyTheme, style);
 
-  if (!party?.logo_mask && !party?.logo)
+  if (isTheme(party) || (!party?.logo_mask && !party?.logo)) {
     return (
       <div style={{ ...theme, ...themedStyle }} {...rest}>
         {children}
       </div>
     );
+  }
+
   return (
     <div
       style={{

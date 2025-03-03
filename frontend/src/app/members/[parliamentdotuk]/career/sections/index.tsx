@@ -3,7 +3,7 @@ import {
   CommitteeLink,
   OrganisationLink,
   PostLink,
-} from "@/components/linked-data";
+} from "@/components/models/linked-data";
 import { DateRange } from "@/components/datetime";
 import { SeparatedRow } from "@/components/collection";
 import React, { ReactNode } from "react";

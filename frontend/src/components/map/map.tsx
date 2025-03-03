@@ -1,39 +1,39 @@
 "use client";
-import { useEffect, useId, useRef, useState } from "react";
-import { Feature, Map as OlMap, MapBrowserEvent, View } from "ol";
 
-import VectorSource from "ol/source/Vector";
 import { type GeoJSON } from "geojson";
-import { default as OlGeoJSON } from "ol/format/GeoJSON.js";
-import TileLayer from "ol/layer/Tile";
-import { ImageTile, OSM, TileImage } from "ol/source";
-import VectorLayer from "ol/layer/Vector";
-import { Fill, Icon, Stroke, Style } from "ol/style";
-import { useGeographic } from "ol/proj";
-import { RemoteContent } from "@/components/remote-content";
-import { Control } from "ol/control";
-import { DivProps } from "@/types/react";
-import { ViewOptions } from "ol/View";
-import { get as getProjection } from "ol/proj";
-import { addClass } from "@/util/transforms";
+import { Feature, MapBrowserEvent, Map as OlMap, View } from "ol";
 import { FeatureLike } from "ol/Feature";
+import { ViewOptions } from "ol/View";
+import { Control } from "ol/control";
+import { click } from "ol/events/condition";
+import { default as OlGeoJSON } from "ol/format/GeoJSON.js";
+import { Point } from "ol/geom";
+import { Select } from "ol/interaction";
+import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import { useGeographic } from "ol/proj";
+import { get as getProjection } from "ol/proj";
+import { ImageTile, OSM, TileImage } from "ol/source";
+import VectorSource from "ol/source/Vector";
+import { Fill, Icon, Stroke, Style } from "ol/style";
+import { useEffect, useId, useRef, useState } from "react";
+import { onlyIf } from "@/components/optional";
+import { RemoteContent } from "@/components/remote-content";
 import { Nullish } from "@/types/common";
+import { DivProps } from "@/types/react";
+import { addClass } from "@/util/transforms";
 import {
-  combineExtents,
-  asFeature,
   Extents,
+  UkSquareExtents,
+  asFeature,
+  combineExtents,
   mutateCombineExtents,
   padExtents,
-  UkSquareExtents,
 } from "./geography";
-import { Point } from "ol/geom";
 import { useGeoLocationPrompt } from "./geolocation";
-import { Select } from "ol/interaction";
-import { click } from "ol/events/condition";
 
 const MapProjectionCode = "EPSG:27700"; // British National Grid
 const UserLocationMarkerId = "user_location";
-const FillMixColor = "white";
 
 export type LayerKey = string | number;
 interface GeoJsonLayer {
@@ -46,10 +46,7 @@ interface GeoJsonLayer {
 }
 interface StyleOptions {
   stroke?: boolean;
-  fill?: {
-    color?: string;
-    opacityPercent?: number;
-  };
+  cssColor?: string;
 }
 
 type LayerEventHandler = ((id: LayerKey | undefined) => void) | Nullish;
@@ -295,7 +292,7 @@ export class MapRenderer {
         const color = getProperty(feature, "color");
         return new Style({
           fill: new Fill({
-            color: `color-mix(in srgb, ${color} 90%, ${FillMixColor})`,
+            color: `color-mix(in srgb, ${color} 90%, transparent)`,
           }),
           stroke: new Stroke({
             color: `color-mix(in srgb, black 90%, transparent)`,
@@ -355,7 +352,7 @@ const MapView = (props: MapProps) => {
 
   return (
     <div id={id} ref={ref} {...rest}>
-      <GeoLocationPromptButton className="absolute top-0 right-0 m-2" />
+      <GeoLocationPromptButton className="absolute top-0 right-0 m-2 z-10" />
       {children}
     </div>
   );
@@ -364,17 +361,14 @@ const MapView = (props: MapProps) => {
 const getStyle = (options?: StyleOptions) => {
   const opts = options ?? ({ stroke: true } as StyleOptions);
   return new Style({
-    stroke: opts.stroke
-      ? new Stroke({
-          color: `color-mix(in srgb, black 90%, transparent)`,
-          width: 0.25,
-        })
-      : undefined,
-    fill: opts?.fill?.color
-      ? new Fill({
-          color: `color-mix(in srgb, ${opts.fill.color} ${opts.fill.opacityPercent ?? 50}%, ${FillMixColor})`,
-        })
-      : undefined,
+    stroke: onlyIf(
+      opts.stroke,
+      new Stroke({
+        color: `color-mix(in srgb, black 90%, transparent)`,
+        width: 0.25,
+      }),
+    ),
+    fill: onlyIf(opts.cssColor, (css) => new Fill({ color: css })),
   });
 };
 

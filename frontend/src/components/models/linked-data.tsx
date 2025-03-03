@@ -14,36 +14,9 @@ import { TextLink } from "@/components/link";
 import Row from "@/components/row";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import { navigationHref } from "./navigation";
 
-export const hrefFor = (
-  type: "party" | "constituency" | "person",
-  parliamentdotuk: number,
-): string =>
-  ({
-    constituency: () => `/constituencies/${parliamentdotuk}/`,
-    party: () => `/parties/${parliamentdotuk}/`,
-    person: () => `/members/${parliamentdotuk}/`,
-  })[type]();
-
-interface DotTextProps {
-  color: string | undefined;
-  text: string;
-}
-export const DotText = (props: DotTextProps & DivPropsNoChildren) => {
-  const { color, text, ...rest } = addClass(props, "items-baseline gap-1.5");
-  if (!color) return <span>{text}</span>;
-  return (
-    <Row {...rest}>
-      <span
-        className="size-ch rounded-full align-middle"
-        style={{ backgroundColor: color }}
-      />
-      <span>{text}</span>
-    </Row>
-  );
-};
-
-export const PartyLink = ({
+const PartyLink = ({
   party,
   showDot = true,
   ...rest
@@ -55,13 +28,13 @@ export const PartyLink = ({
   const color = showDot ? party.theme?.primary : undefined;
 
   return (
-    <TextButton href={hrefFor("party", party.parliamentdotuk)} {...rest}>
+    <TextButton href={navigationHref("party", party.parliamentdotuk)} {...rest}>
       <DotText color={color} text={party.name} />
     </TextButton>
   );
 };
 
-export const HouseLink = (props: {
+const HouseLink = (props: {
   house: HouseType;
   longFormat?: boolean;
   showDot?: boolean;
@@ -79,7 +52,7 @@ export const HouseLink = (props: {
   return <DotText color={color} text={text} />;
 };
 
-export const PersonLink = ({
+const PersonLink = ({
   person,
   fallback,
   ...rest
@@ -93,13 +66,16 @@ export const PersonLink = ({
   }
 
   return (
-    <TextButton href={hrefFor("person", person.parliamentdotuk)} {...rest}>
+    <TextButton
+      href={navigationHref("person", person.parliamentdotuk)}
+      {...rest}
+    >
       {person.name}
     </TextButton>
   );
 };
 
-export const ConstituencyLink = ({
+const ConstituencyLink = ({
   constituency,
   ...rest
 }: {
@@ -109,7 +85,7 @@ export const ConstituencyLink = ({
 
   return (
     <TextButton
-      href={hrefFor("constituency", constituency.parliamentdotuk)}
+      href={navigationHref("constituency", constituency.parliamentdotuk)}
       {...rest}
     >
       {constituency.name}
@@ -117,19 +93,15 @@ export const ConstituencyLink = ({
   );
 };
 
-export const PostLink = ({ post }: { post: Post | Nullish }) => {
+const PostLink = ({ post }: { post: Post | Nullish }) => {
   return post?.name ?? null;
 };
 
-export const CommitteeLink = ({
-  committee,
-}: {
-  committee: Committee | Nullish;
-}) => {
+const CommitteeLink = ({ committee }: { committee: Committee | Nullish }) => {
   return committee?.name ?? null;
 };
 
-export const OrganisationLink = ({
+const OrganisationLink = ({
   organisation,
 }: {
   organisation: Organisation | Nullish;
@@ -139,4 +111,31 @@ export const OrganisationLink = ({
     return <TextLink href={organisation.url}>{organisation.name}</TextLink>;
   }
   return organisation.name;
+};
+
+interface DotTextProps {
+  color: string | undefined;
+  text: string;
+}
+const DotText = (props: DotTextProps & DivPropsNoChildren) => {
+  const { color, text, ...rest } = addClass(props, "items-baseline gap-1.5");
+  if (!color) return <span>{text}</span>;
+  return (
+    <Row {...rest}>
+      <span
+        className="size-ch rounded-full align-middle"
+        style={{ backgroundColor: color }}
+      />
+      <span>{text}</span>
+    </Row>
+  );
+};
+export {
+  CommitteeLink,
+  ConstituencyLink,
+  HouseLink,
+  OrganisationLink,
+  PartyLink,
+  PersonLink,
+  PostLink,
 };

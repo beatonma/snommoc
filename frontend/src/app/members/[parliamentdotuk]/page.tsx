@@ -1,26 +1,26 @@
+import type { Metadata, ResolvingMetadata } from "next";
+import React, { ComponentPropsWithoutRef, ReactNode } from "react";
 import {
   ConstituencyMini,
-  get,
   HouseType,
   MemberProfile,
   type Party,
+  get,
 } from "@/api";
-import { PhysicalAddress } from "@/app/members/components/address";
-import React, { ComponentPropsWithoutRef, ReactNode } from "react";
-import { MemberPortrait } from "@/components/member-portrait";
-import type { Metadata, ResolvingMetadata } from "next";
-import ErrorMessage from "@/components/error";
-import { TextButton } from "@/components/button";
-import { addClass } from "@/util/transforms";
-import { OptionalDiv, OptionalSpan } from "@/components/optional";
-import { HeaderCard } from "@/components/card";
-import { LinkGroup } from "@/components/link";
-import { Nullish } from "@/types/common";
-import { Date } from "@/components/datetime";
-import { partyColors } from "@/components/themed/party";
-import PageLayout from "@/components/page";
 import Career from "@/app/members/[parliamentdotuk]/career";
+import { PhysicalAddress } from "@/app/members/_components/address";
+import { TextButton } from "@/components/button";
+import { HeaderCard } from "@/components/card";
+import { Date } from "@/components/datetime";
+import ErrorMessage from "@/components/error";
 import WindowInsets from "@/components/insets";
+import { LinkGroup } from "@/components/link";
+import { MemberPortrait } from "@/components/models/member-portrait";
+import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
+import PageLayout from "@/components/page";
+import { partyColors } from "@/components/themed/party";
+import { Nullish } from "@/types/common";
+import { addClass } from "@/util/transforms";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -71,14 +71,16 @@ const MemberCard = (props: MemberComponentProps) => {
     <section {...rest}>
       <HeaderCard
         party={member.party}
-        image={
-          <MemberPortrait
-            name={member.name}
-            src={member.portrait?.wide}
-            aspectClassName="aspect-3/2"
-            className="h-[220px] sm:w-auto [:has(>img)]:w-full"
-          />
-        }
+        image={onlyIf(member.portrait, (portrait) => (
+          <a href={portrait.full ?? undefined}>
+            <MemberPortrait
+              name={member.name}
+              src={portrait.wide}
+              aspectClassName="aspect-3/2"
+              className="h-[220px] sm:w-auto [:has(>img)]:w-full"
+            />
+          </a>
+        ))}
       >
         <h1>{member.name}</h1>
 
@@ -161,10 +163,10 @@ const Status = (props: {
   }
 
   return (
-    <>
+    <div className="align-baseline">
       {titleParts}
       {inactivityStatus}
-    </>
+    </div>
   );
 };
 

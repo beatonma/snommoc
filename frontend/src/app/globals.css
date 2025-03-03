@@ -3,6 +3,19 @@
 @import "./_style/loading.css";
 @import "./_style/theme.css";
 
+@custom-variant touch (@media(pointer: coarse));
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+
 @theme {
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
@@ -88,11 +101,11 @@
   section {
     @apply column gap-y-2;
     > h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
+    > h2,
+    > h3,
+    > h4,
+    > h5,
+    > h6 {
       @apply leading-relaxed;
     }
 
@@ -207,7 +220,7 @@
   @apply bg-surface text-on_surface;
 }
 @utility surface-hover {
-  @apply surface hover:bg-surface-hover transition-colors;
+  @apply surface hover:bg-surface_hover transition-colors;
 }
 @utility surface-alt {
   @apply bg-surface_alt text-on_surface;
@@ -216,10 +229,30 @@
   @apply bg-invert_surface text-invert_on_surface;
 }
 @utility surface-primary {
-  @apply bg-primary text-on_primary;
+  @apply bg-primary text-on_primary contrast-less:surface-primary-tint;
+}
+@utility surface-primary-tint {
+  @apply text-on_surface;
+  background-color: var(--surface);
+
+  @variant dark {
+    background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
+  }
+}
+@utility surface-primary-tint-hover {
+  @apply surface-primary-tint transition-colors;
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary) 7.5%, var(--surface));
+  }
 }
 @utility surface-accent {
   @apply bg-accent text-on_accent;
+}
+@utility surface-commons {
+  @apply bg-house-commons text-house-on_commons;
+}
+@utility surface-lords {
+  @apply bg-house-lords text-house-on_lords;
 }
 @utility card {
   @apply overflow-hidden shadow-md sm:rounded-lg;
@@ -228,10 +261,15 @@
   @apply px-4 py-2;
 }
 @utility chip {
-  @apply overflow-hidden rounded-md shadow-md;
+  @apply touch-target overflow-hidden rounded-md;
 }
 @utility chip-content {
   @apply px-2 py-0.5 text-sm;
+}
+@utility touch-target {
+  @variant touch {
+    @apply min-h-8 min-w-8;
+  }
 }
 
 @utility row {
@@ -241,4 +279,7 @@
   @apply flex flex-col;
 }
 
-@custom-variant touch (@media(pointer: coarse));
+/** Default grid style for <SearchList /> */
+@utility search-results-grid {
+  @apply grid grid-cols-[repeat(auto-fit,var(--spacing-listitem_card))] gap-x-8 gap-y-4;
+}

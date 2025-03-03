@@ -1,34 +1,37 @@
 :root {
   /** Theme colors */
-  --_black: rgb(9, 9, 11);
-  --_white: rgb(250, 250, 250);
+  --_color-black: rgb(9, 9, 11);
+  --_color-white: rgb(250, 250, 250);
 
-  --_light_background: rgb(228, 231, 230);
-  --_dark_background: rgb(24, 24, 27);
+  --_color-light_background: rgb(228, 229, 231);
+  --_color-dark_background: rgb(24, 24, 27);
 
-  --_light_on_background: var(--_black);
-  --_dark_on_background: white;
+  --_color-light_on_background: var(--_color-black);
+  --_color-dark_on_background: white;
 
-  --_light_surface: var(--_white);
-  --_dark_surface: rgb(39, 39, 42);
+  --_color-light_surface: rgb(241, 242, 245);
+  --_color-dark_surface: rgb(39, 39, 42);
 
-  --_light_surface_alt: rgb(209, 212, 226);
-  --_dark_surface_alt: rgb(82, 82, 92);
+  --_color-light_surface_hover: var(--_color-white);
+  --_color-dark_surface_hover: rgb(50, 50, 54);
 
-  --_light_on_surface: var(--_black);
-  --_dark_on_surface: var(--_white);
+  --_color-light_surface_alt: rgb(209, 212, 226);
+  --_color-dark_surface_alt: rgb(82, 82, 92);
 
-  --_light_primary: rgb(51, 136, 85);
-  --_dark_primary: rgb(66, 172, 108);
+  --_color-light_on_surface: var(--_color-black);
+  --_color-dark_on_surface: var(--_color-white);
 
-  --_light_on_primary: var(--_white);
-  --_dark_on_primary: var(--_white);
+  --_color-light_primary: rgb(51, 136, 85);
+  --_color-dark_primary: rgb(66, 172, 108);
 
-  --_light_accent: rgb(206, 218, 245);
-  --_dark_accent: rgb(206, 218, 245);
+  --_color-light_on_primary: var(--_color-white);
+  --_color-dark_on_primary: var(--_color-white);
 
-  --_light_on_accent: rgb(40, 71, 119);
-  --_dark_on_accent: rgb(40, 71, 119);
+  --_color-light_accent: rgb(206, 218, 245);
+  --_color-dark_accent: rgb(206, 218, 245);
+
+  --_color-light_on_accent: rgb(40, 71, 119);
+  --_color-dark_on_accent: rgb(40, 71, 119);
 
   --color-list-marker: currentColor;
 
@@ -41,57 +44,60 @@
 }
 
 @utility colorscheme-light {
-  --background: var(--_light_background);
-  --on_background: var(--_light_on_background);
-  --surface: var(--_light_surface);
-  --surface_alt: var(--_light_surface_alt);
-  --on_surface: var(--_light_on_surface);
-  --primary: var(--_light_primary);
-  --on_primary: var(--_light_on_primary);
-  --accent: var(--_light_accent);
-  --on_accent: var(--_light_on_accent);
+  --background: var(--_color-light_background);
+  --on_background: var(--_color-light_on_background);
+  --surface: var(--_color-light_surface);
+  --surface_hover: var(--_color-light_surface_hover);
+  --surface_alt: var(--_color-light_surface_alt);
+  --on_surface: var(--_color-light_on_surface);
+  --primary: var(--_color-light_primary);
+  --on_primary: var(--_color-light_on_primary);
+  --accent: var(--_color-light_accent);
+  --on_accent: var(--_color-light_on_accent);
 
-  --invert_background: var(--_dark_background);
-  --invert_on_background: var(--_dark_on_background);
-  --invert_surface: var(--_dark_surface);
-  --invert_surface_alt: var(--_dark_surface_alt);
-  --invert_on_surface: var(--_dark_on_surface);
-  --invert_primary: var(--_dark_primary);
-  --invert_on_primary: var(--_dark_on_primary);
-  --invert_accent: var(--_dark_accent);
-  --invert_on_accent: var(--_dark_on_accent);
+  --invert_background: var(--_color-dark_background);
+  --invert_on_background: var(--_color-dark_on_background);
+  --invert_surface: var(--_color-dark_surface);
+  --invert_surface_hover: var(--_color-dark_surface_hover);
+  --invert_surface_alt: var(--_color-dark_surface_alt);
+  --invert_on_surface: var(--_color-dark_on_surface);
+  --invert_primary: var(--_color-dark_primary);
+  --invert_on_primary: var(--_color-dark_on_primary);
+  --invert_accent: var(--_color-dark_accent);
+  --invert_on_accent: var(--_color-dark_on_accent);
 }
 @utility colorscheme-dark {
-  --background: var(--_dark_background);
-  --on_background: var(--_dark_on_background);
-  --surface: var(--_dark_surface);
-  --surface_alt: var(--_dark_surface_alt);
-  --on_surface: var(--_dark_on_surface);
-  --primary: var(--_dark_primary);
-  --on_primary: var(--_dark_on_primary);
-  --accent: var(--_dark_accent);
-  --on_accent: var(--_dark_on_accent);
+  --background: var(--_color-dark_background);
+  --on_background: var(--_color-dark_on_background);
+  --surface: var(--_color-dark_surface);
+  --surface_hover: var(--_color-dark_surface_hover);
+  --surface_alt: var(--_color-dark_surface_alt);
+  --on_surface: var(--_color-dark_on_surface);
+  --primary: var(--_color-dark_primary);
+  --on_primary: var(--_color-dark_on_primary);
+  --accent: var(--_color-dark_accent);
+  --on_accent: var(--_color-dark_on_accent);
 
-  --invert_background: var(--_light_background);
-  --invert_on_background: var(--_light_on_background);
-  --invert_surface: var(--_light_surface);
-  --invert_surface_alt: var(--_light_surface_alt);
-  --invert_on_surface: var(--_light_on_surface);
-  --invert_primary: var(--_light_primary);
-  --invert_on_primary: var(--_light_on_primary);
-  --invert_accent: var(--_light_accent);
-  --invert_on_accent: var(--_light_on_accent);
+  --invert_background: var(--_color-light_background);
+  --invert_on_background: var(--_color-light_on_background);
+  --invert_surface: var(--_color-light_surface);
+  --invert_surface_hover: var(--_color-light_surface_hover);
+  --invert_surface_alt: var(--_color-light_surface_alt);
+  --invert_on_surface: var(--_color-light_on_surface);
+  --invert_primary: var(--_color-light_primary);
+  --invert_on_primary: var(--_color-light_on_primary);
+  --invert_accent: var(--_color-light_accent);
+  --invert_on_accent: var(--_color-light_on_accent);
 }
 
 @theme inline {
   --color-*: initial; /* Disable tailwind color definitions. */
 
-  --color-black: var(--_black);
-  --color-white: var(--_white);
   --color-background: var(--background);
   --color-on_background: var(--on_background);
   --color-surface: var(--surface);
   --color-on_surface: var(--on_surface);
+  --color-surface_hover: var(--surface_hover);
   --color-surface_alt: var(--surface_alt);
   --color-primary: var(--primary);
   --color-on_primary: var(--on_primary);
@@ -101,6 +107,7 @@
   --color-invert_background: var(--invert_background);
   --color-invert_on_background: var(--invert_on_background);
   --color-invert_surface: var(--invert_surface);
+  --color-invert_surface_hover: var(--invert_surface_hover);
   --color-invert_surface_alt: var(--invert_surface_alt);
   --color-invert_on_surface: var(--invert_on_surface);
   --color-invert_primary: var(--invert_primary);
@@ -108,12 +115,43 @@
   --color-invert_accent: var(--invert_accent);
   --color-invert_on_accent: var(--invert_on_accent);
 
-  --color-primary-hover: color-mix(in srgb, var(--primary) 95%, currentColor);
-  --color-surface-hover: color-mix(in srgb, var(--surface) 95%, currentColor);
-  --color-primary-background: color-mix(
+  --color-black: var(--_color-black);
+  --color-white: var(--_color-white);
+  --color-light_background: var(--_color-light_background);
+  --color-dark_background: var(--_color-dark_background);
+  --color-light_on_background: var(--_color-light_on_background);
+  --color-dark_on_background: var(--_color-dark_on_background);
+  --color-light_surface: var(--_color-light_surface);
+  --color-dark_surface: var(--_color-dark_surface);
+  --color-light_surface_hover: var(--_color-light_surface_hover);
+  --color-dark_surface_hover: var(--_color-dark_surface_hover);
+  --color-light_surface_alt: var(--_color-light_surface_alt);
+  --color-dark_surface_alt: var(--_color-dark_surface_alt);
+  --color-light_on_surface: var(--_color-light_on_surface);
+  --color-dark_on_surface: var(--_color-dark_on_surface);
+  --color-light_primary: var(--_color-light_primary);
+  --color-dark_primary: var(--_color-dark_primary);
+  --color-light_on_primary: var(--_color-light_on_primary);
+  --color-dark_on_primary: var(--_color-dark_on_primary);
+  --color-light_accent: var(--_color-light_accent);
+  --color-dark_accent: var(--_color-dark_accent);
+  --color-light_on_accent: var(--_color-light_on_accent);
+  --color-dark_on_accent: var(--_color-dark_on_accent);
+
+  --color-mix_primary_current: color-mix(
+    in srgb,
+    var(--primary) 80%,
+    currentColor
+  );
+  --color-mix_primary_background: color-mix(
     in srgb,
     var(--primary),
     var(--background)
+  );
+  --color-tint_surface_current: color-mix(
+    in srgb,
+    currentColor 5%,
+    var(--surface)
   );
   --color-hover: color-mix(in srgb, currentColor 5%, transparent);
 }

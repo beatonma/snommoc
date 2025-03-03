@@ -23,9 +23,7 @@ export const ConstituencyMap = (props: ConstituencyMapProps) => {
         geoJson: geoJson,
         style: {
           stroke: true,
-          fill: {
-            color: constituency.mp?.party?.theme?.primary,
-          },
+          cssColor: `color-mix(in srgb, ${constituency.mp?.party?.theme?.primary ?? "transparent"} 30%, transparent)`,
         },
       });
     }

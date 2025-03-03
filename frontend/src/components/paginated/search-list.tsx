@@ -21,10 +21,10 @@ import { addClass, capitalize } from "@/util/transforms";
 import { MaybeString } from "@/types/common";
 import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
 import { GridSpan } from "@/components/grid";
+import { onlyIf } from "@/components/optional";
 
 const QueryParam = "query";
-const DefaultGridClass =
-  "grid-cols-[repeat(auto-fit,var(--spacing-listitem_card))] gap-x-8 gap-y-4";
+const DefaultGridClass = "search-results-grid";
 
 export interface SearchFilters {
   singleChoice?: Record<string, SingleChoiceFilter>;
@@ -163,7 +163,7 @@ const _SearchList = <P extends SearchablePath>(props: {
       path={props.path}
       query={props.composedQuery}
       itemComponent={props.itemComponent}
-      className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 grid justify-center sm:mx-2`}
+      className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 justify-center sm:mx-2`}
       header={
         <GridSpan
           className={`${hasHeader ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
@@ -171,7 +171,7 @@ const _SearchList = <P extends SearchablePath>(props: {
           {props.header}
 
           <div
-            className={`column max-w-[600px] items-center gap-4 p-4 ${hasHeader ? "md:items-end" : ""}`}
+            className={`column max-w-[600px] items-center gap-4 p-4 ${onlyIf(hasHeader, "md:items-end")}`}
           >
             <form
               className="row flex-wrap items-center justify-center gap-2"

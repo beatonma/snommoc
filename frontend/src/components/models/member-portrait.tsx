@@ -10,15 +10,14 @@ interface PortraitProps {
   src?: string | null | undefined;
 }
 export const MemberPortrait = (props: PortraitProps) => {
-  const { className, aspectClassName = "aspect-square", name, src } = props;
+  const { className, aspectClassName, name, src } = props;
 
   return (
     <div
       className={classes(
         className,
-        src ? aspectClassName : "aspect-square",
-        "bg-primary-background/75",
-        "relative max-h-[173px] max-w-[260px]", // Size from api source
+        aspectClassName,
+        "relative size-full max-h-[173px] max-w-[260px]", // Size from api source
       )}
     >
       {src ? (

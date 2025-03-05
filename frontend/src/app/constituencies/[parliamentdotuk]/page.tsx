@@ -1,19 +1,19 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { type ElectionResult, get } from "@/api";
-import ErrorMessage from "@/components/error";
 import React, { ReactNode } from "react";
-import { Date, DateRange } from "@/components/datetime";
-import { ConstituencyMap } from "./map";
-import { partyColors } from "@/components/themed/party";
-import { Optional } from "@/components/optional";
-import MemberItemCard from "@/components/models/list-item/member-card";
+import { type ElectionResult, get } from "@/api";
 import { HeaderCard } from "@/components/card";
-import { int, Percentage } from "@/components/number";
-import { PartyLink, PersonLink } from "@/components/models/linked-data";
-import Links from "@/links";
-import { TextLink } from "@/components/link";
-import PageLayout from "@/components/page";
+import { Date, DateRange } from "@/components/datetime";
+import ErrorMessage from "@/components/error";
 import WindowInsets from "@/components/insets";
+import { TextLink } from "@/components/link";
+import { PartyLink, PersonLink } from "@/components/models/linked-data";
+import MemberItemCard from "@/components/models/list-item/member-card";
+import { Percentage, int } from "@/components/number";
+import { Optional } from "@/components/optional";
+import PageLayout from "@/components/page-layout";
+import { partyColors } from "@/components/themed/party";
+import Links from "@/links";
+import { ConstituencyMap } from "./map";
 
 const getConstituency = async (parliamentdotuk: number) =>
   get("/api/constituencies/{parliamentdotuk}/", {

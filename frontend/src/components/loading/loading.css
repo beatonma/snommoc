@@ -1,6 +1,16 @@
 @layer components {
   .loading {
-    @apply relative flex size-[64px] items-center justify-center self-center justify-self-center text-[64px];
+    --_size: 64px;
+
+    position: relative;
+    display: flex;
+    width: var(--_size);
+    height: var(--_size);
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    justify-self: center;
+    font-size: var(--_size);
 
     > * {
       animation-duration: 1000ms;
@@ -9,11 +19,16 @@
     }
 
     > *:first-child {
-      @apply absolute justify-self-center fill-current;
+      position: absolute;
+      fill: currentColor;
+      justify-self: center;
     }
 
     > *:not(:first-child) {
-      @apply fill-primary z-10 inline-block shrink-0;
+      fill: var(--primary);
+      z-index: 10;
+      display: inline-block;
+      flex-shrink: 0;
     }
 
     & > :nth-child(2) {

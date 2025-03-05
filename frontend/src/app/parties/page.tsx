@@ -1,7 +1,7 @@
-import React from "react";
 import { Metadata } from "next";
+import React from "react";
 import PartyListPage from "@/app/parties/parties";
-import PageLayout from "@/components/page";
+import PageLayout from "@/components/page-layout";
 
 export const metadata: Metadata = {
   title: "Parties",

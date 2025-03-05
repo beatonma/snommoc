@@ -1,13 +1,14 @@
-import { DivProps } from "@/types/react";
-import { classes } from "@/util/transforms";
 import React, {
-  ComponentPropsWithoutRef,
   CSSProperties,
+  ComponentPropsWithoutRef,
   JSX,
   ReactNode,
   useMemo,
 } from "react";
 import { onlyIf } from "@/components/optional";
+import { DivProps } from "@/types/react";
+import { classes } from "@/util/transforms";
+import "./page-layout.css";
 
 interface PageLayoutDefinition {
   className: string;

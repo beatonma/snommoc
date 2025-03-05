@@ -1,16 +1,16 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { GenderDemographics, get, LordsDemographics, PartyDetail } from "@/api";
-import ErrorMessage from "@/components/error";
 import React from "react";
-import { OptionalSvg } from "@/components/image";
-import { OptionalDiv } from "@/components/optional";
-import { LinkGroup } from "@/components/link";
+import { GenderDemographics, LordsDemographics, PartyDetail, get } from "@/api";
 import MembersList from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
+import ErrorMessage from "@/components/error";
+import { OptionalSvg } from "@/components/image";
+import WindowInsets from "@/components/insets";
+import { LinkGroup } from "@/components/link";
+import { OptionalDiv } from "@/components/optional";
+import PageLayout from "@/components/page-layout";
 import { partyColors } from "@/components/themed/party";
 import { plural } from "@/util/plurals";
-import PageLayout from "@/components/page";
-import WindowInsets from "@/components/insets";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;

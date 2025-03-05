@@ -17,7 +17,7 @@ import WindowInsets from "@/components/insets";
 import { LinkGroup } from "@/components/link";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
-import PageLayout from "@/components/page";
+import PageLayout from "@/components/page-layout";
 import { partyColors } from "@/components/themed/party";
 import { Nullish } from "@/types/common";
 import { addClass } from "@/util/transforms";

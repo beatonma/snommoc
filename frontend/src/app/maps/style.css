@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@reference "../globals.css";
+@reference "../_style/globals.css";
 
 @layer component {
   body {

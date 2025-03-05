@@ -1,9 +1,10 @@
 "use client";
-import PageLayout, { PageLayouts } from "@/components/page";
-import { DivProps } from "@/types/react";
-import { addClass } from "@/util/transforms";
+
 import { useState } from "react";
 import { LoremIpsum } from "@/app/dev/components";
+import PageLayout, { PageLayouts } from "@/components/page-layout";
+import { DivProps } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
 type LayoutName = keyof typeof PageLayouts;
 export default function PageLayoutPreview() {

@@ -1,5 +1,6 @@
-import { DivPropsNoChildren } from "@/types/react";
 import { Icon } from "@/components/icon";
+import { DivPropsNoChildren } from "@/types/react";
+import "./loading.css";
 
 export default function Loading(props: DivPropsNoChildren) {
   return (

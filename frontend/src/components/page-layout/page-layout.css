@@ -10,7 +10,8 @@
 }
 
 @utility page-layout {
-  @apply grid w-full;
+  display: grid;
+  width: 100%;
 
   grid-template-areas:
     ". main ."

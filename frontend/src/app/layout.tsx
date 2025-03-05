@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { ReactNode } from "react";
-import { License } from "./_components/licence";
-import { Nav } from "@/components/nav";
 import { TextLink } from "@/components/link";
+import { Nav } from "@/components/nav";
 import ThemeController from "@/components/themed/light-dark";
+import { License } from "./_components/licence";
+import "./_style/globals.css";
 
 export const metadata: Metadata = {
   title: "Commons",

@@ -1,15 +1,15 @@
+import Link from "next/link";
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
-import { addClass } from "@/util/transforms";
 import { type PartyTheme as Theme } from "@/api";
+import { NextLinkProps } from "@/components/link";
+import { Optional } from "@/components/optional";
 import {
-  partyColors,
   PartyIconBackground,
   PartyTheme,
   PartyThemeableProps,
+  partyColors,
 } from "@/components/themed/party";
-import Link from "next/link";
-import { NextLinkProps } from "@/components/link";
-import { Optional } from "@/components/optional";
+import { addClass } from "@/util/transforms";
 
 type CardProps = {
   image?: ReactNode;
@@ -26,7 +26,7 @@ type HeaderCardProps = CardProps & ComponentPropsWithoutRef<"div">;
 export const HeaderCard = (props: HeaderCardProps) => {
   const { image, children, party, ...rest } = addClass(
     props,
-    "@container card surface-alt overflow-hidden w-full readable gap-4",
+    "@container card overflow-hidden w-full readable gap-4",
     "py-2 sm:p-4",
     "sm:rounded-lg sm:min-w-[600px]",
     "grid md:grid-cols-[auto_1fr] surface-primary-tint",

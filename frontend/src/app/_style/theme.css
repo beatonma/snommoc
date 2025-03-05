@@ -138,11 +138,6 @@
   --color-light_on_accent: var(--_color-light_on_accent);
   --color-dark_on_accent: var(--_color-dark_on_accent);
 
-  --color-mix_primary_current: color-mix(
-    in srgb,
-    var(--primary) 80%,
-    currentColor
-  );
   --color-mix_primary_background: color-mix(
     in srgb,
     var(--primary),

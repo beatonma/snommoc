@@ -1,5 +1,5 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import React, { ReactNode } from "react";
+import React, { CSSProperties, ReactNode } from "react";
 import { type ElectionResult, get } from "@/api";
 import { HeaderCard } from "@/components/card";
 import { Date, DateRange } from "@/components/datetime";
@@ -148,16 +148,21 @@ const ElectionResult = (props: { result: ElectionResult }) => {
               let extra: ReactNode;
               if (!depositLost && it.votes < depositForfeitLimit) {
                 extra = (
-                  <tr>
-                    <td colSpan={100} className="pt-4">
-                      <p className="border-t-[2px] border-dashed border-t-red-500 pt-2 text-center text-sm">
+                  <tr className="hover:bg-inherit">
+                    <th colSpan={100} className="text-left">
+                      <div className="border-y-[2px] border-dashed border-current/20 py-2 text-sm font-normal">
+                        <span>Candidates with less than 5% of the vote </span>
                         <TextLink
+                          style={
+                            { "--primary": "currentColor" } as CSSProperties
+                          }
                           href={Links.ElectoralCommission.CandidateDeposit}
                         >
-                          Deposit lost
+                          forfeit their deposit
                         </TextLink>
-                      </p>
-                    </td>
+                        .
+                      </div>
+                    </th>
                   </tr>
                 );
                 depositLost = true;

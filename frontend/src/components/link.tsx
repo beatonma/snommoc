@@ -1,16 +1,17 @@
 "use client";
+
+import { LinkProps } from "next/dist/client/link";
+import Link from "next/link";
 import React, {
   ComponentPropsWithoutRef,
   HTMLAttributeReferrerPolicy,
   useState,
 } from "react";
-import { addClass } from "@/util/transforms";
-import Link from "next/link";
-import { LinkProps } from "next/dist/client/link";
+import { WebAddress } from "@/api";
 import { ButtonLinkProps, TextButton } from "@/components/button";
 import { AppIcon } from "@/components/icon";
-import { WebAddress } from "@/api";
 import { Nullish } from "@/types/common";
+import { addClass } from "@/util/transforms";
 
 /**
  * Props signature for next/link Link component.
@@ -23,18 +24,14 @@ export type NextLinkProps = Omit<
   React.RefAttributes<HTMLAnchorElement>;
 
 export const TextLink = (props: NextLinkProps) => {
-  const styledProps = addClass(
+  const { ...rest } = addClass(
     props,
     "transition-colors",
-    "text-primary hover:text-mix_primary_current",
+    "text-primary hover:text-[color-mix(in_srgb,var(--primary)_85%,currentColor)]",
+    "font-semibold",
   );
-
   return (
-    <Link
-      referrerPolicy="same-origin"
-      rel="noopener nofollow"
-      {...styledProps}
-    />
+    <Link referrerPolicy="same-origin" rel="noopener nofollow" {...rest} />
   );
 };
 

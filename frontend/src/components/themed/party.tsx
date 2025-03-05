@@ -1,10 +1,10 @@
-import type { Party, PartyDetail, PartyTheme as Theme } from "@/api";
 import React from "react";
-import { addClass } from "@/util/transforms";
-import { Nullish } from "@/types/common";
+import type { Party, PartyDetail, PartyTheme as Theme } from "@/api";
 import { MaskedSvg } from "@/components/image";
 import { getOnColor } from "@/components/themed/color";
+import { Nullish } from "@/types/common";
 import { DivProps } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
 type PartyLike = Party | PartyDetail | Theme | Nullish;
 export interface PartyThemeableProps {
@@ -54,7 +54,7 @@ export const partyColors = (
   defaultTheme?: Theme | Nullish,
   merge?: object,
 ): React.CSSProperties => {
-  const theme = resolveTheme(party);
+  const theme = resolveTheme(party, defaultTheme);
   return {
     ...(merge ?? {}),
     ...Object.fromEntries(

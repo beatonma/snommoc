@@ -230,8 +230,7 @@
   @apply bg-primary text-on_primary contrast-less:surface-primary-tint;
 }
 @utility surface-primary-tint {
-  @apply text-on_surface;
-  background-color: var(--surface);
+  @apply surface;
 
   @variant dark {
     background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));

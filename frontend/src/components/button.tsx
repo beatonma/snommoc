@@ -49,7 +49,10 @@ const isLink = (
   return "href" in obj && obj.href;
 };
 const isButton = (obj: any): obj is ComponentPropsWithoutRef<"button"> => {
-  return "onClick" in obj && typeof obj.onClick === "function";
+  return (
+    ("onClick" in obj && typeof obj.onClick === "function") ||
+    ("type" in obj && obj.type === "submit")
+  );
 };
 
 const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {

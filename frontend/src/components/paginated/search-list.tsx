@@ -1,3 +1,4 @@
+import { useRouter, useSearchParams } from "next/navigation";
 import React, {
   Dispatch,
   ReactNode,
@@ -8,20 +9,19 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import {
-  type _DeprExtraFilters,
-  type SearchablePath,
   type PageItemType,
   type Query,
+  type SearchablePath,
+  type _DeprExtraFilters,
 } from "@/api";
 import { TintedButton } from "@/components/button";
-import { DivPropsNoChildren } from "@/types/react";
-import { addClass, capitalize } from "@/util/transforms";
-import { MaybeString } from "@/types/common";
-import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
 import { GridSpan } from "@/components/grid";
 import { onlyIf } from "@/components/optional";
+import { MaybeString } from "@/types/common";
+import { DivPropsNoChildren } from "@/types/react";
+import { addClass, capitalize } from "@/util/transforms";
+import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
 
 const QueryParam = "query";
 const DefaultGridClass = "search-results-grid";
@@ -175,7 +175,10 @@ const _SearchList = <P extends SearchablePath>(props: {
           >
             <form
               className="row flex-wrap items-center justify-center gap-2"
-              action={() => props.onConfirmSearch()}
+              onSubmit={(ev) => {
+                ev.preventDefault();
+                props.onConfirmSearch();
+              }}
             >
               <input
                 type="search"

@@ -1,12 +1,12 @@
 "use client";
 
-import React, { ComponentPropsWithoutRef, useState } from "react";
+import React, { ComponentPropsWithoutRef, useId, useState } from "react";
 import * as Sample from "@/app/dev/sample";
 import { TextButton, TintedButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
 import { MaskedSvg } from "@/components/image";
 import { ButtonLink } from "@/components/link";
-import Loading from "@/components/loading";
+import Loading, { LoadingBar } from "@/components/loading";
 import {
   ConstituencyItemCard,
   MemberItemCard,
@@ -29,19 +29,62 @@ export const LoremIpsum: string[] = [
 
 export const ComponentsOverview = () => (
   <>
-    <Section name="<Loading />">
-      <Loading />
-    </Section>
+    <LoadingComponents />
 
-    <TabComponents />
+    <InputComponents />
     <ButtonComponents />
-    <SortableComponents />
     <CardComponents />
+    <TabComponents />
+    <SortableComponents />
 
     <BreakpointsPreview />
     <ThemeColors />
   </>
 );
+
+const LoadingComponents = () => {
+  const [progress, setProgress] = useState(60);
+
+  return (
+    <Section name="">
+      <SectionItem name={"<Loading />"}>
+        <Loading />
+      </SectionItem>
+
+      <SectionItem name={"<LoadingBar />"}>
+        <LoadingBar />
+      </SectionItem>
+
+      <SectionItem name={`<LoadingBar progress={${progress}} />`}>
+        <LoadingBar progress={progress} />
+        <Row className="gap-2">
+          <TintedButton onClick={() => setProgress(0)}>0</TintedButton>
+          <TintedButton onClick={() => setProgress(25)}>25</TintedButton>
+          <TintedButton onClick={() => setProgress(50)}>50</TintedButton>
+          <TintedButton onClick={() => setProgress(75)}>75</TintedButton>
+          <TintedButton onClick={() => setProgress(100)}>100</TintedButton>
+        </Row>
+      </SectionItem>
+    </Section>
+  );
+};
+
+const InputComponents = () => {
+  const [text, setText] = useState("");
+
+  return (
+    <Section name="<input />">
+      <form>
+        <input
+          type="text"
+          value={text}
+          placeholder="text"
+          onChange={(ev) => setText(ev.target.value)}
+        />
+      </form>
+    </Section>
+  );
+};
 
 const ButtonComponents = () => (
   <>
@@ -122,23 +165,6 @@ const SortableComponents = () => {
         </div>
       )) ?? <Loading />}
     </Section>
-  );
-};
-
-const Section = (
-  props: { name: string } & ComponentPropsWithoutRef<"section">,
-) => {
-  const { children, ...rest } = addClass(
-    props,
-    "border-2 pb-4 border-dotted overflow-hidden px-edge",
-  );
-  return (
-    <section id={props.name.replaceAll(/[^\w]/g, "")} {...rest}>
-      <h1>
-        <pre>{props.name}</pre>
-      </h1>
-      {props.children}
-    </section>
   );
 };
 
@@ -313,5 +339,40 @@ const ThemeColors = () => {
         />
       </div>
     </Section>
+  );
+};
+
+const Section = (
+  props: { name: string } & ComponentPropsWithoutRef<"section">,
+) => {
+  const { children, ...rest } = addClass(
+    props,
+    "border-2 pb-4 border-dotted border-current/20 overflow-hidden px-edge gap-y-4",
+  );
+  return (
+    <section id={props.name.replaceAll(/[^\w]/g, "")} {...rest}>
+      <h1>
+        <pre>{props.name}</pre>
+      </h1>
+      {props.children}
+    </section>
+  );
+};
+
+const SectionItem = (
+  props: { name: string } & ComponentPropsWithoutRef<"div">,
+) => {
+  const id = useId();
+  const { children, ...rest } = addClass(
+    props,
+    "border-l-1 pb-4 border-dotted border-current/20 overflow-hidden px-edge column gap-2",
+  );
+  return (
+    <div id={id} {...rest}>
+      <h2>
+        <pre>{props.name}</pre>
+      </h2>
+      {props.children}
+    </div>
   );
 };

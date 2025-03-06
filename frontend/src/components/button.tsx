@@ -15,7 +15,7 @@ export const TextButton = (props: ButtonProps) => {
 export const TintedButton = (props: ButtonProps) => {
   const { style, ...rest } = addClass(
     props,
-    "rounded-md px-2 py-1",
+    "rounded-md px-2 py-1 min-w-[2em] min-h-[2em]",
     "bg-surface text-on_surface",
     "hover:bg-tint_surface_current",
   );

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstituencyMiniBoundary, PartyTerritory, get } from "@/api";
-import Loading from "@/components/loading";
+import Loading, { LoadingBar } from "@/components/loading";
 import { type LayerKey, Map, useMap } from "@/components/map";
 import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
 import { usePassiveGeoLocation } from "@/components/map/geolocation";
@@ -16,6 +16,7 @@ import { onlyIf } from "@/components/optional";
 import { usePagination } from "@/components/paginated/pagination";
 import { PartyIconBackground } from "@/components/themed/party";
 import { DivPropsNoChildren } from "@/types/react";
+import { classes } from "@/util/transforms";
 import { PartyTerritoryKey } from "./_components/party-filter";
 import { SelectedConstituenciesInfo } from "./_components/selected";
 import "./style.css";
@@ -38,6 +39,12 @@ const NationalMapWithLocation = ({
   const constituencies = usePagination(
     "/api/maps/constituencies/",
     userLocation,
+  );
+  const loadingProgress = useMemo(
+    () =>
+      (constituencies.items.length / (constituencies.availableItems || 1)) *
+      100,
+    [constituencies],
   );
 
   const [focus, setFocus] = useState<LayerKey[]>([]);
@@ -106,12 +113,19 @@ const NationalMapWithLocation = ({
           constituency={hoveredConstituency}
           className="touch:hidden absolute bottom-0 right-0 z-10 m-2"
         />
+        <LoadingMessage
+          progress={loadingProgress}
+          className="chip surface absolute bottom-0 left-0 z-10 m-2"
+        />
       </Map>
 
       <div className="map-layout--overlays">
         <PartyTerritoryKey
           parties={territories}
-          className="map-layout--key"
+          className={classes(
+            onlyIf(loadingProgress < 100, "pointer-events-none"),
+            "map-layout--key",
+          )}
           onClickParty={filterByParty}
         />
 
@@ -120,6 +134,19 @@ const NationalMapWithLocation = ({
           className="map-layout--info"
         />
       </div>
+    </div>
+  );
+};
+
+const LoadingMessage = (props: { progress: number } & DivPropsNoChildren) => {
+  const { progress, ...rest } = props;
+  return (
+    <div {...rest}>
+      {onlyIf(
+        progress < 100,
+        <p className="chip-content">Loading constituency maps…</p>,
+      )}
+      <LoadingBar progress={progress} />
     </div>
   );
 };

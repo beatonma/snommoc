@@ -21,7 +21,7 @@
   --_color-light_on_surface: var(--_color-black);
   --_color-dark_on_surface: var(--_color-white);
 
-  --_color-light_primary: rgb(51, 136, 85);
+  --_color-light_primary: rgb(24, 120, 62);
   --_color-dark_primary: rgb(66, 172, 108);
 
   --_color-light_on_primary: var(--_color-white);
@@ -91,7 +91,7 @@
 }
 
 @theme inline {
-  --color-*: initial; /* Disable tailwind color definitions. */
+  /*--color-*: initial; !* Disable tailwind color definitions. *!*/
 
   --color-background: var(--background);
   --color-on_background: var(--on_background);

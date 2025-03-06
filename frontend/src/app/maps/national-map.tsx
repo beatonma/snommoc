@@ -16,9 +16,8 @@ import { onlyIf } from "@/components/optional";
 import { usePagination } from "@/components/paginated/pagination";
 import { PartyIconBackground } from "@/components/themed/party";
 import { DivPropsNoChildren } from "@/types/react";
-import { classes } from "@/util/transforms";
-import { PartyTerritoryKey } from "./_components/party-filter";
-import { SelectedConstituenciesInfo } from "./_components/selected";
+import PartyTerritoryKey from "./_components/party-filter";
+import SelectedConstituenciesInfo from "./_components/selected";
 import "./style.css";
 
 export default function NationalMap() {
@@ -47,11 +46,16 @@ const NationalMapWithLocation = ({
     [constituencies],
   );
 
-  const [focus, setFocus] = useState<LayerKey[]>([]);
+  const [focussedPartyId, setFocussedPartyId] = useState<number>();
+  const [focussedConstituencyIds, setFocussedConstituencyIds] = useState<
+    LayerKey[]
+  >([]);
   const focussedConstituencies = useMemo(
     () =>
-      constituencies.items.filter((it) => focus.includes(it.parliamentdotuk)),
-    [focus, constituencies.items],
+      constituencies.items.filter((it) =>
+        focussedConstituencyIds.includes(it.parliamentdotuk),
+      ),
+    [focussedConstituencyIds, constituencies.items],
   );
 
   const [hovered, setHovered] = useState<LayerKey>();
@@ -72,17 +76,25 @@ const NationalMapWithLocation = ({
     },
   });
 
-  const onSelectFeatures = useCallback((layers: LayerKey[]) => {
-    setFocus(layers);
-  }, []);
+  const onSelectFeatures = useCallback(
+    (layers: LayerKey[], resetPartyFocus: boolean = true) => {
+      setFocussedConstituencyIds(layers);
+      if (resetPartyFocus) {
+        setFocussedPartyId(undefined);
+      }
+    },
+    [],
+  );
 
   const filterByParty = useCallback(
     (partyId: number) => {
       map?.selectFeatures("partyId", partyId, { fit: true });
+      setFocussedPartyId(partyId);
       onSelectFeatures(
         constituencies.items
           .filter((it) => it.mp?.party?.parliamentdotuk === partyId)
           .map((it) => it.parliamentdotuk),
+        false,
       );
     },
     [map, constituencies.items, onSelectFeatures],
@@ -103,6 +115,10 @@ const NationalMapWithLocation = ({
   useEffect(() => {
     if (!map) return;
     addConstituencyBoundaries(constituencies.items, map);
+    if (focussedPartyId) {
+      filterByParty(focussedPartyId);
+    }
+
     constituencies.loadNext?.();
   }, [map, constituencies.items, constituencies.loadNext]);
 
@@ -122,10 +138,8 @@ const NationalMapWithLocation = ({
       <div className="map-layout--overlays">
         <PartyTerritoryKey
           parties={territories}
-          className={classes(
-            onlyIf(loadingProgress < 100, "pointer-events-none"),
-            "map-layout--key",
-          )}
+          className="map-layout--key"
+          focussedPartyId={focussedPartyId}
           onClickParty={filterByParty}
         />
 

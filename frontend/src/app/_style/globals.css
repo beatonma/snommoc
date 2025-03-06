@@ -258,7 +258,7 @@
   @apply px-4 py-2;
 }
 @utility chip {
-  @apply touch-target overflow-hidden rounded-md;
+  @apply touch-target overflow-hidden rounded-md shadow-sm;
 }
 @utility chip-content {
   @apply px-2 py-0.5 text-sm;

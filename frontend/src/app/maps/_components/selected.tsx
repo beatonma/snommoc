@@ -1,7 +1,10 @@
 import React, { useMemo } from "react";
 import { ConstituencyMiniBoundary, Party } from "@/api";
-import Todo from "@/components/dev";
-import { ConstituencyLink, PartyLink } from "@/components/models/linked-data";
+import {
+  ConstituencyLink,
+  HouseLink,
+  PartyLink,
+} from "@/components/models/linked-data";
 import { MemberItemCard } from "@/components/models/list-item";
 import Row from "@/components/row";
 import { PartyTheme } from "@/components/themed/party";
@@ -15,7 +18,7 @@ type Multi = {
   constituencies: ConstituencyMiniBoundary[];
 } & DivPropsNoChildren;
 
-export const SelectedConstituenciesInfo = (props: Multi) => {
+export default function SelectedConstituenciesInfo(props: Multi) {
   const { constituencies, ...rest } = addClass(
     props,
     "md:w-listitem_card w-full",
@@ -27,13 +30,20 @@ export const SelectedConstituenciesInfo = (props: Multi) => {
   }
 
   return <ManySelected constituencies={constituencies} {...rest} />;
-};
+}
 
 const NoSelection = (props: DivPropsNoChildren) => {
   return (
-    <div {...addClass(props, "card card-content surface-accent")}>
-      <p>Tap a constituency for more information.</p>
-      <Todo message="general basic info about constituencies" />
+    <div {...addClass(props, "card card-content surface-accent column gap-2")}>
+      <p>
+        The UK is divided into 650 constituencies which each elect a Member of
+        Parliament (MP) to the{" "}
+        <HouseLink house="Commons" longFormat={true} showDot={false} />
+      </p>
+      <p>
+        Tap a constituency for more information, or select a party to see the
+        constituencies they represent.
+      </p>
     </div>
   );
 };

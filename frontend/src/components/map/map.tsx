@@ -158,7 +158,7 @@ export class MapRenderer {
       })
       .flat();
 
-    if (fitView) {
+    if (fitView && selected.length) {
       this.#zoomToExtent(padExtents([...extent], 0.1));
     }
 

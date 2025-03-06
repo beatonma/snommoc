@@ -1,14 +1,16 @@
-import { PartyTerritory } from "@/api";
 import React, { ComponentPropsWithoutRef } from "react";
+import { PartyTerritory } from "@/api";
+import { onlyIf } from "@/components/optional";
 import { classes } from "@/util/transforms";
 
-export const PartyTerritoryKey = (
+export default function PartyTerritoryKey(
   props: {
+    focussedPartyId: number | undefined;
     parties: PartyTerritory[] | undefined;
     onClickParty: (partyId: number) => void;
   } & ComponentPropsWithoutRef<"ul">,
-) => {
-  const { parties, onClickParty, ...rest } = props;
+) {
+  const { parties, focussedPartyId, onClickParty, ...rest } = props;
   if (!parties) return null;
   return (
     <ul {...rest}>
@@ -16,9 +18,8 @@ export const PartyTerritoryKey = (
         <li
           key={party.parliamentdotuk}
           className={classes(
-            "row surface-hover chip-content pointer-events-auto w-fit cursor-pointer list-none gap-1.5",
-            "md:bg-surface/80",
-            "max-md:chip",
+            "row surface-hover chip chip-content pointer-events-auto w-fit cursor-pointer list-none gap-1.5 border-current/50",
+            onlyIf(party.parliamentdotuk === focussedPartyId, "border-2"),
           )}
           onClick={() => onClickParty(party.parliamentdotuk)}
         >
@@ -31,4 +32,4 @@ export const PartyTerritoryKey = (
       ))}
     </ul>
   );
-};
+}

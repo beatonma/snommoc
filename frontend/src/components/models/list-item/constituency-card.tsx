@@ -1,10 +1,10 @@
+import React from "react";
 import type { ConstituencyMini } from "@/api";
 import { ListItemCard } from "@/components/card";
 import { SeparatedRow } from "@/components/collection";
-import { OptionalDiv } from "@/components/optional";
 import { DateRange } from "@/components/datetime";
-import React from "react";
-import { navigationHref } from "@/components/models/navigation";
+import { OptionalDiv } from "@/components/optional";
+import { navigationHref } from "@/navigation";
 
 export default function ConstituencyItemCard(props: {
   constituency: ConstituencyMini;

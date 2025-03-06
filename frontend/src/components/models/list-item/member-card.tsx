@@ -1,12 +1,12 @@
+import React from "react";
 import { MemberMiniSchema } from "@/api";
 import { ListItemCard } from "@/components/card";
+import { SeparatedRow } from "@/components/collection";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv } from "@/components/optional";
-import { SeparatedRow } from "@/components/collection";
-import React from "react";
-import { ClassNameProps } from "@/types/common";
 import { PartyThemeableProps } from "@/components/themed/party";
-import { navigationHref } from "@/components/models/navigation";
+import { navigationHref } from "@/navigation";
+import { ClassNameProps } from "@/types/common";
 
 type OptionalMemberFields = Pick<
   Partial<MemberMiniSchema>,

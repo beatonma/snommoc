@@ -1,10 +1,10 @@
 import React, { ComponentPropsWithoutRef } from "react";
+import { Party } from "@/api";
 import { ListItemCard } from "@/components/card";
 import { OptionalSvg } from "@/components/image";
-import { plural } from "@/util/plurals";
-import { Party } from "@/api";
-import { navigationHref } from "@/components/models/navigation";
 import { onlyIf } from "@/components/optional";
+import { navigationHref } from "@/navigation";
+import { plural } from "@/util/plurals";
 
 export default function PartyItemCard(
   props: { party: Party } & ComponentPropsWithoutRef<"a">,

@@ -1,3 +1,4 @@
+import React from "react";
 import type {
   Committee,
   ConstituencyMini,
@@ -8,13 +9,12 @@ import type {
   Post,
 } from "@/api";
 import { ButtonProps, TextButton } from "@/components/button";
-import React from "react";
-import { Nullish } from "@/types/common";
 import { TextLink } from "@/components/link";
 import Row from "@/components/row";
+import { navigationHref } from "@/navigation";
+import { Nullish } from "@/types/common";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
-import { navigationHref } from "./navigation";
 
 const PartyLink = ({
   party,

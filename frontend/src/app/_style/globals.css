@@ -276,6 +276,13 @@
   @apply flex flex-col;
 }
 
+@utility insets {
+  @apply p-edge sm:p-edge-sm;
+}
+@utility insets-x {
+  @apply px-edge sm:px-edge-sm;
+}
+
 /** Default grid style for <SearchList /> */
 @utility search-results-grid {
   @apply grid grid-cols-[repeat(auto-fit,var(--spacing-listitem_card))] gap-x-8 gap-y-4;

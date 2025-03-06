@@ -1,12 +1,11 @@
-import { DivPropsNoChildren } from "@/types/react";
 import React, { ReactNode, useEffect, useRef } from "react";
-import WindowInsets from "@/components/insets";
-import { plural } from "@/util/plurals";
-import { Paginated, usePagination } from "./pagination";
-import Loading from "@/components/loading";
+import { PageItemType, PathWithPagination, Query } from "@/api";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
-import { PageItemType, PathWithPagination, Query } from "@/api";
+import Loading from "@/components/loading";
+import { DivPropsNoChildren } from "@/types/react";
+import { plural } from "@/util/plurals";
+import { Paginated, usePagination } from "./pagination";
 
 export type PaginationItemComponent<T> = (
   item: T,
@@ -36,7 +35,7 @@ export const InfiniteScroll = <P extends PathWithPagination>(
     <div {...rest}>
       {header}
 
-      <GridSpan className={`${WindowInsets} font-bold`}>
+      <GridSpan className="insets-x font-bold">
         {pagination.availableItems >= 0
           ? plural("result", pagination.availableItems)
           : null}

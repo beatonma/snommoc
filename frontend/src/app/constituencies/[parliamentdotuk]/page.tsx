@@ -4,7 +4,6 @@ import { type ElectionResult, get } from "@/api";
 import { HeaderCard } from "@/components/card";
 import { Date, DateRange } from "@/components/datetime";
 import ErrorMessage from "@/components/error";
-import WindowInsets from "@/components/insets";
 import { TextLink } from "@/components/link";
 import { PartyLink, PersonLink } from "@/components/models/linked-data";
 import MemberItemCard from "@/components/models/list-item/member-card";
@@ -95,7 +94,7 @@ const ElectionResults = ({ results }: { results: ElectionResult[] }) => {
 
   return (
     <>
-      <h2 className={WindowInsets}>Election results</h2>
+      <h2 className="insets-x">Election results</h2>
       {results.map((it) => (
         <ElectionResult key={it.election.parliamentdotuk} result={it} />
       ))}
@@ -114,7 +113,7 @@ const ElectionResult = (props: { result: ElectionResult }) => {
 
   return (
     <section>
-      <div className={`${WindowInsets} flex flex-wrap items-baseline gap-2`}>
+      <div className="insets-x flex flex-wrap items-baseline gap-2">
         <h3>{result.election.name}</h3>
         <Date date={result.election.date} />
       </div>

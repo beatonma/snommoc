@@ -13,7 +13,6 @@ import { TextButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
 import { Date } from "@/components/datetime";
 import ErrorMessage from "@/components/error";
-import WindowInsets from "@/components/insets";
 import { LinkGroup } from "@/components/link";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
@@ -54,8 +53,8 @@ export default async function Page({ params }: PageProps) {
   return (
     <PageLayout layout="CenteredReadable" style={partyColors(member.party)}>
       <MemberCard member={member} />
-      <MemberDetail member={member} className={WindowInsets} />
-      <MemberCareer member={member} className={WindowInsets} />
+      <MemberDetail member={member} className="insets-x" />
+      <MemberCareer member={member} className="insets-x" />
     </PageLayout>
   );
 }

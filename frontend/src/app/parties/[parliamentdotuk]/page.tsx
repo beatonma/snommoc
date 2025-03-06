@@ -5,7 +5,6 @@ import MembersList from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
 import ErrorMessage from "@/components/error";
 import { OptionalSvg } from "@/components/image";
-import WindowInsets from "@/components/insets";
 import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
 import PageLayout from "@/components/page-layout";
@@ -81,7 +80,7 @@ export default async function Page({ params }: PageProps) {
           </HeaderCard>
         </section>
 
-        <section className={WindowInsets}>
+        <section className="insets-x">
           <Demographics party={party} />
         </section>
       </PageLayout>

@@ -94,7 +94,7 @@ const ElectionResults = ({ results }: { results: ElectionResult[] }) => {
 
   return (
     <>
-      <h2 className="insets-x">Election results</h2>
+      <h2 className="px-edge">Election results</h2>
       {results.map((it) => (
         <ElectionResult key={it.election.parliamentdotuk} result={it} />
       ))}
@@ -113,7 +113,7 @@ const ElectionResult = (props: { result: ElectionResult }) => {
 
   return (
     <section>
-      <div className="insets-x flex flex-wrap items-baseline gap-2">
+      <div className="px-edge flex flex-wrap items-baseline gap-2">
         <h3>{result.election.name}</h3>
         <Date date={result.election.date} />
       </div>

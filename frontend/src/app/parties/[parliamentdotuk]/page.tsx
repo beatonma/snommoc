@@ -80,7 +80,7 @@ export default async function Page({ params }: PageProps) {
           </HeaderCard>
         </section>
 
-        <section className="insets-x">
+        <section className="px-edge">
           <Demographics party={party} />
         </section>
       </PageLayout>

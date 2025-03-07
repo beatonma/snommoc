@@ -17,6 +17,7 @@ import { useSortable } from "@/components/sortable";
 import { TabLayout } from "@/components/tabs";
 import { getOnColor } from "@/components/themed/color";
 import { partyColors } from "@/components/themed/party";
+import { DivProps } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 
 export const LoremIpsum: string[] = [
@@ -29,16 +30,16 @@ export const LoremIpsum: string[] = [
 
 export const ComponentsOverview = () => (
   <>
-    <LoadingComponents />
-
     <InputComponents />
     <ButtonComponents />
     <CardComponents />
     <TabComponents />
     <SortableComponents />
+    <LoadingComponents />
 
     <BreakpointsPreview />
     <ThemeColors />
+    <TailwindUtilities />
   </>
 );
 
@@ -339,6 +340,49 @@ const ThemeColors = () => {
         />
       </div>
     </Section>
+  );
+};
+
+const TailwindUtilities = () => {
+  const Utility = (props: { utility: string } & DivProps) => {
+    const { utility, children, ...rest } = addClass(
+      props,
+      props.utility,
+      "w-fit",
+    );
+    return (
+      <div {...rest}>
+        {utility}
+        {children}
+      </div>
+    );
+  };
+
+  const windowInsets = ["p-edge", "px-edge", "py-edge"];
+
+  return (
+    <section
+      id="tailwindutilities"
+      className="border-2 pb-4 border-dotted border-current/20 overflow-hidden gap-y-4 px-2 sm:px-4"
+    >
+      <h1>
+        <pre>Tailwind utilities</pre>
+      </h1>
+
+      <Row className="flex-wrap gap-4 items-start">
+        {windowInsets.map((outer, index) => (
+          <Utility key={index} utility={outer} className="surface card">
+            {windowInsets.map((inner, index) => (
+              <Utility
+                key={index}
+                utility={inner}
+                className="border-current/20 border-1"
+              />
+            ))}
+          </Utility>
+        ))}
+      </Row>
+    </section>
   );
 };
 

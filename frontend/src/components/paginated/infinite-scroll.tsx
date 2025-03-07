@@ -35,7 +35,7 @@ export const InfiniteScroll = <P extends PathWithPagination>(
     <div {...rest}>
       {header}
 
-      <GridSpan className="insets-x font-bold">
+      <GridSpan className="px-edge font-bold">
         {pagination.availableItems >= 0
           ? plural("result", pagination.availableItems)
           : null}

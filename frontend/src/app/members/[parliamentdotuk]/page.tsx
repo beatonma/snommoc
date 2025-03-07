@@ -53,8 +53,8 @@ export default async function Page({ params }: PageProps) {
   return (
     <PageLayout layout="CenteredReadable" style={partyColors(member.party)}>
       <MemberCard member={member} />
-      <MemberDetail member={member} className="insets-x" />
-      <MemberCareer member={member} className="insets-x" />
+      <MemberDetail member={member} className="px-edge" />
+      <MemberCareer member={member} className="px-edge" />
     </PageLayout>
   );
 }

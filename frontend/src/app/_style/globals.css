@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./theme.css";
+@import "./window-insets.css";
 
 @custom-variant touch (@media(pointer: coarse));
 @custom-variant dark {
@@ -61,8 +62,6 @@
 
   --spacing-ch: 1ch;
   --spacing-em: 1em;
-  --spacing-edge: 8px;
-  --spacing-edge-sm: 16px;
   --spacing-readable: 800px; /* js */
   --spacing-max-grid-width: 1350px; /* js */
 
@@ -173,20 +172,6 @@
       background-color: transparent;
     }
   }
-
-  .px-edge {
-    .px-edge {
-      /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
-      --spacing-edge: 0;
-    }
-  }
-
-  .px-edge-sm {
-    .px-edge-sm {
-      /* Ensure that WindowInsets padding is not applied more than once in a node tree. */
-      --spacing-edge-sm: 0;
-    }
-  }
 }
 
 @layer components {
@@ -274,13 +259,6 @@
 }
 @utility column {
   @apply flex flex-col;
-}
-
-@utility insets {
-  @apply p-edge sm:p-edge-sm;
-}
-@utility insets-x {
-  @apply px-edge sm:px-edge-sm;
 }
 
 /** Default grid style for <SearchList /> */

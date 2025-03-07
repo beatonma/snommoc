@@ -14,7 +14,10 @@
     }
   }
 }
-
+:root {
+  --_spacing-listitem_card: 400px;
+  --_spacing-listitem_card_wide: 650px; /* js */
+}
 @theme {
   --breakpoint-sm: 40rem;
   --breakpoint-md: 48rem;
@@ -65,7 +68,7 @@
   --spacing-readable: 800px; /* js */
   --spacing-max-grid-width: 1350px; /* js */
 
-  --spacing-listitem_card: min(100%, 400px);
+  --spacing-listitem_card: min(100%, var(--_spacing-listitem_card));
 }
 
 ::selection {

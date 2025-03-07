@@ -16,7 +16,7 @@ import Row from "@/components/row";
 import { useSortable } from "@/components/sortable";
 import { TabLayout } from "@/components/tabs";
 import { getOnColor } from "@/components/themed/color";
-import { partyColors } from "@/components/themed/party";
+import { itemThemeCss } from "@/components/themed/item-theme";
 import { DivProps } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 
@@ -118,7 +118,7 @@ const ButtonComponents = () => (
         |
         <TintedButton href="#" icon="Wikipedia" />
         <TintedButton onClick={() => console.log("Click!")} icon="Wikipedia" />
-        <div style={partyColors(Sample.LabourParty)}>
+        <div style={itemThemeCss(Sample.LabourParty)}>
           <TintedButton href="#">Themed TintedButton</TintedButton>
         </div>
       </Row>
@@ -173,7 +173,7 @@ const CardComponents = () => (
   <>
     <Section name="<HeaderCard />">
       <HeaderCard
-        party={Sample.LabourParty}
+        themeSource={Sample.LabourParty}
         image={
           <MaskedSvg
             src={Sample.LabourParty.logo}
@@ -185,12 +185,12 @@ const CardComponents = () => (
         <p>{LoremIpsum.slice(0, 1)}</p>
       </HeaderCard>
 
-      <HeaderCard party={Sample.InvernessConstituency.mp?.party}>
+      <HeaderCard themeSource={Sample.InvernessConstituency.mp?.party}>
         <h1>No image</h1>
         <p>{LoremIpsum.slice(0, 1)}</p>
       </HeaderCard>
 
-      <HeaderCard party={undefined}>
+      <HeaderCard themeSource={undefined}>
         <h1>No party</h1>
         <p>{LoremIpsum.slice(0, 1)}</p>
       </HeaderCard>

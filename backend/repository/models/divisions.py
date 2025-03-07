@@ -5,6 +5,13 @@ from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import ParliamentDotUkMixin, SocialMixin
 
 
+class DivisionQuerySet(BaseQuerySet):
+    def search(self, query: str):
+        query = query.strip()
+
+        return self.filter(title__icontains=query)
+
+
 class DivisionSharedProperties(SocialMixin, models.Model):
     title: models.CharField
     date: models.DateField
@@ -21,6 +28,7 @@ class DivisionSharedProperties(SocialMixin, models.Model):
 
 
 class CommonsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel):
+    objects = DivisionQuerySet.as_manager()
     title = models.CharField(max_length=512)
     date = models.DateField()
 
@@ -61,6 +69,7 @@ class CommonsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel)
 
 
 class LordsDivision(DivisionSharedProperties, ParliamentDotUkMixin, BaseModel):
+    objects = DivisionQuerySet.as_manager()
     title = models.TextField(null=True, blank=True)
     date = models.DateField()
     number = models.PositiveSmallIntegerField()

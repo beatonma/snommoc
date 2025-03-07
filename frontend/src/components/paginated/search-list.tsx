@@ -49,18 +49,24 @@ interface ListPageProps<P extends SearchablePath> {
   immutableFilters?: _DeprExtraFilters;
 }
 export const SearchList = <P extends SearchablePath>(
-  props: ListPageProps<P>,
+  props: ListPageProps<P> & Omit<DivPropsNoChildren, keyof ListPageProps<P>>,
 ) => {
-  const { path, query: queryFromProps, immutableFilters } = props;
+  const {
+    path,
+    query: queryFromProps,
+    immutableFilters,
+    header,
+    itemComponent,
+    gridClassName,
+    searchFilters,
+    ...rest
+  } = props;
 
   const router = useRouter();
   const search = useSearchParams();
   const [query, setQuery] = useState<string>(search.get(QueryParam) ?? "");
   const [currentQuery, setCurrentQuery] = useState<string>(query);
-  const [filters, setFilters, filtersQuery] = useFilters(
-    props.searchFilters,
-    search,
-  );
+  const [filters, setFilters, filtersQuery] = useFilters(searchFilters, search);
   const [composedQuery, setComposedQuery] = useState<Query<P> | undefined>();
 
   const previousSearchParams = useRef<string>(undefined);
@@ -132,43 +138,62 @@ export const SearchList = <P extends SearchablePath>(
     <_SearchList
       path={path}
       composedQuery={composedQuery}
-      header={props.header}
-      gridClassName={props.gridClassName}
-      itemComponent={props.itemComponent}
+      header={header}
+      gridClassName={gridClassName}
+      itemComponent={itemComponent}
       searchQuery={query}
       setSearchQuery={setQuery}
       onConfirmSearch={() => setCurrentQuery(query)}
       filters={filters}
       setFilters={setFilters}
+      {...rest}
     />
   );
 };
 
-const _SearchList = <P extends SearchablePath>(props: {
-  path: P;
-  composedQuery: Query<P> | undefined;
-  header: ReactNode | undefined;
-  itemComponent: PaginationItemComponent<PageItemType<P>>;
-  gridClassName: string | undefined;
-  searchQuery: string;
-  setSearchQuery: (q: string) => void;
-  onConfirmSearch: () => void;
-  filters: SearchFilters;
-  setFilters: (value: SearchFilters) => void;
-}) => {
+const _SearchList = <P extends SearchablePath>(
+  props: {
+    path: P;
+    composedQuery: Query<P> | undefined;
+    header: ReactNode | undefined;
+    itemComponent: PaginationItemComponent<PageItemType<P>>;
+    gridClassName: string | undefined;
+    searchQuery: string;
+    setSearchQuery: (q: string) => void;
+    onConfirmSearch: () => void;
+    filters: SearchFilters;
+    setFilters: (value: SearchFilters) => void;
+  } & DivPropsNoChildren,
+) => {
   const hasHeader = !!props.header;
+  const {
+    path,
+    composedQuery,
+    header,
+    itemComponent,
+    gridClassName,
+    searchQuery,
+    setSearchQuery,
+    onConfirmSearch,
+    filters,
+    setFilters,
+    ...rest
+  } = addClass(
+    props,
+    `${props.gridClassName ?? DefaultGridClass} my-2 mb-96 justify-center sm:mx-2`,
+  );
 
   return (
     <InfiniteScroll
-      path={props.path}
-      query={props.composedQuery}
-      itemComponent={props.itemComponent}
-      className={`${props.gridClassName ?? DefaultGridClass} my-2 mb-96 justify-center sm:mx-2`}
+      {...rest}
+      path={path}
+      query={composedQuery}
+      itemComponent={itemComponent}
       header={
         <GridSpan
           className={`${hasHeader ? "md:justify-between" : "md:justify-center"} flex flex-wrap items-center justify-center`}
         >
-          {props.header}
+          {header}
 
           <div
             className={`column max-w-[600px] items-center gap-4 p-4 ${onlyIf(hasHeader, "md:items-end")}`}
@@ -177,20 +202,20 @@ const _SearchList = <P extends SearchablePath>(props: {
               className="row flex-wrap items-center justify-center gap-2"
               onSubmit={(ev) => {
                 ev.preventDefault();
-                props.onConfirmSearch();
+                onConfirmSearch();
               }}
             >
               <input
                 type="search"
-                value={props.searchQuery}
+                value={searchQuery}
                 onChange={(e) => props.setSearchQuery(e.target.value)}
               />
               <TintedButton type="submit">Search</TintedButton>
             </form>
 
             <Filters
-              filters={props.filters}
-              setFilters={props.setFilters}
+              filters={filters}
+              setFilters={setFilters}
               className="flex gap-6"
             />
           </div>

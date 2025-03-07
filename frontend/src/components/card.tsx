@@ -1,19 +1,19 @@
 import Link from "next/link";
 import React, { ComponentPropsWithoutRef, ReactNode } from "react";
-import { type PartyTheme as Theme } from "@/api";
+import { type ItemTheme as Theme } from "@/api";
 import { NextLinkProps } from "@/components/link";
 import { Optional } from "@/components/optional";
 import {
+  ItemTheme,
+  ItemThemeableProps,
   PartyIconBackground,
-  PartyTheme,
-  PartyThemeableProps,
-  partyColors,
-} from "@/components/themed/party";
+  itemThemeCss,
+} from "@/components/themed/item-theme";
 import { addClass } from "@/util/transforms";
 
 type CardProps = {
   image?: ReactNode;
-} & PartyThemeableProps;
+} & ItemThemeableProps;
 
 const DefaultTheme: Theme = {
   primary: "var(--surface)",
@@ -24,7 +24,7 @@ const DefaultTheme: Theme = {
 
 type HeaderCardProps = CardProps & ComponentPropsWithoutRef<"div">;
 export const HeaderCard = (props: HeaderCardProps) => {
-  const { image, children, party, ...rest } = addClass(
+  const { image, children, themeSource, ...rest } = addClass(
     props,
     "@container card overflow-hidden w-full readable gap-4",
     "py-2 sm:p-4",
@@ -33,7 +33,7 @@ export const HeaderCard = (props: HeaderCardProps) => {
   );
 
   return (
-    <PartyTheme party={party} {...rest}>
+    <ItemTheme themeSource={themeSource} {...rest}>
       <Optional
         value={image}
         block={(it) => (
@@ -44,19 +44,19 @@ export const HeaderCard = (props: HeaderCardProps) => {
       />
 
       <div className="column max-sm:px-edge">{children}</div>
-    </PartyTheme>
+    </ItemTheme>
   );
 };
 
 type ListItemCardProps = { label?: string } & CardProps & NextLinkProps;
 export const ListItemCard = (props: ListItemCardProps) => {
-  const { image, children, party, defaultPartyTheme, label, style, ...rest } =
+  const { image, children, themeSource, defaultTheme, label, style, ...rest } =
     addClass(
       props,
       "@container max-w-listitem_card card surface-primary-tint-hover",
     );
 
-  const themedStyle = partyColors(party, defaultPartyTheme, style);
+  const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
 
   return (
     <Link style={themedStyle} {...rest}>
@@ -82,16 +82,14 @@ export const ListItemCard = (props: ListItemCardProps) => {
 };
 
 export const ListItemCardVibrant = (props: ListItemCardProps) => {
-  const { image, children, party, defaultPartyTheme, label, ...rest } =
+  const { image, children, themeSource, defaultTheme, label, ...rest } =
     addClass(props, "flex max-w-listitem_card sm:rounded-lg overflow-hidden ");
 
   return (
     <Link {...rest}>
       <PartyIconBackground
-        party={party}
-        defaultPartyTheme={
-          defaultPartyTheme === undefined ? DefaultTheme : defaultPartyTheme
-        }
+        themeSource={themeSource}
+        defaultTheme={defaultTheme === undefined ? DefaultTheme : defaultTheme}
         className="hover-overlay column w-full p-3"
       >
         <div className="flex w-full gap-3">

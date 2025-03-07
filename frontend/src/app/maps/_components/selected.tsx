@@ -8,7 +8,7 @@ import {
 import { MemberItemCard } from "@/components/models/list-item";
 import { onlyIf } from "@/components/optional";
 import Row from "@/components/row";
-import { PartyTheme } from "@/components/themed/party";
+import { ItemTheme } from "@/components/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
@@ -61,7 +61,7 @@ const SingleSelection = (props: Single) => {
     "card bg-[color-mix(in_srgb,var(--primary)_15%,var(--surface))]",
   );
   return (
-    <PartyTheme party={constituency.mp?.party} {...rest}>
+    <ItemTheme themeSource={constituency.mp?.party} {...rest}>
       <h2>
         <ConstituencyLink constituency={constituency} className="p-2" />
       </h2>
@@ -72,7 +72,7 @@ const SingleSelection = (props: Single) => {
           className="block hover bg-transparent"
         />
       ))}
-    </PartyTheme>
+    </ItemTheme>
   );
 };
 

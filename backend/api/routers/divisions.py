@@ -1,3 +1,6 @@
+from itertools import chain
+from typing import Iterable
+
 from api.schema.division import CommonsDivisionSchema, LordsDivisionSchema
 from api.schema.includes import DivisionMiniSchema
 from django.http import HttpRequest
@@ -7,6 +10,20 @@ from ninja.pagination import paginate
 from repository.models import CommonsDivision, LordsDivision
 
 router = Router(tags=["Divisions"])
+
+
+@router.get("/recent/", response=list[DivisionMiniSchema])
+@paginate
+def recent(request: HttpRequest, query: str = None):
+    commons = CommonsDivision.objects.all()
+    lords = LordsDivision.objects.all()
+
+    if query:
+        commons = commons.search(query)
+        lords = lords.search(query)
+
+    # return commons
+    return sorted(chain(commons, lords), key=lambda x: x.date, reverse=True)
 
 
 @router.get("/commons/", response=list[DivisionMiniSchema])

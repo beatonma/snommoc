@@ -10,6 +10,7 @@ export default function GlobalNavigation() {
         <Destination destination="parties">Parties</Destination>
         <Destination destination="constituencies">Constituencies</Destination>
         <Destination destination="nationalMap">Map</Destination>
+        <Destination destination="divisions">Divisions</Destination>
       </ul>
     </nav>
   );

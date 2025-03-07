@@ -3,6 +3,7 @@
 from crawlers.parliamentdotuk.tasks.types import (
     DateOrNone,
     DateTimeOrNone,
+    List,
     PersonName,
     SafeHtmlOrNone,
     StringOrNone,
@@ -60,10 +61,10 @@ class LordsDivision(Schema):
     remote_voting_start: DateTimeOrNone = field("remoteVotingStart")
     remote_voting_end: DateTimeOrNone = field("remoteVotingEnd")
     division_was_exclusively_remote: bool = field("divisionWasExclusivelyRemote")
-    content_tellers: list[LordsMember] | None = field("contentTellers")
-    not_content_tellers: list[LordsMember] | None = field("notContentTellers")
-    contents: list[LordsMember] | None
-    not_contents: list[LordsMember] | None = field("notContents")
+    content_tellers: List[LordsMember] | None = field("contentTellers")
+    not_content_tellers: List[LordsMember] | None = field("notContentTellers")
+    contents: List[LordsMember] | None
+    not_contents: List[LordsMember] | None = field("notContents")
 
 
 class CommonsDivisionItem(Schema):
@@ -98,8 +99,8 @@ class CommonsDivision(Schema):
     friendly_description: StringOrNone = field("FriendlyDescription")
     aye_count: int = field("AyeCount")
     no_count: int = field("NoCount")
-    aye_tellers: list[CommonsMember] = field("AyeTellers")
-    no_tellers: list[CommonsMember] = field("NoTellers")
-    ayes: list[CommonsMember] = field("Ayes")
-    noes: list[CommonsMember] = field("Noes")
-    did_not_vote: list[CommonsMember] = field("NoVoteRecorded")
+    aye_tellers: List[CommonsMember] = field("AyeTellers")
+    no_tellers: List[CommonsMember] = field("NoTellers")
+    ayes: List[CommonsMember] = field("Ayes")
+    noes: List[CommonsMember] = field("Noes")
+    did_not_vote: List[CommonsMember] = field("NoVoteRecorded")

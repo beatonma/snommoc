@@ -160,6 +160,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/divisions/recent/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent */
+        get: operations["api_routers_divisions_recent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/divisions/commons/": {
         parameters: {
             query?: never;
@@ -368,6 +385,17 @@ export interface components {
         };
         /** @enum {string} */
         StatusFilter: "current" | "inactive" | "historical" | "all";
+        /** ItemThemeSchema */
+        ItemThemeSchema: {
+            /** Primary */
+            primary: string;
+            /** On Primary */
+            on_primary: string;
+            /** Accent */
+            accent: string;
+            /** On Accent */
+            on_accent: string;
+        };
         /** MemberMiniSchema */
         MemberMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
@@ -393,7 +421,7 @@ export interface components {
         /** PartyMiniSchema */
         PartyMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
-            theme: components["schemas"]["PartyThemeSchema"] | null;
+            theme: components["schemas"]["ItemThemeSchema"] | null;
             name: components["schemas"]["Name"];
             /** Logo */
             logo: string | null;
@@ -403,17 +431,6 @@ export interface components {
             active_member_count: number;
             /** Active Commons Members */
             active_commons_members?: number | null;
-        };
-        /** PartyThemeSchema */
-        PartyThemeSchema: {
-            /** Primary */
-            primary: string;
-            /** On Primary */
-            on_primary: string;
-            /** Accent */
-            accent: string;
-            /** On Accent */
-            on_accent: string;
         };
         /**
          * _MemberConstituencySchema
@@ -961,7 +978,7 @@ export interface components {
         /** PartyMapSchema */
         PartyMapSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
-            theme: components["schemas"]["PartyThemeSchema"] | null;
+            theme: components["schemas"]["ItemThemeSchema"] | null;
             name: components["schemas"]["Name"];
             /** Logo */
             logo: string | null;
@@ -1018,7 +1035,7 @@ export interface components {
         /** PartyFullSchema */
         PartyFullSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
-            theme: components["schemas"]["PartyThemeSchema"] | null;
+            theme: components["schemas"]["ItemThemeSchema"] | null;
             name: components["schemas"]["Name"];
             short_name: components["schemas"]["Name"] | null;
             long_name: components["schemas"]["Name"] | null;
@@ -1286,6 +1303,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConstituencyFullSchema"];
+                };
+            };
+        };
+    };
+    api_routers_divisions_recent: {
+        parameters: {
+            query?: {
+                query?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedDivisionMiniSchema"];
                 };
             };
         };

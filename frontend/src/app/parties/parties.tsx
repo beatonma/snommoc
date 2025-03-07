@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { SearchList } from "@/components/paginated/search-list";
 import { GridSectionHeader } from "@/components/grid";
 import { PartyItemCard } from "@/components/models/list-item";
+import { SearchList } from "@/components/paginated/search-list";
 
 export default function PartyList() {
   return (
@@ -41,31 +41,3 @@ export default function PartyList() {
     />
   );
 }
-
-// const Party = (props: { party: Party } & ComponentPropsWithoutRef<"a">) => {
-//   const { party, className, ...rest } = props;
-//
-//   return (
-//     <ListItemCard
-//       href={`/parties/${party.parliamentdotuk}/`}
-//       party={party}
-//       image={<OptionalSvg src={party.logo} alt={party.name} className="p-2" />}
-//       {...rest}
-//     >
-//       <h2>{party.name}</h2>
-//
-//       <span>{partyMemberSummary(party)}</span>
-//     </ListItemCard>
-//   );
-// };
-//
-// const partyMemberSummary = (party: Party) => {
-//   const mps = party.active_commons_members;
-//   const lords = party.active_member_count - (party.active_commons_members ?? 0);
-//
-//   const parts = [];
-//   if (mps) parts.push(plural("MP", mps));
-//   if (lords) parts.push(plural("Lord", lords));
-//
-//   return parts.join(", ");
-// };

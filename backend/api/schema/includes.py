@@ -14,11 +14,11 @@ __all__ = [
     "MinimalMemberSchema",
     "OrganisationSchema",
     "PartyMiniSchema",
-    "PartyThemeSchema",
+    "ItemThemeSchema",
 ]
 
 
-class PartyThemeSchema(Schema):
+class ItemThemeSchema(Schema):
     primary: str = field("primary")
     on_primary: str = field("on_primary")
     accent: str = field("accent")
@@ -26,7 +26,7 @@ class PartyThemeSchema(Schema):
 
 
 class BasePartySchema(ParliamentSchema):
-    theme: PartyThemeSchema | None
+    theme: ItemThemeSchema | None
 
     @staticmethod
     def resolve_theme(obj):

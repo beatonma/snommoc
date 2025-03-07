@@ -14,7 +14,7 @@ import {
 } from "@/components/models/linked-data";
 import { onlyIf } from "@/components/optional";
 import { usePagination } from "@/components/paginated/pagination";
-import { PartyIconBackground } from "@/components/themed/party";
+import { PartyIconBackground } from "@/components/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
 import PartyTerritoryKey from "./_components/party-filter";
 import SelectedConstituenciesInfo from "./_components/selected";
@@ -219,7 +219,7 @@ const HoveredConstituency = (
   return (
     <div {...rest}>
       <PartyIconBackground
-        party={constituency?.mp?.party}
+        themeSource={constituency?.mp?.party}
         className="chip chip-content pointer-events-none"
       >
         <div className="column items-end">

@@ -8,7 +8,7 @@ import { OptionalSvg } from "@/components/image";
 import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
 import PageLayout from "@/components/page-layout";
-import { partyColors } from "@/components/themed/party";
+import { itemThemeCss } from "@/components/themed/item-theme";
 import { plural } from "@/util/plurals";
 
 type PageProps = {
@@ -41,10 +41,10 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <>
-      <PageLayout layout="CenteredReadable" style={partyColors(party)}>
+      <PageLayout layout="CenteredReadable" style={itemThemeCss(party)}>
         <section>
           <HeaderCard
-            party={party}
+            themeSource={party}
             image={
               <OptionalSvg
                 src={party.logo}

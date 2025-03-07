@@ -4,7 +4,7 @@ import { ListItemCard } from "@/components/card";
 import { SeparatedRow } from "@/components/collection";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv } from "@/components/optional";
-import { PartyThemeableProps } from "@/components/themed/party";
+import { ItemThemeableProps } from "@/components/themed/item-theme";
 import { navigationHref } from "@/navigation";
 import { ClassNameProps } from "@/types/common";
 
@@ -25,7 +25,7 @@ interface MemberItemProps {
 
 export default function MemberItemCard(
   props: MemberItemProps &
-    Pick<PartyThemeableProps, "defaultPartyTheme"> &
+    Pick<ItemThemeableProps, "defaultTheme"> &
     ClassNameProps,
 ) {
   const {
@@ -39,7 +39,7 @@ export default function MemberItemCard(
   return (
     <ListItemCard
       href={navigationHref("person", member.parliamentdotuk)}
-      party={usePartyTheme ? member.party : null}
+      themeSource={usePartyTheme ? member.party : null}
       image={<MemberPortrait name={member.name} src={member.portrait} />}
       {...rest}
     >

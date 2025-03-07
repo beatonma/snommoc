@@ -10,7 +10,7 @@ import MemberItemCard from "@/components/models/list-item/member-card";
 import { Percentage, int } from "@/components/number";
 import { Optional } from "@/components/optional";
 import PageLayout from "@/components/page-layout";
-import { partyColors } from "@/components/themed/party";
+import { itemThemeCss } from "@/components/themed/item-theme";
 import Links from "@/links";
 import { ConstituencyMap } from "./map";
 
@@ -46,7 +46,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <PageLayout
       layout="CenteredReadable"
-      style={partyColors(constituency.mp?.party)}
+      style={itemThemeCss(constituency.mp?.party)}
     >
       <section className="gap-y-0 overflow-hidden sm:rounded-lg">
         <ConstituencyMap
@@ -55,7 +55,7 @@ export default async function Page({ params }: PageProps) {
         />
 
         <HeaderCard
-          party={constituency.mp?.party}
+          themeSource={constituency.mp?.party}
           className="w-full! rounded-none!"
         >
           <h1>{constituency.name}</h1>

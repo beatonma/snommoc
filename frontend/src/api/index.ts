@@ -1,7 +1,7 @@
+import { FetchOptions } from "openapi-fetch";
+import { FilterKeys } from "openapi-typescript-helpers";
 import client from "@/lib/api";
 import { type components, type paths } from "@/lib/api/api";
-import { FilterKeys } from "openapi-typescript-helpers";
-import { FetchOptions } from "openapi-fetch";
 
 type schema = components["schemas"];
 
@@ -12,7 +12,7 @@ export type PartyDetail = schema["PartyFullSchema"];
 export type GenderDemographics = schema["GenderDemographics"];
 export type LordsDemographics = schema["LordsDemographics"];
 export type Party = schema["PartyMiniSchema"];
-export type PartyTheme = schema["PartyThemeSchema"];
+export type ItemTheme = schema["ItemThemeSchema"];
 export type MemberProfile = schema["MemberProfile"];
 export type PhysicalAddress = schema["PhysicalAddressSchema"];
 export type WebAddress = schema["WebAddressSchema"];
@@ -26,6 +26,7 @@ export type PartyTerritory = schema["PartyMapSchema"];
 export type Organisation = schema["OrganisationSchema"];
 export type Post = Omit<schema["PostSchema"], "start" | "end">;
 export type Committee = Omit<schema["CommitteeMemberSchema"], "start" | "end">;
+export type Division = schema["DivisionMiniSchema"];
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Fixtures {

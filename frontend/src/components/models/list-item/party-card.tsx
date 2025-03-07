@@ -14,8 +14,8 @@ export default function PartyItemCard(
   return (
     <ListItemCard
       href={navigationHref("party", party.parliamentdotuk)}
-      party={party}
-      defaultPartyTheme={{
+      themeSource={party}
+      defaultTheme={{
         primary: "var(--surface)",
         on_primary: "var(--on_surface)",
         accent: "var(--surface)",

@@ -17,7 +17,7 @@ import { LinkGroup } from "@/components/link";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
 import PageLayout from "@/components/page-layout";
-import { partyColors } from "@/components/themed/party";
+import { itemThemeCss } from "@/components/themed/item-theme";
 import { Nullish } from "@/types/common";
 import { addClass } from "@/util/transforms";
 
@@ -51,7 +51,7 @@ export default async function Page({ params }: PageProps) {
   if (!member) return <ErrorMessage />;
 
   return (
-    <PageLayout layout="CenteredReadable" style={partyColors(member.party)}>
+    <PageLayout layout="CenteredReadable" style={itemThemeCss(member.party)}>
       <MemberCard member={member} />
       <MemberDetail member={member} className="px-edge" />
       <MemberCareer member={member} className="px-edge" />
@@ -69,7 +69,7 @@ const MemberCard = (props: MemberComponentProps) => {
   return (
     <section {...rest}>
       <HeaderCard
-        party={member.party}
+        themeSource={member.party}
         image={onlyIf(member.portrait, (portrait) => (
           <a href={portrait.full ?? undefined}>
             <MemberPortrait

@@ -40,7 +40,6 @@ export default function MemberItemCard(
     <ListItemCard
       href={navigationHref("person", member.parliamentdotuk)}
       party={usePartyTheme ? member.party : null}
-      title={`${member.parliamentdotuk}`}
       image={<MemberPortrait name={member.name} src={member.portrait} />}
       {...rest}
     >

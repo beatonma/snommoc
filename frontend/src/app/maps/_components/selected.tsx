@@ -6,6 +6,7 @@ import {
   PartyLink,
 } from "@/components/models/linked-data";
 import { MemberItemCard } from "@/components/models/list-item";
+import { onlyIf } from "@/components/optional";
 import Row from "@/components/row";
 import { PartyTheme } from "@/components/themed/party";
 import { DivPropsNoChildren } from "@/types/react";
@@ -34,7 +35,13 @@ export default function SelectedConstituenciesInfo(props: Multi) {
 
 const NoSelection = (props: DivPropsNoChildren) => {
   return (
-    <div {...addClass(props, "card card-content surface-accent column gap-2")}>
+    <div
+      {...addClass(
+        props,
+        "card card-content surface-accent column gap-2 text-lg",
+      )}
+    >
+      <h2>Parliamentary constituencies</h2>
       <p>
         The UK is divided into 650 constituencies which each elect a Member of
         Parliament (MP) to the{" "}
@@ -49,23 +56,22 @@ const NoSelection = (props: DivPropsNoChildren) => {
 };
 
 const SingleSelection = (props: Single) => {
-  const { constituency, ...rest } = props;
+  const { constituency, ...rest } = addClass(
+    props,
+    "card bg-[color-mix(in_srgb,var(--primary)_15%,var(--surface))]",
+  );
   return (
-    <PartyTheme
-      party={constituency.mp?.party}
-      {...addClass(rest, "card surface surface-primary-tint-hover")}
-    >
-      <h2 className="card-content">
-        <ConstituencyLink constituency={constituency} />
+    <PartyTheme party={constituency.mp?.party} {...rest}>
+      <h2>
+        <ConstituencyLink constituency={constituency} className="p-2" />
       </h2>
-      {constituency.mp ? (
+      {onlyIf(constituency.mp, (mp) => (
         <MemberItemCard
-          member={constituency.mp}
+          member={mp}
           showConstituency={false}
-          usePartyTheme={false}
-          defaultPartyTheme={null}
+          className="block hover bg-transparent"
         />
-      ) : null}
+      ))}
     </PartyTheme>
   );
 };

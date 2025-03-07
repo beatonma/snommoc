@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
-import { ClassNameProps } from "@/types/common";
 import { GeoLocation } from "@/components/map/geography";
+import { ClassNameProps } from "@/types/common";
 
 interface GeoLocationOptions {
   enabled: boolean;
@@ -17,7 +17,9 @@ export const useGeoLocation = (options: GeoLocationOptions) => {
       .query({ name: "geolocation" })
       .then((status: PermissionStatus) => {
         if (status.state === "denied") return;
-        getCurrentPosition().then(setLocation);
+        getCurrentPosition()
+          .then(setLocation)
+          .catch(handleGetCurrentPositionError);
       });
   }, [options.enabled]);
 
@@ -105,7 +107,9 @@ export const usePassiveGeoLocation = (_default?: GeoLocation) => {
       .query({ name: "geolocation" })
       .then((status: PermissionStatus) => {
         if (status.state === "granted") {
-          getCurrentPosition().then(setLocation);
+          getCurrentPosition()
+            .then(setLocation)
+            .catch(handleGetCurrentPositionError);
         } else {
           setLocation(_default);
         }
@@ -130,3 +134,7 @@ const getCurrentPosition = async () =>
       },
     );
   });
+
+const handleGetCurrentPositionError = (e: any) => {
+  console.warn(`getCurrentPosition error: ${e}`);
+};

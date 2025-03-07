@@ -62,7 +62,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
     <Link style={themedStyle} {...rest}>
       <div className="flex size-full flex-row">
         {image ? (
-          <div className="bg-mix_primary_background border-primary m-2 flex aspect-square size-20 shrink-0 flex-col items-start overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-sm:hidden">
+          <div className="bg-mix_primary_background border-primary m-2 flex aspect-square size-20 shrink-0 flex-col items-start overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-2xs:hidden">
             {image}
           </div>
         ) : (

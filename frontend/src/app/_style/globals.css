@@ -230,6 +230,9 @@
 @utility surface-accent {
   @apply bg-accent text-on_accent;
 }
+@utility hover {
+  @apply hover:bg-hover transition-colors;
+}
 @utility surface-commons {
   @apply bg-house-commons text-house-on_commons;
 }

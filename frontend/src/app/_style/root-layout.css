@@ -1,0 +1,52 @@
+@layer base {
+  body {
+    --side-navigation-width: 200px;
+
+    display: grid;
+    grid-template-rows: min-content 1fr min-content;
+    height: 100%;
+    width: 100%;
+
+    grid-template-areas:
+      "header"
+      "content"
+      "footer";
+
+    > header {
+      grid-area: header;
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      grid-template-areas:
+        "h1 toolbar"
+        "nav nav";
+
+      h1 {
+        grid-area: h1;
+      }
+      .toolbar {
+        grid-area: toolbar;
+        display: flex;
+        justify-content: end;
+        font-size: var(--text-sm);
+      }
+      > nav {
+        grid-area: nav;
+      }
+
+      @media (width >= 800px) {
+        grid-template-areas: "h1 nav toolbar";
+        grid-template-columns: 1fr 1fr 1fr;
+
+        > nav {
+          justify-self: center;
+        }
+      }
+    }
+    > .global-content-wrapper {
+      grid-area: content;
+    }
+    > footer {
+      grid-area: footer;
+    }
+  }
+}

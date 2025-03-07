@@ -249,7 +249,7 @@
   @apply touch-target overflow-hidden rounded-md shadow-sm;
 }
 @utility chip-content {
-  @apply px-2 py-0.5 text-sm;
+  @apply px-2 py-0.5 text-sm select-none;
 }
 @utility touch-target {
   @variant touch {

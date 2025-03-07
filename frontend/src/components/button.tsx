@@ -76,7 +76,7 @@ const ButtonIcon = (props: ButtonContentProps) => (
 const BaseButton = (props: ButtonProps) => {
   const { icon, children, ..._rest } = addClass(
     props,
-    "inline-flex items-center justify-center hover:cursor-pointer transition-all touch-target",
+    "inline-flex items-center justify-center hover:cursor-pointer transition-all touch-target select-none",
   );
 
   const isIconOnly = icon && React.Children.count(children) === 0;

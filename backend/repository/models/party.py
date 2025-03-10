@@ -116,7 +116,9 @@ class PartyQuerySet(BaseQuerySet):
             return self.get_or_none(parliamentdotuk=parliamentdotuk), False
 
         if name:
-            return self.get_or_none(name__iexact=name), False  #
+            return self.get_or_none(name__iexact=name), False
+
+        return None, False
 
     def current(self):
         return self.filter(territory__isnull=False)

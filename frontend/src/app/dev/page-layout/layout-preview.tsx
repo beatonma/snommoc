@@ -35,10 +35,10 @@ const Layout = ({ layout }: { layout: LayoutName }) => {
       className="gap-2"
       secondary={<Card className="surface-lords">Secondary</Card>}
       sidebarLeft={
-        <Card className="bg-house-lords-dark text-house-on_lords">Left</Card>
+        <Card className="bg-house_lords-dark text-house_on_lords">Left</Card>
       }
       sidebarRight={
-        <Card className="bg-house-lords-darker text-house-on_lords">Right</Card>
+        <Card className="bg-house_lords_darker text-house_on_lords">Right</Card>
       }
     >
       <Card className="surface-commons">

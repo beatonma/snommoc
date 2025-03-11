@@ -10,16 +10,16 @@ import { ClassNameProps } from "@/types/common";
 const HouseTheme = (house: HouseType): ItemTheme => {
   return {
     Commons: {
-      primary: "var(--color-house-commons)",
-      on_primary: "var(--color-house-on_commons)",
-      accent: "var(--color-house-commons)",
-      on_accent: "var(--color-house-on_commons)",
+      primary: "var(--color-house_commons)",
+      on_primary: "var(--color-house_on_commons)",
+      accent: "var(--color-house_commons)",
+      on_accent: "var(--color-house_on_commons)",
     },
     Lords: {
-      primary: "var(--color-house-lords)",
-      on_primary: "var(--color-house-on_lords)",
-      accent: "var(--color-house-lords)",
-      on_accent: "var(--color-house-on_lords)",
+      primary: "var(--color-house_lords)",
+      on_primary: "var(--color-house_on_lords)",
+      accent: "var(--color-house_lords)",
+      on_accent: "var(--color-house_on_lords)",
     },
   }[house];
 };

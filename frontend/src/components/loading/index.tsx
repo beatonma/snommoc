@@ -1,4 +1,4 @@
-import { Icon } from "@/components/icon";
+import Icon from "@/components/icon";
 import { DivPropsNoChildren } from "@/types/react";
 import "./loading.css";
 

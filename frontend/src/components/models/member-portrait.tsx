@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import CommonsIcon from "@/svg/commons.svg";
+import Icon from "@/components/icon";
 import { classes } from "@/util/transforms";
 
 interface PortraitProps {
@@ -29,7 +29,7 @@ export const MemberPortrait = (props: PortraitProps) => {
           sizes="260px" // Size from api source
         />
       ) : (
-        <CommonsIcon className="size-full" />
+        <Icon icon="Commons" className="size-full" />
       )}
     </div>
   );

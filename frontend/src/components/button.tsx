@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { ComponentPropsWithoutRef } from "react";
-import { AppIcon, Icon } from "@/components/icon";
+import Icon, { type AppIcon } from "@/components/icon";
 import { ChildrenProps } from "@/types/common";
 import { addClass } from "@/util/transforms";
 

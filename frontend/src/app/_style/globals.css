@@ -203,19 +203,19 @@
 }
 
 @utility surface {
-  @apply bg-surface text-on_surface;
+  @apply bg-surface text-on_surface fill-on_surface;
 }
 @utility surface-hover {
   @apply surface hover:bg-surface_hover transition-colors;
 }
 @utility surface-alt {
-  @apply bg-surface_alt text-on_surface;
+  @apply bg-surface_alt text-on_surface fill-on_surface;
 }
 @utility surface-invert {
-  @apply bg-invert_surface text-invert_on_surface;
+  @apply bg-invert_surface text-invert_on_surface fill-invert_on_surface;
 }
 @utility surface-primary {
-  @apply bg-primary text-on_primary contrast-less:surface-primary-tint;
+  @apply bg-primary text-on_primary fill-on_primary contrast-less:surface-primary-tint;
 }
 @utility surface-primary-tint {
   @apply surface;
@@ -231,16 +231,16 @@
   }
 }
 @utility surface-accent {
-  @apply bg-accent text-on_accent;
+  @apply bg-accent text-on_accent fill-on_accent;
 }
 @utility hover {
   @apply hover:bg-hover transition-colors;
 }
 @utility surface-commons {
-  @apply bg-house_commons text-house_on_commons;
+  @apply bg-house_commons text-house_on_commons fill-house_on_commons;
 }
 @utility surface-lords {
-  @apply bg-house_lords text-house_on_lords;
+  @apply bg-house_lords text-house_on_lords fill-house_on_lords;
 }
 @utility card {
   @apply overflow-hidden shadow-md sm:rounded-lg;

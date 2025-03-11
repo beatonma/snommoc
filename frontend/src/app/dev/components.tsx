@@ -4,6 +4,7 @@ import React, { ComponentPropsWithoutRef, useId, useState } from "react";
 import * as Sample from "@/app/dev/sample";
 import { TextButton, TintedButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
+import Icon, { IconProps } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
 import { ButtonLink } from "@/components/link";
 import Loading, { LoadingBar } from "@/components/loading";
@@ -32,6 +33,7 @@ export const ComponentsOverview = () => (
   <>
     <InputComponents />
     <ButtonComponents />
+    <Icons />
     <CardComponents />
     <TabComponents />
     <SortableComponents />
@@ -418,5 +420,36 @@ const SectionItem = (
       </h2>
       {props.children}
     </div>
+  );
+};
+
+const Icons = () => {
+  const IconWrapper = (props: IconProps) => (
+    <div className="relative aspect-square text-[96px] border-1 border-dashed border-current">
+      <div className="absolute inset-0 m-[8px] border-dashed border-1 border-primary" />
+      <Icon {...props} />
+    </div>
+  );
+
+  return (
+    <Section name="<Icon />">
+      <div className="card card-content surface grid grid-cols-[repeat(auto-fit,96px)] gap-2">
+        <IconWrapper icon="Commons" />
+        <IconWrapper icon="BlueSky" />
+        <IconWrapper icon="Facebook" />
+        <IconWrapper icon="Instagram" />
+        <IconWrapper icon="Twitter" />
+        <IconWrapper icon="Wikipedia" />
+        <IconWrapper icon="ThemeLightMode" />
+        <IconWrapper icon="ThemeDarkMode" />
+        <IconWrapper icon="ThemeSystemDefault" />
+        <IconWrapper icon="Email" />
+        <IconWrapper icon="Fax" />
+        <IconWrapper icon="Phone" />
+        <IconWrapper icon="Check" />
+        <IconWrapper icon="Close" />
+        <IconWrapper icon="Home" />
+      </div>
+    </Section>
   );
 };

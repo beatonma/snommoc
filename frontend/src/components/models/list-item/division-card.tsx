@@ -2,7 +2,7 @@ import { Division, HouseType, ItemTheme } from "@/api";
 import { ListItemCard } from "@/components/card";
 import { SeparatedRow } from "@/components/collection";
 import { Date } from "@/components/datetime";
-import { Icon, IconProps } from "@/components/icon";
+import Icon, { IconProps } from "@/components/icon";
 import { HouseLink } from "@/components/models/linked-data";
 import { navigationHref } from "@/navigation";
 import { ClassNameProps } from "@/types/common";

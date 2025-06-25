@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { MemberMiniSchema } from "@/api";
 import { ListItemCard } from "@/components/card";
 import { SeparatedRow } from "@/components/collection";
@@ -6,18 +6,14 @@ import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv } from "@/components/optional";
 import { ItemThemeableProps } from "@/components/themed/item-theme";
 import { navigationHref } from "@/navigation";
-import { ClassNameProps } from "@/types/common";
-
-type OptionalMemberFields = Pick<
-  Partial<MemberMiniSchema>,
-  "current_posts" | "constituency"
->;
-type MemberLike = Omit<MemberMiniSchema, keyof OptionalMemberFields> &
-  OptionalMemberFields;
+import { ChildrenProps, ClassNameProps } from "@/types/common";
 
 interface MemberItemProps {
-  member: MemberLike;
-  label?: string;
+  member: Partial<MemberMiniSchema> &
+    Pick<MemberMiniSchema, "parliamentdotuk" | "name">;
+  badge?: ReactNode;
+  label?: ReactNode;
+  image?: ReactNode;
   showParty?: boolean;
   showConstituency?: boolean;
   usePartyTheme?: boolean;
@@ -26,12 +22,16 @@ interface MemberItemProps {
 export default function MemberItemCard(
   props: MemberItemProps &
     Pick<ItemThemeableProps, "defaultTheme"> &
+    ChildrenProps &
     ClassNameProps,
 ) {
   const {
     member,
     showParty,
     showConstituency,
+    image,
+    badge,
+    children,
     usePartyTheme = true,
     ...rest
   } = props;
@@ -40,7 +40,12 @@ export default function MemberItemCard(
     <ListItemCard
       href={navigationHref("person", member.parliamentdotuk)}
       themeSource={usePartyTheme ? member.party : null}
-      image={<MemberPortrait name={member.name} src={member.portrait} />}
+      image={
+        <div className="relative size-full">
+          {image ?? <MemberPortrait name={member.name} src={member.portrait} />}
+          <div className="absolute bottom-0 right-0 m-1">{badge}</div>
+        </div>
+      }
       {...rest}
     >
       <h2>{member.name}</h2>
@@ -63,6 +68,7 @@ export default function MemberItemCard(
           className="line-clamp-1"
         />
       </SeparatedRow>
+      {children}
     </ListItemCard>
   );
 }

@@ -35,10 +35,9 @@ const NationalMapWithLocation = ({
   userLocation: GeoLocation;
 }) => {
   const [territories, setTerritories] = useState<PartyTerritory[]>();
-  const constituencies = usePagination(
-    "/api/maps/constituencies/",
-    userLocation,
-  );
+  const constituencies = usePagination("/api/maps/constituencies/", {
+    query: userLocation,
+  });
   const loadingProgress = useMemo(
     () =>
       (constituencies.items.length / (constituencies.availableItems || 1)) *
@@ -120,7 +119,13 @@ const NationalMapWithLocation = ({
     }
 
     constituencies.loadNext?.();
-  }, [map, constituencies.items, constituencies.loadNext]);
+  }, [
+    map,
+    constituencies.items,
+    constituencies.loadNext,
+    filterByParty,
+    focussedPartyId,
+  ]);
 
   return (
     <div className="map-layout">

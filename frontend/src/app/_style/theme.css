@@ -151,6 +151,26 @@
   --color-hover: color-mix(in srgb, currentColor 5%, transparent);
 }
 
+@theme {
+  --color-house_commons: rgb(0 110 70);
+  --color-house_commons_dark: #005434;
+  --color-house_commons_darker: #004229;
+  --color-house_on_commons: #fff;
+
+  --color-house_lords: rgb(181 9 56);
+  --color-house_lords_dark: #540016;
+  --color-house_lords_darker: #420012;
+  --color-house_on_lords: #fff;
+
+  --color-scrim: rgb(0 0 0 / 70%);
+  --color-on_scrim: var(--color-white);
+
+  --color-positive: rgb(2, 113, 45);
+  --color-on_positive: var(--color-white);
+  --color-negative: rgb(163, 6, 40);
+  --color-on_negative: var(--color-white);
+}
+
 @layer base {
   body {
     &[data-theme="light"] {

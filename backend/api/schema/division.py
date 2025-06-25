@@ -1,7 +1,9 @@
 from datetime import date
+from typing import Literal
 
-from api.schema.includes import MemberMiniSchema, PartyMiniSchema
-from api.schema.types import Name, ParliamentId, ParliamentSchema, field
+from api.schema.includes import MemberMiniSchema, MinimalMemberSchema, PartyMiniSchema
+from api.schema.types import ParliamentSchema, field
+from ninja import Schema
 from repository.models.houses import HouseType
 
 __all__ = [
@@ -10,11 +12,25 @@ __all__ = [
 ]
 
 
-class CommonsVoteSchema(ParliamentSchema):
-    parliamentdotuk: ParliamentId = field("person.parliamentdotuk")
-    name: Name = field("person.name")
-    vote: str = field("vote_type.name")
-    party: PartyMiniSchema = field("person.party")
+type DivisionVoteType = Literal["aye", "no", "did_not_vote"]
+
+
+class DivisionVoteMemberSchema(MinimalMemberSchema):
+    party: PartyMiniSchema
+
+
+class VoteSchema(Schema):
+    person: DivisionVoteMemberSchema
+    vote: DivisionVoteType = field("vote_type.name")
+
+    @staticmethod
+    def resolve_vote(obj) -> DivisionVoteType:
+        vote_type = obj.vote_type.name
+        if vote_type == "aye" or vote_type == "content":
+            return "aye"
+        if vote_type == "no" or vote_type == "not_content":
+            return "no"
+        return vote_type
 
 
 class CommonsDivisionSchema(ParliamentSchema):
@@ -26,14 +42,6 @@ class CommonsDivisionSchema(ParliamentSchema):
     ayes: int
     noes: int
     did_not_vote: int
-    votes: list[CommonsVoteSchema]
-
-
-class LordsVoteSchema(ParliamentSchema):
-    parliamentdotuk: ParliamentId = field("person.parliamentdotuk")
-    name: Name = field("person.name")
-    vote: str = field("vote_type.name")
-    party: PartyMiniSchema = field("person.party")
 
 
 class LordsDivisionSchema(ParliamentSchema):
@@ -46,4 +54,3 @@ class LordsDivisionSchema(ParliamentSchema):
     is_whipped_vote: bool = field("is_whipped")
     ayes: int
     noes: int
-    votes: list[LordsVoteSchema] = field("votes")

@@ -1,7 +1,6 @@
-import { FetchOptions } from "openapi-fetch";
-import { FilterKeys } from "openapi-typescript-helpers";
+import type { PathsWithMethod } from "openapi-typescript-helpers";
 import client from "@/lib/api";
-import { type components, type paths } from "@/lib/api/api";
+import type { components, paths } from "@/lib/api/api";
 
 type schema = components["schemas"];
 
@@ -27,6 +26,8 @@ export type Organisation = schema["OrganisationSchema"];
 export type Post = Omit<schema["PostSchema"], "start" | "end">;
 export type Committee = Omit<schema["CommitteeMemberSchema"], "start" | "end">;
 export type Division = schema["DivisionMiniSchema"];
+export type CommonsDivision = schema["CommonsDivisionSchema"];
+export type DivisionVoteType = schema["DivisionVoteType"];
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Fixtures {
@@ -37,13 +38,14 @@ export namespace Fixtures {
     "historical",
     "all",
   ];
+  export const VoteTypes: DivisionVoteType[] = ["aye", "no", "did_not_vote"];
 }
-
-export type _DeprExtraFilters = Record<string, any>;
 
 interface Paged<T> {
   items: T[];
   count: number;
+  previous: number | null;
+  next: number | null;
 }
 type ApiResponse<T> =
   | {
@@ -63,47 +65,32 @@ export type Query<P extends Path> =
   paths[P]["get"]["parameters"]["query"] extends never
     ? never
     : paths[P]["get"]["parameters"]["query"];
-export type PathArgs<P extends Path> =
-  paths[P]["get"]["parameters"]["path"] extends never
-    ? never
-    : paths[P]["get"]["parameters"]["path"];
 
-type GetInit<Path extends keyof paths> = FetchOptions<
-  FilterKeys<paths[Path], "get">
->;
-export const get = <P extends Path>(
+export type PathWithGet = PathsWithMethod<paths, "get">;
+export type Params<P extends PathWithGet> = paths[P]["get"]["parameters"];
+
+export const get = async <P extends PathWithGet>(
   path: P,
-  params?: { path?: PathArgs<P>; query?: Query<P> }, // todo RequiredKeysOf
-): ApiPromise<ResponseOf<P>> =>
-  client.GET(path, {
-    params: params,
-  } as GetInit<P>) as ApiPromise<ResponseOf<P>>;
+  params?: Params<P>,
+  signal?: AbortSignal,
+) =>
+  client.GET(
+    path,
+    // @ts-expect-error Unable to find 'correct' type for this object
+    {
+      params,
+      signal,
+    },
+  );
 
 export const getPaginated = <P extends PathWithPagination>(
   path: P,
-  query: Query<P>,
+  query: Params<P>,
+  signal?: AbortSignal,
 ): ApiPromise<PagedResponseOf<P>> =>
-  client.GET(path, {
-    params: {
-      query: query,
-    },
-  } as GetInit<P>) as ApiPromise<PagedResponseOf<P>>;
+  get(path, query, signal) as ApiPromise<PagedResponseOf<P>>;
 
-export type ResponseOf<P extends Path> = paths[P] extends {
-  get: {
-    responses: {
-      200: {
-        content: {
-          "application/json": infer JSON;
-        };
-      };
-    };
-  };
-}
-  ? JSON
-  : never;
-
-type PagedResponseOf<P extends PathWithPagination> = paths[P] extends {
+export type PagedResponseOf<P extends PathWithPagination> = paths[P] extends {
   get: {
     responses: {
       200: {

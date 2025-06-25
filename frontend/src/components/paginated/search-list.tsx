@@ -1,25 +1,14 @@
-import { useRouter, useSearchParams } from "next/navigation";
-import React, {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from "react";
-import {
-  type PageItemType,
-  type Query,
-  type SearchablePath,
-  type _DeprExtraFilters,
-} from "@/api";
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import React, { type ReactNode, useId, useMemo, useState } from "react";
+import type { PageItemType, Params, Query, SearchablePath } from "@/api";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
 import { onlyIf } from "@/components/optional";
+import { Paginated, usePagination } from "@/components/paginated/pagination";
 import { MaybeString } from "@/types/common";
-import { DivPropsNoChildren } from "@/types/react";
+import { DivPropsNoChildren, StateSetter } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
 
@@ -33,7 +22,7 @@ export interface SearchFilters {
 
 interface ListPageProps<P extends SearchablePath> {
   path: P;
-  query?: Query<P> | undefined;
+  params?: Params<P> | undefined;
   header?: ReactNode;
   itemComponent: PaginationItemComponent<PageItemType<P>>;
   gridClassName?: string;
@@ -46,14 +35,14 @@ interface ListPageProps<P extends SearchablePath> {
   /**
    * Filters that are always applied to search results.
    */
-  immutableFilters?: _DeprExtraFilters;
+  immutableFilters?: Query<P>;
 }
 export const SearchList = <P extends SearchablePath>(
   props: ListPageProps<P> & Omit<DivPropsNoChildren, keyof ListPageProps<P>>,
 ) => {
   const {
     path,
-    query: queryFromProps,
+    params,
     immutableFilters,
     header,
     itemComponent,
@@ -62,82 +51,29 @@ export const SearchList = <P extends SearchablePath>(
     ...rest
   } = props;
 
-  const router = useRouter();
   const search = useSearchParams();
-  const [query, setQuery] = useState<string>(search.get(QueryParam) ?? "");
+  const [query, setQuery] = useState<string>(
+    search.get(QueryParam) || params?.query?.query || "",
+  );
   const [currentQuery, setCurrentQuery] = useState<string>(query);
   const [filters, setFilters, filtersQuery] = useFilters(searchFilters, search);
-  const [composedQuery, setComposedQuery] = useState<Query<P> | undefined>();
 
-  const previousSearchParams = useRef<string>(undefined);
-  const isInitialized = useRef<boolean>(false);
-
-  const updateSearchParams = useCallback(
-    /**
-     * Update the browser location to reflect current state of query and filters.
-     * Return true if there was a meaningful change.
-     */
-    (query: string, filters: _DeprExtraFilters): boolean => {
-      const params = new URLSearchParams();
-      Object.entries({ [QueryParam]: query, ...filters }).forEach(
-        ([key, value]) => {
-          if (value != null && value !== "") {
-            params.set(key, value);
-          }
-        },
-      );
-      params.sort();
-      const serialized = `${params}`;
-      if (serialized === previousSearchParams.current) return false;
-      previousSearchParams.current = serialized;
-      if (isInitialized.current) {
-        router.push(`?${serialized}`);
-      } else {
-        router.replace(`?${serialized}`);
-      }
-      return true;
-    },
-    [router],
-  );
-
-  useEffect(() => {
-    /**
-     * When navigating back/forward, update the active query from browser location.
-     */
-    const q = search.get(QueryParam) ?? "";
-    if (q === currentQuery) return;
-    setQuery(q);
-    setCurrentQuery(q);
-  }, [search, updateSearchParams]);
-
-  useEffect(() => {
-    /* Don't build loader until filtersQuery is populated. */
-    if (filtersQuery == null) return;
-
-    const paramsChanged = updateSearchParams(currentQuery, filtersQuery);
-    if (!paramsChanged) return;
-
-    const fullQuery: Query<P> = {
-      query: currentQuery,
-      ...filtersQuery,
-      ...immutableFilters,
+  const paginationConfigMemo = useMemo(() => {
+    return {
+      ...params,
+      query: {
+        ...params?.query,
+        ...filtersQuery,
+        query: currentQuery,
+      },
+      updateBrowserLocation: true,
     };
-    setComposedQuery(fullQuery);
-    isInitialized.current = true;
-  }, [
-    updateSearchParams,
-    queryFromProps,
-    immutableFilters,
-    currentQuery,
-    filtersQuery,
-  ]);
-
-  if (composedQuery === undefined) return;
+  }, [params, currentQuery, filtersQuery]);
+  const pagination = usePagination(path, paginationConfigMemo);
 
   return (
     <_SearchList
-      path={path}
-      composedQuery={composedQuery}
+      pagination={pagination}
       header={header}
       gridClassName={gridClassName}
       itemComponent={itemComponent}
@@ -153,8 +89,7 @@ export const SearchList = <P extends SearchablePath>(
 
 const _SearchList = <P extends SearchablePath>(
   props: {
-    path: P;
-    composedQuery: Query<P> | undefined;
+    pagination: Paginated<PageItemType<P>>;
     header: ReactNode | undefined;
     itemComponent: PaginationItemComponent<PageItemType<P>>;
     gridClassName: string | undefined;
@@ -167,8 +102,7 @@ const _SearchList = <P extends SearchablePath>(
 ) => {
   const hasHeader = !!props.header;
   const {
-    path,
-    composedQuery,
+    pagination,
     header,
     itemComponent,
     gridClassName,
@@ -186,8 +120,7 @@ const _SearchList = <P extends SearchablePath>(
   return (
     <InfiniteScroll
       {...rest}
-      path={path}
-      query={composedQuery}
+      pagination={pagination}
       itemComponent={itemComponent}
       header={
         <GridSpan
@@ -253,29 +186,23 @@ const resolveFilterValue = <T,>(value: T | FilterValue<T>): FilterValue<T> => {
 interface SingleChoiceFilter extends SearchFilter<MaybeString> {
   values: (MaybeString | FilterValue<MaybeString>)[];
 }
-const useFilters = (
+const useFilters = <P extends SearchablePath>(
   init: SearchFilters | undefined,
   initUrlParams: URLSearchParams,
-): [
-  SearchFilters,
-  Dispatch<SetStateAction<SearchFilters>>,
-  _DeprExtraFilters | undefined,
-] => {
+): [SearchFilters, StateSetter<SearchFilters>, Query<P> | undefined] => {
   const [filters, setFilters] = useState<SearchFilters>(() =>
     initFilters(init, initUrlParams),
   );
-  const [queryFilters, setQueryFilters] = useState<_DeprExtraFilters>();
-
-  useEffect(() => {
+  const queryFilters = useMemo(() => {
     // Build a flat {key:value} map suitable for use in URLSearchParams.
-    const results: _DeprExtraFilters = {};
+    const results: Record<string, any> = {};
 
     Object.values(filters).forEach((filterType: SearchFilter<unknown>) => {
       Object.entries(filterType).forEach(([key, value]) => {
         results[key] = value.value || undefined;
       });
     });
-    setQueryFilters(results);
+    return results;
   }, [filters]);
 
   return [filters, setFilters, queryFilters];
@@ -396,7 +323,7 @@ const SingleChoiceFilter = (
                 key={resolved?.value ?? null}
                 value={resolved?.value ?? ""}
               >
-                {capitalize(resolved?.display) ?? "----"}
+                {capitalize(resolved?.display?.replaceAll("_", " ")) ?? "----"}
               </option>
             );
           })}

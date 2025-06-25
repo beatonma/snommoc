@@ -211,6 +211,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/divisions/commons/{parliamentdotuk}/votes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Commons Division Votes */
+        get: operations["api_routers_divisions_commons_division_votes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/divisions/lords/": {
         parameters: {
             query?: never;
@@ -416,6 +433,12 @@ export interface components {
             items: components["schemas"]["MemberMiniSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         ParliamentId: number;
         /** PartyMiniSchema */
@@ -696,9 +719,8 @@ export interface components {
         };
         /** VoteSchema */
         VoteSchema: {
-            division: components["schemas"]["DivisionMiniSchema"];
-            /** Vote */
-            vote: string;
+            person: components["schemas"]["DivisionVoteMemberSchema"];
+            vote: components["schemas"]["DivisionVoteType"];
         };
         /** BillMiniSchema */
         BillMiniSchema: {
@@ -719,6 +741,12 @@ export interface components {
             items: components["schemas"]["BillMiniSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** BillFullSchema */
         BillFullSchema: {
@@ -817,6 +845,12 @@ export interface components {
             items: components["schemas"]["ConstituencyMiniSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** ConstituencyCandidateSchema */
         ConstituencyCandidateSchema: {
@@ -872,6 +906,12 @@ export interface components {
             items: components["schemas"]["DivisionMiniSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** CommonsDivisionSchema */
         CommonsDivisionSchema: {
@@ -894,16 +934,29 @@ export interface components {
             noes: number;
             /** Did Not Vote */
             did_not_vote: number;
-            /** Votes */
-            votes: components["schemas"]["CommonsVoteSchema"][];
         };
-        /** CommonsVoteSchema */
-        CommonsVoteSchema: {
+        /** @enum {string} */
+        DivisionVoteType: "aye" | "no" | "did_not_vote";
+        /** DivisionVoteMemberSchema */
+        DivisionVoteMemberSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["Name"];
-            /** Vote */
-            vote: string;
+            /** Portrait */
+            portrait?: string | null;
             party: components["schemas"]["PartyMiniSchema"];
+        };
+        /** PagedVoteSchema */
+        PagedVoteSchema: {
+            /** Items */
+            items: components["schemas"]["VoteSchema"][];
+            /** Count */
+            count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** LordsDivisionSchema */
         LordsDivisionSchema: {
@@ -927,16 +980,6 @@ export interface components {
             ayes: number;
             /** Noes */
             noes: number;
-            /** Votes */
-            votes: components["schemas"]["LordsVoteSchema"][];
-        };
-        /** LordsVoteSchema */
-        LordsVoteSchema: {
-            parliamentdotuk: components["schemas"]["ParliamentId"];
-            name: components["schemas"]["Name"];
-            /** Vote */
-            vote: string;
-            party: components["schemas"]["PartyMiniSchema"];
         };
         /** PagedElectionSchema */
         PagedElectionSchema: {
@@ -944,6 +987,12 @@ export interface components {
             items: components["schemas"]["ElectionSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** MapQuery */
         MapQuery: {
@@ -974,6 +1023,12 @@ export interface components {
             items: components["schemas"]["ConstituencyMapSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** PartyMapSchema */
         PartyMapSchema: {
@@ -997,6 +1052,12 @@ export interface components {
             items: components["schemas"]["PartyMiniSchema"][];
             /** Count */
             count: number;
+            /** Page Size */
+            page_size: number;
+            /** Previous */
+            previous: number | null;
+            /** Next */
+            next: number | null;
         };
         /** GenderDemographics */
         GenderDemographics: {
@@ -1372,6 +1433,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CommonsDivisionSchema"];
+                };
+            };
+        };
+    };
+    api_routers_divisions_commons_division_votes: {
+        parameters: {
+            query?: {
+                query?: string;
+                vote_type?: "aye" | "no" | "did_not_vote";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                parliamentdotuk: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedVoteSchema"];
                 };
             };
         };

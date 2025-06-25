@@ -1,54 +1,69 @@
 import { ComponentPropsWithoutRef } from "react";
-import CommonsPersonIcon from "./svg/commons-person.svg";
-import CommonsTieIcon from "./svg/commons-tie.svg";
-import CommonsIcon from "./svg/commons.svg";
-import BlueSkyIcon from "./svg/external/ic_bluesky.svg";
-import FacebookIcon from "./svg/external/ic_facebook.svg";
-import InstagramIcon from "./svg/external/ic_instagram.svg";
-import TwitterIcon from "./svg/external/ic_twitter.svg";
-import WikipediaIcon from "./svg/external/ic_wikipedia.svg";
-import CheckIcon from "./svg/material/check.svg";
-import CloseIcon from "./svg/material/close.svg";
-import FaxIcon from "./svg/material/fax.svg";
-import HomeIcon from "./svg/material/home.svg";
-import MailIcon from "./svg/material/mail.svg";
-import PhoneIcon from "./svg/material/phone.svg";
-import DarkModeIcon from "./svg/material/theme_darkmode.svg";
-import SystemDefaultThemeIcon from "./svg/material/theme_default.svg";
-import LightModeIcon from "./svg/material/theme_lightmode.svg";
+import { Nullish } from "@/types/common";
+import CommonsPerson from "./svg/commons-person.svg";
+import CommonsTie from "./svg/commons-tie.svg";
+import Commons from "./svg/commons.svg";
+import BlueSky from "./svg/external/ic_bluesky.svg";
+import Facebook from "./svg/external/ic_facebook.svg";
+import Instagram from "./svg/external/ic_instagram.svg";
+import Twitter from "./svg/external/ic_twitter.svg";
+import Wikipedia from "./svg/external/ic_wikipedia.svg";
+import ArrowDown from "./svg/material/arrow_down.svg";
+import ArrowUp from "./svg/material/arrow_up.svg";
+import CaretDown from "./svg/material/caret_down.svg";
+import CaretUp from "./svg/material/caret_up.svg";
+import Check from "./svg/material/check.svg";
+import Close from "./svg/material/close.svg";
+import Fax from "./svg/material/fax.svg";
+import Home from "./svg/material/home.svg";
+import Email from "./svg/material/mail.svg";
+import NoChange from "./svg/material/no_change.svg";
+import Phone from "./svg/material/phone.svg";
+import QuestionMark from "./svg/material/questionmark.svg";
+import ThemeDarkMode from "./svg/material/theme_darkmode.svg";
+import ThemeSystemDefault from "./svg/material/theme_default.svg";
+import ThemeLightMode from "./svg/material/theme_lightmode.svg";
 
 const Icons = {
   // First party
-  Commons: CommonsIcon,
-  CommonsPerson: CommonsPersonIcon,
-  CommonsTie: CommonsTieIcon,
+  Commons,
+  CommonsPerson,
+  CommonsTie,
 
   // Third party
-  BlueSky: BlueSkyIcon,
-  Facebook: FacebookIcon,
-  Instagram: InstagramIcon,
-  Twitter: TwitterIcon,
-  Wikipedia: WikipediaIcon,
+  BlueSky,
+  Facebook,
+  Instagram,
+  Twitter,
+  Wikipedia,
 
   // App UI
-  ThemeLightMode: LightModeIcon,
-  ThemeDarkMode: DarkModeIcon,
-  ThemeSystemDefault: SystemDefaultThemeIcon,
+  ThemeLightMode,
+  ThemeDarkMode,
+  ThemeSystemDefault,
 
   // Communications
-  Email: MailIcon,
-  Fax: FaxIcon,
-  Phone: PhoneIcon,
+  Email,
+  Fax,
+  Phone,
+
+  // Votes
+  Upvote: CaretUp,
+  Downvote: CaretDown,
+  DidNotVote: NoChange,
 
   // General use
-  Check: CheckIcon,
-  Close: CloseIcon,
-  Home: HomeIcon,
+  ArrowUp,
+  ArrowDown,
+  Check,
+  Close,
+  Home,
+  QuestionMark,
 };
 export type AppIcon = keyof typeof Icons;
 
 export type IconProps = {
-  icon?: AppIcon;
+  icon?: AppIcon | Nullish;
 } & ComponentPropsWithoutRef<"svg">;
 
 export default function Icon(props: IconProps) {
@@ -60,3 +75,7 @@ export default function Icon(props: IconProps) {
 
   return <Element {...rest} />;
 }
+
+export const _private = {
+  Icons: Object.keys(Icons) as AppIcon[],
+};

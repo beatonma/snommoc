@@ -4,7 +4,7 @@ import React, { ComponentPropsWithoutRef, useId, useState } from "react";
 import * as Sample from "@/app/dev/sample";
 import { TextButton, TintedButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
-import Icon, { IconProps } from "@/components/icon";
+import Icon, { IconProps, _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
 import { ButtonLink } from "@/components/link";
 import Loading, { LoadingBar } from "@/components/loading";
@@ -30,6 +30,20 @@ export const LoremIpsum: string[] = [
 ];
 
 export const ComponentsOverview = () => (
+  // <TabLayout
+  //   tabs={[
+  //     ["InputComponents", () => <InputComponents />],
+  //     ["ButtonComponents", () => <ButtonComponents />],
+  //     ["Icons", () => <Icons />],
+  //     ["CardComponents", () => <CardComponents />],
+  //     ["TabComponents", () => <TabComponents />],
+  //     ["SortableComponents", () => <SortableComponents />],
+  //     ["LoadingComponents", () => <LoadingComponents />],
+  //     ["BreakpointsPreview", () => <BreakpointsPreview />],
+  //     ["ThemeColors", () => <ThemeColors />],
+  //     ["TailwindUtilities", () => <TailwindUtilities />],
+  //   ]}
+  // />
   <>
     <InputComponents />
     <ButtonComponents />
@@ -38,7 +52,6 @@ export const ComponentsOverview = () => (
     <TabComponents />
     <SortableComponents />
     <LoadingComponents />
-
     <BreakpointsPreview />
     <ThemeColors />
     <TailwindUtilities />
@@ -424,31 +437,20 @@ const SectionItem = (
 };
 
 const Icons = () => {
-  const IconWrapper = (props: IconProps) => (
-    <div className="relative aspect-square text-[96px] border-1 border-dashed border-current">
-      <div className="absolute inset-0 m-[8px] border-dashed border-1 border-primary" />
-      <Icon {...props} />
-    </div>
-  );
+  const icons = Icon_private.Icons;
 
   return (
     <Section name="<Icon />">
       <div className="card card-content surface grid grid-cols-[repeat(auto-fit,96px)] gap-2">
-        <IconWrapper icon="Commons" />
-        <IconWrapper icon="BlueSky" />
-        <IconWrapper icon="Facebook" />
-        <IconWrapper icon="Instagram" />
-        <IconWrapper icon="Twitter" />
-        <IconWrapper icon="Wikipedia" />
-        <IconWrapper icon="ThemeLightMode" />
-        <IconWrapper icon="ThemeDarkMode" />
-        <IconWrapper icon="ThemeSystemDefault" />
-        <IconWrapper icon="Email" />
-        <IconWrapper icon="Fax" />
-        <IconWrapper icon="Phone" />
-        <IconWrapper icon="Check" />
-        <IconWrapper icon="Close" />
-        <IconWrapper icon="Home" />
+        {icons.map((icon) => (
+          <div
+            key={icon}
+            className="relative aspect-square text-[96px] border-1 border-dashed border-current"
+          >
+            <div className="absolute inset-0 m-[8px] border-dashed border-1 border-primary" />
+            <Icon icon={icon} />
+          </div>
+        ))}
       </div>
     </Section>
   );

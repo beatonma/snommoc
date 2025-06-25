@@ -1,11 +1,11 @@
 import React, { ReactNode, useEffect, useRef } from "react";
-import { PageItemType, PathWithPagination, Query } from "@/api";
+import { PageItemType, PathWithPagination } from "@/api";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
 import Loading from "@/components/loading";
 import { DivPropsNoChildren } from "@/types/react";
 import { plural } from "@/util/plurals";
-import { Paginated, usePagination } from "./pagination";
+import { type Paginated } from "./pagination";
 
 export type PaginationItemComponent<T> = (
   item: T,
@@ -15,16 +15,14 @@ export type PaginationItemComponent<T> = (
 
 interface PaginationProps<P extends PathWithPagination> {
   header?: ReactNode;
-  path: P;
-  query?: Query<P>;
+  pagination: Paginated<PageItemType<P>>;
   resetFlag?: boolean;
   itemComponent: PaginationItemComponent<PageItemType<P>>;
 }
 export const InfiniteScroll = <P extends PathWithPagination>(
   props: PaginationProps<P> & DivPropsNoChildren,
 ) => {
-  const { path, query, resetFlag, header, itemComponent, ...rest } = props;
-  const pagination = usePagination(path, query);
+  const { pagination, resetFlag, header, itemComponent, ...rest } = props;
 
   useEffect(() => {
     if (resetFlag === undefined) return;
@@ -77,13 +75,15 @@ const LoadNext = <T,>({ pagination }: { pagination: Paginated<T> }) => {
   }, [pagination, infiniteScrollingRef]);
 
   let content;
-  if (!pagination.hasMore) content = null;
-  else if (pagination.isLoading) content = <Loading />;
-  else if (pagination.loadNext)
+  if (pagination.error) {
+    content = <h2>ERROR</h2>;
+    console.error(pagination.error);
+  } else if (pagination.isLoading) content = <Loading />;
+  else if (pagination.hasMore && pagination.loadNext) {
     content = (
       <TintedButton onClick={pagination.loadNext}>Load more</TintedButton>
     );
-  else content = null;
+  } else content = null;
 
   return (
     <GridSpan ref={infiniteScrollingRef} className="m-16 flex justify-center">

@@ -49,16 +49,6 @@
   --container-6xl: 72rem;
   --container-7xl: 80rem;
 
-  --color-house_commons: rgb(0 110 70);
-  --color-house_commons_dark: #005434;
-  --color-house_commons_darker: #004229;
-  --color-house_on_commons: #fff;
-
-  --color-house_lords: rgb(181 9 56);
-  --color-house_lords_dark: #540016;
-  --color-house_lords_darker: #420012;
-  --color-house_on_lords: #fff;
-
   --list-style-type-square: square;
 
   --transition-duration: 220ms;
@@ -205,6 +195,23 @@
 @utility surface {
   @apply bg-surface text-on_surface fill-on_surface;
 }
+/* Apply a surface color theme. */
+/*prettier-ignore*/
+@utility surface-* {
+  --bg: --value(--color-*);
+  --fg: --value(--color-on_*);
+
+
+  /* Define full-opacity background color when no modifier is passed. */
+  /*noinspection CssOverwrittenProperties*/
+  background-color: var(--bg);
+
+  /* If opacity modifier is available, override base value. */
+  /*noinspection CssInvalidFunction,CssOverwrittenProperties*/
+  background-color: --alpha(var(--bg) / --modifier(integer)%);
+  color: var(--fg);
+  fill: var(--fg);
+}
 @utility surface-hover {
   @apply surface hover:bg-surface_hover transition-colors;
 }
@@ -261,7 +268,7 @@
 }
 
 @utility row {
-  @apply flex flex-row items-center [&>*]:shrink-0;
+  @apply flex flex-row items-center *:shrink-0;
 }
 @utility column {
   @apply flex flex-col;

@@ -1,6 +1,6 @@
 from common.models import BaseModel, BaseQuerySet
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import Q, UniqueConstraint
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import ParliamentDotUkMixin, SocialMixin
 
@@ -125,6 +125,18 @@ class DivisionVoteQuerySet(BaseQuerySet):
             .select_related("division")
             .order_by("division__date")
         )
+
+    def search(self, query: str):
+        return self.filter(person__name__icontains=query)
+
+    def by_type(self, vote_type: str):
+        if vote_type == "aye" or vote_type == "content":
+            return self.filter(Q(vote_type__name="aye") | Q(vote_type__name="content"))
+        if vote_type == "no" or vote_type == "not_content":
+            return self.filter(
+                Q(vote_type__name="no") | Q(vote_type__name="not_content")
+            )
+        return self.filter(vote_type__name=vote_type)
 
 
 class DivisionVoteSharedProperties(models.Model):

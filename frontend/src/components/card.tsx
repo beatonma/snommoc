@@ -48,7 +48,7 @@ export const HeaderCard = (props: HeaderCardProps) => {
   );
 };
 
-type ListItemCardProps = { label?: string } & CardProps & NextLinkProps;
+type ListItemCardProps = { label?: ReactNode } & CardProps & NextLinkProps;
 export const ListItemCard = (props: ListItemCardProps) => {
   const { image, children, themeSource, defaultTheme, label, style, ...rest } =
     addClass(

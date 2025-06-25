@@ -10,8 +10,8 @@ shift
 COMPOSE_PRODUCTION="compose.production.yml"
 COMPOSE_DEV="compose.dev.yml"
 
-DOT_ENV_PRODUCTION=".env"
-DOT_ENV_DEV=".dev.env"
+DOT_ENV_PRODUCTION=".env.production"
+DOT_ENV_DEV=".env.dev"
 
 # Data import/export
 ARCHIVE_DIRNAME="data-archive"

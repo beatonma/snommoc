@@ -17,6 +17,11 @@ DATABASES = {
         "NAME": "pytest",
     }
 }
+CACHES = {
+    "default": {
+        "BACKEND": "basetest.cache.DummyRedisCache",
+    }
+}
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",

@@ -1,57 +1,72 @@
 name: snommoc
 
-x-common: &common
-  env_file:
-    - ".dev.env"
-  restart: unless-stopped
-
-x-dockerfile: &dockerfile
-  dockerfile: ./docker/Dockerfile.dev
-  context: .
-
-x-health: &healthcheck
-  start_period: 10s
-  interval: 30s
-  timeout: 5s
-  retries: 5
-
 volumes:
     postgres_snommoc:
         name: postgres_snommoc
 
+x-volume-logs: &volume-logs
+  - type: bind
+    source: ./runtime-dev/log
+    target: /var/log/snommoc
+x-volume-static: &volume-static
+  - type: bind
+    source: ./runtime-dev/static
+    target: /var/www/static
+x-volume-media: &volume-media
+  - type: bind
+    source: ./runtime-dev/media
+    target: /var/www/media
+
+x-common: &common
+  env_file:
+    - ".env.dev"
+  restart: unless-stopped
+
+x-watch-django: &watch-django
+  watch:
+    - action: sync
+      path: ./backend
+      target: /django
+      ignore:
+        - env/
+        - __pycache__/
+    - action: rebuild
+      path: ./backend/requirements.txt
+
 services:
   postgres:
     <<: *common
-    image: postgis/postgis:17-3.5
+    extends:
+      file: ./compose.common.yml
+      service: postgres
     container_name: snommoc_postgres
-    volumes:
-      - postgres_snommoc:/var/lib/postgresql/data
+
+  redis:
+    <<: *common
+    extends:
+      file: ./compose.common.yml
+      service: redis
     ports:
-      - "5432:5432"
-    healthcheck:
-      test: pg_isready
-      <<: *healthcheck
+      - "6379:6379"
 
   django: &django
     <<: *common
-    container_name: snommoc_django
     build:
-      <<: *dockerfile
-      target: django
+      target: dev_django
+    extends:
+      file: ./compose.common.yml
+      service: django
     depends_on:
       postgres:
         condition: service_healthy
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/django:rw
-      - ./runtime-dev:/tmp/runtime:rw
-      - ./runtime-dev/log:/var/log/snommoc:rw
-      - ./runtime-dev/media:/var/www/media:rw
-      - ./runtime-dev/static:/var/www/static:rw
-    healthcheck:
-      test: curl --header --fail http://localhost:8000/api/ping/ || exit 1
-      <<: *healthcheck
+      - <<: *volume-logs
+      - <<: *volume-media
+      - <<: *volume-static
+    develop:
+      <<: *watch-django
 
   django_manage:
     <<: *django
@@ -59,30 +74,32 @@ services:
     profiles:
       - "manage"
     ports: []
-    volumes:
-      - ./backend:/django:rw
-      - ./runtime-dev:/tmp/runtime:rw
-      - ./runtime-dev/log:/var/log/snommoc:rw
-      - ./runtime-dev/media:/var/www/media:rw
-      - ./runtime-dev/static:/var/www/static:rw
     healthcheck:
       test: ["NONE"]
     entrypoint: ["sh"]
 
   next: &next
     <<: *common
-    container_name: snommoc_next
     build:
-      <<: *dockerfile
-      target: next
+      target: dev_nextjs
+    extends:
+      file: ./compose.common.yml
+      service: next
+    container_name: snommoc_next
     depends_on:
       django:
         condition: service_healthy
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/frontend
-    entrypoint: "npm run dev"
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./frontend/package.json
 
   next_manage:
     <<: *next
@@ -91,3 +108,35 @@ services:
     container_name: snommoc_next_manage
     ports: []
     entrypoint: "npm run test"
+
+  nginx:
+    <<: *common
+    build:
+      target: dev_nginx
+    extends:
+      file: compose.common.yml
+      service: nginx
+    depends_on:
+      django:
+        condition: service_healthy
+      next:
+        condition: service_healthy
+    ports:
+      - "81:80"
+    volumes:
+      - <<: *volume-media
+      - <<: *volume-static
+
+  celery:
+    <<: *common
+    build:
+      target: dev_celery
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - <<: *volume-logs
+      - <<: *volume-media
+      - <<: *volume-static
+    develop:
+      <<: *watch-django

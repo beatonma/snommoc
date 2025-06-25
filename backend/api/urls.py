@@ -44,6 +44,11 @@ def ping(request: HttpRequest):
     return ninja_api.create_response(request, "OK", status=status.HTTP_200_OK)
 
 
+@ninja_api.api_operation(["HEAD"], "/ping/", response={204: None})
+def ping(request: HttpRequest):
+    return 204, None
+
+
 @ninja_api.exception_handler(ApiKeyDisabled)
 def disabled_api_key(request: HttpRequest, exception: Exception):
     return ninja_api.create_response(

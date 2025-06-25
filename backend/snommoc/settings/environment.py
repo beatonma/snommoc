@@ -74,6 +74,9 @@ POSTGRES_PASSWORD: str = _env_str("POSTGRES_PASSWORD")
 POSTGRES_HOST: str = _env_str("POSTGRES_HOST")
 POSTGRES_PORT: int = _env_int("POSTGRES_PORT", 5432)
 
+# Cache
+CACHE_LOCATION: str = _env_str("CACHE_LOCATION")
+
 # Email
 SERVER_EMAIL: str = _env_str("SERVER_EMAIL")
 EMAIL_HOST: str = _env_str("EMAIL_HOST")

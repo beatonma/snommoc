@@ -3,6 +3,7 @@ from urllib.parse import urljoin
 
 from .apps import INSTALLED_APPS
 from .auth import AUTH_PASSWORD_VALIDATORS
+from .caching import CACHES
 from .databases import DATABASES
 from .email import (
     EMAIL_HOST,

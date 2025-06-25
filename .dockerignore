@@ -1,0 +1,13 @@
+*.env
+*.gitbundle
+*.tar.gz
+
+**/.git/
+**/.github/
+**/.idea/
+**/.next/
+**/__pycache__/
+**/dist/
+**/env/
+**/node_modules/
+**/runtime-dev/

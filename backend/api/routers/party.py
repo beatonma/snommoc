@@ -1,3 +1,4 @@
+from api.cache import cache_crawled_data_view
 from api.schema.includes import PartyMiniSchema
 from api.schema.party import PartyFullSchema
 from django.db.models import F, Q, Sum
@@ -12,6 +13,7 @@ router = Router(tags=["Parties"])
 
 @router.get("/", response=list[PartyMiniSchema])
 @paginate
+@cache_crawled_data_view
 def parties(request: HttpRequest, query: str = None):
     qs = Party.objects.all().prefetch_related("gender_demographics")
 

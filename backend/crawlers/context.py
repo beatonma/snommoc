@@ -2,6 +2,8 @@ import logging
 from functools import wraps
 
 from celery import shared_task
+from common.cache import invalidate_cache
+from crawlers.caches import API_VIEW_CACHE
 from crawlers.network import JsonCache, json_cache
 from notifications.models import TaskNotification
 from notifications.models.task_notification import task_notification
@@ -116,6 +118,9 @@ def task_context(
                 ),
             )
             func(*args, context=context, **kwargs)
+
+            # When task completes, invalidate API cache of stale data.
+            invalidate_cache(API_VIEW_CACHE)
 
         return wrapper
 

@@ -9,6 +9,8 @@ from repository.models.houses import HouseType
 __all__ = [
     "CommonsDivisionSchema",
     "LordsDivisionSchema",
+    "VoteSchema",
+    "DivisionVoteType",
 ]
 
 

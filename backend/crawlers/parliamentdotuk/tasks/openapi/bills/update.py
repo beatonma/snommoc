@@ -1,4 +1,3 @@
-from celery.utils import log as logging
 from crawlers import caches
 from crawlers.context import TaskContext, task_context
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client

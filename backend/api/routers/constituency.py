@@ -1,3 +1,4 @@
+from api.cache import cache_crawled_data_view
 from api.schema.constituency import ConstituencyFullSchema
 from api.schema.includes import ConstituencyMiniSchema
 from api.schema.types import ParliamentId
@@ -17,6 +18,7 @@ router = Router(tags=["Constituencies"])
     description="Searchable constituencies. If no query, returns current constituencies.",
 )
 @paginate
+@cache_crawled_data_view
 def constituencies(request: HttpRequest, query: str = None):
     qs = Constituency.objects.all()
 

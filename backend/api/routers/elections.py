@@ -1,3 +1,4 @@
+from api.cache import cache_crawled_data_view
 from api.schema.election import ElectionSchema
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -10,6 +11,7 @@ router = Router(tags=["Elections"])
 
 @router.get("/", response=list[ElectionSchema])
 @paginate
+@cache_crawled_data_view
 def elections(request: HttpRequest):
     return Election.objects.all()
 

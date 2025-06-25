@@ -1,3 +1,4 @@
+from api.cache import cache_crawled_data_view
 from api.pagination import offset_pagination
 from api.schema.maps import ConstituencyMapSchema, PartyMapSchema
 from django.contrib.gis.db.models.functions import Distance
@@ -18,7 +19,8 @@ class MapQuery(Schema):
 
 
 @router.get("/constituencies/", response=list[ConstituencyMapSchema])
-@paginate(offset_pagination(50))
+@paginate(offset_pagination(130))
+@cache_crawled_data_view
 def constituencies(request: HttpRequest, query: Query[MapQuery]):
     qs = Constituency.objects.current().prefetch_related(
         "boundary", "mp", "mp__party", "mp__party__theme"
@@ -33,6 +35,7 @@ def constituencies(request: HttpRequest, query: Query[MapQuery]):
 
 
 @router.get("/parties/", response=list[PartyMapSchema])
+@cache_crawled_data_view
 def parties(request: HttpRequest, query: Query[MapQuery]):
     qs = Party.objects.current().prefetch_related("territory")
 

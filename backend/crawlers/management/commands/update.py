@@ -1,14 +1,14 @@
 import sys
-from argparse import ArgumentParser
 from typing import Callable
 
 from crawlers import tasks as multi_source
 from crawlers.parliamentdotuk import tasks as parliament
+from django.core.management import CommandParser
 from util.management.task_command import TaskCommand
 
 
 class Command(TaskCommand):
-    def add_arguments(self, parser: ArgumentParser):
+    def add_arguments(self, parser: CommandParser):
         super().add_arguments(parser)
         command = parser.add_subparsers(dest="command")
 

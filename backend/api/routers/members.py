@@ -1,9 +1,9 @@
 import logging
 from typing import Literal
 
+from api.cache import cache_crawled_data_view
 from api.schema.includes import MemberMiniSchema
 from api.schema.member import MemberCareerHistory, MemberProfile, MemberVotesSchema
-from django.db.models import Q
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -20,6 +20,7 @@ type StatusFilter = Literal["current", "inactive", "historical", "all"]
 
 @router.get("/", response=list[MemberMiniSchema])
 @paginate
+@cache_crawled_data_view
 def members(
     request: HttpRequest,
     query: str = None,

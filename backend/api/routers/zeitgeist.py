@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from api.cache import cache_view
 from api.schema.zeitgeist import ZeitgeistSchema
 from django.http import HttpRequest
 from ninja import Router
@@ -9,6 +12,7 @@ router = Router(tags=["Zeitgeist"])
 
 
 @router.get("/", response=ZeitgeistSchema)
+@cache_view(timeout=timedelta(hours=6).total_seconds(), cache_key="zeitgeist")
 def zeitgeist(request: HttpRequest):
     today = get_today()
     items = ZeitgeistItem.objects.all()

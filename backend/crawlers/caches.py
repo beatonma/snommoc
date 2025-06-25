@@ -1,5 +1,5 @@
 """
-Cache names used for JsonResponseCache (usually via @json_cache decorator)
+Cache names used for JsonCache (usually via @task_context decorator)
 """
 
 BILLS = "bills"
@@ -11,3 +11,7 @@ MEMBERS = "members"
 MEMBER_PORTRAITS = "memberportraits"
 DEMOGRAPHICS = "demographics"
 WIKIPEDIA = "wikipedia"
+
+
+# Key used to invalidate cached API responses when a crawler task completes.
+API_VIEW_CACHE = "crawlers_view_cache"

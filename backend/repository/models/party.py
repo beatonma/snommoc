@@ -124,7 +124,12 @@ class PartyQuerySet(BaseQuerySet):
         return self.filter(territory__isnull=False)
 
 
-class Party(ParliamentDotUkMixin, WikipediaMixin, AsciiNameMixin, BaseModel):
+class Party(
+    ParliamentDotUkMixin,
+    WikipediaMixin,
+    AsciiNameMixin,
+    BaseModel,
+):
     objects = PartyQuerySet.as_manager()
     name = models.CharField(max_length=64, unique=True)
     short_name = models.CharField(

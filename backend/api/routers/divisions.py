@@ -1,5 +1,6 @@
 from itertools import chain
 
+from api.cache import cache_crawled_data_view
 from api.schema.division import (
     CommonsDivisionSchema,
     DivisionVoteType,
@@ -12,16 +13,13 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
 from repository.models import CommonsDivision, CommonsDivisionVote, LordsDivision
-from repository.models.divisions import (
-    DivisionVoteQuerySet,
-    DivisionVoteSharedProperties,
-)
 
 router = Router(tags=["Divisions"])
 
 
 @router.get("/recent/", response=list[DivisionMiniSchema])
 @paginate
+@cache_crawled_data_view
 def recent(request: HttpRequest, query: str = None):
     commons = CommonsDivision.objects.all()
     lords = LordsDivision.objects.all()
@@ -30,7 +28,6 @@ def recent(request: HttpRequest, query: str = None):
         commons = commons.search(query)
         lords = lords.search(query)
 
-    # return commons
     return sorted(chain(commons, lords), key=lambda x: x.date, reverse=True)
 
 
@@ -47,6 +44,7 @@ def commons_division(request: HttpRequest, parliamentdotuk: int):
 
 @router.get("/commons/{parliamentdotuk}/votes/", response=list[VoteSchema])
 @paginate
+@cache_crawled_data_view
 def commons_division_votes(
     request: HttpRequest,
     parliamentdotuk: int,

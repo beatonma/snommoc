@@ -1,3 +1,4 @@
+from api.cache import cache_crawled_data_view
 from api.schema.bill import BillFullSchema
 from api.schema.includes import BillMiniSchema
 from django.http import HttpRequest
@@ -11,6 +12,7 @@ router = Router(tags=["Bills"])
 
 @router.get("/", response=list[BillMiniSchema])
 @paginate
+@cache_crawled_data_view
 def bills(request: HttpRequest):
     return Bill.objects.all()
 

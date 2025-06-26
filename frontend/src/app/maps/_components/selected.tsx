@@ -7,7 +7,7 @@ import {
 } from "@/components/models/linked-data";
 import { MemberItemCard } from "@/components/models/list-item";
 import { onlyIf } from "@/components/optional";
-import Row from "@/components/row";
+import { Row } from "@/components/row";
 import { ItemTheme } from "@/components/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
@@ -19,7 +19,7 @@ type Multi = DivPropsNoChildren<{
   constituencies: ConstituencyMiniBoundary[];
 }>;
 
-export default function SelectedConstituenciesInfo(props: Multi) {
+export const SelectedConstituenciesInfo = (props: Multi) => {
   const { constituencies, ...rest } = addClass(
     props,
     "md:w-listitem_card w-full",
@@ -31,7 +31,7 @@ export default function SelectedConstituenciesInfo(props: Multi) {
   }
 
   return <ManySelected constituencies={constituencies} {...rest} />;
-}
+};
 
 const NoSelection = (props: DivPropsNoChildren) => {
   return (

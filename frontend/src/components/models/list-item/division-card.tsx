@@ -24,9 +24,9 @@ const HouseTheme = (house: HouseType): ItemTheme => {
   }[house];
 };
 
-export default function DivisionItemCard(
+export const DivisionItemCard = (
   props: { division: Division } & ClassNameProps,
-) {
+) => {
   const { division, ...rest } = props;
 
   return (
@@ -53,7 +53,7 @@ export default function DivisionItemCard(
       </SeparatedRow>
     </ListItemCard>
   );
-}
+};
 
 const PassIcon = (props: { isPassed: boolean } & Omit<IconProps, "icon">) => {
   const { isPassed, ...rest } = props;

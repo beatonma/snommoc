@@ -1,5 +1,5 @@
-import Todo from "@/components/dev";
-import PageLayout from "@/components/page-layout";
+import { Todo } from "@/components/dev";
+import { PageLayout } from "@/components/page-layout";
 
 export default function Home() {
   return (

@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
-import Loading from "@/components/loading";
+import { Loading } from "@/components/loading";
 
 type RemoteContentProvider = "openstreetmap.org";
 

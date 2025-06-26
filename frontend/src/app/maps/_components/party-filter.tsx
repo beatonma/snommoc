@@ -1,15 +1,19 @@
-import React, { ComponentPropsWithoutRef } from "react";
+import React from "react";
 import { PartyTerritory } from "@/api";
 import { onlyIf } from "@/components/optional";
+import { Props } from "@/types/react";
 import { classes } from "@/util/transforms";
 
-export default function PartyTerritoryKey(
-  props: {
-    focussedPartyId: number | undefined;
-    parties: PartyTerritory[] | undefined;
-    onClickParty: (partyId: number) => void;
-  } & ComponentPropsWithoutRef<"ul">,
-) {
+export const PartyTerritoryKey = (
+  props: Props<
+    "ul",
+    {
+      focussedPartyId: number | undefined;
+      parties: PartyTerritory[] | undefined;
+      onClickParty: (partyId: number) => void;
+    }
+  >,
+) => {
   const { parties, focussedPartyId, onClickParty, ...rest } = props;
   if (!parties) return null;
   return (
@@ -32,4 +36,4 @@ export default function PartyTerritoryKey(
       ))}
     </ul>
   );
-}
+};

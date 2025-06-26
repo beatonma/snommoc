@@ -1,24 +1,24 @@
 "use client";
 
-import React, { ComponentPropsWithoutRef, useId, useState } from "react";
+import React, { useId, useState } from "react";
 import * as Sample from "@/app/dev/sample";
 import { TextButton, TintedButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
-import Icon, { IconProps, _private as Icon_private } from "@/components/icon";
+import Icon, { _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
 import { ButtonLink } from "@/components/link";
-import Loading, { LoadingBar } from "@/components/loading";
+import { Loading, LoadingBar } from "@/components/loading";
 import {
   ConstituencyItemCard,
   MemberItemCard,
   PartyItemCard,
 } from "@/components/models/list-item";
-import Row from "@/components/row";
+import { Row } from "@/components/row";
 import { useSortable } from "@/components/sortable";
 import { TabLayout } from "@/components/tabs";
 import { getOnColor } from "@/components/themed/color";
 import { itemThemeCss } from "@/components/themed/item-theme";
-import { DivProps } from "@/types/react";
+import { DivProps, Props } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 
 export const LoremIpsum: string[] = [
@@ -401,9 +401,7 @@ const TailwindUtilities = () => {
   );
 };
 
-const Section = (
-  props: { name: string } & ComponentPropsWithoutRef<"section">,
-) => {
+const Section = (props: Props<"section", { name: string }>) => {
   const { children, ...rest } = addClass(
     props,
     "border-2 pb-4 border-dotted border-current/20 overflow-hidden px-edge gap-y-4",
@@ -418,9 +416,7 @@ const Section = (
   );
 };
 
-const SectionItem = (
-  props: { name: string } & ComponentPropsWithoutRef<"div">,
-) => {
+const SectionItem = (props: DivProps<{ name: string }>) => {
   const id = useId();
   const { children, ...rest } = addClass(
     props,

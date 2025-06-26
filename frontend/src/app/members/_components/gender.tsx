@@ -1,11 +1,8 @@
-import { ComponentPropsWithoutRef } from "react";
+import { Props } from "@/types/react";
 
-export default function Gender(
-  props: { gender: string | null } & Omit<
-    ComponentPropsWithoutRef<"span">,
-    "title" | "children"
-  >,
-) {
+export const Gender = (
+  props: Props<"span", { gender: string | null }, "title" | "children">,
+) => {
   if (!props.gender) return null;
   const { gender, ...rest } = props;
 
@@ -19,4 +16,4 @@ export default function Gender(
       {symbols[gender?.toLowerCase()] ?? gender}
     </span>
   );
-}
+};

@@ -1,8 +1,8 @@
-import { get } from "@/api";
-import ErrorMessage from "@/components/error";
 import React from "react";
-import CareerSections from "./career-sections";
+import { get } from "@/api";
 import { Summary } from "@/app/members/[parliamentdotuk]/career/sections";
+import { ErrorMessage } from "@/components/error";
+import CareerSections from "./career-sections";
 
 export default async function Career(props: { parliamentdotuk: number }) {
   const { parliamentdotuk } = props;

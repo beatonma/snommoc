@@ -4,12 +4,10 @@ import "./loading.css";
 
 export { LoadingBar } from "./loading-bar";
 
-export default function Loading(props: DivPropsNoChildren) {
-  return (
-    <div className="loading" {...props}>
-      <Icon icon="CommonsPerson" />
-      <Icon icon="CommonsTie" />
-      <Icon icon="CommonsTie" />
-    </div>
-  );
-}
+export const Loading = (props: DivPropsNoChildren) => (
+  <div className="loading" {...props}>
+    <Icon icon="CommonsPerson" />
+    <Icon icon="CommonsTie" />
+    <Icon icon="CommonsTie" />
+  </div>
+);

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
-import MembersList from "@/app/members/members";
-import PageLayout from "@/components/page-layout";
+import { MembersList } from "@/app/members/members";
+import { PageLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
   title: "Members",

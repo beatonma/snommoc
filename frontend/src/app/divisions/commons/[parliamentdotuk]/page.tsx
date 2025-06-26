@@ -1,11 +1,11 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { CommonsDivision, HouseType, get } from "@/api";
-import DivisionVotes from "@/app/divisions/commons/[parliamentdotuk]/votes";
+import { DivisionVotes } from "@/app/divisions/commons/[parliamentdotuk]/votes";
 import { TextButton } from "@/components/button";
 import { Date, DateFormat } from "@/components/datetime";
-import ErrorMessage from "@/components/error";
-import PageLayout from "@/components/page-layout";
-import Row from "@/components/row";
+import { ErrorMessage } from "@/components/error";
+import { PageLayout } from "@/components/page-layout";
+import { Row } from "@/components/row";
 import { houseSurface } from "@/components/themed/tailwind";
 import { classes } from "@/util/transforms";
 
@@ -82,13 +82,13 @@ const Verdict = ({ division }: { division: CommonsDivision }) => {
           "[border-left-width:var(--border-inset)] space-y-1 ps-[calc(var(--border-inset)*2)]",
         )}
       >
-        <p className="text-xl">
+        <blockquote className="text-xl">
           The{" "}
           <strong className="text-current/80">
             {division.is_passed ? "ayes" : "noes"}
           </strong>{" "}
           have it!
-        </p>
+        </blockquote>
         <p className="text-sm">
           The motion {division.is_passed ? "passed" : "did not pass"}
         </p>

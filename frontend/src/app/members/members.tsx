@@ -1,14 +1,15 @@
 "use client";
-import { Fixtures, Query } from "@/api";
-import React, { ReactNode } from "react";
-import { SearchFilters, SearchList } from "@/components/paginated/search-list";
-import { MemberItemCard } from "@/components/models/list-item";
 
-export default function MembersList(props: {
+import React, { ReactNode } from "react";
+import { Fixtures, Query } from "@/api";
+import { MemberItemCard } from "@/components/models/list-item";
+import { SearchFilters, SearchList } from "@/components/paginated/search-list";
+
+export const MembersList = (props: {
   header?: ReactNode;
   searchFilters?: SearchFilters;
   immutableFilters?: Query<"/api/members/">;
-}) {
+}) => {
   const propFilters = props.searchFilters ?? {};
   const searchFilters = {
     singleChoice: {
@@ -41,4 +42,4 @@ export default function MembersList(props: {
       )}
     />
   );
-}
+};

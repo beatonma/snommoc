@@ -6,11 +6,11 @@ import { MemberItemCard } from "@/components/models/list-item";
 import { SearchList } from "@/components/paginated/search-list";
 import { MemberVoteDescription, MemberVoteIcon } from "./_components";
 
-export default function DivisionVotes({
+export const DivisionVotes = ({
   parliamentdotuk,
 }: {
   parliamentdotuk: number;
-}) {
+}) => {
   const paramsMemo = useMemo(
     () => ({ path: { parliamentdotuk } }),
     [parliamentdotuk],
@@ -43,4 +43,4 @@ export default function DivisionVotes({
       )}
     />
   );
-}
+};

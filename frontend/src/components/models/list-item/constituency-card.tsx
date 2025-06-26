@@ -6,9 +6,9 @@ import { DateRange } from "@/components/datetime";
 import { OptionalDiv } from "@/components/optional";
 import { navigationHref } from "@/navigation";
 
-export default function ConstituencyItemCard(props: {
+export const ConstituencyItemCard = (props: {
   constituency: ConstituencyMini;
-}) {
+}) => {
   const { parliamentdotuk, name, start, end, mp } = props.constituency;
 
   return (
@@ -26,4 +26,4 @@ export default function ConstituencyItemCard(props: {
       <DateRange start={start} end={end} />
     </ListItemCard>
   );
-}
+};

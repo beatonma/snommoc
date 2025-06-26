@@ -1,12 +1,6 @@
-import React, {
-  CSSProperties,
-  ComponentPropsWithoutRef,
-  JSX,
-  ReactNode,
-  useMemo,
-} from "react";
+import React, { CSSProperties, ElementType, ReactNode, useMemo } from "react";
 import { onlyIf } from "@/components/optional";
-import { DivProps } from "@/types/react";
+import { DivProps, Props } from "@/types/react";
 import { classes } from "@/util/transforms";
 import "./page-layout.css";
 
@@ -66,12 +60,13 @@ interface PageLayoutProps {
   sidebarLeft?: ReactNode;
   sidebarRight?: ReactNode;
 
-  mainElement?: keyof JSX.IntrinsicElements;
+  mainElement?: ElementType;
   mainClassName?: string;
 
   constraints?: ContentConstraints;
 }
-export default function PageLayout(props: DivProps<PageLayoutProps>) {
+
+export const PageLayout = (props: DivProps<PageLayoutProps>) => {
   const {
     layout: layoutName,
     className,
@@ -109,10 +104,10 @@ export default function PageLayout(props: DivProps<PageLayoutProps>) {
       </div>
     </div>
   );
-}
+};
 
-const CustomElement = <T extends keyof JSX.IntrinsicElements>(
-  props: { elementName: T } & ComponentPropsWithoutRef<T>,
+const CustomElement = <T extends ElementType>(
+  props: Props<T, { elementName: T }>,
 ) => {
   const { elementName, ...rest } = props;
 

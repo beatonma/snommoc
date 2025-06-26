@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { LoremIpsum } from "@/app/dev/components";
-import PageLayout, { PageLayouts } from "@/components/page-layout";
+import { PageLayout, PageLayouts } from "@/components/page-layout";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 type LayoutName = keyof typeof PageLayouts;
-export default function PageLayoutPreview() {
+export const PageLayoutPreview = () => {
   const [layout, setLayout] = useState<LayoutName>("CenteredFeed");
 
   return (
@@ -26,7 +26,7 @@ export default function PageLayoutPreview() {
       <Layout layout={layout} />
     </div>
   );
-}
+};
 
 const Layout = ({ layout }: { layout: LayoutName }) => {
   return (

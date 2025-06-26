@@ -1,26 +1,21 @@
 import Link from "next/link";
-import { ComponentPropsWithoutRef } from "react";
 import { NavDestination, navigationHref } from "@/navigation";
+import { Props } from "@/types/react";
 
-export default function GlobalNavigation() {
-  return (
-    <nav>
-      <ul className="list-none flex gap-y-2 gap-x-4 px-edge text-lg *:shrink-0 overflow-auto">
-        <Destination destination="people">People</Destination>
-        <Destination destination="parties">Parties</Destination>
-        <Destination destination="constituencies">Constituencies</Destination>
-        <Destination destination="nationalMap">Map</Destination>
-        <Destination destination="divisions">Divisions</Destination>
-      </ul>
-    </nav>
-  );
-}
+export const GlobalNavigation = () => (
+  <nav>
+    <ul className="list-none flex gap-y-2 gap-x-4 px-edge text-lg *:shrink-0 overflow-auto">
+      <Destination destination="people">People</Destination>
+      <Destination destination="parties">Parties</Destination>
+      <Destination destination="constituencies">Constituencies</Destination>
+      <Destination destination="nationalMap">Map</Destination>
+      <Destination destination="divisions">Divisions</Destination>
+    </ul>
+  </nav>
+);
 
 const Destination = (
-  props: { destination: NavDestination } & Omit<
-    ComponentPropsWithoutRef<"a">,
-    "href"
-  >,
+  props: Props<"a", { destination: NavDestination }, "href">,
 ) => {
   const { destination, ...rest } = props;
   return (

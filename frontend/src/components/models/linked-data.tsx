@@ -10,7 +10,7 @@ import type {
 } from "@/api";
 import { ButtonProps, TextButton } from "@/components/button";
 import { TextLink } from "@/components/link";
-import Row from "@/components/row";
+import { Row } from "@/components/row";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types/common";
 import { DivPropsNoChildren } from "@/types/react";

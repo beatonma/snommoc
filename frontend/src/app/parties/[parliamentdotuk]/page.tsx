@@ -1,13 +1,13 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 import { GenderDemographics, LordsDemographics, PartyDetail, get } from "@/api";
-import MembersList from "@/app/members/members";
+import { MembersList } from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
-import ErrorMessage from "@/components/error";
+import { ErrorMessage } from "@/components/error";
 import { OptionalSvg } from "@/components/image";
 import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
-import PageLayout from "@/components/page-layout";
+import { PageLayout } from "@/components/page-layout";
 import { itemThemeCss } from "@/components/themed/item-theme";
 import { plural } from "@/util/plurals";
 

@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useRef } from "react";
 import { PageItemType, PathWithPagination } from "@/api";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
-import Loading from "@/components/loading";
+import { Loading } from "@/components/loading";
 import { DivPropsNoChildren } from "@/types/react";
 import { plural } from "@/util/plurals";
 import { type Paginated } from "./pagination";

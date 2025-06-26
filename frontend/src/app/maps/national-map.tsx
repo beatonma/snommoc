@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstituencyMiniBoundary, PartyTerritory, get } from "@/api";
-import Loading, { LoadingBar } from "@/components/loading";
+import { Loading, LoadingBar } from "@/components/loading";
 import { type LayerKey, Map, useMap } from "@/components/map";
 import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
 import { usePassiveGeoLocation } from "@/components/map/geolocation";
@@ -16,18 +16,18 @@ import { onlyIf } from "@/components/optional";
 import { usePagination } from "@/components/paginated/pagination";
 import { PartyIconBackground } from "@/components/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
-import PartyTerritoryKey from "./_components/party-filter";
-import SelectedConstituenciesInfo from "./_components/selected";
+import { PartyTerritoryKey } from "./_components/party-filter";
+import { SelectedConstituenciesInfo } from "./_components/selected";
 import "./style.css";
 
-export default function NationalMap() {
+export const NationalMap = () => {
   const userLocation: GeoLocation | undefined =
     usePassiveGeoLocation(UkParliamentLocation);
 
   if (!userLocation) return <Loading />;
 
   return <NationalMapWithLocation userLocation={userLocation} />;
-}
+};
 
 const NationalMapWithLocation = ({
   userLocation,

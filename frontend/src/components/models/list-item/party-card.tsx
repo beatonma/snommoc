@@ -1,14 +1,13 @@
-import React, { ComponentPropsWithoutRef } from "react";
+import React from "react";
 import { Party } from "@/api";
 import { ListItemCard } from "@/components/card";
 import { OptionalSvg } from "@/components/image";
 import { onlyIf } from "@/components/optional";
 import { navigationHref } from "@/navigation";
+import { Props } from "@/types/react";
 import { plural } from "@/util/plurals";
 
-export default function PartyItemCard(
-  props: { party: Party } & ComponentPropsWithoutRef<"a">,
-) {
+export const PartyItemCard = (props: Props<"a", { party: Party }>) => {
   const { party, className, ...rest } = props;
 
   return (
@@ -36,7 +35,7 @@ export default function PartyItemCard(
       <span>{partyMemberSummary(party)}</span>
     </ListItemCard>
   );
-}
+};
 
 const partyMemberSummary = (party: Party) => {
   const mps = party.active_commons_members;

@@ -19,12 +19,12 @@ interface MemberItemProps {
   usePartyTheme?: boolean;
 }
 
-export default function MemberItemCard(
+export const MemberItemCard = (
   props: MemberItemProps &
     Pick<ItemThemeableProps, "defaultTheme"> &
     ChildrenProps &
     ClassNameProps,
-) {
+) => {
   const {
     member,
     showParty,
@@ -71,4 +71,4 @@ export default function MemberItemCard(
       {children}
     </ListItemCard>
   );
-}
+};

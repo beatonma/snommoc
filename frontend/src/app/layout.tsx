@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ReactNode } from "react";
-import GlobalFooter from "./_components/global-footer";
-import GlobalHeader from "./_components/global-header";
+import { GlobalFooter } from "./_components/global-footer";
+import { GlobalHeader } from "./_components/global-header";
 import "./_style/globals.css";
 import "./_style/root-layout.css";
 

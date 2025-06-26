@@ -1,7 +1,8 @@
 import Link from "next/link";
-import React, { ComponentPropsWithoutRef } from "react";
+import React from "react";
 import Icon, { type AppIcon } from "@/components/icon";
 import { ChildrenProps } from "@/types/common";
+import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 export const TextButton = (props: ButtonProps) => {
@@ -32,28 +33,24 @@ export const TintedButton = (props: ButtonProps) => {
 interface ButtonContentProps {
   icon?: AppIcon;
 }
-export type ButtonLinkProps = {
-  href: string | null | undefined;
-} & ButtonContentProps &
-  Omit<ComponentPropsWithoutRef<"a">, "onClick" | "href">;
-type ButtonDivProps = ButtonContentProps &
-  Omit<ComponentPropsWithoutRef<"a">, "onClick">;
+export type ButtonLinkProps = Props<
+  "a",
+  ButtonContentProps & {
+    href: string | null | undefined;
+  },
+  "onClick"
+>;
+type ButtonDivProps = Props<"a", ButtonContentProps, "onClick">;
 export type ButtonProps =
-  | (ButtonContentProps & ComponentPropsWithoutRef<"button">)
+  | Props<"button", ButtonContentProps>
   | ButtonDivProps
   | ButtonLinkProps;
 
-const isLink = (
-  obj: any,
-): obj is ComponentPropsWithoutRef<"a"> & { href: string } => {
-  return "href" in obj && obj.href;
-};
-const isButton = (obj: any): obj is ComponentPropsWithoutRef<"button"> => {
-  return (
-    ("onClick" in obj && typeof obj.onClick === "function") ||
-    ("type" in obj && obj.type === "submit")
-  );
-};
+const isLink = (obj: any): obj is Props<"a"> & { href: string } =>
+  "href" in obj && obj.href;
+const isButton = (obj: any): obj is Props<"button"> =>
+  ("onClick" in obj && typeof obj.onClick === "function") ||
+  ("type" in obj && obj.type === "submit");
 
 const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
   const { icon, children } = props;
@@ -97,12 +94,7 @@ const BaseButton = (props: ButtonProps) => {
 
   // No usable href or onClick - render as simple div.
   return (
-    <div
-      {...(addClass(
-        rest,
-        "pointer-events-none",
-      ) as ComponentPropsWithoutRef<"div">)}
-    >
+    <div {...(addClass(rest, "pointer-events-none") as Props<"div">)}>
       {content}
     </div>
   );

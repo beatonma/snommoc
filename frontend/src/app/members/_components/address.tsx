@@ -1,11 +1,11 @@
 import { type PhysicalAddress as PhysicalAddressData } from "@/api";
-import { OptionalDiv } from "@/components/optional";
-import { ComponentPropsWithoutRef } from "react";
 import { LinkGroup } from "@/components/link";
+import { OptionalDiv } from "@/components/optional";
+import { Props } from "@/types/react";
 import { addClass, transformString } from "@/util/transforms";
 
 export const PhysicalAddress = (
-  props: PhysicalAddressData & ComponentPropsWithoutRef<"address">,
+  props: Props<"address", PhysicalAddressData>,
 ) => {
   const { description, address, postcode, phone, fax, email, ...rest } =
     addClass(props, "column gap-y-1.5");

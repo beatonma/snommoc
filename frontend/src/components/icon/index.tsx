@@ -1,5 +1,5 @@
-import { ComponentPropsWithoutRef } from "react";
 import { Nullish } from "@/types/common";
+import { Props } from "@/types/react";
 import CommonsPerson from "./svg/commons-person.svg";
 import CommonsTie from "./svg/commons-tie.svg";
 import Commons from "./svg/commons.svg";
@@ -62,9 +62,12 @@ const Icons = {
 };
 export type AppIcon = keyof typeof Icons;
 
-export type IconProps = {
-  icon?: AppIcon | Nullish;
-} & ComponentPropsWithoutRef<"svg">;
+export type IconProps = Props<
+  "svg",
+  {
+    icon?: AppIcon | Nullish;
+  }
+>;
 
 export default function Icon(props: IconProps) {
   const { icon, ...rest } = props;

@@ -1,7 +1,7 @@
-import React, { ComponentPropsWithoutRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { MemberCareer } from "@/api";
 import { DateRange } from "@/components/datetime";
-import Loading from "@/components/loading";
+import { Loading } from "@/components/loading";
 import {
   ConstituencyLink,
   HouseLink,
@@ -9,7 +9,7 @@ import {
 } from "@/components/models/linked-data";
 import { Optional } from "@/components/optional";
 import { Nullish } from "@/types/common";
-import { DivProps } from "@/types/react";
+import { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 export type CareerHouse = MemberCareer["houses"][number];
@@ -31,8 +31,7 @@ interface ListSectionProps<T> extends SectionHeaderProps {
   data: T[] | Nullish;
   block: (item: T, index: number, lst: T[]) => ReactNode;
 }
-type SectionProps<T> = T &
-  Omit<ComponentPropsWithoutRef<"section">, keyof T | "id" | "children">;
+type SectionProps<T extends object> = Props<"section", T, "id" | "children">;
 
 export const Section = <T,>(props: SectionProps<BlockProps<T>>) => {
   const { title, toolbar, description, data, block, ...rest } = props;
@@ -136,11 +135,11 @@ export const BlockItem = (props: DivProps) => {
   return <div {...props} />;
 };
 
-type DateRangeItemProps = {
+type DateRangeItemProps = DivProps<{
   start: string | Nullish;
   end: string | Nullish;
   capitalized?: boolean;
-} & DivProps;
+}>;
 export const DateRangeItem = (props: DateRangeItemProps) => {
   const { children, start, end, capitalized = true, ...rest } = props;
   return (

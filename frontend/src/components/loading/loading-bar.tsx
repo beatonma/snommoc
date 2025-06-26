@@ -5,7 +5,7 @@ import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 export const LoadingBar = (
-  props: { progress?: number } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ progress?: number }>,
 ) => {
   const { progress, ...rest } = props;
 
@@ -20,7 +20,7 @@ const IndeterminateLoadingBar = (props: DivPropsNoChildren) => {
   return <div {...rest} />;
 };
 const ProgressLoadingBar = (
-  props: { progress: number } & DivPropsNoChildren,
+  props: DivPropsNoChildren<{ progress: number }>,
 ) => {
   const { progress, ...rest } = addClass(
     props,

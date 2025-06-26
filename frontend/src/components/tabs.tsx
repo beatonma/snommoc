@@ -1,7 +1,8 @@
 "use client";
+
 import { ReactNode, useId, useMemo, useState } from "react";
-import { addClass } from "@/util/transforms";
 import { DivProps, DivPropsNoChildren } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
 interface TabLayoutProps<T extends string> {
   tabs: [T, () => ReactNode][];
@@ -48,7 +49,7 @@ interface TabBarProps<T extends string> {
   tabAttributes: Record<string, string>;
 }
 const TabBar = <T extends string>(
-  props: TabBarProps<T> & DivPropsNoChildren,
+  props: DivPropsNoChildren<TabBarProps<T>>,
 ) => {
   const { tabs, currentTab, onClickTab, tabAttributes, ...rest } = addClass(
     props,
@@ -74,9 +75,7 @@ const TabBar = <T extends string>(
 interface TabProps {
   onClick: (tabId: string) => void;
 }
-const Tab = (
-  props: TabProps & Omit<DivProps, keyof TabProps | "id" | "role">,
-) => {
+const Tab = (props: DivProps<TabProps, "id" | "role">) => {
   const { onClick, ...rest } = addClass(
     props,
     "shrink-0 cursor-pointer px-2 pb-1 pt-2 transition-colors",

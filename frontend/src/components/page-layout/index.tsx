@@ -71,7 +71,7 @@ interface PageLayoutProps {
 
   constraints?: ContentConstraints;
 }
-export default function PageLayout(props: PageLayoutProps & DivProps) {
+export default function PageLayout(props: DivProps<PageLayoutProps>) {
   const {
     layout: layoutName,
     className,

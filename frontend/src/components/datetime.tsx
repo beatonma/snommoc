@@ -1,6 +1,5 @@
 import { Nullish } from "@/types/common";
-import { DivPropsNoChildren } from "@/types/react";
-import { ComponentPropsWithoutRef } from "react";
+import { DivPropsNoChildren, Props } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
@@ -40,12 +39,12 @@ export const formatDate = (
  * Displays nothing if either date fails to be interpreted as a valid Date.
  */
 export const DateRange = (
-  props: {
+  props: DivPropsNoChildren<{
     start: ParseableDate;
     end: ParseableDate;
     dateFormat?: Intl.DateTimeFormatOptions;
     capitalized?: boolean;
-  } & DivPropsNoChildren,
+  }>,
 ) => {
   const {
     start: _start,
@@ -78,10 +77,14 @@ export const DateRange = (
 };
 
 export const Date = (
-  props: {
-    date: ParseableDate;
-    dateFormat?: Intl.DateTimeFormatOptions;
-  } & Omit<ComponentPropsWithoutRef<"time">, "dateTime" | "children" | "title">,
+  props: Props<
+    "time",
+    {
+      date: ParseableDate;
+      dateFormat?: Intl.DateTimeFormatOptions;
+    },
+    "dateTime" | "children" | "title"
+  >,
 ) => {
   const { date, dateFormat = DateFormat.Default, ...rest } = props;
   const parsed = parseDate(date);

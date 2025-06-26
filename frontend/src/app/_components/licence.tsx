@@ -1,15 +1,12 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { TextLink } from "@/components/link";
-import { Licence, licence, LicenceDefinition } from "@/licensing";
-import React from "react";
+import { Licence, LicenceDefinition, licence } from "@/licensing";
+import { DivPropsNoChildren } from "@/types/react";
 
 interface LicenseProps {
   licence: Licence;
 }
-export const License = (
-  props: LicenseProps &
-    Omit<ComponentPropsWithoutRef<"div">, "children" | "title">,
-) => {
+export const License = (props: DivPropsNoChildren<LicenseProps, "title">) => {
   const { licence: licenceKey, ...rest } = props;
   const licensing = licence(licenceKey);
 

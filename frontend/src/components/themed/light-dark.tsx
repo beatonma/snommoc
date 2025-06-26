@@ -1,14 +1,13 @@
 "use client";
 
-import { AppIcon } from "@/components/icon";
-import { ComponentProps, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TextButton } from "@/components/button";
+import { AppIcon } from "@/components/icon";
+import { PropsExcept } from "@/types/react";
 
 const StorageKey = "theme";
 type Theme = "light" | "dark" | "system";
-const ThemeController = (
-  props: Omit<ComponentProps<"button">, "onClick" | "title">,
-) => {
+const ThemeController = (props: PropsExcept<"button", "onClick" | "title">) => {
   const isInitialized = useRef<boolean>(false);
   const [mode, setMode] = useState<Theme>("system");
   const icon: AppIcon = useMemo(() => {

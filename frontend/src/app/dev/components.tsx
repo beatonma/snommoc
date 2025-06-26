@@ -359,7 +359,7 @@ const ThemeColors = () => {
 };
 
 const TailwindUtilities = () => {
-  const Utility = (props: { utility: string } & DivProps) => {
+  const Utility = (props: DivProps<{ utility: string }>) => {
     const { utility, children, ...rest } = addClass(
       props,
       props.utility,

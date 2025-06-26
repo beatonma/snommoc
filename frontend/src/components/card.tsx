@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { ComponentPropsWithoutRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { type ItemTheme as Theme } from "@/api";
 import { NextLinkProps } from "@/components/link";
 import { Optional } from "@/components/optional";
@@ -9,6 +9,7 @@ import {
   PartyIconBackground,
   itemThemeCss,
 } from "@/components/themed/item-theme";
+import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 type CardProps = {
@@ -22,7 +23,7 @@ const DefaultTheme: Theme = {
   on_accent: "var(--on_primary)",
 };
 
-type HeaderCardProps = CardProps & ComponentPropsWithoutRef<"div">;
+type HeaderCardProps = DivProps<CardProps>;
 export const HeaderCard = (props: HeaderCardProps) => {
   const { image, children, themeSource, ...rest } = addClass(
     props,

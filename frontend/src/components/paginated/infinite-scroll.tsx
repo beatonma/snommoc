@@ -20,7 +20,7 @@ interface PaginationProps<P extends PathWithPagination> {
   itemComponent: PaginationItemComponent<PageItemType<P>>;
 }
 export const InfiniteScroll = <P extends PathWithPagination>(
-  props: PaginationProps<P> & DivPropsNoChildren,
+  props: DivPropsNoChildren<PaginationProps<P>>,
 ) => {
   const { pagination, resetFlag, header, itemComponent, ...rest } = props;
 

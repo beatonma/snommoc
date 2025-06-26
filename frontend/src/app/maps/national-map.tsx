@@ -157,7 +157,7 @@ const NationalMapWithLocation = ({
   );
 };
 
-const LoadingMessage = (props: { progress: number } & DivPropsNoChildren) => {
+const LoadingMessage = (props: DivPropsNoChildren<{ progress: number }>) => {
   const { progress, ...rest } = props;
   return (
     <div {...rest}>
@@ -215,9 +215,9 @@ const addConstituencyBoundaries = (
 };
 
 const HoveredConstituency = (
-  props: DivPropsNoChildren & {
+  props: DivPropsNoChildren<{
     constituency: ConstituencyMiniBoundary | undefined;
-  },
+  }>,
 ) => {
   const { constituency, ...rest } = props;
 

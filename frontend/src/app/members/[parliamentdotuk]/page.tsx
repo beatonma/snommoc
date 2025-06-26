@@ -1,5 +1,5 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import React, { ComponentPropsWithoutRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {
   ConstituencyMini,
   HouseType,
@@ -12,13 +12,14 @@ import { PhysicalAddress } from "@/app/members/_components/address";
 import { TextButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
 import { Date } from "@/components/datetime";
-import ErrorMessage from "@/components/error";
+import { ErrorMessage } from "@/components/error";
 import { LinkGroup } from "@/components/link";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
-import PageLayout from "@/components/page-layout";
+import { PageLayout } from "@/components/page-layout";
 import { itemThemeCss } from "@/components/themed/item-theme";
 import { Nullish } from "@/types/common";
+import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 type PageProps = {
@@ -59,9 +60,7 @@ export default async function Page({ params }: PageProps) {
   );
 }
 
-interface MemberComponentProps extends ComponentPropsWithoutRef<"section"> {
-  member: MemberProfile;
-}
+type MemberComponentProps = Props<"section", { member: MemberProfile }>;
 
 const MemberCard = (props: MemberComponentProps) => {
   const { member, ...rest } = addClass(props, "column");

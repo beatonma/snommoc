@@ -117,7 +117,7 @@ interface DotTextProps {
   color: string | undefined;
   text: string;
 }
-const DotText = (props: DotTextProps & DivPropsNoChildren) => {
+const DotText = (props: DivPropsNoChildren<DotTextProps>) => {
   const { color, text, ...rest } = addClass(props, "items-baseline gap-1.5");
   if (!color) return <span>{text}</span>;
   return (

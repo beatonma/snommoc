@@ -1,11 +1,12 @@
 "use client";
-import { MemberCareer } from "@/api";
-import { useSortable } from "@/components/sortable";
-import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
-import { DivProps } from "@/types/react";
+
 import React, { useId, useState } from "react";
-import { ListSubheader, ListSection, BlockItem, DateRangeItem } from "./shared";
+import { MemberCareer } from "@/api";
+import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
 import { HighlightDates } from "@/components/highlight";
+import { useSortable } from "@/components/sortable";
+import { DivProps } from "@/types/react";
+import { BlockItem, DateRangeItem, ListSection, ListSubheader } from "./shared";
 
 const sortByCategory = (a: Interest, b: Interest) =>
   (a.category ?? "").localeCompare(b.category ?? "");
@@ -99,11 +100,11 @@ const RegisteredInterests = ({
   );
 };
 
-type RegisteredInterestsProps = {
+type RegisteredInterestsProps = DivProps<{
   interest: Interest;
   showDates: boolean;
   showCategory: boolean;
-} & DivProps;
+}>;
 
 const RegisteredInterest = (props: RegisteredInterestsProps) => {
   const { interest, ...rest } = props;

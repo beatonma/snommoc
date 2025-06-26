@@ -1,14 +1,16 @@
 "use client";
 
-import { DivPropsNoChildren } from "@/types/react";
-
-import { Map, useMap } from "@/components/map";
 import { useEffect } from "react";
 import { Constituency } from "@/api";
+import { Map, useMap } from "@/components/map";
+import { DivPropsNoChildren } from "@/types/react";
 
-type ConstituencyMapProps = {
-  constituency: Constituency;
-} & Omit<DivPropsNoChildren, "id">;
+type ConstituencyMapProps = DivPropsNoChildren<
+  {
+    constituency: Constituency;
+  },
+  "id"
+>;
 export const ConstituencyMap = (props: ConstituencyMapProps) => {
   const { constituency, ...rest } = props;
   const map = useMap({ fitToExtents: true });

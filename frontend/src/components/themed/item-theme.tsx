@@ -76,7 +76,7 @@ export const itemThemeCss = (
   };
 };
 
-export const ItemTheme = (props: ItemThemeableProps & DivProps) => {
+export const ItemTheme = (props: DivProps<ItemThemeableProps>) => {
   const { themeSource, children, style, defaultTheme, ...rest } = props;
   const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
 
@@ -87,7 +87,7 @@ export const ItemTheme = (props: ItemThemeableProps & DivProps) => {
   );
 };
 
-export const PartyIconBackground = (props: ItemThemeableProps & DivProps) => {
+export const PartyIconBackground = (props: DivProps<ItemThemeableProps>) => {
   const {
     themeSource: themeSource,
     children,

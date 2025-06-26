@@ -12,12 +12,12 @@ import { ItemTheme } from "@/components/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-type Single = {
+type Single = DivPropsNoChildren<{
   constituency: ConstituencyMiniBoundary;
-} & DivPropsNoChildren;
-type Multi = {
+}>;
+type Multi = DivPropsNoChildren<{
   constituencies: ConstituencyMiniBoundary[];
-} & DivPropsNoChildren;
+}>;
 
 export default function SelectedConstituenciesInfo(props: Multi) {
   const { constituencies, ...rest } = addClass(

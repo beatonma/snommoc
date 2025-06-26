@@ -2,15 +2,12 @@
 
 import { LinkProps } from "next/dist/client/link";
 import Link from "next/link";
-import React, {
-  ComponentPropsWithoutRef,
-  HTMLAttributeReferrerPolicy,
-  useState,
-} from "react";
+import React, { HTMLAttributeReferrerPolicy, useState } from "react";
 import { WebAddress } from "@/api";
 import { ButtonLinkProps, TextButton } from "@/components/button";
 import { AppIcon } from "@/components/icon";
 import { Nullish } from "@/types/common";
+import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 /**
@@ -35,9 +32,9 @@ export const TextLink = (props: NextLinkProps) => {
   );
 };
 
-type LinkGroupProps = {
+type LinkGroupProps = DivProps<{
   links?: (string | WebAddress | null)[];
-} & ComponentPropsWithoutRef<"div">;
+}>;
 export const LinkGroup = (props: LinkGroupProps) => {
   const { links, children, ...rest } = addClass(
     props,

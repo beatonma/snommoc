@@ -1,9 +1,5 @@
-import React, {
-  ComponentPropsWithoutRef,
-  createElement,
-  ElementType,
-  ReactNode,
-} from "react";
+import React, { ElementType, ReactNode, createElement } from "react";
+import { Props } from "@/types/react";
 
 type OptionalProps<T> = {
   value: T | null | undefined;
@@ -11,13 +7,14 @@ type OptionalProps<T> = {
   block?: (value: T) => ReactNode;
 };
 
-type ElementProps<E extends ElementType> = Omit<
-  ComponentPropsWithoutRef<E>,
-  "children" | keyof OptionalProps<any>
+type OptionalElementProps<E extends ElementType, T> = Props<
+  E,
+  OptionalProps<T>,
+  "children"
 >;
 
 const OptionalElement = <E extends ElementType, T>(
-  props: { element: E | null } & ElementProps<E> & OptionalProps<T>,
+  props: { element: E | null } & OptionalElementProps<E, T>,
 ) => {
   const { element, value, condition, block, ...rest } = props;
 
@@ -30,13 +27,13 @@ const OptionalElement = <E extends ElementType, T>(
   return <>{content}</>;
 };
 
-export const OptionalDiv = <T,>(
-  props: OptionalProps<T> & ElementProps<"div">,
-) => <OptionalElement element="div" {...props} />;
+export const OptionalDiv = <T,>(props: OptionalElementProps<"div", T>) => (
+  <OptionalElement element="div" {...props} />
+);
 
-export const OptionalSpan = <T,>(
-  props: OptionalProps<T> & ElementProps<"span">,
-) => <OptionalElement element="span" {...props} />;
+export const OptionalSpan = <T,>(props: OptionalElementProps<"span", T>) => (
+  <OptionalElement element="span" {...props} />
+);
 
 export const Optional = <T,>(props: OptionalProps<T>) => (
   <OptionalElement element={null} {...props} />

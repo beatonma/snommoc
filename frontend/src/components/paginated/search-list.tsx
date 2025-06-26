@@ -38,7 +38,7 @@ interface ListPageProps<P extends SearchablePath> {
   immutableFilters?: Query<P>;
 }
 export const SearchList = <P extends SearchablePath>(
-  props: ListPageProps<P> & Omit<DivPropsNoChildren, keyof ListPageProps<P>>,
+  props: DivPropsNoChildren<ListPageProps<P>>,
 ) => {
   const {
     path,
@@ -88,7 +88,7 @@ export const SearchList = <P extends SearchablePath>(
 };
 
 const _SearchList = <P extends SearchablePath>(
-  props: {
+  props: DivPropsNoChildren<{
     pagination: Paginated<PageItemType<P>>;
     header: ReactNode | undefined;
     itemComponent: PaginationItemComponent<PageItemType<P>>;
@@ -98,7 +98,7 @@ const _SearchList = <P extends SearchablePath>(
     onConfirmSearch: () => void;
     filters: SearchFilters;
     setFilters: (value: SearchFilters) => void;
-  } & DivPropsNoChildren,
+  }>,
 ) => {
   const hasHeader = !!props.header;
   const {
@@ -256,10 +256,10 @@ const initFilters = (
 };
 
 const Filters = (
-  props: {
+  props: DivPropsNoChildren<{
     filters: SearchFilters;
     setFilters: (value: SearchFilters) => void;
-  } & DivPropsNoChildren,
+  }>,
 ) => {
   const { filters, setFilters, ...rest } = props;
 
@@ -352,10 +352,10 @@ const BooleanFilter = (props: FilterWidgetProps<boolean>) => {
 };
 
 const FilterLayout = (
-  props: DivPropsNoChildren & {
+  props: DivPropsNoChildren<{
     label: string;
     block: (id: string) => ReactNode;
-  },
+  }>,
 ) => {
   const { block, label, ...rest } = addClass(
     props,

@@ -1,10 +1,15 @@
-import React, { ComponentPropsWithRef } from "react";
+import React from "react";
+import {
+  DivProps,
+  DivPropsNoChildren,
+  Props,
+  PropsWithRef,
+} from "@/types/react";
 import { addClass } from "@/util/transforms";
-import { DivProps, DivPropsNoChildren } from "@/types/react";
 
 const FullSpan = "col-start-1 col-span-full";
 
-export const GridSpan = (props: ComponentPropsWithRef<"div">) => {
+export const GridSpan = (props: PropsWithRef<"div">) => {
   return <div {...addClass(props, FullSpan)} />;
 };
 export const GridSpacer = (props: DivPropsNoChildren) => {

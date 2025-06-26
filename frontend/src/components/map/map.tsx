@@ -330,9 +330,12 @@ export class MapRenderer {
   }
 }
 
-type MapProps = {
-  map: MapRenderer | undefined;
-} & Omit<DivProps, "id">;
+type MapProps = DivProps<
+  {
+    map: MapRenderer | undefined;
+  },
+  "id"
+>;
 const MapView = (props: MapProps) => {
   const { map, children, ...rest } = addClass(props, "relative");
   const id = useId();

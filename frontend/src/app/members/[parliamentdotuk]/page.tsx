@@ -1,18 +1,17 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { ReactNode } from "react";
 import {
-  ConstituencyMini,
-  HouseType,
-  MemberProfile,
+  type ConstituencyMini,
+  type HouseType,
+  type MemberProfile,
   type Party,
-  get,
+  getOr404,
 } from "@/api";
 import Career from "@/app/members/[parliamentdotuk]/career";
 import { PhysicalAddress } from "@/app/members/_components/address";
 import { TextButton } from "@/components/button";
 import { HeaderCard } from "@/components/card";
 import { Date } from "@/components/datetime";
-import { ErrorMessage } from "@/components/error";
 import { LinkGroup } from "@/components/link";
 import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
@@ -27,7 +26,7 @@ type PageProps = {
 };
 
 const getMember = async (parliamentdotuk: number) =>
-  get("/api/members/{parliamentdotuk}/", {
+  getOr404("/api/members/{parliamentdotuk}/", {
     path: { parliamentdotuk },
   });
 
@@ -36,7 +35,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const member = (await getMember(parliamentdotuk)).data;
+  const member = await getMember(parliamentdotuk);
   const parentTitle = (await parent).title?.absolute;
   return {
     title: member ? `${member.name} - ${parentTitle}` : parentTitle,
@@ -46,10 +45,7 @@ export async function generateMetadata(
 
 export default async function Page({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const response = await getMember(parliamentdotuk);
-  const member = response.data;
-
-  if (!member) return <ErrorMessage />;
+  const member = await getMember(parliamentdotuk);
 
   return (
     <PageLayout layout="CenteredReadable" style={itemThemeCss(member.party)}>

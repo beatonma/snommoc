@@ -1,9 +1,8 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { CSSProperties, ReactNode } from "react";
-import { type ElectionResult, get } from "@/api";
+import { type ElectionResult, getOr404 } from "@/api";
 import { HeaderCard } from "@/components/card";
 import { Date, DateRange } from "@/components/datetime";
-import { ErrorMessage } from "@/components/error";
 import { TextLink } from "@/components/link";
 import { PartyLink, PersonLink } from "@/components/models/linked-data";
 import { MemberItemCard } from "@/components/models/list-item/member-card";
@@ -15,7 +14,7 @@ import Links from "@/links";
 import { ConstituencyMap } from "./map";
 
 const getConstituency = async (parliamentdotuk: number) =>
-  get("/api/constituencies/{parliamentdotuk}/", {
+  getOr404("/api/constituencies/{parliamentdotuk}/", {
     path: { parliamentdotuk },
   });
 
@@ -28,7 +27,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const constituency = (await getConstituency(parliamentdotuk)).data;
+  const constituency = await getConstituency(parliamentdotuk);
 
   const parentTitle = (await parent).title?.absolute;
   return {
@@ -39,9 +38,7 @@ export async function generateMetadata(
 
 export default async function Page({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const constituency = (await getConstituency(parliamentdotuk)).data;
-
-  if (!constituency) return <ErrorMessage />;
+  const constituency = await getConstituency(parliamentdotuk);
 
   return (
     <PageLayout

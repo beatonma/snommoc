@@ -1,10 +1,13 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import React from "react";
-import { GenderDemographics, LordsDemographics, PartyDetail, get } from "@/api";
 import React, { useMemo } from "react";
+import {
+  type GenderDemographics,
+  type LordsDemographics,
+  type PartyDetail,
+  getOr404,
+} from "@/api";
 import { MembersList } from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
-import { ErrorMessage } from "@/components/error";
 import { OptionalSvg } from "@/components/image";
 import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
@@ -17,7 +20,7 @@ type PageProps = {
 };
 
 const getParty = async (parliamentdotuk: number) =>
-  get("/api/parties/{parliamentdotuk}/", {
+  getOr404("/api/parties/{parliamentdotuk}/", {
     path: { parliamentdotuk },
   });
 
@@ -26,7 +29,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const party = (await getParty(parliamentdotuk)).data;
+  const party = await getParty(parliamentdotuk);
   const parentTitle = (await parent).title?.absolute;
   return {
     title: party ? `${party.name} - ${parentTitle}` : parentTitle,
@@ -36,9 +39,7 @@ export async function generateMetadata(
 
 export default async function Page({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
-  const party = (await getParty(parliamentdotuk)).data;
-
-  if (!party) return <ErrorMessage />;
+  const party = await getParty(parliamentdotuk);
 
   return <PartyPage party={party} />;
 }

@@ -7,7 +7,10 @@ import { PropsExcept } from "@/types/react";
 
 const StorageKey = "theme";
 type Theme = "light" | "dark" | "system";
-const ThemeController = (props: PropsExcept<"button", "onClick" | "title">) => {
+
+export const ThemeController = (
+  props: PropsExcept<"button", "onClick" | "title">,
+) => {
   const isInitialized = useRef<boolean>(false);
   const [mode, setMode] = useState<Theme>("system");
   const icon: AppIcon = useMemo(() => {
@@ -47,5 +50,3 @@ const nextTheme = (theme: Theme) => {
   const themes: Theme[] = ["light", "dark", "system"];
   return themes[(themes.findIndex((it) => it === theme) + 1) % themes.length];
 };
-
-export default ThemeController;

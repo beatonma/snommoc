@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Constituency } from "@/api";
-import { Map, useMap } from "@/components/map";
+import { Map, useMap } from "@/features/map";
 import { DivPropsNoChildren } from "@/types/react";
 
 type ConstituencyMapProps = DivPropsNoChildren<

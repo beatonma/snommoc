@@ -3,8 +3,8 @@
 import { useMemo } from "react";
 import { DivisionVoteType, Fixtures } from "@/api";
 import Icon, { AppIcon } from "@/components/icon";
-import { MemberItemCard } from "@/components/models/list-item";
-import { SearchList } from "@/components/paginated/search-list";
+import { MemberItemCard } from "@/features/cards";
+import { SearchList } from "@/features/paginated/search-list";
 import { classes } from "@/util/transforms";
 
 type DivisionVotesPath =

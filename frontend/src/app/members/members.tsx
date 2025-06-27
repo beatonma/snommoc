@@ -2,8 +2,8 @@
 
 import React, { ReactNode } from "react";
 import { Fixtures, Query } from "@/api";
-import { MemberItemCard } from "@/components/models/list-item";
-import { SearchFilters, SearchList } from "@/components/paginated/search-list";
+import { MemberItemCard } from "@/features/cards";
+import { SearchFilters, SearchList } from "@/features/paginated/search-list";
 
 export const MembersList = (props: {
   header?: ReactNode;

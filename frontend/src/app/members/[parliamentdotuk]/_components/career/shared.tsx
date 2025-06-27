@@ -2,12 +2,8 @@ import React, { ReactNode } from "react";
 import { MemberCareer } from "@/api";
 import { DateRange } from "@/components/datetime";
 import { Loading } from "@/components/loading";
-import {
-  ConstituencyLink,
-  HouseLink,
-  PartyLink,
-} from "@/components/models/linked-data";
 import { Optional } from "@/components/optional";
+import { ConstituencyLink, HouseLink, PartyLink } from "@/features/linked-data";
 import { Nullish } from "@/types/common";
 import { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";

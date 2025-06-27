@@ -2,8 +2,8 @@
 
 import React from "react";
 import { GridSectionHeader } from "@/components/grid";
-import { PartyItemCard } from "@/components/models/list-item";
-import { SearchList } from "@/components/paginated/search-list";
+import { PartyItemCard } from "@/features/cards";
+import { SearchList } from "@/features/paginated/search-list";
 
 export const PartyList = () => (
   <SearchList

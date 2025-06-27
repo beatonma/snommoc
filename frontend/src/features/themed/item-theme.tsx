@@ -1,7 +1,7 @@
 import React from "react";
 import type { ItemTheme as LocalTheme, Party, PartyDetail } from "@/api";
 import { MaskedSvg } from "@/components/image";
-import { getOnColor } from "@/components/themed/color";
+import { getOnColor } from "@/features/themed/color";
 import { Nullish } from "@/types/common";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";

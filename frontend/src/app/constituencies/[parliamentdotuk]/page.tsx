@@ -1,16 +1,15 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { CSSProperties, ReactNode } from "react";
 import { type ElectionResult, getOr404 } from "@/api";
-import { HeaderCard } from "@/components/card";
 import { Date, DateRange } from "@/components/datetime";
 import { TextLink } from "@/components/link";
-import { PartyLink, PersonLink } from "@/components/models/linked-data";
-import { MemberItemCard } from "@/components/models/list-item/member-card";
 import { Percentage, int } from "@/components/number";
 import { Optional } from "@/components/optional";
 import { PageLayout } from "@/components/page-layout";
-import { itemThemeCss } from "@/components/themed/item-theme";
-import Links from "@/links";
+import { HeaderCard, MemberItemCard } from "@/features/cards";
+import { PartyLink, PersonLink } from "@/features/linked-data";
+import { itemThemeCss } from "@/features/themed/item-theme";
+import { Links } from "@/links";
 import { ConstituencyMap } from "./map";
 
 const getConstituency = async (parliamentdotuk: number) =>

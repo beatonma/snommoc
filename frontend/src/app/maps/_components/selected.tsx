@@ -1,14 +1,10 @@
 import React, { useMemo } from "react";
 import { ConstituencyMiniBoundary, Party } from "@/api";
-import {
-  ConstituencyLink,
-  HouseLink,
-  PartyLink,
-} from "@/components/models/linked-data";
-import { MemberItemCard } from "@/components/models/list-item";
 import { onlyIf } from "@/components/optional";
 import { Row } from "@/components/row";
-import { ItemTheme } from "@/components/themed/item-theme";
+import { MemberItemCard } from "@/features/cards";
+import { ConstituencyLink, HouseLink, PartyLink } from "@/features/linked-data";
+import { ItemTheme } from "@/features/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
 import { addClass } from "@/util/transforms";
 

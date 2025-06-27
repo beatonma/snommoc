@@ -1,8 +1,8 @@
 "use client";
 
 import { CSSProperties } from "react";
-import { DivisionItemCard } from "@/components/models/list-item/division-card";
-import { SearchList } from "@/components/paginated/search-list";
+import { DivisionItemCard } from "@/features/cards";
+import { SearchList } from "@/features/paginated/search-list";
 
 export const DivisionsList = () => (
   <SearchList

@@ -3,18 +3,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstituencyMiniBoundary, PartyTerritory, get } from "@/api";
 import { Loading, LoadingBar } from "@/components/loading";
-import { type LayerKey, Map, useMap } from "@/components/map";
-import { GeoLocation, UkParliamentLocation } from "@/components/map/geography";
-import { usePassiveGeoLocation } from "@/components/map/geolocation";
-import { MapRenderer } from "@/components/map/map";
+import { onlyIf } from "@/components/optional";
 import {
   ConstituencyLink,
   PartyLink,
   PersonLink,
-} from "@/components/models/linked-data";
-import { onlyIf } from "@/components/optional";
-import { usePagination } from "@/components/paginated/pagination";
-import { PartyIconBackground } from "@/components/themed/item-theme";
+} from "@/features/linked-data";
+import { type LayerKey, Map, useMap } from "@/features/map";
+import { GeoLocation, UkParliamentLocation } from "@/features/map/geography";
+import { usePassiveGeoLocation } from "@/features/map/geolocation";
+import { MapRenderer } from "@/features/map/map";
+import { usePagination } from "@/features/paginated";
+import { PartyIconBackground } from "@/features/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
 import { PartyTerritoryKey } from "./_components/party-filter";
 import { SelectedConstituenciesInfo } from "./_components/selected";

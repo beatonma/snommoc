@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  DivProps,
-  DivPropsNoChildren,
-  Props,
-  PropsWithRef,
-} from "@/types/react";
+import { DivProps, DivPropsNoChildren, PropsWithRef } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 const FullSpan = "col-start-1 col-span-full";

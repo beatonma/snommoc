@@ -122,6 +122,19 @@
     --surface: var(--surface_alt);
     @apply bg-surface text-on_surface rounded-sm px-2 py-1;
   }
+  input::-webkit-search-cancel-button {
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 1em;
+    background: currentColor;
+    cursor: pointer;
+
+    -webkit-appearance: none;
+    height: 1em;
+    width: 1em;
+    margin-left: 0.4em;
+  }
 
   table {
     @apply card surface w-fit sm:rounded-lg;

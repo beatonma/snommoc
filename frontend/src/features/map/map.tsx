@@ -18,7 +18,10 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Icon, Stroke, Style } from "ol/style";
 import { useEffect, useId, useRef, useState } from "react";
 import { onlyIf } from "@/components/optional";
-import { RemoteContent } from "@/components/remote-content";
+import {
+  RemoteContent,
+  RemoteContentProvider,
+} from "@/components/remote-content";
 import { Nullish } from "@/types/common";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
@@ -34,6 +37,10 @@ import { useGeoLocationPrompt } from "./geolocation";
 
 const MapProjectionCode = "EPSG:27700"; // British National Grid
 const UserLocationMarkerId = "user_location";
+const OpenStreetMapsProvider: RemoteContentProvider = {
+  domain: "openstreetmap.org",
+  description: "Non-profit map provider",
+};
 
 export type LayerKey = string | number;
 interface GeoJsonLayer {
@@ -77,7 +84,7 @@ export const useMap = (options?: MapOptions) => {
 
 export const Map = (props: MapProps) => (
   <RemoteContent
-    provider="openstreetmap.org"
+    provider={OpenStreetMapsProvider}
     content={() => <MapView {...props} />}
   />
 );

@@ -14,3 +14,9 @@ export const Todo = (props: DivPropsNoChildren<{ message: string }>) => {
 
   return <div {...addClass(rest, "bg-[#ff0]/60 text-[#000]")}>{content}</div>;
 };
+
+export const ErrorMessage = ({ error }: { error?: string }) => (
+  <div className="bg-red-800 text-white">
+    {["Error", error].filter(Boolean).join(": ")}
+  </div>
+);

@@ -7,12 +7,12 @@ import {
   getOr404,
 } from "@/api";
 import { MembersList } from "@/app/members/members";
-import { HeaderCard } from "@/components/card";
 import { OptionalSvg } from "@/components/image";
 import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
 import { PageLayout } from "@/components/page-layout";
-import { itemThemeCss } from "@/components/themed/item-theme";
+import { HeaderCard } from "@/features/cards";
+import { itemThemeCss } from "@/features/themed/item-theme";
 import { plural } from "@/util/plurals";
 
 type PageProps = {

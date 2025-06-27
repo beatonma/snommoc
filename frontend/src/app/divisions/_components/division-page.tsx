@@ -8,7 +8,7 @@ import { Date, DateFormat } from "@/components/datetime";
 import { PageLayout } from "@/components/page-layout";
 import { Prose } from "@/components/prose";
 import { Row } from "@/components/row";
-import { houseSurface } from "@/components/themed/tailwind";
+import { houseSurface } from "@/features/themed/tailwind";
 import { classes } from "@/util/transforms";
 
 type Division = CommonsDivision | LordsDivision;

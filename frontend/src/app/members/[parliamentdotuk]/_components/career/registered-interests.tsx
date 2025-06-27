@@ -21,7 +21,7 @@ const sortByDateThenCategory = (a: Interest, b: Interest) => {
 };
 
 type Interest = MemberCareer["interests"][number];
-const RegisteredInterests = ({
+export const RegisteredInterests = ({
   interests,
 }: {
   interests: MemberCareer["interests"];
@@ -223,5 +223,3 @@ const flattenInterest = (interest: Interest): Interest => {
     children: [],
   };
 };
-
-export default RegisteredInterests;

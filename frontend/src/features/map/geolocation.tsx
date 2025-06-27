@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
-import { GeoLocation } from "@/components/map/geography";
+import { GeoLocation } from "@/features/map/geography";
 import { ClassNameProps } from "@/types/common";
 
 interface GeoLocationOptions {

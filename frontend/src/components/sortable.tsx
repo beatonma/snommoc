@@ -2,8 +2,6 @@
 
 import React, { ReactNode, useEffect, useId, useState } from "react";
 import { Optional } from "@/components/optional";
-import ol from "ol/dist/ol";
-import condition = ol.events.condition;
 
 interface SortBy<T> {
   name: string;

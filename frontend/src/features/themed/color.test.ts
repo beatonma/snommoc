@@ -1,6 +1,6 @@
 import { describe, test } from "@jest/globals";
 import expect from "expect";
-import { _private } from "@/components/themed/color";
+import { _private } from "@/features/themed/color";
 
 describe("Color tests", () => {
   test("resolveToRgb rgb", () => {

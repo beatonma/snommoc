@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { ReactNode } from "react";
-import { type ItemTheme as Theme } from "@/api";
+import { ItemTheme as Theme } from "@/api";
 import { NextLinkProps } from "@/components/link";
 import { Optional } from "@/components/optional";
 import {
@@ -8,8 +8,8 @@ import {
   ItemThemeableProps,
   PartyIconBackground,
   itemThemeCss,
-} from "@/components/themed/item-theme";
-import { DivProps } from "@/types/react";
+} from "@/features/themed/item-theme";
+import type { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 type CardProps = {
@@ -108,4 +108,3 @@ export const ListItemCardVibrant = (props: ListItemCardProps) => {
     </Link>
   );
 };
-// export const ListItemCard = ListItemCardVibrant;

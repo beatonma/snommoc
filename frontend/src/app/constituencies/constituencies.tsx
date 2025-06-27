@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ConstituencyItemCard } from "@/components/models/list-item";
-import { SearchList } from "@/components/paginated/search-list";
+import { ConstituencyItemCard } from "@/features/cards";
+import { SearchList } from "@/features/paginated/search-list";
 
 export const ConstituencyList = () => (
   <SearchList

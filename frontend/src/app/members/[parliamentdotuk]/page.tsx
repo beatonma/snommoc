@@ -7,19 +7,19 @@ import {
   type Party,
   getOr404,
 } from "@/api";
-import Career from "@/app/members/[parliamentdotuk]/career";
 import { PhysicalAddress } from "@/app/members/_components/address";
 import { TextButton } from "@/components/button";
-import { HeaderCard } from "@/components/card";
 import { Date } from "@/components/datetime";
 import { LinkGroup } from "@/components/link";
-import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
 import { PageLayout } from "@/components/page-layout";
-import { itemThemeCss } from "@/components/themed/item-theme";
+import { HeaderCard } from "@/features/cards";
+import { MemberPortrait } from "@/features/member-portrait";
+import { itemThemeCss } from "@/features/themed/item-theme";
 import { Nullish } from "@/types/common";
 import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
+import { Career } from "./_components/career";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;

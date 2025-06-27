@@ -4,7 +4,10 @@ import { ReactNode, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
 import { Loading } from "@/components/loading";
 
-type RemoteContentProvider = "openstreetmap.org";
+export interface RemoteContentProvider {
+  domain: string;
+  description: ReactNode;
+}
 
 interface RemoteContentProps {
   provider: RemoteContentProvider;
@@ -28,13 +31,14 @@ export const RemoteContent = (props: RemoteContentProps) => {
 
   return (
     <TintedButton onClick={() => setIsAllowed(true)}>
-      {`Click to allow content from ${provider}`}
+      {`Click to allow content from ${provider.domain}`}
     </TintedButton>
   );
 };
 
 const storageKeyOf = (provider: RemoteContentProvider) =>
-  `remotecontentprovider__${provider}`;
+  `remotecontentprovider__${provider.domain}`;
+
 const getSavedPreference = (provider: RemoteContentProvider): boolean =>
   window.localStorage.getItem(storageKeyOf(provider))?.toLowerCase() === "true";
 

@@ -3,21 +3,21 @@
 import React, { useId, useState } from "react";
 import * as Sample from "@/app/dev/sample";
 import { TextButton, TintedButton } from "@/components/button";
-import { HeaderCard } from "@/components/card";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
 import { ButtonLink } from "@/components/link";
 import { Loading, LoadingBar } from "@/components/loading";
-import {
-  ConstituencyItemCard,
-  MemberItemCard,
-  PartyItemCard,
-} from "@/components/models/list-item";
 import { Row } from "@/components/row";
 import { useSortable } from "@/components/sortable";
 import { TabLayout } from "@/components/tabs";
-import { getOnColor } from "@/components/themed/color";
-import { itemThemeCss } from "@/components/themed/item-theme";
+import {
+  ConstituencyItemCard,
+  HeaderCard,
+  MemberItemCard,
+  PartyItemCard,
+} from "@/features/cards";
+import { getOnColor } from "@/features/themed/color";
+import { itemThemeCss } from "@/features/themed/item-theme";
 import { DivProps, Props } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 
@@ -63,11 +63,11 @@ const LoadingComponents = () => {
 
   return (
     <Section name="">
-      <SectionItem name={"<Loading />"}>
+      <SectionItem name="<Loading />">
         <Loading />
       </SectionItem>
 
-      <SectionItem name={"<LoadingBar />"}>
+      <SectionItem name="<LoadingBar />">
         <LoadingBar />
       </SectionItem>
 

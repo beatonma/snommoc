@@ -6,11 +6,11 @@ import type { PageItemType, Params, Query, SearchablePath } from "@/api";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
 import { onlyIf } from "@/components/optional";
-import { Paginated, usePagination } from "@/components/paginated/pagination";
 import { MaybeString } from "@/types/common";
 import { DivPropsNoChildren, State, StateSetter } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
+import { type Paginated, usePagination } from "./pagination";
 
 const QueryParam = "query";
 const DefaultGridClass = "search-results-grid";

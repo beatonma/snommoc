@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import { MemberMiniSchema } from "@/api";
-import { ListItemCard } from "@/components/card";
-import { SeparatedRow } from "@/components/collection";
-import { MemberPortrait } from "@/components/models/member-portrait";
 import { OptionalDiv } from "@/components/optional";
-import { ItemThemeableProps } from "@/components/themed/item-theme";
+import { SeparatedRow } from "@/components/row";
+import { ListItemCard } from "@/features/cards";
+import { MemberPortrait } from "@/features/member-portrait";
+import { ItemThemeableProps } from "@/features/themed/item-theme";
 import { navigationHref } from "@/navigation";
 import { ChildrenProps, ClassNameProps } from "@/types/common";
 

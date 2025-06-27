@@ -4,6 +4,10 @@ volumes:
     postgres_snommoc:
         name: postgres_snommoc
 
+x-volume-django-manage: &volume-django-manage
+  - type: bind
+    source: ./backend
+    target: /django
 x-volume-logs: &volume-logs
   - type: bind
     source: ./runtime-dev/log
@@ -70,13 +74,17 @@ services:
 
   django_manage:
     <<: *django
-    container_name: snommoc_django_manage
     profiles:
       - "manage"
     ports: []
     healthcheck:
       test: ["NONE"]
     entrypoint: ["sh"]
+    volumes:
+      - <<: *volume-django-manage
+      - <<: *volume-logs
+      - <<: *volume-media
+      - <<: *volume-static
 
   next: &next
     <<: *common

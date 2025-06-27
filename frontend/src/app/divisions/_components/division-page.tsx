@@ -1,4 +1,4 @@
-import { CommonsDivision, HouseType, LordsDivision } from "@/api";
+import { CommonsDivision, HouseType, LordsDivision } from "@/api/schema";
 import {
   DivisionVotes,
   DivisionVotesProps,

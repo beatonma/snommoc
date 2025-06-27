@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   description: "National map of UK constituencies",
 };
 
-export default async function Page() {
+export default async function NationalMapPage() {
   return <NationalMap />;
 }

@@ -1,12 +1,12 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { ReactNode } from "react";
-import {
-  type ConstituencyMini,
-  type HouseType,
-  type MemberProfile,
-  type Party,
-  getOr404,
-} from "@/api";
+import { getOr404 } from "@/api";
+import type {
+  ConstituencyMini,
+  HouseType,
+  MemberProfile,
+  Party,
+} from "@/api/schema";
 import { PhysicalAddress } from "@/app/members/_components/address";
 import { TextButton } from "@/components/button";
 import { Date } from "@/components/datetime";
@@ -43,7 +43,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function MemberProfilePage({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
   const member = await getMember(parliamentdotuk);
 

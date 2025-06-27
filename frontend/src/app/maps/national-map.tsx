@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ConstituencyMiniBoundary, PartyTerritory, get } from "@/api";
+import { get } from "@/api";
+import { ConstituencyMiniBoundary, PartyTerritory } from "@/api/schema";
 import { Loading, LoadingBar } from "@/components/loading";
 import { onlyIf } from "@/components/optional";
 import {

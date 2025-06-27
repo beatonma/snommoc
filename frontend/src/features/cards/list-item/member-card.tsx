@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { MemberMiniSchema } from "@/api";
+import { MemberMiniSchema } from "@/api/schema";
 import { OptionalDiv } from "@/components/optional";
 import { SeparatedRow } from "@/components/row";
 import { ListItemCard } from "@/features/cards";

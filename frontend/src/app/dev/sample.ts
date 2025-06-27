@@ -3,7 +3,7 @@ import {
   MemberMiniSchema,
   MemberProfile,
   PartyDetail,
-} from "@/api";
+} from "@/api/schema";
 
 export const LabourParty: PartyDetail = {
   parliamentdotuk: 15,

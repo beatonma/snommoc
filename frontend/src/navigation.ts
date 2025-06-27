@@ -1,4 +1,4 @@
-import { HouseType } from "@/api";
+import { HouseType } from "@/api/schema";
 
 const Navigation = {
   constituencies: () => "/constituencies/",

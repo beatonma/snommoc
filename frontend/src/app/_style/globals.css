@@ -253,9 +253,9 @@
     background-color: color-mix(in srgb, var(--primary) 7.5%, var(--surface));
   }
 }
-/*@utility surface-accent {*/
-/*  @apply bg-accent text-on_accent fill-on_accent;*/
-/*}*/
+@utility surface-accent {
+  @apply bg-accent text-on_accent fill-on_accent;
+}
 @utility hover {
   @apply hover:bg-hover transition-colors;
 }

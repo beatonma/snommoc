@@ -1,4 +1,4 @@
-import { Division, HouseType, ItemTheme } from "@/api";
+import { Division, HouseType, ItemTheme } from "@/api/schema";
 import { Date } from "@/components/datetime";
 import Icon, { IconProps } from "@/components/icon";
 import { SeparatedRow } from "@/components/row";

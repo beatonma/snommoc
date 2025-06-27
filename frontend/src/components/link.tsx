@@ -3,7 +3,7 @@
 import { LinkProps } from "next/dist/client/link";
 import Link from "next/link";
 import React, { HTMLAttributeReferrerPolicy, useState } from "react";
-import { WebAddress } from "@/api";
+import { WebAddress } from "@/api/schema";
 import { ButtonLinkProps, TextButton } from "@/components/button";
 import { AppIcon } from "@/components/icon";
 import { Nullish } from "@/types/common";

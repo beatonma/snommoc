@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Members list",
 };
 
-export default async function Page() {
+export default async function MembersListPage() {
   return (
     <PageLayout layout="CenteredFeed">
       <MembersList />

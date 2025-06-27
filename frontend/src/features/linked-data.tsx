@@ -7,7 +7,7 @@ import type {
   Organisation,
   Party,
   Post,
-} from "@/api";
+} from "@/api/schema";
 import { ButtonProps, TextButton } from "@/components/button";
 import { TextLink } from "@/components/link";
 import { Row } from "@/components/row";

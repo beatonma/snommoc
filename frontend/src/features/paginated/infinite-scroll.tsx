@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useRef } from "react";
-import { PageItemType, PathWithPagination } from "@/api";
+import { PageItemType, PathWithPagination } from "@/api/client";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
 import { Loading } from "@/components/loading";

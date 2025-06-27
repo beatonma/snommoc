@@ -247,7 +247,7 @@ case $flavor in
   exit 0
   ;;
 "openapi")
-  npx openapi-typescript http://localhost:8000/api/openapi.json -o frontend/src/lib/api/api.d.ts
+  npx openapi-typescript http://localhost:8000/api/openapi.json -o frontend/src/api/openapi.d.ts
   exit 0
   ;;
 "shell")

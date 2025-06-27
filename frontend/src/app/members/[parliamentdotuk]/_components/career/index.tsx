@@ -1,7 +1,11 @@
+"use client";
+
 import React, { ReactNode } from "react";
-import { MemberCareer, get } from "@/api";
+import { useGet } from "@/api/hooks";
+import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
 import { ErrorMessage } from "@/components/dev";
+import { Loading } from "@/components/loading";
 import { Optional } from "@/components/optional";
 import { SeparatedRow } from "@/components/row";
 import { TabLayout } from "@/components/tabs";
@@ -27,13 +31,13 @@ import {
   SummaryListSection,
 } from "./shared";
 
-export const Career = async (props: { parliamentdotuk: number }) => {
+export const Career = (props: { parliamentdotuk: number }) => {
   const { parliamentdotuk } = props;
-  const response = await get("/api/members/{parliamentdotuk}/career/", {
+  const career = useGet("/api/members/{parliamentdotuk}/career/", {
     path: { parliamentdotuk },
   });
-  const career = response.data;
 
+  if (career === "loading") return <Loading />;
   if (!career) return <ErrorMessage error="Career not available." />;
 
   return (

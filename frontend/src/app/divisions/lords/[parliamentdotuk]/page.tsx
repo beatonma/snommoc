@@ -24,7 +24,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function LordsDivisionPage({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
   const division = await getDivision(parliamentdotuk);
 

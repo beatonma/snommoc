@@ -1,4 +1,4 @@
-import { HouseType } from "@/api";
+import { HouseType } from "@/api/schema";
 
 export const houseSurface = (house: HouseType) => {
   switch (house) {

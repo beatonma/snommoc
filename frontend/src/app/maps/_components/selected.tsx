@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { ConstituencyMiniBoundary, Party } from "@/api";
+import { ConstituencyMiniBoundary, Party } from "@/api/schema";
 import { onlyIf } from "@/components/optional";
 import { Row } from "@/components/row";
 import { MemberItemCard } from "@/features/cards";

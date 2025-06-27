@@ -1,7 +1,8 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { Fixtures, Query } from "@/api";
+import { Query } from "@/api/client";
+import { Fixtures } from "@/api/schema";
 import { MemberItemCard } from "@/features/cards";
 import { SearchFilters, SearchList } from "@/features/paginated/search-list";
 

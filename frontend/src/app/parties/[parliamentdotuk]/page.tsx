@@ -1,11 +1,11 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { useMemo } from "react";
+import { getOr404 } from "@/api";
 import {
   type GenderDemographics,
   type LordsDemographics,
   type PartyDetail,
-  getOr404,
-} from "@/api";
+} from "@/api/schema";
 import { MembersList } from "@/app/members/members";
 import { OptionalSvg } from "@/components/image";
 import { LinkGroup } from "@/components/link";
@@ -37,7 +37,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function PartyDetailPage({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
   const party = await getParty(parliamentdotuk);
 

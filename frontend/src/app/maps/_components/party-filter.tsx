@@ -1,5 +1,5 @@
 import React from "react";
-import { PartyTerritory } from "@/api";
+import { PartyTerritory } from "@/api/schema";
 import { onlyIf } from "@/components/optional";
 import { Props } from "@/types/react";
 import { classes } from "@/util/transforms";

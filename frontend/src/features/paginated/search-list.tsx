@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import React, { type ReactNode, useId, useMemo, useState } from "react";
-import type { PageItemType, Params, Query, SearchablePath } from "@/api";
+import type { PageItemType, Params, Query, SearchablePath } from "@/api/client";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
 import { onlyIf } from "@/components/optional";

@@ -1,5 +1,5 @@
 import React from "react";
-import type { ItemTheme as LocalTheme, Party, PartyDetail } from "@/api";
+import type { ItemTheme as LocalTheme, Party, PartyDetail } from "@/api/schema";
 import { MaskedSvg } from "@/components/image";
 import { getOnColor } from "@/features/themed/color";
 import { Nullish } from "@/types/common";

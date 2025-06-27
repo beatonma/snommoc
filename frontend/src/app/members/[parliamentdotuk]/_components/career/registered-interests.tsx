@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useId, useState } from "react";
-import { MemberCareer } from "@/api";
+import { MemberCareer } from "@/api/schema";
 import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
 import { HighlightDates } from "@/components/highlight";
 import { useSortable } from "@/components/sortable";

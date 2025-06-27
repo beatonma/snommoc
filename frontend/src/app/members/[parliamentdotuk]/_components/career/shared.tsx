@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { MemberCareer } from "@/api";
+import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
 import { Loading } from "@/components/loading";
 import { Optional } from "@/components/optional";

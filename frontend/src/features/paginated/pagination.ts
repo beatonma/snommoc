@@ -14,7 +14,7 @@ import {
   type PathWithPagination,
   type Query,
   getPaginated,
-} from "@/api";
+} from "@/api/client";
 import { type StateSetter } from "@/types/react";
 
 export interface Paginated<T> {
@@ -230,7 +230,7 @@ export const usePagination = <P extends PathWithPagination>(
 };
 
 /** Returns a setter function which updates the given ref and state with the same value. */
-const useSyncState = <T,>(ref: RefObject<T>, stateSetter: StateSetter<T>) =>
+const useSyncState = <T>(ref: RefObject<T>, stateSetter: StateSetter<T>) =>
   useCallback(
     (value: T) => {
       ref.current = value;

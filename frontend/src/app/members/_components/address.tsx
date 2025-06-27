@@ -1,4 +1,4 @@
-import { type PhysicalAddress as PhysicalAddressData } from "@/api";
+import { type PhysicalAddress as PhysicalAddressData } from "@/api/schema";
 import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
 import { Props } from "@/types/react";

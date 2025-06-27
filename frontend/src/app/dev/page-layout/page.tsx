@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   description: "UI components",
 };
 
-export default function Page() {
+export default function PageLayoutPreviewPage() {
   return <PageLayoutPreview />;
 }

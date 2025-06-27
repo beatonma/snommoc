@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { DivisionVoteType, Fixtures } from "@/api";
+import { DivisionVoteType, Fixtures } from "@/api/schema";
 import Icon, { AppIcon } from "@/components/icon";
 import { MemberItemCard } from "@/features/cards";
 import { SearchList } from "@/features/paginated/search-list";

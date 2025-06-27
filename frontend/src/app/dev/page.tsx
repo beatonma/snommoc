@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "UI components",
 };
 
-export default async function Page() {
+export default async function ComponentsPage() {
   return (
     <PageLayout layout="CenteredFeed">
       <ComponentsOverview />

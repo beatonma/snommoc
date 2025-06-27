@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { ReactNode } from "react";
-import { ItemTheme as Theme } from "@/api";
+import { type ItemTheme as Theme } from "@/api/schema";
 import { NextLinkProps } from "@/components/link";
 import { Optional } from "@/components/optional";
 import {

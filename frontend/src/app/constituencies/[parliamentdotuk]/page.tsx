@@ -1,6 +1,7 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { CSSProperties, ReactNode } from "react";
-import { type ElectionResult, getOr404 } from "@/api";
+import { getOr404 } from "@/api/client";
+import { type ElectionResult } from "@/api/schema";
 import { Date, DateRange } from "@/components/datetime";
 import { TextLink } from "@/components/link";
 import { Percentage, int } from "@/components/number";
@@ -35,7 +36,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function Page({ params }: PageProps) {
+export default async function ConstituencyDetailPage({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
   const constituency = await getConstituency(parliamentdotuk);
 

@@ -1,5 +1,5 @@
 import React from "react";
-import type { ConstituencyMini } from "@/api";
+import type { ConstituencyMini } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
 import { OptionalDiv } from "@/components/optional";
 import { SeparatedRow } from "@/components/row";

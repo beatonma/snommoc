@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Constituency } from "@/api";
+import { Constituency } from "@/api/schema";
 import { Map, useMap } from "@/features/map";
 import { DivPropsNoChildren } from "@/types/react";
 

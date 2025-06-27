@@ -1,5 +1,5 @@
 import React from "react";
-import { Party } from "@/api";
+import { Party } from "@/api/schema";
 import { OptionalSvg } from "@/components/image";
 import { onlyIf } from "@/components/optional";
 import { ListItemCard } from "@/features/cards";

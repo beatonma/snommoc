@@ -23,11 +23,12 @@ class DivisionVoteMemberSchema(MinimalMemberSchema):
 
 class VoteSchema(Schema):
     person: DivisionVoteMemberSchema
-    vote: DivisionVoteType = field("vote_type.name")
+    vote: DivisionVoteType
 
     @staticmethod
     def resolve_vote(obj) -> DivisionVoteType:
         vote_type = obj.vote_type.name
+        print(vote_type)
         if vote_type == "aye" or vote_type == "content":
             return "aye"
         if vote_type == "no" or vote_type == "not_content":

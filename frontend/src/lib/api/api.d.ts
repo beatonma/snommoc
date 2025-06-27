@@ -17,7 +17,8 @@ export interface paths {
         post?: never;
         delete?: never;
         options?: never;
-        head?: never;
+        /** Ping */
+        head: operations["api_urls_ping"];
         patch?: never;
         trace?: never;
     };
@@ -254,6 +255,23 @@ export interface paths {
         };
         /** Lords Division */
         get: operations["api_routers_divisions_lords_division"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/divisions/lords/{parliamentdotuk}/votes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lords Division Votes */
+        get: operations["api_routers_divisions_lords_division_votes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1184,6 +1202,24 @@ export interface operations {
             };
         };
     };
+    api_urls_ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     api_routers_members_members: {
         parameters: {
             query?: {
@@ -1505,6 +1541,33 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LordsDivisionSchema"];
+                };
+            };
+        };
+    };
+    api_routers_divisions_lords_division_votes: {
+        parameters: {
+            query?: {
+                query?: string;
+                vote_type?: "aye" | "no" | "did_not_vote";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                parliamentdotuk: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedVoteSchema"];
                 };
             };
         };

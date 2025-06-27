@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import type { PathsWithMethod } from "openapi-typescript-helpers";
 import client from "@/lib/api";
 import type { components, paths } from "@/lib/api/api";
@@ -27,6 +28,7 @@ export type Post = Omit<schema["PostSchema"], "start" | "end">;
 export type Committee = Omit<schema["CommitteeMemberSchema"], "start" | "end">;
 export type Division = schema["DivisionMiniSchema"];
 export type CommonsDivision = schema["CommonsDivisionSchema"];
+export type LordsDivision = schema["LordsDivisionSchema"];
 export type DivisionVoteType = schema["DivisionVoteType"];
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -82,6 +84,28 @@ export const get = async <P extends PathWithGet>(
       signal,
     },
   );
+
+export const getOrNull = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) => {
+  const response = await get(path, params, signal);
+  const data = response.data;
+
+  return data ?? null;
+};
+
+export const getOr404 = async <P extends PathWithGet>(
+  path: P,
+  params?: Params<P>,
+  signal?: AbortSignal,
+) => {
+  const data = await getOrNull(path, params, signal);
+
+  if (!data) return notFound();
+  return data;
+};
 
 export const getPaginated = <P extends PathWithPagination>(
   path: P,

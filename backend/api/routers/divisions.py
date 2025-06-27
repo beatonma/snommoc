@@ -12,7 +12,12 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
-from repository.models import CommonsDivision, CommonsDivisionVote, LordsDivision
+from repository.models import (
+    CommonsDivision,
+    CommonsDivisionVote,
+    LordsDivision,
+    LordsDivisionVote,
+)
 
 router = Router(tags=["Divisions"])
 
@@ -68,3 +73,20 @@ def lords_divisions(request: HttpRequest):
 @router.get("/lords/{parliamentdotuk}/", response=LordsDivisionSchema)
 def lords_division(request: HttpRequest, parliamentdotuk: int):
     return get_object_or_404(LordsDivision, parliamentdotuk=parliamentdotuk)
+
+
+@router.get("/lords/{parliamentdotuk}/votes/", response=list[VoteSchema])
+@paginate
+@cache_crawled_data_view
+def lords_division_votes(
+    request: HttpRequest,
+    parliamentdotuk: int,
+    query: str = None,
+    vote_type: DivisionVoteType = None,
+):
+    qs = LordsDivisionVote.objects.filter(division__parliamentdotuk=parliamentdotuk)
+    if query:
+        qs = qs.search(query)
+    if vote_type:
+        qs = qs.by_type(vote_type)
+    return qs

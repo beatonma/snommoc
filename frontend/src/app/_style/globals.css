@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./theme.css";
-@import "./window-insets.css";
+@import "./features/typography.css";
+@import "./features/window-insets.css";
 
 @custom-variant touch (@media(pointer: coarse));
 @custom-variant dark {
@@ -201,7 +202,6 @@
   --bg: --value(--color-*);
   --fg: --value(--color-on_*);
 
-
   /* Define full-opacity background color when no modifier is passed. */
   /*noinspection CssOverwrittenProperties*/
   background-color: var(--bg);
@@ -224,6 +224,8 @@
 @utility surface-primary {
   @apply bg-primary text-on_primary fill-on_primary contrast-less:surface-primary-tint;
 }
+
+/* Apply the surface color with a hint of the current primary color. */
 @utility surface-primary-tint {
   @apply surface;
 
@@ -231,15 +233,16 @@
     background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
   }
 }
+/* Apply surface-primary-tint, with a more saturated color on hover. */
 @utility surface-primary-tint-hover {
   @apply surface-primary-tint transition-colors;
   &:hover {
     background-color: color-mix(in srgb, var(--primary) 7.5%, var(--surface));
   }
 }
-@utility surface-accent {
-  @apply bg-accent text-on_accent fill-on_accent;
-}
+/*@utility surface-accent {*/
+/*  @apply bg-accent text-on_accent fill-on_accent;*/
+/*}*/
 @utility hover {
   @apply hover:bg-hover transition-colors;
 }

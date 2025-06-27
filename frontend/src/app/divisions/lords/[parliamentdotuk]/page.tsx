@@ -1,5 +1,6 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { getOr404 } from "@/api";
+import { ErrorMessage } from "@/components/error";
 import { DivisionPage } from "../../_components";
 
 type PageProps = {
@@ -7,7 +8,7 @@ type PageProps = {
 };
 
 const getDivision = async (parliamentdotuk: number) =>
-  getOr404("/api/divisions/commons/{parliamentdotuk}/", {
+  getOr404("/api/divisions/lords/{parliamentdotuk}/", {
     path: { parliamentdotuk },
   });
 
@@ -28,11 +29,13 @@ export default async function Page({ params }: PageProps) {
   const parliamentdotuk = (await params).parliamentdotuk;
   const division = await getDivision(parliamentdotuk);
 
+  if (!division) return <ErrorMessage />;
+
   return (
     <DivisionPage
       division={division}
       votes={{
-        path: "/api/divisions/commons/{parliamentdotuk}/votes/",
+        path: "/api/divisions/lords/{parliamentdotuk}/votes/",
         parliamentdotuk,
       }}
     />

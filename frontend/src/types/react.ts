@@ -36,4 +36,5 @@ export type PropsExcept<
   Except extends keyof ComponentPropsWithoutRef<Element>,
 > = Props<Element, object, Except>;
 
-export type StateSetter<S> = Dispatch<SetStateAction<S>>;
+export type StateSetter<T> = Dispatch<SetStateAction<T>>;
+export type State<T> = [T, StateSetter<T>];

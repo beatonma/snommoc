@@ -1,6 +1,7 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React from "react";
 import { GenderDemographics, LordsDemographics, PartyDetail, get } from "@/api";
+import React, { useMemo } from "react";
 import { MembersList } from "@/app/members/members";
 import { HeaderCard } from "@/components/card";
 import { ErrorMessage } from "@/components/error";
@@ -38,6 +39,15 @@ export default async function Page({ params }: PageProps) {
   const party = (await getParty(parliamentdotuk)).data;
 
   if (!party) return <ErrorMessage />;
+
+  return <PartyPage party={party} />;
+}
+
+const PartyPage = ({ party }: { party: PartyDetail }) => {
+  const peopleImmutableFilters = useMemo(
+    () => ({ party: party.parliamentdotuk }),
+    [party],
+  );
 
   return (
     <>
@@ -88,12 +98,12 @@ export default async function Page({ params }: PageProps) {
       <PageLayout layout="CenteredFeed" mainElement="aside">
         <MembersList
           header={<h2>Members</h2>}
-          immutableFilters={{ party: party.parliamentdotuk }}
+          immutableFilters={peopleImmutableFilters}
         />
       </PageLayout>
     </>
   );
-}
+};
 
 const Demographics = (props: { party: PartyDetail }) => {
   const { party } = props;

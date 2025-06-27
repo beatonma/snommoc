@@ -8,7 +8,7 @@ import { GridSpan } from "@/components/grid";
 import { onlyIf } from "@/components/optional";
 import { Paginated, usePagination } from "@/components/paginated/pagination";
 import { MaybeString } from "@/types/common";
-import { DivPropsNoChildren, StateSetter } from "@/types/react";
+import { DivPropsNoChildren, State, StateSetter } from "@/types/react";
 import { addClass, capitalize } from "@/util/transforms";
 import { InfiniteScroll, PaginationItemComponent } from "./infinite-scroll";
 
@@ -20,12 +20,9 @@ export interface SearchFilters {
   bool?: Record<string, SearchFilter<boolean>>;
 }
 
-interface ListPageProps<P extends SearchablePath> {
+interface ListStateProps<P extends SearchablePath> {
   path: P;
   params?: Params<P> | undefined;
-  header?: ReactNode;
-  itemComponent: PaginationItemComponent<PageItemType<P>>;
-  gridClassName?: string;
 
   /**
    * User-editable filters applied to search results.
@@ -36,19 +33,24 @@ interface ListPageProps<P extends SearchablePath> {
    * Filters that are always applied to search results.
    */
   immutableFilters?: Query<P>;
+  updateBrowserLocation?: boolean;
 }
-export const SearchList = <P extends SearchablePath>(
-  props: DivPropsNoChildren<ListPageProps<P>>,
-) => {
+
+export interface SearchListState<P extends SearchablePath> {
+  pagination: Paginated<PageItemType<P>>;
+  queryState: State<string>;
+  filtersState: State<SearchFilters>;
+  onSearch: () => void;
+}
+export const useSearchList = <P extends SearchablePath>(
+  props: ListStateProps<P>,
+): SearchListState<P> => {
   const {
     path,
     params,
     immutableFilters,
-    header,
-    itemComponent,
-    gridClassName,
     searchFilters,
-    ...rest
+    updateBrowserLocation,
   } = props;
 
   const search = useSearchParams();
@@ -64,58 +66,63 @@ export const SearchList = <P extends SearchablePath>(
       query: {
         ...params?.query,
         ...filtersQuery,
+        ...immutableFilters,
         query: currentQuery,
       },
-      updateBrowserLocation: true,
+      updateBrowserLocation,
     };
-  }, [params, currentQuery, filtersQuery]);
+  }, [
+    params,
+    currentQuery,
+    filtersQuery,
+    immutableFilters,
+    updateBrowserLocation,
+  ]);
   const pagination = usePagination(path, paginationConfigMemo);
 
-  return (
-    <_SearchList
-      pagination={pagination}
-      header={header}
-      gridClassName={gridClassName}
-      itemComponent={itemComponent}
-      searchQuery={query}
-      setSearchQuery={setQuery}
-      onConfirmSearch={() => setCurrentQuery(query)}
-      filters={filters}
-      setFilters={setFilters}
-      {...rest}
-    />
+  return useMemo(
+    () => ({
+      pagination,
+      onSearch: () => setCurrentQuery(query),
+      queryState: [query, setQuery],
+      filtersState: [filters, setFilters],
+    }),
+    [pagination, query, filters, setFilters],
   );
 };
 
-const _SearchList = <P extends SearchablePath>(
-  props: DivPropsNoChildren<{
-    pagination: Paginated<PageItemType<P>>;
-    header: ReactNode | undefined;
-    itemComponent: PaginationItemComponent<PageItemType<P>>;
-    gridClassName: string | undefined;
-    searchQuery: string;
-    setSearchQuery: (q: string) => void;
-    onConfirmSearch: () => void;
-    filters: SearchFilters;
-    setFilters: (value: SearchFilters) => void;
-  }>,
+interface ListPageProps<P extends SearchablePath> {
+  header?: ReactNode;
+  itemComponent: PaginationItemComponent<PageItemType<P>>;
+  gridClassName?: string;
+}
+export const SearchList = <P extends SearchablePath>(
+  props: DivPropsNoChildren<ListPageProps<P> & ListStateProps<P>>,
+) => {
+  const { path, params, immutableFilters, searchFilters, ...rest } = props;
+
+  const state = useSearchList({
+    path,
+    params,
+    immutableFilters,
+    searchFilters,
+  });
+
+  return <SearchListLayout state={state} {...rest} />;
+};
+
+export const SearchListLayout = <P extends SearchablePath>(
+  props: DivPropsNoChildren<ListPageProps<P> & { state: SearchListState<P> }>,
 ) => {
   const hasHeader = !!props.header;
-  const {
-    pagination,
-    header,
-    itemComponent,
-    gridClassName,
-    searchQuery,
-    setSearchQuery,
-    onConfirmSearch,
-    filters,
-    setFilters,
-    ...rest
-  } = addClass(
+  const { state, header, itemComponent, gridClassName, ...rest } = addClass(
     props,
     `${props.gridClassName ?? DefaultGridClass} my-2 mb-96 justify-center sm:mx-2`,
   );
+
+  const { pagination, queryState, filtersState, onSearch } = state;
+  const [query, setQuery] = queryState;
+  const [filters, setFilters] = filtersState;
 
   return (
     <InfiniteScroll
@@ -135,13 +142,13 @@ const _SearchList = <P extends SearchablePath>(
               className="row flex-wrap items-center justify-center gap-2"
               onSubmit={(ev) => {
                 ev.preventDefault();
-                onConfirmSearch();
+                onSearch();
               }}
             >
               <input
                 type="search"
-                value={searchQuery}
-                onChange={(e) => props.setSearchQuery(e.target.value)}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
               <TintedButton type="submit">Search</TintedButton>
             </form>

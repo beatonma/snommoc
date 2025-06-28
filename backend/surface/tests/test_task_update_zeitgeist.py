@@ -46,11 +46,13 @@ class UpdateZeitgeistTaskTest(DatabaseTestCase):
         create_sample_vote(bill, user1, "aye")
 
         commons_div = create_sample_commons_division(
-            984, title="A commented-on commons division"
+            pk=984, title="A commented-on commons division"
         )
         create_sample_comment(commons_div, user2)
 
-        lords_div = create_sample_lords_division(840, title="A voted-on lords division")
+        lords_div = create_sample_lords_division(
+            pk=840, title="A voted-on lords division"
+        )
         create_sample_vote(lords_div, user2, "no")
 
     def test_zeitgeist_is_correct(self):

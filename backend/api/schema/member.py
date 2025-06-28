@@ -5,6 +5,7 @@ from ninja import Schema
 from repository.models.houses import HouseType
 
 from .includes import (
+    BaseDivisionVote,
     ConstituencyMiniSchema,
     DivisionMiniSchema,
     MemberMiniSchema,
@@ -26,7 +27,7 @@ from .types import (
 __all__ = [
     "MemberCareerHistory",
     "MemberProfile",
-    "MemberVotesSchema",
+    "DivisionWithVoteSchema",
 ]
 
 
@@ -189,11 +190,5 @@ class MemberCareerHistory(Schema):
         return qs
 
 
-class VoteSchema(Schema):
+class DivisionWithVoteSchema(BaseDivisionVote):
     division: DivisionMiniSchema
-    vote: str = field("vote_type.name")
-
-
-class MemberVotesSchema(Schema):
-    commons: list[VoteSchema]
-    lords: list[VoteSchema]

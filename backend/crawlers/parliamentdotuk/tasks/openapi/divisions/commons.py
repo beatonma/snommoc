@@ -1,9 +1,11 @@
+from functools import partial
+
 from crawlers import caches
 from crawlers.context import TaskContext, task_context
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.divisions import schema
 from crawlers.parliamentdotuk.tasks.openapi.divisions.shared import create_votes
-from repository.models import CommonsDivision, CommonsDivisionVote
+from repository.models import CommonsDivision, House
 
 
 @task_context(cache_name=caches.COMMONS_DIVISIONS)
@@ -17,23 +19,25 @@ def update_commons_divisions(context: TaskContext):
 
 def _get_single_commons_division(response_data: dict, context: TaskContext):
     item = schema.CommonsDivisionItem.model_validate(response_data)
+    house = House.objects.commons()
 
     openapi_client.get(
         endpoints.commons_division(item.division_id),
-        item_func=_update_commons_division,
+        item_func=partial(_update_commons_division, house),
         context=context,
     )
 
 
-def _update_commons_division(response_data: dict, context: TaskContext):
+def _update_commons_division(house: House, response_data: dict, context: TaskContext):
     data = schema.CommonsDivision.model_validate(response_data)
 
     division, created = CommonsDivision.objects.update_or_create(
         parliamentdotuk=data.division_id,
+        house=house,
         defaults={
             "title": data.title,
             "date": data.date,
-            "division_number": data.number,
+            "number": data.number,
             "is_deferred_vote": data.is_deferred,
             "ayes": data.aye_count,
             "noes": data.no_count,
@@ -42,11 +46,11 @@ def _update_commons_division(response_data: dict, context: TaskContext):
         },
     )
 
-    create_votes(division, CommonsDivisionVote, data.ayes, "aye")
-    create_votes(division, CommonsDivisionVote, data.noes, "no")
-    create_votes(division, CommonsDivisionVote, data.aye_tellers, "aye", is_teller=True)
-    create_votes(division, CommonsDivisionVote, data.no_tellers, "no", is_teller=True)
-    create_votes(division, CommonsDivisionVote, data.did_not_vote, "did_not_vote")
+    create_votes(division, data.ayes, "aye")
+    create_votes(division, data.noes, "no")
+    create_votes(division, data.aye_tellers, "aye", is_teller=True)
+    create_votes(division, data.no_tellers, "no", is_teller=True)
+    create_votes(division, data.did_not_vote, "did_not_vote")
 
     if created:
         context.info(f"Created CommonsDivision '{division}'")

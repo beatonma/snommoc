@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from api.schema.types import Name, ParliamentSchema, field
+from api.schema.types import DivisionVoteType, Name, ParliamentSchema, field
 from ninja import Schema
 from pydantic import Field
 from repository.models import Constituency
@@ -15,6 +15,8 @@ __all__ = [
     "OrganisationSchema",
     "PartyMiniSchema",
     "ItemThemeSchema",
+    "BaseDivisionVote",
+    "IncludeHouse",
 ]
 
 
@@ -81,8 +83,6 @@ class MemberMiniSchema(MinimalMemberSchema):
     name: Name
     current_posts: list[str]
     party: PartyMiniSchema | None
-    constituency: ConstituencyMiniSchema | None
-    portrait: str | None = field("memberportrait.square_url", default=None)
     constituency: _MemberConstituencySchema | None
     lord_type: str | None = field("lords_type.name", default=None)
 
@@ -98,11 +98,31 @@ class MemberMiniSchema(MinimalMemberSchema):
         return obj.current_posts()
 
 
-class DivisionMiniSchema(ParliamentSchema):
+class IncludeHouse(Schema):
+    house: HouseType
+
+    @staticmethod
+    def resolve_house(obj):
+        return obj.house.name
+
+
+class DivisionMiniSchema(IncludeHouse, ParliamentSchema):
     title: str
     date: date
-    house: HouseType
     is_passed: bool
+
+
+class BaseDivisionVote(Schema):
+    vote: DivisionVoteType
+
+    @staticmethod
+    def resolve_vote(obj) -> DivisionVoteType:
+        vote_type = obj.vote_type.name
+        if vote_type == "aye" or vote_type == "content":
+            return "aye"
+        if vote_type == "no" or vote_type == "not_content":
+            return "no"
+        return vote_type
 
 
 class BillMiniSchema(ParliamentSchema):

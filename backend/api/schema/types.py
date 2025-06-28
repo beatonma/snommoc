@@ -1,4 +1,4 @@
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 from urllib.parse import urljoin
 
 from ninja import Schema
@@ -35,3 +35,6 @@ class ParliamentSchema(Schema):
     """A schema which has an associated parliament.uk API ID"""
 
     parliamentdotuk: ParliamentId
+
+
+type DivisionVoteType = Literal["aye", "no", "did_not_vote"]

@@ -379,6 +379,7 @@ def create_sample_commons_division(
     deferred_vote: bool = _any_bool(),
     session: ParliamentarySession | None = None,
     division_number: int = None,
+    pk: int = None,
 ) -> CommonsDivision:
     """Create a CommonsDivision with custom data."""
     if not parliamentdotuk:
@@ -406,7 +407,9 @@ def create_sample_commons_division(
         division_number = _any_int(200)
 
     return CommonsDivision.objects.create(
+        pk=pk,
         parliamentdotuk=parliamentdotuk,
+        house=House.objects.commons(),
         title=title,
         ayes=ayes,
         noes=noes,
@@ -415,7 +418,7 @@ def create_sample_commons_division(
         date=date,
         is_deferred_vote=deferred_vote,
         session=session,
-        division_number=division_number,
+        number=division_number,
     )
 
 
@@ -448,6 +451,7 @@ def create_sample_lords_division(
     description: str = None,
     whipped_vote: bool = None,
     division_number: int = 1,
+    pk: int = None,
 ) -> LordsDivision:
     """Create a LordsDivision with custom data."""
     if not parliamentdotuk:
@@ -475,11 +479,13 @@ def create_sample_lords_division(
         division_number = _any_int(50)
 
     return LordsDivision.objects.create(
+        pk=pk,
         parliamentdotuk=parliamentdotuk,
+        house=House.objects.commons(),
         title=title,
         date=date,
-        authoritative_content_count=ayes,
-        authoritative_not_content_count=noes,
+        ayes=ayes,
+        noes=noes,
         is_passed=ayes > noes,
         amendment_motion_notes=description,
         is_whipped=whipped_vote,
@@ -487,11 +493,8 @@ def create_sample_lords_division(
         is_government_content=_any_bool(),
         is_government_win=_any_bool(),
         division_had_tellers=_any_bool(),
-        is_house=_any_bool(),
         teller_content_count=_any_bool(),
         teller_not_content_count=_any_bool(),
-        member_content_count=_any_int(500),
-        member_not_content_count=_any_int(500),
     )
 
 

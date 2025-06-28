@@ -103,24 +103,26 @@ def task_context(
         )
         @wraps(func)
         def wrapper(*args, cache: JsonCache, notification: TaskNotification, **kwargs):
-            context = kwargs.pop(
-                "context",  # If context already active, use that.
-                TaskContext(
-                    cache=cache,
-                    notification=notification,
-                    # TaskCommand kwargs
-                    historic=kwargs.pop("historic", False),
-                    force_update=kwargs.pop("force_update", False),
-                    skip_items=kwargs.pop("skip_items", 0),
-                    max_items=kwargs.pop("max_items", None),
-                    items_per_page=kwargs.pop("items_per_page", items_per_page),
-                    item_id=kwargs.pop("item_id", None),
-                ),
-            )
-            func(*args, context=context, **kwargs)
+            try:
+                context = kwargs.pop(
+                    "context",  # If context already active, use that.
+                    TaskContext(
+                        cache=cache,
+                        notification=notification,
+                        # TaskCommand kwargs
+                        historic=kwargs.pop("historic", False),
+                        force_update=kwargs.pop("force_update", False),
+                        skip_items=kwargs.pop("skip_items", 0),
+                        max_items=kwargs.pop("max_items", None),
+                        items_per_page=kwargs.pop("items_per_page", items_per_page),
+                        item_id=kwargs.pop("item_id", None),
+                    ),
+                )
+                func(*args, context=context, **kwargs)
 
-            # When task completes, invalidate API cache of stale data.
-            invalidate_cache(API_VIEW_CACHE)
+            finally:
+                # When task completes, invalidate API cache of stale data.
+                invalidate_cache(API_VIEW_CACHE)
 
         return wrapper
 

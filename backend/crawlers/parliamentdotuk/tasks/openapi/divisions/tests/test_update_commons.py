@@ -1,8 +1,9 @@
 from datetime import date
 
 from crawlers.context import TaskContext
-from crawlers.parliamentdotuk.tasks.openapi.divisions.commons import \
-    update_commons_divisions
+from crawlers.parliamentdotuk.tasks.openapi.divisions.commons import (
+    update_commons_divisions,
+)
 from crawlers.parliamentdotuk.tasks.openapi.testcase import OpenApiTestCase
 from notifications.models import TaskNotification
 from repository.models import CommonsDivision
@@ -30,7 +31,7 @@ class UpdateCommonsDivisionsTests(OpenApiTestCase):
             "Non-Domestic Rating (Multipliers and Private Schools) Bill: Second Reading",
         )
         self.assertEqual(division.date, date(2024, 11, 25))
-        self.assertEqual(division.division_number, 47)
+        self.assertEqual(division.number, 47)
         self.assertEqual(division.ayes, 336)
         self.assertEqual(division.noes, 175)
         self.assertEqual(division.did_not_vote, 139)

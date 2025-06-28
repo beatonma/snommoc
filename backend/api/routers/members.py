@@ -3,12 +3,12 @@ from typing import Literal
 
 from api.cache import cache_crawled_data_view
 from api.schema.includes import MemberMiniSchema
-from api.schema.member import MemberCareerHistory, MemberProfile, MemberVotesSchema
+from api.schema.member import DivisionWithVoteSchema, MemberCareerHistory, MemberProfile
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
-from repository.models import CommonsDivisionVote, LordsDivisionVote, Person
+from repository.models import Person
 from repository.models.houses import HouseType
 from util.collections import all_none
 
@@ -62,14 +62,25 @@ def member_career(request: HttpRequest, parliamentdotuk: int):
     return get_object_or_404(Person, parliamentdotuk=parliamentdotuk)
 
 
-@router.get("/{parliamentdotuk}/votes/", response=MemberVotesSchema)
-def member_votes(request: HttpRequest, parliamentdotuk: int):
+@router.get("/{parliamentdotuk}/votes/", response=list[DivisionWithVoteSchema])
+@paginate
+@cache_crawled_data_view
+def member_votes(request: HttpRequest, parliamentdotuk: int, query: str = None):
     person = get_object_or_404(Person, parliamentdotuk=parliamentdotuk)
 
-    commons = CommonsDivisionVote.objects.for_member(person)
-    lords = LordsDivisionVote.objects.for_member(person)
+    qs = person.votes.all()
+    if query:
+        qs = qs.filter(division__title__icontains=query)
 
-    return {
-        "commons": commons,
-        "lords": lords,
-    }
+    return qs
+
+    # commons_qs = person.commons_votes.all()
+    # lords_qs = person.lords_votes.all()
+    #
+    # if query:
+    #     commons_qs = commons_qs.filter(division__title__icontains=query)
+    #     lords_qs = lords_qs.filter(division__title__icontains=query)
+    #
+    # return sorted(
+    #     chain(commons_qs, lords_qs), key=lambda x: x.division.date, reverse=True
+    # )

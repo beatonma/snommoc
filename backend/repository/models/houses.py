@@ -11,10 +11,12 @@ HOUSE_OF_LORDS: HouseType = "Lords"
 
 class HouseQuerySet(BaseQuerySet):
     def commons(self) -> "House":
-        return self.get(name=HOUSE_OF_COMMONS)
+        house, _ = self.get_or_create(name=HOUSE_OF_COMMONS)
+        return house
 
     def lords(self) -> "House":
-        return self.get(name=HOUSE_OF_LORDS)
+        house, _ = self.get_or_create(name=HOUSE_OF_LORDS)
+        return house
 
 
 class House(BaseModel):

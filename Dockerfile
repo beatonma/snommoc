@@ -49,6 +49,7 @@ RUN \
 
 ARG PYTHON_VERSION
 COPY --from=builder_django /usr/local/lib/python${PYTHON_VERSION}/site-packages /usr/local/lib/python${PYTHON_VERSION}/site-packages
+COPY --from=builder_django /usr/local/bin/pytest /usr/local/bin/pytest
 
 RUN addgroup -g 19283 docker_snommoc \
     && mkdir -p /var/log/snommoc/ \

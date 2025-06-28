@@ -2,7 +2,11 @@ import uuid
 from datetime import timedelta
 
 import util.settings_contract as contract
-from snommoc.settings import DATABASES, INSTALLED_APPS, MIDDLEWARE, ROOT_URLCONF  # noqa
+from snommoc.settings import DATABASES  # noqa
+from snommoc.settings import INSTALLED_APPS  # noqa
+from snommoc.settings import MIDDLEWARE  # noqa
+from snommoc.settings import ROOT_URLCONF  # noqa
+from snommoc.settings import STATIC_URL  # noqa
 
 TEST_RUNNER = "basetest.runner.PytestTestRunner"
 

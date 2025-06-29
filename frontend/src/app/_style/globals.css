@@ -90,15 +90,7 @@
   }
 
   section {
-    @apply column gap-y-2;
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > h5,
-    > h6 {
-      @apply leading-relaxed;
-    }
+    @apply space-y-2;
 
     &:not(:last-child) {
       @apply mb-12;
@@ -260,10 +252,10 @@
   @apply hover:bg-hover transition-colors;
 }
 @utility surface-commons {
-  @apply bg-house_commons text-house_on_commons fill-house_on_commons;
+  @apply bg-house-commons text-house-on-commons fill-house-on-commons;
 }
 @utility surface-lords {
-  @apply bg-house_lords text-house_on_lords fill-house_on_lords;
+  @apply bg-house-lords text-house-on-lords fill-house-on-lords;
 }
 @utility card {
   @apply overflow-hidden shadow-md sm:rounded-lg;

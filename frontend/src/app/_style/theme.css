@@ -157,15 +157,15 @@
 }
 
 @theme {
-  --color-house_commons: rgb(0 110 70);
-  --color-house_commons_dark: #005434;
-  --color-house_commons_darker: #004229;
-  --color-house_on_commons: #fff;
+  --color-house-commons: rgb(0 110 70);
+  --color-house-commons-dark: #005434;
+  --color-house-commons-darker: #004229;
+  --color-house-on-commons: #fff;
 
-  --color-house_lords: rgb(181 9 56);
-  --color-house_lords_dark: #540016;
-  --color-house_lords_darker: #420012;
-  --color-house_on_lords: #fff;
+  --color-house-lords: rgb(181 9 56);
+  --color-house-lords-dark: #540016;
+  --color-house-lords-darker: #420012;
+  --color-house-on-lords: #fff;
 
   --color-scrim: rgb(0 0 0 / 70%);
   --color-on_scrim: var(--color-white);

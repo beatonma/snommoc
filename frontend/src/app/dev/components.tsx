@@ -317,21 +317,21 @@ const ThemeColors = () => {
       </div>
 
       <div className={gridClass}>
-        <div className="bg-house_commons text-house_on_commons">commons</div>
-        <div className="bg-house_commons_dark text-house_on_commons">
+        <div className="bg-house-commons text-house-on-commons">commons</div>
+        <div className="bg-house-commons-dark text-house-on-commons">
           commons-dark
         </div>
-        <div className="bg-house_commons_darker text-house_on_commons">
+        <div className="bg-house-commons-darker text-house-on-commons">
           commons-darker
         </div>
       </div>
 
       <div className={gridClass}>
-        <div className="bg-house_lords text-house_on_lords">lords</div>
-        <div className="bg-house_lords_dark text-house_on_lords">
+        <div className="bg-house-lords text-house-on-lords">lords</div>
+        <div className="bg-house-lords-dark text-house-on-lords">
           lords-dark
         </div>
-        <div className="bg-house_lords_darker text-house_on_lords">
+        <div className="bg-house-lords-darker text-house-on-lords">
           lords-darker
         </div>
       </div>

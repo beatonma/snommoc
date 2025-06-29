@@ -3,10 +3,9 @@
 import React, { useId, useState } from "react";
 import { MemberCareer } from "@/api/schema";
 import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
-import { HighlightDates } from "@/components/highlight";
 import { useSortable } from "@/components/sortable";
 import { DivProps } from "@/types/react";
-import { BlockItem, DateRangeItem, ListSection, ListSubheader } from "./shared";
+import { DateRangeItem, ListSection, ListSubheader } from "./components";
 
 const sortByCategory = (a: Interest, b: Interest) =>
   (a.category ?? "").localeCompare(b.category ?? "");
@@ -146,7 +145,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
   const { interest, showDates, showCategory, ...rest } = props;
 
   return (
-    <BlockItem {...rest}>
+    <div {...rest}>
       <table className="w-full table-fixed">
         <colgroup>
           <col className="w-40" />
@@ -160,15 +159,10 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
             </tr>
           ))}
 
-          {interest.description.table.map((row, rowIndex) => (
+          {interest.description.table.map(([title, contents], rowIndex) => (
             <tr key={rowIndex} className="align-top">
-              <th>{row[0]}</th>
-              <td>
-                <HighlightDates
-                  text={row[1].toString()}
-                  dateFormat={DateFormat.FullDate}
-                />
-              </td>
+              <th>{title}</th>
+              <td>{contents}</td>
             </tr>
           ))}
 
@@ -196,7 +190,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
           className="border-primary my-2 ml-1 border-l-4 pl-4"
         />
       ))}
-    </BlockItem>
+    </div>
   );
 };
 

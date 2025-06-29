@@ -7,6 +7,7 @@ import type {
   MemberProfile,
   Party,
 } from "@/api/schema";
+import { FullCareer } from "@/app/members/[parliamentdotuk]/_components/career";
 import { PhysicalAddress } from "@/app/members/_components/address";
 import { TextButton } from "@/components/button";
 import { Date } from "@/components/datetime";
@@ -19,7 +20,6 @@ import { itemThemeCss } from "@/features/themed/item-theme";
 import { Nullish } from "@/types/common";
 import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
-import { Career } from "./_components/career";
 
 type PageProps = {
   params: Promise<{ parliamentdotuk: number }>;
@@ -48,11 +48,16 @@ export default async function MemberProfilePage({ params }: PageProps) {
   const member = await getMember(parliamentdotuk);
 
   return (
-    <PageLayout layout="CenteredReadable" style={itemThemeCss(member.party)}>
-      <MemberCard member={member} />
-      <MemberDetail member={member} className="px-edge" />
-      <MemberCareer member={member} className="px-edge" />
-    </PageLayout>
+    <div className="space-y-8">
+      <PageLayout layout="CenteredReadable" style={itemThemeCss(member.party)}>
+        <MemberCard member={member} />
+        <MemberDetail member={member} className="px-edge" />
+      </PageLayout>
+
+      <PageLayout layout="CenteredFeed" style={itemThemeCss(member.party)}>
+        <FullCareer parliamentdotuk={member.parliamentdotuk} />
+      </PageLayout>
+    </div>
   );
 }
 
@@ -197,15 +202,6 @@ const MemberDetail = (props: MemberComponentProps) => {
           <PhysicalAddress key={it.address} className="shrink-0 p-1" {...it} />
         ))}
       </div>
-    </section>
-  );
-};
-
-const MemberCareer = (props: MemberComponentProps) => {
-  const { member, ...rest } = props;
-  return (
-    <section {...rest}>
-      <Career parliamentdotuk={member.parliamentdotuk} />
     </section>
   );
 };

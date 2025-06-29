@@ -1,23 +1,17 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useId } from "react";
 import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
 import { Loading } from "@/components/loading";
-import { Optional } from "@/components/optional";
-import { ConstituencyLink, HouseLink, PartyLink } from "@/features/linked-data";
+import { onlyIf } from "@/components/optional";
 import { Nullish } from "@/types/common";
 import { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-export type CareerHouse = MemberCareer["houses"][number];
-export type CareerConstituency = MemberCareer["constituencies"][number];
-export type CareerParty = MemberCareer["parties"][number];
-
 export const SecondaryStyle = "text-reduced text-sm";
 
 interface SectionHeaderProps {
-  title: string;
+  title: string | undefined;
   toolbar?: ReactNode;
-  description?: string;
 }
 interface BlockProps<T> extends SectionHeaderProps {
   data: T | Nullish;
@@ -30,15 +24,26 @@ interface ListSectionProps<T> extends SectionHeaderProps {
 type SectionProps<T extends object> = Props<"section", T, "id" | "children">;
 
 export const Section = <T,>(props: SectionProps<BlockProps<T>>) => {
-  const { title, toolbar, description, data, block, ...rest } = props;
+  const { data, block, ...rest } = props;
 
   if (!data) return null;
   if (typeof data === "object" && !Object.keys(data).length) return null;
 
-  const titleHeader = <h3>{title}</h3>;
+  return <SectionLayout {...rest}>{block(data)}</SectionLayout>;
+};
+
+export const SectionLayout = (
+  props: Props<"section", { title: string | undefined; toolbar?: ReactNode }>,
+) => {
+  const { title, toolbar, children, ...rest } = props;
+  const id = useId();
+  const titleHeader = onlyIf(
+    title,
+    <h3 className="text-lg text-reduced">{title}</h3>,
+  );
 
   return (
-    <section id={title.toLowerCase().replaceAll(/\s/g, "")} {...rest}>
+    <section id={id} {...rest}>
       {toolbar ? (
         <div className="flex flex-row justify-between">
           {titleHeader}
@@ -50,12 +55,7 @@ export const Section = <T,>(props: SectionProps<BlockProps<T>>) => {
         titleHeader
       )}
 
-      <Optional
-        value={description}
-        block={(it) => <div className="text-lg">{it}</div>}
-      />
-
-      {block(data)}
+      {children}
     </section>
   );
 };
@@ -90,21 +90,6 @@ export type CareerSummary = Pick<
   "parties" | "constituencies" | "houses"
 >;
 
-/**
- * A ListSection which should only render if there are multiple items in the given
- * data.
- * Empty data should not render at all.
- * Data with a single item will instead be rendered in <Summary />
- */
-export const SummaryListSection = <T extends keyof CareerSummary>(
-  props: SectionProps<ListSectionProps<CareerSummary[T][number]>>,
-) => {
-  if (props.data == null) return <Loading />;
-  if (props.data.length <= 1) return null;
-
-  return <ListSection {...props} />;
-};
-
 export type ListSubheader<T, S extends string> = Record<
   S,
   {
@@ -127,9 +112,6 @@ export const ListSubheader = <T,>(props: {
 
   return props.subheader(current!);
 };
-export const BlockItem = (props: DivProps) => {
-  return <div {...props} />;
-};
 
 type DateRangeItemProps = DivProps<{
   start: string | Nullish;
@@ -139,7 +121,7 @@ type DateRangeItemProps = DivProps<{
 export const DateRangeItem = (props: DateRangeItemProps) => {
   const { children, start, end, capitalized = true, ...rest } = props;
   return (
-    <BlockItem {...rest}>
+    <div {...rest}>
       {children}
       <DateRange
         className={SecondaryStyle}
@@ -147,7 +129,7 @@ export const DateRangeItem = (props: DateRangeItemProps) => {
         end={end}
         capitalized={capitalized}
       />
-    </BlockItem>
+    </div>
   );
 };
 export const InlineDateRangeItem = (props: DateRangeItemProps) => (
@@ -155,33 +137,4 @@ export const InlineDateRangeItem = (props: DateRangeItemProps) => (
     capitalized={false}
     {...addClass(props, "flex items-baseline gap-1")}
   />
-);
-
-interface ItemProps<T> {
-  item: T;
-  prefix?: ReactNode;
-}
-export const PartyItem = (props: ItemProps<CareerParty>) => (
-  <InlineDateRangeItem start={props.item.start} end={props.item.end}>
-    {props.prefix}
-    <PartyLink party={props.item.party} />
-  </InlineDateRangeItem>
-);
-export const ConstituencyItem = (props: ItemProps<CareerConstituency>) => (
-  <InlineDateRangeItem start={props.item.start} end={props.item.end}>
-    {props.prefix}
-    <ConstituencyLink constituency={props.item.constituency} />
-  </InlineDateRangeItem>
-);
-export const HouseItem = (
-  props: ItemProps<CareerHouse> & { longFormat?: boolean },
-) => (
-  <InlineDateRangeItem start={props.item.start} end={props.item.end}>
-    {props.prefix}
-    <HouseLink
-      house={props.item.house}
-      longFormat={props.longFormat}
-      showDot={!props.prefix}
-    />
-  </InlineDateRangeItem>
 );

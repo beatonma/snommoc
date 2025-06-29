@@ -1,74 +1,83 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useMemo } from "react";
+import { ResponseOf } from "@/api/client";
 import { useGet } from "@/api/hooks";
 import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
-import { ErrorMessage } from "@/components/dev";
 import { Loading } from "@/components/loading";
-import { Optional } from "@/components/optional";
 import { SeparatedRow } from "@/components/row";
+import { TabContent } from "@/components/tabs";
 import { TabLayout } from "@/components/tabs";
 import {
   CommitteeLink,
+  ConstituencyLink,
+  HouseLink,
   OrganisationLink,
+  PartyLink,
   PostLink,
 } from "@/features/linked-data";
-import { RegisteredInterests } from "./registered-interests";
+import { Nullish } from "@/types/common";
 import {
-  BlockItem,
-  type CareerConstituency,
-  type CareerHouse,
-  type CareerParty,
-  type CareerSummary,
-  ConstituencyItem,
+  type CareerSummary as CareerSummaryData,
   DateRangeItem,
-  HouseItem,
+  InlineDateRangeItem,
   ListSection,
-  PartyItem,
   SecondaryStyle,
   Section,
-  SummaryListSection,
-} from "./shared";
+  SectionLayout,
+} from "./components";
+import { RegisteredInterests } from "./registered-interests";
+import { MemberVotingHistory } from "./votes";
 
-export const Career = (props: { parliamentdotuk: number }) => {
+type Career = ResponseOf<"/api/members/{parliamentdotuk}/career/">;
+
+export const FullCareer = (props: { parliamentdotuk: number }) => {
   const { parliamentdotuk } = props;
   const career = useGet("/api/members/{parliamentdotuk}/career/", {
     path: { parliamentdotuk },
   });
 
+  const tabs: TabContent<string>[] | null = useMemo(() => {
+    if (career === "loading" || !career) return null;
+    return [
+      ...getCareerTabs(career),
+      [
+        "Voting history",
+        () => (
+          <SectionLayout title="Voting History">
+            <MemberVotingHistory parliamentdotuk={parliamentdotuk} />
+          </SectionLayout>
+        ),
+      ],
+    ];
+  }, [parliamentdotuk, career]);
+
   if (career === "loading") return <Loading />;
-  if (!career) return <ErrorMessage error="Career not available." />;
+  if (!career) return null;
+  if (!tabs) return null;
 
   return (
-    <>
+    <div className="surface card card-content space-y-2">
       <h2>Career</h2>
-
-      <Summary
-        houses={career.houses}
-        parties={career.parties}
-        constituencies={career.constituencies}
-      />
-
-      <CareerSections career={career} />
-    </>
+      <TabLayout contentProps={{ className: "py-8" }} tabs={tabs} />
+    </div>
   );
 };
 
-const NotEmpty = (list: unknown[]) => list.length > 0;
-const Summarized = (list: unknown[]) => list.length > 1;
-
-const CareerSections = ({ career }: { career: MemberCareer }) => {
-  const nonEmptySections = [
-    section("Houses", career.houses, Summarized, () => (
-      <Houses houses={career.houses} />
-    )),
-    section("Parties", career.parties, Summarized, () => (
-      <Parties parties={career.parties} />
-    )),
-    section("Constituencies", career.constituencies, Summarized, () => (
-      <Constituencies constituencies={career.constituencies} />
-    )),
+const getCareerTabs = (career: Career | Nullish): TabContent<string>[] => {
+  if (!career) return [];
+  return [
+    [
+      "Summary",
+      () => (
+        <CareerSummary
+          houses={career.houses}
+          parties={career.parties}
+          constituencies={career.constituencies}
+        />
+      ),
+    ],
     section(
       "Subjects",
       career.subjects_of_interest,
@@ -87,21 +96,17 @@ const CareerSections = ({ career }: { career: MemberCareer }) => {
     section("Experiences", career.experiences, NotEmpty, () => (
       <Experiences experiences={career.experiences} />
     )),
-  ].filter(Boolean) as [string, () => ReactNode][];
-
-  if (nonEmptySections.length <= 1) {
-    return <>{nonEmptySections.map((it) => it[1]())}</>;
-  }
-
-  return <TabLayout tabs={nonEmptySections} />;
+  ].filter(Boolean) as TabContent<string>[];
 };
+
+const NotEmpty = (list: unknown[]) => list.length > 0;
 
 const section = <T,>(
   name: string,
   items: T,
   condition: (items: T) => boolean,
   block: () => ReactNode,
-) => {
+): TabContent<string> | null => {
   if (!condition(items)) {
     return null;
   }
@@ -112,64 +117,31 @@ const section = <T,>(
 /**
  * Display a reduced UI for sections that don't have much to say.
  */
-const Summary = (props: CareerSummary) => {
+const CareerSummary = (props: CareerSummaryData) => {
   const { houses, parties, constituencies } = props;
 
-  const SummaryItem = <T,>(props: {
-    items: T[];
-    block: (item: T) => ReactNode;
-  }) => (
-    <Optional
-      value={props.items[0]}
-      condition={() => props.items.length === 1}
-      block={props.block}
-    />
-  );
+  if (!houses.length && !parties.length && !constituencies.length) return null;
 
   return (
     <section>
-      <SummaryItem items={parties} block={(it) => <PartyItem item={it} />} />
-      <SummaryItem
-        items={constituencies}
-        block={(it) => <ConstituencyItem prefix="MP for" item={it} />}
-      />
-      <SummaryItem
-        items={houses}
-        block={(it) => (
-          <HouseItem item={it} longFormat={true} prefix="Member of" />
-        )}
-      />
+      {parties.map((it) => (
+        <InlineDateRangeItem key={it.start} start={it.start} end={it.end}>
+          <PartyLink party={it.party} />
+        </InlineDateRangeItem>
+      ))}
+      {constituencies.map((it) => (
+        <InlineDateRangeItem key={it.start} start={it.start} end={it.end}>
+          <ConstituencyLink constituency={it.constituency} longFormat={true} />
+        </InlineDateRangeItem>
+      ))}
+      {houses.map((it) => (
+        <InlineDateRangeItem key={it.start} start={it.start} end={it.end}>
+          <HouseLink house={it.house} longFormat={true} />
+        </InlineDateRangeItem>
+      ))}
     </section>
   );
 };
-
-const Parties = ({ parties }: { parties: CareerParty[] }) => (
-  <SummaryListSection
-    title="Parties"
-    data={parties}
-    block={(it) => <PartyItem item={it as CareerParty} />}
-  />
-);
-
-const Constituencies = ({
-  constituencies,
-}: {
-  constituencies: CareerConstituency[];
-}) => (
-  <SummaryListSection
-    title="Constituencies"
-    data={constituencies}
-    block={(it) => <ConstituencyItem item={it as CareerConstituency} />}
-  />
-);
-
-const Houses = ({ houses }: { houses: CareerHouse[] }) => (
-  <SummaryListSection
-    title="Houses"
-    data={houses}
-    block={(it) => <HouseItem item={it as CareerHouse} />}
-  />
-);
 
 const Posts = ({ posts }: { posts: MemberCareer["posts"] }) => (
   <ListSection
@@ -209,10 +181,10 @@ const Experiences = ({
       title="Non-parliamentary experience"
       data={experiences}
       block={(it) => (
-        <BlockItem>
+        <div>
           <div>
             <span>{it.title}</span>
-            <span> at </span>
+            <span className="text-reduced"> at </span>
             <OrganisationLink organisation={it.organisation} />
           </div>
 
@@ -220,7 +192,7 @@ const Experiences = ({
             <span>{it.category}</span>
             <DateRange start={it.start} end={it.end} />
           </SeparatedRow>
-        </BlockItem>
+        </div>
       )}
     />
   );

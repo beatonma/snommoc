@@ -10,6 +10,7 @@ import type {
 } from "@/api/schema";
 import { ButtonProps, TextButton } from "@/components/button";
 import { TextLink } from "@/components/link";
+import { onlyIf } from "@/components/optional";
 import { Row } from "@/components/row";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types/common";
@@ -77,9 +78,11 @@ const PersonLink = ({
 
 const ConstituencyLink = ({
   constituency,
+  longFormat,
   ...rest
 }: {
   constituency: Pick<ConstituencyMini, "name" | "parliamentdotuk"> | Nullish;
+  longFormat?: boolean;
 } & ButtonProps) => {
   if (!constituency) return null;
 
@@ -88,6 +91,7 @@ const ConstituencyLink = ({
       href={navigationHref("constituency", constituency.parliamentdotuk)}
       {...rest}
     >
+      {onlyIf(longFormat, "MP for ")}
       {constituency.name}
     </TextButton>
   );

@@ -6,18 +6,18 @@ import Wikipedia from "./external/ic_wikipedia.svg";
 import CommonsPerson from "./internal/commons-person.svg";
 import CommonsTie from "./internal/commons-tie.svg";
 import Commons from "./internal/commons.svg";
+import Add from "./material/add.svg";
 import ArrowDown from "./material/arrow_down.svg";
 import ArrowUp from "./material/arrow_up.svg";
-import CaretDown from "./material/caret_down.svg";
-import CaretUp from "./material/caret_up.svg";
 import Check from "./material/check.svg";
 import Close from "./material/close.svg";
+import Equal from "./material/equal.svg";
 import Fax from "./material/fax.svg";
 import Home from "./material/home.svg";
 import Email from "./material/mail.svg";
-import NoChange from "./material/no_change.svg";
 import Phone from "./material/phone.svg";
 import QuestionMark from "./material/questionmark.svg";
+import Remove from "./material/remove.svg";
 import ThemeDarkMode from "./material/theme_darkmode.svg";
 import ThemeSystemDefault from "./material/theme_default.svg";
 import ThemeLightMode from "./material/theme_lightmode.svg";
@@ -46,15 +46,18 @@ export const SvgIcons = {
   Phone,
 
   // Votes
-  Upvote: CaretUp,
-  Downvote: CaretDown,
-  DidNotVote: NoChange,
+  Upvote: Add,
+  Downvote: Remove,
+  DidNotVote: Equal,
 
   // General use
-  ArrowUp,
-  ArrowDown,
+  Add,
+  Remove,
+  Equal,
   Check,
   Close,
+  ArrowDown,
+  ArrowUp,
   Home,
   QuestionMark,
 };

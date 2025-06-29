@@ -97,7 +97,7 @@ interface ListPageProps<P extends SearchablePath> {
   gridClassName?: string;
 }
 export const SearchList = <P extends SearchablePath>(
-  props: DivPropsNoChildren<ListPageProps<P> & ListStateProps<P>>,
+  props: DivPropsNoChildren<ListStateProps<P> & ListPageProps<P>>,
 ) => {
   const { path, params, immutableFilters, searchFilters, ...rest } = props;
 

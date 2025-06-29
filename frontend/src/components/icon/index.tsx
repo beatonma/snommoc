@@ -4,11 +4,11 @@ import { AppIcon, SvgIcons } from "./svg";
 
 export { type AppIcon };
 
-export type IconProps = Props<
+export type IconProps<T extends object = object> = Props<
   "svg",
   {
     icon?: AppIcon | Nullish;
-  }
+  } & T
 >;
 
 export default function Icon(props: IconProps) {

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import React from "react";
+import React, { ReactNode } from "react";
 import Icon, { type AppIcon } from "@/components/icon";
-import { ChildrenProps } from "@/types/common";
 import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
@@ -52,7 +51,9 @@ const isButton = (obj: any): obj is Props<"button"> =>
   ("onClick" in obj && typeof obj.onClick === "function") ||
   ("type" in obj && obj.type === "submit");
 
-const ButtonContent = (props: ButtonContentProps & ChildrenProps) => {
+const ButtonContent = (
+  props: ButtonContentProps & { children?: ReactNode },
+) => {
   const { icon, children } = props;
 
   if (icon && React.Children.count(children) === 0)

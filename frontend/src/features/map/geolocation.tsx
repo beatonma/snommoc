@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
 import { GeoLocation } from "@/features/map/geography";
-import { ClassNameProps } from "@/types/common";
+import { ClassNameProps } from "@/types/react";
 
 interface GeoLocationOptions {
   enabled: boolean;

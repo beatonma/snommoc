@@ -38,3 +38,5 @@ export type PropsExcept<
 
 export type StateSetter<T> = Dispatch<SetStateAction<T>>;
 export type State<T> = [T, StateSetter<T>];
+
+export type ClassNameProps = Pick<Props, "className">;

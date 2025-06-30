@@ -6,7 +6,7 @@ import { ListItemCard } from "@/features/cards";
 import { MemberPortrait } from "@/features/member-portrait";
 import { ItemThemeableProps } from "@/features/themed/item-theme";
 import { navigationHref } from "@/navigation";
-import { ChildrenProps, ClassNameProps } from "@/types/common";
+import { Props } from "@/types/react";
 
 interface MemberItemProps {
   member: Partial<MemberMiniSchema> &
@@ -20,10 +20,11 @@ interface MemberItemProps {
 }
 
 export const MemberItemCard = (
-  props: MemberItemProps &
-    Pick<ItemThemeableProps, "defaultTheme"> &
-    ChildrenProps &
-    ClassNameProps,
+  props: Props<
+    typeof ListItemCard,
+    MemberItemProps & Pick<ItemThemeableProps, "defaultTheme">,
+    "href" | "themeSource"
+  >,
 ) => {
   const {
     member,

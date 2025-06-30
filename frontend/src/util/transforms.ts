@@ -1,6 +1,7 @@
-import { ClassNameProps, MaybeString } from "@/types/common";
+import { Nullish } from "@/types/common";
+import { ClassNameProps } from "@/types/react";
 
-export const classes = (...classNames: (MaybeString | null)[]) => {
+export const classes = (...classNames: (string | Nullish)[]) => {
   return classNames.filter(Boolean).join(" ");
 };
 
@@ -18,9 +19,9 @@ export const addClass = <T extends ClassNameProps>(
 };
 
 export const transformString = (
-  value: MaybeString | null,
+  value: string | Nullish,
   transform: (value: string) => string,
 ): string | null => (value ? transform(value) : null);
 
-export const capitalize = (value: MaybeString | null): string | null =>
+export const capitalize = (value: string | Nullish): string | null =>
   value ? value.slice(0, 1).toUpperCase() + value.slice(1) : null;

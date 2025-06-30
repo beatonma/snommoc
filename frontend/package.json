@@ -12,6 +12,7 @@
     "test:once": "jest"
   },
   "dependencies": {
+    "html-react-parser": "^5.2.5",
     "next": "15.1.7",
     "ol": "^10.4.0",
     "openapi-fetch": "^0.13.4",

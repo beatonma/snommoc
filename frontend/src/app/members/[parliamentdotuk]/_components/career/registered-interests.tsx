@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useId, useState } from "react";
+import React, { useId, useMemo, useState } from "react";
 import { MemberCareer } from "@/api/schema";
 import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
+import { Highlight, Highlighter } from "@/components/highlight";
+import { TextLink } from "@/components/link";
 import { useSortable } from "@/components/sortable";
+import { Links } from "@/links";
 import { DivProps } from "@/types/react";
 import { DateRangeItem, ListSection, ListSubheader } from "./components";
 
@@ -144,6 +147,22 @@ const RegisteredInterestDateRangeItem = (props: RegisteredInterestsProps) => {
 const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
   const { interest, showDates, showCategory, ...rest } = props;
 
+  const highlighters: Highlighter[] = useMemo(
+    () => [
+      {
+        pattern: "Dates",
+        block: (it) => <Date dateFormat={DateFormat.FullDate} date={it} />,
+      },
+      {
+        pattern: /(?<=Company, registration )(\d+)/g,
+        block: (it) => (
+          <TextLink href={Links.CompaniesHouse(it)}>{it}</TextLink>
+        ),
+      },
+    ],
+    [],
+  );
+
   return (
     <div {...rest}>
       <table className="w-full table-fixed">
@@ -162,7 +181,12 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
           {interest.description.table.map(([title, contents], rowIndex) => (
             <tr key={rowIndex} className="align-top">
               <th>{title}</th>
-              <td>{contents}</td>
+              <td>
+                <Highlight
+                  text={contents.toString()}
+                  highlighters={highlighters}
+                />
+              </td>
             </tr>
           ))}
 

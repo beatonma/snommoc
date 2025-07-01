@@ -1,164 +1,40 @@
-:root {
-  /** Theme colors */
+@theme {
+  /** Base color palette */
 
-  --_color-black: rgb(9, 9, 11);
-  --_color-white: rgb(250, 250, 250);
+  --color-black: rgb(9, 9, 11);
+  --color-white: rgb(250, 250, 250);
 
   --text-opacity: 92%;
-  --_text-white: --alpha(var(--_color-white) / var(--text-opacity));
-  --_text-black: --alpha(var(--_color-black) / var(--text-opacity));
+  --text-white: --alpha(var(--color-white) / var(--text-opacity));
+  --text-black: --alpha(var(--color-black) / var(--text-opacity));
 
-  --_color-light-background: rgb(228, 229, 231);
-  --_color-dark-background: rgb(24, 24, 27);
+  --color-background-light: rgb(228, 229, 231);
+  --color-background-dark: rgb(24, 24, 27);
+  --color-on-background-light: var(--text-black);
+  --color-on-background-dark: var(--text-white);
 
-  --_color-light-on-background: var(--_text-black);
-  --_color-dark-on-background: var(--_text-white);
+  --color-surface-light: rgb(241, 242, 245);
+  --color-surface-dark: rgb(39, 39, 42);
+  --color-on-surface-light: var(--text-black);
+  --color-on-surface-dark: var(--text-white);
 
-  --_color-light-surface: rgb(241, 242, 245);
-  --_color-dark-surface: rgb(39, 39, 42);
+  --color-surface-hover-light: var(--color-white);
+  --color-surface-hover-dark: rgb(50, 50, 54);
 
-  --_color-light-surface_hover: var(--_color-white);
-  --_color-dark-surface_hover: rgb(50, 50, 54);
+  --color-surface-alt-light: rgb(209, 212, 226);
+  --color-surface-alt-dark: rgb(82, 82, 92);
+  --color-on-surface-alt-light: var(--text-black);
+  --color-on-surface-alt-dark: var(--text-white);
 
-  --_color-light-surface_alt: rgb(209, 212, 226);
-  --_color-dark-surface_alt: rgb(82, 82, 92);
+  --color-primary-light: rgb(24, 120, 62);
+  --color-primary-dark: rgb(66, 172, 108);
+  --color-on-primary-light: var(--text-white);
+  --color-on-primary-dark: var(--text-white);
 
-  --_color-light-on-surface: var(--_text-black);
-  --_color-dark-on-surface: var(--_text-white);
-
-  --_color-light-primary: rgb(24, 120, 62);
-  --_color-dark-primary: rgb(66, 172, 108);
-
-  --_color-light-on-primary: var(--_text-white);
-  --_color-dark-on-primary: var(--_text-white);
-
-  --_color-light-accent: rgb(206, 218, 245);
-  --_color-dark-accent: rgb(206, 218, 245);
-
-  --_color-light-on-accent: --alpha(rgb(40, 71, 119) / var(--text-opacity));
-  --_color-dark-on-accent: --alpha(rgb(40, 71, 119) / var(--text-opacity));
-
-  --color-list-marker: currentColor;
-
-  @media (prefers-color-scheme: light) {
-    @apply colorscheme-light;
-  }
-  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-    @apply colorscheme-dark;
-  }
-
-  --bg: var(--background);
-  --fg: var(--on-background);
-}
-
-@utility colorscheme-light {
-  --background: var(--_color-light-background);
-  --on-background: var(--_color-light-on-background);
-  --surface: var(--_color-light-surface);
-  --on-surface: var(--_color-light-on-surface);
-  --surface-hover: var(--_color-light-surface_hover);
-  --surface-alt: var(--_color-light-surface_alt);
-  --primary: var(--_color-light-primary);
-  --on-primary: var(--_color-light-on-primary);
-  --accent: var(--_color-light-accent);
-  --on-accent: var(--_color-light-on-accent);
-
-  --invert-background: var(--_color-dark-background);
-  --invert-on-background: var(--_color-dark-on-background);
-  --invert-surface: var(--_color-dark-surface);
-  --invert-surface-hover: var(--_color-dark-surface_hover);
-  --invert-surface-alt: var(--_color-dark-surface_alt);
-  --invert-on-surface: var(--_color-dark-on-surface);
-  --invert-primary: var(--_color-dark-primary);
-  --invert-on-primary: var(--_color-dark-on-primary);
-  --invert-accent: var(--_color-dark-accent);
-  --invert-on-accent: var(--_color-dark-on-accent);
-}
-@utility colorscheme-dark {
-  --background: var(--_color-dark-background);
-  --on-background: var(--_color-dark-on-background);
-  --surface: var(--_color-dark-surface);
-  --on-surface: var(--_color-dark-on-surface);
-  --surface-hover: var(--_color-dark-surface_hover);
-  --surface-alt: var(--_color-dark-surface_alt);
-  --primary: var(--_color-dark-primary);
-  --on-primary: var(--_color-dark-on-primary);
-  --accent: var(--_color-dark-accent);
-  --on-accent: var(--_color-dark-on-accent);
-
-  --invert-background: var(--_color-light-background);
-  --invert-on-background: var(--_color-light-on-background);
-  --invert-surface: var(--_color-light-surface);
-  --invert-surface-hover: var(--_color-light-surface_hover);
-  --invert-surface-alt: var(--_color-light-surface_alt);
-  --invert-on-surface: var(--_color-light-on-surface);
-  --invert-primary: var(--_color-light-primary);
-  --invert-on-primary: var(--_color-light-on-primary);
-  --invert-accent: var(--_color-light-accent);
-  --invert-on-accent: var(--_color-light-on-accent);
-}
-
-@theme inline {
-  /*--color-*: initial; !* Disable tailwind color definitions. *!*/
-
-  --color-background: var(--background);
-  --color-on-background: var(--on-background);
-  --color-surface: var(--surface);
-  --color-on-surface: var(--on-surface);
-  --color-surface-hover: var(--surface-hover);
-  --color-surface-alt: var(--surface-alt);
-  --color-primary: var(--primary);
-  --color-on-primary: var(--on-primary);
-  --color-accent: var(--accent);
-  --color-on-accent: var(--on-accent);
-
-  --color-invert-background: var(--invert-background);
-  --color-invert-on-background: var(--invert-on-background);
-  --color-invert-surface: var(--invert-surface);
-  --color-invert-surface-hover: var(--invert-surface-hover);
-  --color-invert-surface-alt: var(--invert-surface-alt);
-  --color-invert-on-surface: var(--invert-on-surface);
-  --color-invert-primary: var(--invert-primary);
-  --color-invert-on-primary: var(--invert-on-primary);
-  --color-invert-accent: var(--invert-accent);
-  --color-invert-on-accent: var(--invert-on-accent);
-
-  --color-black: var(--_color-black);
-  --color-white: var(--_color-white);
-  --color-light-background: var(--_color-light-background);
-  --color-dark-background: var(--_color-dark-background);
-  --color-light-on-background: var(--_color-light-on-background);
-  --color-dark-on-background: var(--_color-dark-on-background);
-  --color-light-surface: var(--_color-light-surface);
-  --color-dark-surface: var(--_color-dark-surface);
-  --color-light-surface_hover: var(--_color-light-surface_hover);
-  --color-dark-surface_hover: var(--_color-dark-surface_hover);
-  --color-light-surface_alt: var(--_color-light-surface_alt);
-  --color-dark-surface_alt: var(--_color-dark-surface_alt);
-  --color-light-on-surface: var(--_color-light-on-surface);
-  --color-dark-on-surface: var(--_color-dark-on-surface);
-  --color-light-primary: var(--_color-light-primary);
-  --color-dark-primary: var(--_color-dark-primary);
-  --color-light-on-primary: var(--_color-light-on-primary);
-  --color-dark-on-primary: var(--_color-dark-on-primary);
-  --color-light-accent: var(--_color-light-accent);
-  --color-dark-accent: var(--_color-dark-accent);
-  --color-light-on-accent: var(--_color-light-on-accent);
-  --color-dark-on-accent: var(--_color-dark-on-accent);
-
-  --color-mix-primary-background: color-mix(
-    in srgb,
-    var(--primary),
-    var(--background)
-  );
-  --color-tint-surface-current: color-mix(
-    in srgb,
-    currentColor 5%,
-    var(--surface)
-  );
-  --color-bg: var(--bg);
-  --color-fg: var(--fg);
-  --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
+  --color-accent-light: rgb(206, 218, 245);
+  --color-accent-dark: rgb(206, 218, 245);
+  --color-on-accent-light: --alpha(rgb(40, 71, 119) / var(--text-opacity));
+  --color-on-accent-dark: --alpha(rgb(40, 71, 119) / var(--text-opacity));
 }
 
 @theme {
@@ -181,14 +57,92 @@
   --color-on-negative: var(--color-white);
 }
 
+@utility colorscheme-light {
+  --background: var(--color-background-light);
+  --on-background: var(--color-on-background-light);
+  --surface: var(--color-surface-light);
+  --on-surface: var(--color-on-surface-light);
+  --surface-hover: var(--color-surface-hover-light);
+  --alt: var(--color-surface-alt-light);
+  --on-alt: var(--color-on-surface-light);
+  --primary: var(--color-primary-light);
+  --on-primary: var(--color-on-primary-light);
+  --accent: var(--color-accent-light);
+  --on-accent: var(--color-on-accent-light);
+}
+@utility colorscheme-dark {
+  --background: var(--color-background-dark);
+  --on-background: var(--color-on-background-dark);
+  --surface: var(--color-surface-dark);
+  --on-surface: var(--color-on-surface-dark);
+  --surface-hover: var(--color-surface-hover-dark);
+  --alt: var(--color-surface-alt-dark);
+  --on-alt: var(--color-on-surface-dark);
+  --primary: var(--color-primary-dark);
+  --on-primary: var(--color-on-primary-dark);
+  --accent: var(--color-accent-dark);
+  --on-accent: var(--color-on-accent-dark);
+}
+
+:root {
+  @media (prefers-color-scheme: light) {
+    @apply colorscheme-light;
+  }
+  @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
+    @apply colorscheme-dark;
+  }
+
+  --color-list-marker: currentColor;
+  --bg: var(--background);
+  --fg: var(--on-background);
+}
+
+@theme inline {
+  /*--color-*: initial; !* Disable tailwind color definitions. *!*/
+
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-alt: var(--alt);
+  --color-on-alt: var(--on-alt);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+
+  --color-mix-primary-background: color-mix(
+    in srgb,
+    var(--primary),
+    var(--background)
+  );
+  --color-tint-surface-current: color-mix(
+    in srgb,
+    currentColor 5%,
+    var(--surface)
+  );
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);
+}
+
 @layer base {
   body {
     &[data-theme="light"] {
       @apply colorscheme-light;
+
+      .invert-theme {
+        @apply colorscheme-dark;
+      }
     }
 
     &[data-theme="dark"] {
       @apply colorscheme-dark;
+
+      .invert-theme {
+        @apply colorscheme-light;
+      }
     }
   }
 }

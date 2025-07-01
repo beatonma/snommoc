@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className="bg-background text-on-background">
+      <body className="surface-background">
         <GlobalHeader />
 
         <div className="global-content-wrapper">{children}</div>

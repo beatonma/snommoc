@@ -1,0 +1,96 @@
+@layer base {
+  ::before {
+    --tw-content: "\200B"; /*Zero-width space, used to maintain intuitive behaviour of `align-items: baseline` */
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--surface), var(--primary) 70%);
+    color: var(--on-primary);
+  }
+
+  img {
+    @apply object-cover;
+  }
+
+  address {
+    @apply not-italic;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+  }
+  h4 {
+    @apply text-xl;
+  }
+
+  section {
+    @apply space-y-2;
+
+    &:not(:last-child) {
+      @apply mb-12;
+    }
+
+    section:not(:last-child) {
+      @apply mb-8;
+    }
+  }
+
+  ul {
+    @apply list-inside list-disc;
+
+    li::marker {
+      color: var(--color-list-marker);
+    }
+  }
+
+  input,
+  select {
+    @apply surface-alt rounded-sm px-2 py-1;
+  }
+  input::-webkit-search-cancel-button {
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: 1em;
+    background: currentColor;
+    cursor: pointer;
+
+    -webkit-appearance: none;
+    height: 1em;
+    width: 1em;
+    margin-left: 0.4em;
+  }
+
+  table {
+    @apply card surface w-fit sm:rounded-lg;
+
+    thead th:not(:empty) {
+      @apply border-primary/25 border-b-[0.1px] py-2;
+    }
+    tfoot {
+      @apply border-primary/25 border-t-[0.1px] py-2;
+    }
+
+    tbody th {
+      @apply border-primary/25 border-r-[0.1px] text-right;
+    }
+
+    tbody tr {
+      @apply transition-colors;
+      &:hover {
+        @apply bg-hover;
+      }
+    }
+
+    th,
+    td {
+      @apply px-4 py-1.5 text-left;
+    }
+  }
+}

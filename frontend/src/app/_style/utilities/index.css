@@ -1,0 +1,20 @@
+@import "./button.css";
+@import "./surface.css";
+
+@utility card {
+  @apply overflow-hidden shadow-md sm:rounded-lg;
+}
+@utility card-content {
+  @apply px-4 py-2;
+}
+@utility chip {
+  @apply touch-target overflow-hidden rounded-md shadow-sm;
+}
+@utility chip-content {
+  @apply px-2 py-0.5 text-sm select-none;
+}
+@utility touch-target {
+  @variant touch {
+    @apply min-h-8 min-w-8;
+  }
+}

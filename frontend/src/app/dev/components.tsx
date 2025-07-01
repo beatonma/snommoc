@@ -297,33 +297,23 @@ const ThemeColors = () => {
   return (
     <Section name="Theme colors" className="gap-1">
       <div className={gridClass}>
-        <div className="bg-background text-on-background">background</div>
-        <div className="bg-surface text-on-surface">surface</div>
-        <div className="bg-surface-alt text-on-surface">surface-alt</div>
-        <div className="bg-primary text-on-primary">primary</div>
-        <div className="bg-accent text-on-accent">accent</div>
+        <div className="surface-background">background</div>
+        <div className="surface">surface</div>
+        <div className="surface-alt">surface-alt</div>
+        <div className="surface-primary">primary</div>
+        <div className="surface-accent">accent</div>
+      </div>
+
+      <div className={classes(gridClass, "invert-theme")}>
+        <div className="surface-background">invert background</div>
+        <div className="surface">invert surface</div>
+        <div className="surface-alt">invert surface-alt</div>
+        <div className="surface-primary">invert primary</div>
+        <div className="surface-accent">invert accent</div>
       </div>
 
       <div className={gridClass}>
-        <div className="bg-invert-background text-invert-on-background">
-          invert background
-        </div>
-        <div className="bg-invert-surface text-invert-on-surface">
-          invert surface
-        </div>
-        <div className="bg-invert-surface-alt text-invert-on-surface">
-          invert surface-alt
-        </div>
-        <div className="bg-invert-primary text-invert-on-primary">
-          invert primary
-        </div>
-        <div className="bg-invert-accent text-invert-on-accent">
-          invert accent
-        </div>
-      </div>
-
-      <div className={gridClass}>
-        <div className="bg-house-commons text-house-on-commons">commons</div>
+        <div className="surface-commons">commons</div>
         <div className="bg-house-commons-dark text-house-on-commons">
           commons-dark
         </div>
@@ -333,7 +323,7 @@ const ThemeColors = () => {
       </div>
 
       <div className={gridClass}>
-        <div className="bg-house-lords text-house-on-lords">lords</div>
+        <div className="surface-lords">lords</div>
         <div className="bg-house-lords-dark text-house-on-lords">
           lords-dark
         </div>

@@ -1,0 +1,50 @@
+@utility -hover-background {
+  background-color: color-mix(in srgb, var(--hover, var(--fg)) 10%, var(--bg));
+}
+
+/* By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
+@utility extra-background {
+  @apply relative;
+  &::before {
+    @apply pointer-events-none absolute -z-1 rounded-lg;
+    content: var(--tw-content);
+  }
+}
+
+/* Add a hover background which is a different size to the element.
+ * By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
+@utility hover-extra-background {
+  @apply extra-background relative;
+  &::before {
+    @apply bg-transparent transition-colors;
+  }
+  &:not(:disabled):hover::before {
+    @apply -hover-background;
+  }
+  &:not(:disabled):focus-visible::before {
+    @apply -hover-background;
+  }
+}
+
+/* Apply a surface theme and a slightly modified variant when hovered. */
+/* prettier-ignore */
+@utility hover-surface-* {
+  @apply transition-colors;
+
+  --bg: --value(--color-*);
+  --fg: --value(--color-on-*);
+  /*accent-color: --value(--color-vibrant-on-*);*/
+
+  background-color: var(--bg);
+  color: var(--fg);
+  fill: var(--fg);
+
+  &:hover:not(:disabled) {
+    @apply -hover-background;
+  }
+  &:focus-visible:not(:disabled) {
+    @apply -hover-background;
+  }
+}

@@ -1,4 +1,4 @@
-@reference "../_style/globals.css";
+@reference "../_style/index.css";
 
 @layer component {
   body {
@@ -19,7 +19,7 @@
     .map-layout--overlays {
       @apply contents max-h-full overflow-y-hidden;
       .map-layout--key {
-        @apply px-edge row gap-2 overflow-auto py-4 text-base;
+        @apply px-edge flex flex-row items-center gap-2 overflow-x-auto overflow-y-hidden py-4 text-base *:shrink-0;
       }
       .map-layout--info {
         @apply mx-auto h-fit max-h-full overflow-hidden;
@@ -70,7 +70,7 @@
           display: contents;
 
           .map-layout--key {
-            @apply flex-col items-end;
+            @apply max-h-full flex-col items-end overflow-x-hidden overflow-y-auto;
           }
           .map-layout--info {
           }

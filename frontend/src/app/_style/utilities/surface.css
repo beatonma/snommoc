@@ -1,0 +1,47 @@
+@utility surface {
+  @apply bg-surface text-on-surface fill-on-surface;
+}
+
+@utility surface-primary {
+  @apply bg-primary text-on-primary fill-on-primary contrast-less:surface-primary-tint;
+}
+
+@utility surface-commons {
+  @apply bg-house-commons text-house-on-commons fill-house-on-commons;
+}
+@utility surface-lords {
+  @apply bg-house-lords text-house-on-lords fill-house-on-lords;
+}
+
+/* Apply an arbitrary surface color theme. `--color-*` and `--color-on-*` variables must be defined */
+/*prettier-ignore*/
+@utility surface-* {
+  --bg: --value(--color-*);
+  --fg: --value(--color-on-*);
+
+  /* Define full-opacity background color when no modifier is passed. */
+  /*noinspection CssOverwrittenProperties*/
+  background-color: var(--bg);
+
+  /* If opacity modifier is available, override base value. */
+  /*noinspection CssInvalidFunction,CssOverwrittenProperties*/
+  background-color: --alpha(var(--bg) / --modifier(integer)%);
+  color: var(--fg);
+  fill: var(--fg);
+}
+
+/* Apply the base surface color with a hint of the current primary color. */
+@utility surface-primary-tint {
+  @apply surface;
+
+  @variant dark {
+    background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
+  }
+}
+/* Apply surface-primary-tint, with a more saturated color on hover. */
+@utility surface-primary-tint-hover {
+  @apply surface-primary-tint transition-colors;
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary) 7.5%, var(--surface));
+  }
+}

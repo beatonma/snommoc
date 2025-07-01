@@ -1,0 +1,51 @@
+@layer components {
+  .overflow-auto,
+  .overflow-x-auto,
+  .overflow-y-auto {
+    @media (pointer: coarse) {
+      scrollbar-width: none;
+    }
+    @media (pointer: fine) {
+      scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
+
+  .readable {
+    @apply max-w-readable w-full;
+  }
+
+  .text-reduced {
+    /**
+   * Reduce emphasis by fading the currentColor.
+   */
+    color: color-mix(in srgb, currentColor 85%, transparent);
+  }
+
+  .hover-overlay {
+    @apply relative;
+
+    &::after {
+      @apply absolute inset-0 bg-transparent transition-colors content-[''];
+    }
+
+    &:hover::after {
+      @apply bg-current/10;
+    }
+  }
+
+  .row {
+    @apply flex flex-row items-center *:shrink-0;
+  }
+  .column {
+    @apply flex flex-col;
+  }
+
+  /** Default grid style for <SearchList /> */
+  .search-results-grid {
+    @apply grid grid-cols-[repeat(auto-fit,var(--spacing-listitem-card))] gap-x-8 gap-y-4;
+  }
+}

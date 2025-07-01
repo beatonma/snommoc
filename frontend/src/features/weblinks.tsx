@@ -1,44 +1,23 @@
 "use client";
 
-import { LinkProps } from "next/dist/client/link";
-import Link from "next/link";
 import React, { HTMLAttributeReferrerPolicy, useState } from "react";
 import { WebAddress } from "@/api/schema";
-import { ButtonLinkProps, TextButton } from "@/components/button";
+import { ButtonProps, InlineButton } from "@/components/button";
 import { AppIcon } from "@/components/icon";
+import { onlyIf } from "@/components/optional";
 import { Nullish } from "@/types/common";
 import { DivProps } from "@/types/react";
-import { addClass } from "@/util/transforms";
-
-/**
- * Props signature for next/link Link component.
- */
-export type NextLinkProps = Omit<
-  React.AnchorHTMLAttributes<HTMLAnchorElement>,
-  keyof LinkProps
-> &
-  LinkProps &
-  React.RefAttributes<HTMLAnchorElement>;
-
-export const TextLink = (props: NextLinkProps) => {
-  const { ...rest } = addClass(
-    props,
-    "transition-colors",
-    "text-primary hover:text-[color-mix(in_srgb,var(--primary)_85%,currentColor)]",
-    "font-semibold",
-  );
-  return (
-    <Link referrerPolicy="same-origin" rel="noopener nofollow" {...rest} />
-  );
-};
+import { addClass, classes } from "@/util/transforms";
 
 type LinkGroupProps = DivProps<{
-  links?: (string | WebAddress | null)[];
+  links?: (WebAddress | string | null)[];
+  layout?: "row" | "column";
 }>;
-export const LinkGroup = (props: LinkGroupProps) => {
-  const { links, children, ...rest } = addClass(
+export const WebLinks = (props: LinkGroupProps) => {
+  const { links, layout, children, ...rest } = addClass(
     props,
-    "flex flex-row flex-wrap gap-x-4 gap-y-0",
+    "flex flex-wrap gap-x-4 gap-y-0",
+    props.layout === "column" ? "flex-col" : "flex-row",
   );
 
   if (links) {
@@ -63,11 +42,14 @@ export const LinkGroup = (props: LinkGroupProps) => {
   return <div {...rest}>{children}</div>;
 };
 
-export const ButtonLink = (
-  props: ButtonLinkProps & { defaultDisplayText?: string | null },
+const ButtonLink = (
+  props: ButtonProps & {
+    href: string | Nullish;
+    defaultDisplayText?: string | null;
+  },
 ) => {
-  const { href, defaultDisplayText, icon, ...rest } = addClass(props, "w-fit");
-  const values = resolveLinkValues(href, icon, defaultDisplayText);
+  const { href, icon, defaultDisplayText, ...rest } = addClass(props, "w-fit");
+  const values = resolveLinkValues(href, defaultDisplayText);
 
   if (!href) return null;
   if (!values) return null;
@@ -83,7 +65,7 @@ export const ButtonLink = (
 
   if (!values.confirmAction) {
     return (
-      <TextButton
+      <InlineButton
         icon={icon ?? values.icon}
         href={values.url}
         title={values.title}
@@ -91,13 +73,13 @@ export const ButtonLink = (
         {...linkProps}
       >
         {values.displayText}
-      </TextButton>
+      </InlineButton>
     );
   }
 };
 
 const ConfirmButtonLink = (
-  props: Omit<ButtonLinkProps, "href" | "icon"> & {
+  props: Omit<ButtonProps, "href" | "icon"> & {
     values: ResolvedLinkValues;
   },
 ) => {
@@ -107,35 +89,40 @@ const ConfirmButtonLink = (
   const content = isExpanded ? (
     <>
       <div className="flex items-center justify-between gap-x-4">
-        <TextButton icon={values.icon}>{values.displayText}</TextButton>
-        <TextButton
+        <InlineButton icon={values.icon}>{values.displayText}</InlineButton>
+        <InlineButton
           icon="Close"
           onClick={() => setIsExpanded(false)}
-        ></TextButton>
+        ></InlineButton>
       </div>
-      <TextButton
+      <InlineButton
         href={values.url}
         title={values.title}
-        {...addClass(rest, "text-primary self-end")}
+        {...addClass(rest as ButtonProps, "text-primary self-end")}
       >
         {values.confirmAction}
-      </TextButton>
+      </InlineButton>
     </>
   ) : (
-    <TextButton
+    <InlineButton
       icon={values.icon}
       onClick={() => setIsExpanded(true)}
       title={values.title}
-      {...rest}
+      contentClass="max-w-40"
+      {...(rest as ButtonProps)}
     >
       {values.displayText}
-    </TextButton>
+    </InlineButton>
   );
 
-  const expandedClasses = isExpanded ? "card surface min-w-48 p-2" : "";
-
   return (
-    <div className={`${expandedClasses} column gap-2 transition-all`}>
+    <div
+      className={classes(
+        onlyIf(isExpanded, "card surface min-w-48 p-2"),
+        "column gap-2 transition-all",
+        "relative",
+      )}
+    >
       {content}
     </div>
   );
@@ -230,7 +217,6 @@ const WebHosts: WebHost[] = [
 ];
 const resolveLinkValues = (
   url: string | Nullish,
-  icon: AppIcon | undefined,
   defaultDisplayText: string | Nullish,
 ): ResolvedLinkValues | null => {
   if (!url) return null;
@@ -267,7 +253,7 @@ const resolveLinkValues = (
     url: cleanUrl,
     title: title,
     displayText: displayText,
-    icon: icon ?? hostIcon,
+    icon: hostIcon,
     confirmAction: confirmAction,
   };
 };

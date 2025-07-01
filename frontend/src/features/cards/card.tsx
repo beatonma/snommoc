@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React, { ReactNode } from "react";
 import { type ItemTheme as Theme } from "@/api/schema";
-import { NextLinkProps } from "@/components/link";
 import { Optional } from "@/components/optional";
 import {
   ItemTheme,
@@ -9,7 +8,7 @@ import {
   PartyIconBackground,
   itemThemeCss,
 } from "@/features/themed/item-theme";
-import type { DivProps } from "@/types/react";
+import type { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
 type CardProps = {
@@ -18,9 +17,9 @@ type CardProps = {
 
 const DefaultTheme: Theme = {
   primary: "var(--surface)",
-  on_primary: "var(--on_surface)",
+  on_primary: "var(--on-surface)",
   accent: "var(--primary)",
-  on_accent: "var(--on_primary)",
+  on_accent: "var(--on-primary)",
 };
 
 type HeaderCardProps = DivProps<CardProps>;
@@ -49,12 +48,12 @@ export const HeaderCard = (props: HeaderCardProps) => {
   );
 };
 
-type ListItemCardProps = { label?: ReactNode } & CardProps & NextLinkProps;
+type ListItemCardProps = Props<typeof Link, { label?: ReactNode } & CardProps>;
 export const ListItemCard = (props: ListItemCardProps) => {
   const { image, children, themeSource, defaultTheme, label, style, ...rest } =
     addClass(
       props,
-      "@container max-w-listitem_card card surface-primary-tint-hover",
+      "@container max-w-listitem-card card surface-primary-tint-hover",
     );
 
   const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
@@ -63,7 +62,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
     <Link style={themedStyle} {...rest}>
       <div className="flex size-full flex-row">
         {image ? (
-          <div className="bg-mix_primary_background border-primary m-2 flex aspect-square size-20 shrink-0 flex-col items-start overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-2xs:hidden">
+          <div className="bg-mix-primary-background border-primary m-2 flex aspect-square size-20 shrink-0 flex-col items-start overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-2xs:hidden">
             {image}
           </div>
         ) : (
@@ -71,7 +70,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
         )}
 
         <div className="w-full p-2 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
-          <div className="chip chip-content bg-primary/60 text-on_primary float-right w-fit rounded-sm text-xs empty:hidden">
+          <div className="chip chip-content bg-primary/60 text-on-primary float-right w-fit rounded-sm text-xs empty:hidden">
             {label}
           </div>
 
@@ -84,7 +83,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
 
 export const ListItemCardVibrant = (props: ListItemCardProps) => {
   const { image, children, themeSource, defaultTheme, label, ...rest } =
-    addClass(props, "flex max-w-listitem_card sm:rounded-lg overflow-hidden ");
+    addClass(props, "flex max-w-listitem-card sm:rounded-lg overflow-hidden ");
 
   return (
     <Link {...rest}>

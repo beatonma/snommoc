@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { ConstituencyMiniBoundary, Party } from "@/api/schema";
 import { onlyIf } from "@/components/optional";
-import { Row } from "@/components/row";
 import { MemberItemCard } from "@/features/cards";
 import { ConstituencyLink, HouseLink, PartyLink } from "@/features/linked-data";
 import { ItemTheme } from "@/features/themed/item-theme";
@@ -18,7 +17,7 @@ type Multi = DivPropsNoChildren<{
 export const SelectedConstituenciesInfo = (props: Multi) => {
   const { constituencies, ...rest } = addClass(
     props,
-    "md:w-listitem_card w-full",
+    "md:w-listitem-card w-full",
   );
 
   if (constituencies.length === 0) return <NoSelection {...rest} />;
@@ -52,10 +51,7 @@ const NoSelection = (props: DivPropsNoChildren) => {
 };
 
 const SingleSelection = (props: Single) => {
-  const { constituency, ...rest } = addClass(
-    props,
-    "card bg-[color-mix(in_srgb,var(--primary)_15%,var(--surface))]",
-  );
+  const { constituency, ...rest } = addClass(props, "card surface");
   return (
     <ItemTheme themeSource={constituency.mp?.party} {...rest}>
       <h2>
@@ -65,7 +61,7 @@ const SingleSelection = (props: Single) => {
         <MemberItemCard
           member={mp}
           showConstituency={false}
-          className="block hover bg-transparent"
+          className="block bg-transparent"
         />
       ))}
     </ItemTheme>
@@ -118,17 +114,16 @@ const ManySelected = (props: Multi) => {
 
             <ul className="list-none pl-1">
               {group.constituencies.map((item) => (
-                <li
-                  key={item.parliamentdotuk}
-                  className="max-w-full overflow-x-hidden"
-                >
-                  <Row className="gap-2">
-                    <div
-                      className="size-1 rounded-sm"
-                      style={{ backgroundColor: group.party.theme?.primary }}
-                    />
-                    <ConstituencyLink constituency={item} />
-                  </Row>
+                <li key={item.parliamentdotuk}>
+                  <ConstituencyLink
+                    constituency={item}
+                    icon={
+                      <span
+                        className="size-1 rounded-xs"
+                        style={{ backgroundColor: group.party.theme?.primary }}
+                      ></span>
+                    }
+                  />
                 </li>
               ))}
             </ul>

@@ -1,6 +1,6 @@
 import { type PhysicalAddress as PhysicalAddressData } from "@/api/schema";
-import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
+import { WebLinks } from "@/features/weblinks";
 import { Props } from "@/types/react";
 import { addClass, transformString } from "@/util/transforms";
 
@@ -24,8 +24,8 @@ export const PhysicalAddress = (
         <OptionalDiv value={postcode} />
       </div>
 
-      <LinkGroup
-        className="column"
+      <WebLinks
+        layout="column"
         links={[
           transformString(phone, (it) => `tel:${it}`),
           transformString(fax, (it) => `fax:${it}`),

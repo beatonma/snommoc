@@ -2,10 +2,9 @@
 
 import React, { useId, useState } from "react";
 import * as Sample from "@/app/dev/sample";
-import { TextButton, TintedButton } from "@/components/button";
+import { InlineButton, TintedButton } from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
-import { ButtonLink } from "@/components/link";
 import { Loading, LoadingBar } from "@/components/loading";
 import { Row } from "@/components/row";
 import { useSortable } from "@/components/sortable";
@@ -18,6 +17,7 @@ import {
 } from "@/features/cards";
 import { getOnColor } from "@/features/themed/color";
 import { itemThemeCss } from "@/features/themed/item-theme";
+import { WebLinks } from "@/features/weblinks";
 import { DivProps, Props } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 
@@ -104,19 +104,23 @@ const InputComponents = () => {
 
 const ButtonComponents = () => (
   <>
-    <Section name="<TextButton />">
+    <Section name="<InlineButton />">
       <Row className="flex-wrap gap-2">
-        <TextButton>TextButton</TextButton>
-        <TextButton href="#">TextButton</TextButton>
-        <TextButton href="#" icon="Wikipedia">
-          TextButton
-        </TextButton>
-        <TextButton onClick={() => console.log("Click!")} icon="Wikipedia">
-          TextButton
-        </TextButton>
+        <InlineButton>InlineButton</InlineButton>
+        <InlineButton href="#">InlineButton</InlineButton>
+        <InlineButton href="#" icon="Wikipedia">
+          InlineButton
+        </InlineButton>
+        <InlineButton onClick={() => console.log("Click!")} icon="Wikipedia">
+          InlineButton
+        </InlineButton>
         |
-        <TextButton href="#" icon="Wikipedia" />
-        <TextButton onClick={() => console.log("Click!")} icon="Wikipedia" />
+        <InlineButton href="#" icon="Wikipedia" />
+        <InlineButton
+          onClick={() => console.log("Click!")}
+          icon="Wikipedia"
+          tooltip="Wikipedia"
+        />
       </Row>
     </Section>
 
@@ -139,13 +143,15 @@ const ButtonComponents = () => (
       </Row>
     </Section>
 
-    <Section name="<ButtonLink />">
-      <Row className="flex-wrap gap-2">
-        <ButtonLink href="https://beatonma.org">Home</ButtonLink>
-        <ButtonLink href="mailto:test@beatonma.org">Email</ButtonLink>
-        <ButtonLink href="tel:0800 800150">Phone</ButtonLink>
-        <ButtonLink href="#">Debug</ButtonLink>
-      </Row>
+    <Section name="<WebLinks />">
+      <WebLinks
+        links={[
+          "https://beatonma.org",
+          "mailto:test@beatonma.org",
+          "tel:0800 800150",
+          "#",
+        ]}
+      />
     </Section>
   </>
 );
@@ -291,27 +297,27 @@ const ThemeColors = () => {
   return (
     <Section name="Theme colors" className="gap-1">
       <div className={gridClass}>
-        <div className="bg-background text-on_background">background</div>
-        <div className="bg-surface text-on_surface">surface</div>
-        <div className="bg-surface_alt text-on_surface">surface_alt</div>
-        <div className="bg-primary text-on_primary">primary</div>
-        <div className="bg-accent text-on_accent">accent</div>
+        <div className="bg-background text-on-background">background</div>
+        <div className="bg-surface text-on-surface">surface</div>
+        <div className="bg-surface-alt text-on-surface">surface-alt</div>
+        <div className="bg-primary text-on-primary">primary</div>
+        <div className="bg-accent text-on-accent">accent</div>
       </div>
 
       <div className={gridClass}>
-        <div className="bg-invert_background text-invert_on_background">
+        <div className="bg-invert-background text-invert-on-background">
           invert background
         </div>
-        <div className="bg-invert_surface text-invert_on_surface">
+        <div className="bg-invert-surface text-invert-on-surface">
           invert surface
         </div>
-        <div className="bg-invert_surface_alt text-invert_on_surface">
-          invert surface_alt
+        <div className="bg-invert-surface-alt text-invert-on-surface">
+          invert surface-alt
         </div>
-        <div className="bg-invert_primary text-invert_on_primary">
+        <div className="bg-invert-primary text-invert-on-primary">
           invert primary
         </div>
-        <div className="bg-invert_accent text-invert_on_accent">
+        <div className="bg-invert-accent text-invert-on-accent">
           invert accent
         </div>
       </div>

@@ -2,8 +2,8 @@ import type { Metadata, ResolvingMetadata } from "next";
 import React, { CSSProperties, ReactNode } from "react";
 import { getOr404 } from "@/api/client";
 import { type ElectionResult } from "@/api/schema";
+import { InlineLink } from "@/components/button";
 import { Date, DateRange } from "@/components/datetime";
-import { TextLink } from "@/components/link";
 import { Percentage, int } from "@/components/number";
 import { Optional } from "@/components/optional";
 import { PageLayout } from "@/components/page-layout";
@@ -148,14 +148,14 @@ const ElectionResult = (props: { result: ElectionResult }) => {
                     <th colSpan={100} className="text-left">
                       <div className="border-y-[2px] border-dashed border-current/20 py-2 text-sm font-normal">
                         <span>Candidates with less than 5% of the vote </span>
-                        <TextLink
+                        <InlineLink
                           style={
                             { "--primary": "currentColor" } as CSSProperties
                           }
                           href={Links.ElectoralCommission.CandidateDeposit}
                         >
                           forfeit their deposit
-                        </TextLink>
+                        </InlineLink>
                         .
                       </div>
                     </th>

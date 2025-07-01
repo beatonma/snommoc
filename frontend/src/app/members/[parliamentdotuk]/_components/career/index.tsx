@@ -131,7 +131,7 @@ const CareerSummary = (props: CareerSummaryData) => {
       ))}
       {constituencies.map((it) => (
         <InlineDateRangeItem key={it.start} start={it.start} end={it.end}>
-          <ConstituencyLink constituency={it.constituency} longFormat={true} />
+          MP for <ConstituencyLink constituency={it.constituency} />
         </InlineDateRangeItem>
       ))}
       {houses.map((it) => (

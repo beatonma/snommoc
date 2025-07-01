@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TextButton } from "@/components/button";
+import { InlineButton } from "@/components/button";
 import { AppIcon } from "@/components/icon";
 import { PropsExcept } from "@/types/react";
 
@@ -37,7 +37,7 @@ export const ThemeController = (
   }, [mode]);
 
   return (
-    <TextButton
+    <InlineButton
       icon={icon}
       onClick={() => setMode(nextTheme(mode) ?? "system")}
       title={`Cycle theme (${mode})`}

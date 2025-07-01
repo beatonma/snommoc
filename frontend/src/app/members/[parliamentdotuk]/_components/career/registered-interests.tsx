@@ -2,9 +2,9 @@
 
 import React, { useId, useMemo, useState } from "react";
 import { MemberCareer } from "@/api/schema";
+import { InlineLink } from "@/components/button";
 import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
 import { Highlight, Highlighter } from "@/components/highlight";
-import { TextLink } from "@/components/link";
 import { useSortable } from "@/components/sortable";
 import { Links } from "@/links";
 import { DivProps } from "@/types/react";
@@ -156,7 +156,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
       {
         pattern: /(?<=Company, registration )(\d+)/g,
         block: (it) => (
-          <TextLink href={Links.CompaniesHouse(it)}>{it}</TextLink>
+          <InlineLink href={Links.CompaniesHouse(it)}>{it}</InlineLink>
         ),
       },
     ],

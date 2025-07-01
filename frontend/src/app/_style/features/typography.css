@@ -278,7 +278,6 @@
 
   .prose-a,
   .prose a {
-    /*@apply text-primary;*/
     color: var(--link-color, var(--primary));
     font-weight: 500;
 

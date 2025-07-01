@@ -19,16 +19,7 @@ export const MemberVoteIcon = (
     did_not_vote: "surface-scrim",
   };
 
-  return (
-    <Icon
-      icon={icon}
-      {...addClass(rest, theme[vote])}
-      // className={classes(
-      //   theme[vote],
-      //   "size-6 p-1 border-[1px] border-current/60 rounded-md",
-      // )}
-    />
-  );
+  return <Icon icon={icon} {...addClass(rest, theme[vote])} />;
 };
 
 export const MemberVoteDescription = (props: { vote: DivisionVoteType }) => {

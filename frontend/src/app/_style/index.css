@@ -16,8 +16,9 @@
   }
 }
 :root {
-  --_spacing-listitem_card: 400px;
-  --_spacing-listitem_card_wide: 650px; /* js */
+  --_spacing-listitem-card: 400px;
+  --_spacing-listitem-card-wide: 650px; /* js */
+  --tooltip-max-width: 180px; /* js */
 }
 @theme {
   --breakpoint-sm: 40rem;
@@ -59,15 +60,19 @@
   --spacing-readable: 800px; /* js */
   --spacing-max-grid-width: 1350px; /* js */
 
-  --spacing-listitem_card: min(100%, var(--_spacing-listitem_card));
+  --spacing-listitem-card: min(100%, var(--_spacing-listitem-card));
 }
 
 ::selection {
   background-color: color-mix(in srgb, var(--surface), var(--primary));
-  color: var(--on_primary);
+  color: var(--on-primary);
 }
 
 @layer base {
+  ::before {
+    --tw-content: "\200B"; /*Zero-width space, used to maintain intuitive behaviour of `align-items: baseline` */
+  }
+
   img {
     @apply object-cover;
   }
@@ -111,8 +116,8 @@
 
   input,
   select {
-    --surface: var(--surface_alt);
-    @apply bg-surface text-on_surface rounded-sm px-2 py-1;
+    --surface: var(--surface-alt);
+    @apply bg-surface text-on-surface rounded-sm px-2 py-1;
   }
   input::-webkit-search-cancel-button {
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>');
@@ -189,7 +194,7 @@
     @apply relative;
 
     &::after {
-      @apply absolute inset-0 bg-transparent transition-[background-color] content-[''];
+      @apply absolute inset-0 bg-transparent transition-colors content-[''];
     }
 
     &:hover::after {
@@ -199,13 +204,13 @@
 }
 
 @utility surface {
-  @apply bg-surface text-on_surface fill-on_surface;
+  @apply bg-surface text-on-surface fill-on-surface;
 }
 /* Apply a surface color theme. */
 /*prettier-ignore*/
 @utility surface-* {
   --bg: --value(--color-*);
-  --fg: --value(--color-on_*);
+  --fg: --value(--color-on-*);
 
   /* Define full-opacity background color when no modifier is passed. */
   /*noinspection CssOverwrittenProperties*/
@@ -218,16 +223,16 @@
   fill: var(--fg);
 }
 @utility surface-hover {
-  @apply surface hover:bg-surface_hover transition-colors;
+  @apply surface hover:bg-surface-hover transition-colors;
 }
 @utility surface-alt {
-  @apply bg-surface_alt text-on_surface fill-on_surface;
+  @apply bg-surface-alt text-on-surface fill-on-surface;
 }
 @utility surface-invert {
-  @apply bg-invert_surface text-invert_on_surface fill-invert_on_surface;
+  @apply bg-invert-surface text-invert-on-surface fill-invert-on-surface;
 }
 @utility surface-primary {
-  @apply bg-primary text-on_primary fill-on_primary contrast-less:surface-primary-tint;
+  @apply bg-primary text-on-primary fill-on-primary contrast-less:surface-primary-tint;
 }
 
 /* Apply the surface color with a hint of the current primary color. */
@@ -246,7 +251,7 @@
   }
 }
 @utility surface-accent {
-  @apply bg-accent text-on_accent fill-on_accent;
+  @apply bg-accent text-on-accent fill-on-accent;
 }
 @utility hover {
   @apply hover:bg-hover transition-colors;
@@ -284,5 +289,56 @@
 
 /** Default grid style for <SearchList /> */
 @utility search-results-grid {
-  @apply grid grid-cols-[repeat(auto-fit,var(--spacing-listitem_card))] gap-x-8 gap-y-4;
+  @apply grid grid-cols-[repeat(auto-fit,var(--spacing-listitem-card))] gap-x-8 gap-y-4;
+}
+
+@utility -hover-background {
+  background-color: color-mix(in srgb, var(--hover, var(--fg)) 10%, var(--bg));
+}
+
+/* By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
+@utility extra-background {
+  @apply relative;
+  &::before {
+    @apply pointer-events-none absolute -z-1 rounded-lg;
+    content: var(--tw-content);
+  }
+}
+
+/* Add a hover background which is a different size to the element.
+ * By default this will have zero size and appear to do nothing! Remember
+ * to set the size of your background with before:-inset-2 or whatever.*/
+@utility hover-extra-background {
+  @apply extra-background relative;
+  &::before {
+    @apply bg-transparent transition-colors;
+  }
+  &:not(:disabled):hover::before {
+    @apply -hover-background;
+  }
+  &:not(:disabled):focus-visible::before {
+    @apply -hover-background;
+  }
+}
+
+/* Apply a surface theme and a slightly modified variant when hovered. */
+/* prettier-ignore */
+@utility hover-surface-* {
+  @apply transition-colors;
+
+  --bg: --value(--color-*);
+  --fg: --value(--color-on-*);
+  /*accent-color: --value(--color-vibrant-on-*);*/
+
+  background-color: var(--bg);
+  color: var(--fg);
+  fill: var(--fg);
+
+  &:hover:not(:disabled) {
+    @apply -hover-background;
+  }
+  &:focus-visible:not(:disabled) {
+    @apply -hover-background;
+  }
 }

@@ -9,14 +9,14 @@ import type {
 } from "@/api/schema";
 import { FullCareer } from "@/app/members/[parliamentdotuk]/_components/career";
 import { PhysicalAddress } from "@/app/members/_components/address";
-import { TextButton } from "@/components/button";
+import { InlineButton } from "@/components/button";
 import { Date } from "@/components/datetime";
-import { LinkGroup } from "@/components/link";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
 import { PageLayout } from "@/components/page-layout";
 import { HeaderCard } from "@/features/cards";
 import { MemberPortrait } from "@/features/member-portrait";
 import { itemThemeCss } from "@/features/themed/item-theme";
+import { WebLinks } from "@/features/weblinks";
 import { Nullish } from "@/types/common";
 import { Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
@@ -83,7 +83,7 @@ const MemberCard = (props: MemberComponentProps) => {
       >
         <h1>{member.name}</h1>
 
-        <LinkGroup links={[...member.address.web, member.wikipedia]} />
+        <WebLinks links={[...member.address.web, member.wikipedia]} />
 
         <div className="flex flex-wrap gap-1">
           <Party party={member.party} />
@@ -107,9 +107,9 @@ const MemberCard = (props: MemberComponentProps) => {
 const Party = ({ party }: { party: Party | null }) => {
   if (!party) return null;
   return (
-    <TextButton title="Party" href={`/parties/${party.parliamentdotuk}/`}>
+    <InlineButton title="Party" href={`/parties/${party.parliamentdotuk}/`}>
       {party.name}
-    </TextButton>
+    </InlineButton>
   );
 };
 
@@ -130,12 +130,12 @@ const Status = (props: {
     if (constituency) {
       titleParts.push(
         " for ",
-        <TextButton
+        <InlineButton
           title="Constituency"
           href={`/constituencies/${constituency.parliamentdotuk}/`}
         >
           {constituency.name}
-        </TextButton>,
+        </InlineButton>,
       );
     }
   } else if (house === "Lords") {

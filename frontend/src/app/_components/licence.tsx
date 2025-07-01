@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { TextLink } from "@/components/link";
+import { InlineLink } from "@/components/button";
 import { Licence, LicenceDefinition, licence } from "@/licensing";
 import { DivPropsNoChildren } from "@/types/react";
 
@@ -25,19 +25,19 @@ const LinkifiedAttribution = (props: LicenceDefinition) => {
   if (!attribution.find((it) => it.includes(name))) {
     // If licence name not included in attribution text, linkify the whole text.
     return (
-      <TextLink href={url} title={name}>
+      <InlineLink href={url} title={name}>
         {attribution.map((attr, index) => (
           <p key={index}>{attr}</p>
         ))}
-      </TextLink>
+      </InlineLink>
     );
   }
 
   // Otherwise, linkify the licence name wherever it appears
   const linkified = (
-    <TextLink href={url} title={name}>
+    <InlineLink href={url} title={name}>
       {name}
-    </TextLink>
+    </InlineLink>
   );
 
   return (

@@ -67,9 +67,9 @@ export const itemThemeCss = (
     ...Object.fromEntries(
       Object.entries({
         "--primary": theme?.primary,
-        "--on_primary": getOnColor(theme?.primary),
+        "--on-primary": getOnColor(theme?.primary),
         "--accent": theme?.accent,
-        "--on_accent": getOnColor(theme?.accent),
+        "--on-accent": getOnColor(theme?.accent),
         accentColor: theme?.primary,
       }).filter(([_, value]) => !!value),
     ),

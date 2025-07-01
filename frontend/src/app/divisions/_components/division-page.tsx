@@ -3,7 +3,7 @@ import {
   DivisionVotes,
   DivisionVotesProps,
 } from "@/app/divisions/_components/votes";
-import { TextButton } from "@/components/button";
+import { InlineButton } from "@/components/button";
 import { Date, DateFormat } from "@/components/datetime";
 import { PageLayout } from "@/components/page-layout";
 import { Prose } from "@/components/prose";
@@ -76,12 +76,16 @@ const Verdict = ({ division }: { division: Division }) => {
         The motion {division.is_passed ? "passed" : "did not pass"}.
       </p>
       <Row className="flex-wrap gap-x-4 text-sm">
-        <TextButton icon="Upvote">{division.ayes} voted in favour</TextButton>
-        <TextButton icon="Downvote">{division.noes} voted against</TextButton>
+        <InlineButton icon="Upvote">
+          {division.ayes} voted in favour
+        </InlineButton>
+        <InlineButton icon="Downvote">
+          {division.noes} voted against
+        </InlineButton>
         {"did_not_vote" in division ? (
-          <TextButton icon="DidNotVote">
+          <InlineButton icon="DidNotVote">
             {division.did_not_vote} did not vote
-          </TextButton>
+          </InlineButton>
         ) : undefined}
       </Row>
     </Prose>

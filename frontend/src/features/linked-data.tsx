@@ -8,39 +8,50 @@ import type {
   Party,
   Post,
 } from "@/api/schema";
-import { ButtonProps, TextButton } from "@/components/button";
-import { TextLink } from "@/components/link";
+import { ButtonProps, InlineButton, InlineLink } from "@/components/button";
 import { onlyIf } from "@/components/optional";
-import { Row } from "@/components/row";
 import { navigationHref } from "@/navigation";
 import { Nullish } from "@/types/common";
-import { DivPropsNoChildren } from "@/types/react";
-import { addClass } from "@/util/transforms";
 
-const PartyLink = ({
-  party,
-  showDot = true,
-  ...rest
-}: {
-  party: Party | Nullish;
-  showDot?: boolean;
-} & ButtonProps) => {
+export const PartyLink = (
+  props: {
+    party: Party | Nullish;
+    showDot?: boolean;
+  } & ButtonProps,
+) => {
+  const { party, title, showDot = true, ...rest } = props;
   if (!party) return null;
   const color = showDot ? party.theme?.primary : undefined;
 
   return (
-    <TextButton href={navigationHref("party", party.parliamentdotuk)} {...rest}>
-      <DotText color={color} text={party.name} />
-    </TextButton>
+    <InlineButton
+      title={title || party.name}
+      href={onlyIf(
+        !("onClick" in rest),
+        navigationHref("party", party.parliamentdotuk),
+      )}
+      icon={onlyIf(
+        showDot,
+        <span
+          className="inline-block size-ch rounded-xs border-1 border-current/50"
+          style={{ backgroundColor: color }}
+        />,
+      )}
+      {...rest}
+    >
+      {party.name}
+    </InlineButton>
   );
 };
 
-const HouseLink = (props: {
-  house: HouseType;
-  longFormat?: boolean;
-  showDot?: boolean;
-}) => {
-  const { house, longFormat = false, showDot = true } = props;
+export const HouseLink = (
+  props: {
+    house: HouseType;
+    longFormat?: boolean;
+    showDot?: boolean;
+  } & ButtonProps,
+) => {
+  const { house, title, longFormat = false, showDot = true } = props;
 
   const text = longFormat ? `House of ${house}` : house;
   const color = showDot
@@ -50,96 +61,84 @@ const HouseLink = (props: {
       }[house]
     : undefined;
 
-  return <DotText color={color} text={text} />;
+  return (
+    <InlineButton
+      title={title || `House of ${house}`}
+      icon={onlyIf(
+        showDot,
+        <span
+          className="inline-block size-ch rounded-full"
+          style={{ backgroundColor: color }}
+        />,
+      )}
+    >
+      {text}
+    </InlineButton>
+  );
 };
 
-const PersonLink = ({
-  person,
-  fallback,
-  ...rest
-}: {
-  fallback?: string;
-  person: Pick<MemberMiniSchema, "name" | "parliamentdotuk"> | Nullish;
-} & ButtonProps) => {
+export const PersonLink = (
+  props: {
+    fallback?: string;
+    person: Pick<MemberMiniSchema, "name" | "parliamentdotuk"> | Nullish;
+  } & ButtonProps,
+) => {
+  const { person, fallback, title, ...rest } = props;
   if (!person) {
     if (fallback) return <>{fallback}</>;
     return null;
   }
 
   return (
-    <TextButton
+    <InlineButton
       href={navigationHref("person", person.parliamentdotuk)}
+      title={title || person.name}
       {...rest}
     >
       {person.name}
-    </TextButton>
+    </InlineButton>
   );
 };
 
-const ConstituencyLink = ({
-  constituency,
-  longFormat,
-  ...rest
-}: {
-  constituency: Pick<ConstituencyMini, "name" | "parliamentdotuk"> | Nullish;
-  longFormat?: boolean;
-} & ButtonProps) => {
+export const ConstituencyLink = (
+  props: {
+    constituency: Pick<ConstituencyMini, "name" | "parliamentdotuk"> | Nullish;
+  } & ButtonProps,
+) => {
+  const { constituency, title, ...rest } = props;
   if (!constituency) return null;
 
   return (
-    <TextButton
+    <InlineButton
       href={navigationHref("constituency", constituency.parliamentdotuk)}
+      title={title || constituency.name}
       {...rest}
     >
-      {onlyIf(longFormat, "MP for ")}
       {constituency.name}
-    </TextButton>
+    </InlineButton>
   );
 };
 
-const PostLink = ({ post }: { post: Post | Nullish }) => {
+export const PostLink = ({ post }: { post: Post | Nullish }) => {
   return post?.name ?? null;
 };
 
-const CommitteeLink = ({ committee }: { committee: Committee | Nullish }) => {
+export const CommitteeLink = ({
+  committee,
+}: {
+  committee: Committee | Nullish;
+}) => {
   return committee?.name ?? null;
 };
 
-const OrganisationLink = ({
+export const OrganisationLink = ({
   organisation,
 }: {
   organisation: Organisation | Nullish;
 }) => {
   if (!organisation) return null;
   if (organisation.url) {
-    return <TextLink href={organisation.url}>{organisation.name}</TextLink>;
+    return <InlineLink href={organisation.url}>{organisation.name}</InlineLink>;
   }
   return organisation.name;
-};
-
-interface DotTextProps {
-  color: string | undefined;
-  text: string;
-}
-const DotText = (props: DivPropsNoChildren<DotTextProps>) => {
-  const { color, text, ...rest } = addClass(props, "items-baseline gap-1.5");
-  if (!color) return <span>{text}</span>;
-  return (
-    <Row {...rest}>
-      <span
-        className="size-ch rounded-full align-middle"
-        style={{ backgroundColor: color }}
-      />
-      <span>{text}</span>
-    </Row>
-  );
-};
-export {
-  CommitteeLink,
-  ConstituencyLink,
-  HouseLink,
-  OrganisationLink,
-  PartyLink,
-  PersonLink,
-  PostLink,
 };

@@ -16,16 +16,16 @@ export const PartyItemCard = (props: Props<"a", { party: Party }>) => {
       themeSource={party}
       defaultTheme={{
         primary: "var(--surface)",
-        on_primary: "var(--on_surface)",
+        on_primary: "var(--on-surface)",
         accent: "var(--surface)",
-        on_accent: "var(--on_surface)",
+        on_accent: "var(--on-surface)",
       }}
       image={onlyIf(
         party.logo,
         <OptionalSvg
           src={party.logo}
           alt={party.name}
-          className="bg-light_surface/75 p-2"
+          className="bg-light-surface/75 p-2"
         />,
       )}
       {...rest}

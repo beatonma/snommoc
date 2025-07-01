@@ -8,11 +8,11 @@ import {
 } from "@/api/schema";
 import { MembersList } from "@/app/members/members";
 import { OptionalSvg } from "@/components/image";
-import { LinkGroup } from "@/components/link";
 import { OptionalDiv } from "@/components/optional";
 import { PageLayout } from "@/components/page-layout";
 import { HeaderCard } from "@/features/cards";
 import { itemThemeCss } from "@/features/themed/item-theme";
+import { WebLinks } from "@/features/weblinks";
 import { plural } from "@/util/plurals";
 
 type PageProps = {
@@ -87,7 +87,7 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
               }
             />
 
-            <LinkGroup links={[party.homepage, party.wikipedia]} />
+            <WebLinks links={[party.homepage, party.wikipedia]} />
           </HeaderCard>
         </section>
 

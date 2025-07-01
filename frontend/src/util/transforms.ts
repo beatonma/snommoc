@@ -10,7 +10,7 @@ export const classes = (...classNames: (string | Nullish)[]) => {
  */
 export const addClass = <T extends ClassNameProps>(
   props: T,
-  ...extraClasses: string[]
+  ...extraClasses: (string | Nullish)[]
 ) => {
   return {
     ...props,

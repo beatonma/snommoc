@@ -1,7 +1,7 @@
 import React, { ReactNode, useId } from "react";
 import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
-import { Loading } from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import { onlyIf } from "@/components/optional";
 import { Nullish } from "@/types/common";
 import { DivProps, Props } from "@/types/react";
@@ -61,7 +61,7 @@ export const SectionLayout = (
 };
 
 export const ListSection = <T,>(props: SectionProps<ListSectionProps<T>>) => {
-  if (props.data == null) return <Loading />;
+  if (props.data == null) return <LoadingSpinner />;
   if (!props.data.length) return null;
 
   const { data, block, ...rest } = props;

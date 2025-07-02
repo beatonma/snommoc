@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useRef } from "react";
 import { PageItemType, PathWithPagination } from "@/api/client";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
-import { Loading } from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import { DivPropsNoChildren } from "@/types/react";
 import { plural } from "@/util/plurals";
 import { type Paginated } from "./pagination";
@@ -78,7 +78,7 @@ const LoadNext = <T,>({ pagination }: { pagination: Paginated<T> }) => {
   if (pagination.error) {
     content = <h2>ERROR</h2>;
     console.error(pagination.error);
-  } else if (pagination.isLoading) content = <Loading />;
+  } else if (pagination.isLoading) content = <LoadingSpinner />;
   else if (pagination.hasMore && pagination.loadNext) {
     content = (
       <TintedButton onClick={pagination.loadNext}>Load more</TintedButton>

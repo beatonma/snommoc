@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { TintedButton } from "@/components/button";
-import { Loading } from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 
 export interface RemoteContentProvider {
   domain: string;
@@ -26,7 +26,7 @@ export const RemoteContent = (props: RemoteContentProps) => {
     setSavedPreference(provider, isAllowed);
   }, [provider, isAllowed]);
 
-  if (isAllowed === undefined) return <Loading />;
+  if (isAllowed === undefined) return <LoadingSpinner />;
   if (isAllowed) return <>{content()}</>;
 
   return (

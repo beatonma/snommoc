@@ -5,7 +5,7 @@ import { ResponseOf } from "@/api/client";
 import { useGet } from "@/api/hooks";
 import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
-import { Loading } from "@/components/loading";
+import { LoadingSpinner } from "@/components/loading";
 import { SeparatedRow } from "@/components/row";
 import { TabContent } from "@/components/tabs";
 import { TabLayout } from "@/components/tabs";
@@ -53,7 +53,7 @@ export const FullCareer = (props: { parliamentdotuk: number }) => {
     ];
   }, [parliamentdotuk, career]);
 
-  if (career === "loading") return <Loading />;
+  if (career === "loading") return <LoadingSpinner />;
   if (!career) return null;
   if (!tabs) return null;
 

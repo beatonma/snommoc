@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { get } from "@/api";
 import { ConstituencyMiniBoundary, PartyTerritory } from "@/api/schema";
-import { Loading, LoadingBar } from "@/components/loading";
+import { LoadingBar, LoadingSpinner } from "@/components/loading";
 import { onlyIf } from "@/components/optional";
 import {
   ConstituencyLink,
@@ -26,7 +26,7 @@ export const NationalMap = () => {
   const userLocation: GeoLocation | undefined =
     usePassiveGeoLocation(UkParliamentLocation);
 
-  if (!userLocation) return <Loading />;
+  if (!userLocation) return <LoadingSpinner />;
 
   return <NationalMapWithLocation userLocation={userLocation} />;
 };

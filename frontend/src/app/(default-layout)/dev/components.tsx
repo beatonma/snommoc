@@ -5,7 +5,7 @@ import * as Sample from "@/app/(default-layout)/dev/sample";
 import { InlineButton, TintedButton } from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
-import { Loading, LoadingBar } from "@/components/loading";
+import { LoadingBar, LoadingSpinner } from "@/components/loading";
 import { Row } from "@/components/row";
 import { useSortable } from "@/components/sortable";
 import { TabLayout } from "@/components/tabs";
@@ -63,8 +63,8 @@ const LoadingComponents = () => {
 
   return (
     <Section name="">
-      <SectionItem name="<Loading />">
-        <Loading />
+      <SectionItem name="<LoadingSpinner />">
+        <LoadingSpinner />
       </SectionItem>
 
       <SectionItem name="<LoadingBar />">
@@ -185,7 +185,7 @@ const SortableComponents = () => {
         <div key={it.parliamentdotuk}>
           {it.parliamentdotuk} {it.name} {it.party?.name}
         </div>
-      )) ?? <Loading />}
+      )) ?? <LoadingSpinner />}
     </Section>
   );
 };

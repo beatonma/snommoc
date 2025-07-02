@@ -1,17 +1,17 @@
 import { Metadata } from "next";
 import React from "react";
-import { ConstituencyList } from "@/app/constituencies/constituencies";
+import { ComponentsOverview } from "@/app/(default-layout)/dev/components";
 import { ContentLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
-  title: "Constituencies",
-  description: "Constituency list",
+  title: "UI component preview",
+  description: "UI components",
 };
 
-export default async function ConstituencyListPage() {
+export default async function ComponentsPage() {
   return (
     <ContentLayout layout="CenteredFeed">
-      <ConstituencyList />
+      <ComponentsOverview />
     </ContentLayout>
   );
 }

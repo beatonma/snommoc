@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LoremIpsum } from "@/app/dev/components";
+import { LoremIpsum } from "@/app/(default-layout)/dev/components";
 import {
   ContentLayout,
   _private,

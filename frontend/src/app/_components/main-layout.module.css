@@ -1,0 +1,39 @@
+.mainLayout {
+  --side-navigation-width: 200px;
+
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  height: 100%;
+  width: 100%;
+
+  grid-template-areas:
+    "header"
+    "content"
+    "footer";
+
+  & > header {
+    grid-area: header;
+  }
+  & > .globalContentWrapper {
+    grid-area: content;
+  }
+  & > footer {
+    grid-area: footer;
+  }
+}
+
+.defaultLayout {
+  composes: mainLayout;
+}
+
+.fixedLayout {
+  composes: mainLayout;
+
+  max-height: 100vh;
+  max-width: 100vw;
+  overflow: hidden;
+
+  & > .globalContentWrapper {
+    overflow: hidden;
+  }
+}

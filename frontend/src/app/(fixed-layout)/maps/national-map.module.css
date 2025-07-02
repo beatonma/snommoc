@@ -1,0 +1,69 @@
+.nationalMapLayout {
+  --sidebar-width: 300px;
+
+  display: grid;
+  grid-template-areas:
+    "map"
+    "key"
+    "info";
+  grid-template-columns: 1fr;
+  grid-template-rows: 50% min-content 1fr;
+
+  .map {
+    grid-area: map;
+  }
+
+  .overlays {
+    .key {
+      grid-area: key;
+    }
+    .info {
+      grid-area: info;
+    }
+  }
+
+  @media (aspect-ratio >= 1/1) {
+    @media (width >= 600px) {
+      grid-template-columns: auto var(--sidebar-width);
+      grid-template-rows: min-content auto;
+      grid-template-areas:
+        "map key"
+        "map info";
+
+      .map {
+        max-height: 100%;
+      }
+      .overlays {
+        align-self: inherit;
+        overflow: hidden;
+      }
+    }
+
+    @media (width >= 1400px) {
+      grid-template-columns:
+        1fr var(--sidebar-width) auto var(--sidebar-width)
+        1fr;
+      grid-template-rows: 1fr;
+      grid-template-areas: ". key map info .";
+
+      .map {
+        aspect-ratio: 1;
+      }
+
+      .overlays {
+        display: contents;
+
+        .key {
+          max-height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: end;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+        .info {
+        }
+      }
+    }
+  }
+}

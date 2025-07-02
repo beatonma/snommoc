@@ -1,0 +1,30 @@
+.globalHeader {
+  display: grid;
+  align-items: center;
+  grid-template-columns: max-content 1fr;
+  grid-template-areas:
+    "h1 toolbar"
+    "nav nav";
+
+  & > h1 {
+    grid-area: h1;
+  }
+  .toolbar {
+    grid-area: toolbar;
+    display: flex;
+    justify-content: end;
+    font-size: var(--text-sm);
+  }
+  & > nav {
+    grid-area: nav;
+  }
+
+  @media (width >= 800px) {
+    grid-template-areas: "h1 nav toolbar";
+    grid-template-columns: auto 1fr auto;
+
+    & > nav {
+      justify-self: center;
+    }
+  }
+}

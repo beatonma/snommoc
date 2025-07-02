@@ -17,9 +17,10 @@ import { MapRenderer } from "@/features/map/map";
 import { usePagination } from "@/features/paginated";
 import { PartyIconBackground } from "@/features/themed/item-theme";
 import { DivPropsNoChildren } from "@/types/react";
+import { classes } from "@/util/transforms";
 import { PartyTerritoryKey } from "./_components/party-filter";
 import { SelectedConstituenciesInfo } from "./_components/selected";
-import "./style.css";
+import styles from "./national-map.module.css";
 
 export const NationalMap = () => {
   const userLocation: GeoLocation | undefined =
@@ -129,8 +130,21 @@ const NationalMapWithLocation = ({
   ]);
 
   return (
-    <div className="map-layout">
-      <Map map={map} className="map-layout--map">
+    <div
+      className={classes(
+        styles.nationalMapLayout,
+        "map-layout",
+        "h-full gap-2 overflow-hidden",
+      )}
+    >
+      <Map
+        map={map}
+        className={classes(
+          styles.map,
+          "map-layout--map",
+          "card surface size-full",
+        )}
+      >
         <HoveredConstituency
           constituency={hoveredConstituency}
           className="touch:hidden absolute bottom-0 right-0 z-10 m-2"
@@ -141,17 +155,31 @@ const NationalMapWithLocation = ({
         />
       </Map>
 
-      <div className="map-layout--overlays">
+      <div
+        className={classes(
+          styles.overlays,
+          "map-layout--overlays",
+          "contents max-h-full overflow-y-hidden",
+        )}
+      >
         <PartyTerritoryKey
           parties={territories}
-          className="map-layout--key"
+          className={classes(
+            styles.key,
+            "map-layout--key",
+            "px-edge flex flex-row items-center gap-2 overflow-x-auto overflow-y-hidden py-4 text-base *:shrink-0",
+          )}
           focussedPartyId={focussedPartyId}
           onClickParty={filterByParty}
         />
 
         <SelectedConstituenciesInfo
           constituencies={focussedConstituencies}
-          className="map-layout--info"
+          className={classes(
+            styles.info,
+            "map-layout--info",
+            "mx-auto h-fit max-h-full overflow-hidden",
+          )}
         />
       </div>
     </div>

@@ -2,7 +2,7 @@ import { CommonsDivision, HouseType, LordsDivision } from "@/api/schema";
 import {
   DivisionVotes,
   DivisionVotesProps,
-} from "@/app/divisions/_components/votes";
+} from "@/app/(default-layout)/divisions/_components/votes";
 import { InlineButton } from "@/components/button";
 import { Date, DateFormat } from "@/components/datetime";
 import { ContentLayout } from "@/components/page-layout";

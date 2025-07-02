@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { PageLayoutPreview } from "@/app/dev/page-layout/layout-preview";
+import { PageLayoutPreview } from "@/app/(default-layout)/dev/page-layout/layout-preview";
 
 export const metadata: Metadata = {
   title: "Page layout",

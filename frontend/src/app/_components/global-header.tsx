@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { GlobalNavigation } from "@/app/_components/global-navigation";
 import { ThemeController } from "@/features/themed/light-dark";
+import { classes } from "@/util/transforms";
+import style from "./global-header.module.css";
 
 export const GlobalHeader = () => (
-  <header className="surface gap-x-4 px-edge py-2 mb-2">
+  <header
+    className={classes(style.globalHeader, "surface gap-x-4 px-edge py-2 mb-2")}
+  >
     <h1>
       <Link href="/">Commons</Link>
     </h1>

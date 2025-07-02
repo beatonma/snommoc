@@ -6,7 +6,7 @@ import {
   type LordsDemographics,
   type PartyDetail,
 } from "@/api/schema";
-import { MembersList } from "@/app/members/members";
+import { MembersList } from "@/app/(default-layout)/members/members";
 import { OptionalSvg } from "@/components/image";
 import { OptionalDiv } from "@/components/optional";
 import { ContentLayout } from "@/components/page-layout";

@@ -1,17 +1,17 @@
 import { Metadata } from "next";
 import React from "react";
-import { PartyList } from "@/app/parties/parties";
+import { MembersList } from "@/app/(default-layout)/members/members";
 import { ContentLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
-  title: "Parties",
-  description: "Party list",
+  title: "Members",
+  description: "Members list",
 };
 
-export default async function PartyListPage() {
+export default async function MembersListPage() {
   return (
     <ContentLayout layout="CenteredFeed">
-      <PartyList />
+      <MembersList />
     </ContentLayout>
   );
 }

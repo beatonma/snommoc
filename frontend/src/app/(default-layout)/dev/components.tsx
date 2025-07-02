@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useId, useState } from "react";
-import * as Sample from "@/app/dev/sample";
+import * as Sample from "@/app/(default-layout)/dev/sample";
 import { InlineButton, TintedButton } from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";

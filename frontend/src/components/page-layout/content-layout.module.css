@@ -1,0 +1,144 @@
+.contentLayout {
+  display: grid;
+  width: 100%;
+
+  grid-template-areas:
+    ". main ."
+    ". secondary .";
+  grid-template-columns:
+    1fr minmax(
+      var(--content-layout--main-content--minwidth),
+      var(--content-layout--main-content--maxwidth)
+    )
+    1fr;
+
+  .main {
+    container: main / inline-size;
+    grid-area: main;
+  }
+
+  .secondary {
+    grid-area: secondary;
+    container-type: inline-size;
+  }
+
+  .sidebarLeft {
+    container-type: inline-size;
+    display: none;
+    grid-area: sidebar-left;
+  }
+  .sidebarRight {
+    container-type: inline-size;
+    display: none;
+    grid-area: sidebar-right;
+  }
+}
+
+.mainRight {
+  composes: contentLayout;
+
+  grid-template-areas:
+    ". main sidebar-right ."
+    ". secondary sidebar-right .";
+  grid-template-columns:
+    1fr minmax(
+      var(--content-layout--main-content--minwidth),
+      var(--content-layout--main-content--maxwidth)
+    )
+    auto 1fr;
+
+  .sidebarRight {
+    display: initial;
+  }
+}
+
+.leftMainRight {
+  grid-template-areas:
+    ". sidebar-left main sidebar-right ."
+    ". sidebar-left secondary sidebar-right .";
+  grid-template-columns:
+    1fr
+    auto
+    minmax(
+      var(--content-layout--main-content--minwidth),
+      var(--content-layout--main-content--maxwidth)
+    )
+    auto
+    1fr;
+
+  .sidebarLeft {
+    display: initial;
+  }
+}
+
+.contentLayoutWrapper {
+  container: container-layout / inline-size;
+
+  --content-layout--main-content--minwidth: 0;
+  --content-layout--main-content--maxwidth: 100%;
+  --content-layout--secondary-content--minwidth: 0;
+  --content-layout--secondary-content--maxwidth: 100%;
+}
+
+.centeredFeed {
+  composes: contentLayout;
+
+  @container container-layout (width >= 1000px) {
+    composes: mainRight;
+  }
+
+  @container container-layout (width >= 1400px) {
+    composes: leftMainRight;
+  }
+}
+
+.centeredReadable {
+  composes: contentLayout;
+
+  @container container-layout (width >= 1000px) {
+    composes: mainRight;
+  }
+
+  @container container-layout (width >= 1300px) {
+    composes: leftMainRight;
+  }
+}
+
+.primarySecondary {
+  composes: contentLayout;
+
+  @container content-layout (width >= 1200px) {
+    grid-template-areas: ". main secondary .";
+    grid-template-columns:
+      1fr
+      minmax(
+        var(--content-layout--main-content--minwidth),
+        var(--content-layout--main-content--maxwidth)
+      )
+      minmax(
+        var(--content-layout--secondary-content--minwidth),
+        var(--content-layout--secondary-content--maxwidth)
+      )
+      1fr;
+  }
+
+  @container content-layout (width >= 2000px) {
+    grid-template-areas: ". sidebar-left main secondary sidebar-right .";
+    grid-template-columns:
+      1fr auto
+      minmax(
+        var(--content-layout--main-content--minwidth),
+        var(--content-layout--main-content--maxwidth)
+      )
+      minmax(
+        var(--content-layout--secondary-content--minwidth),
+        var(--content-layout--secondary-content--maxwidth)
+      )
+      auto 1fr;
+
+    .sidebarLeft,
+    .sidebarRight {
+      display: initial;
+    }
+  }
+}

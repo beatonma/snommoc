@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { LoremIpsum } from "@/app/dev/components";
-import { PageLayout, PageLayouts } from "@/components/page-layout";
+import {
+  ContentLayout,
+  _private,
+} from "@/components/page-layout/content-layout";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-type LayoutName = keyof typeof PageLayouts;
+type LayoutName = keyof typeof _private.PageLayouts;
 export const PageLayoutPreview = () => {
   const [layout, setLayout] = useState<LayoutName>("CenteredFeed");
 
@@ -16,7 +19,7 @@ export const PageLayoutPreview = () => {
         className="mb-8"
         onChange={(e) => setLayout(e.target.value as LayoutName)}
       >
-        {Object.entries(PageLayouts).map(([key, value]) => (
+        {Object.entries(_private.PageLayouts).map(([key, value]) => (
           <option value={key} key={key}>
             {key}
           </option>
@@ -30,7 +33,7 @@ export const PageLayoutPreview = () => {
 
 const Layout = ({ layout }: { layout: LayoutName }) => {
   return (
-    <PageLayout
+    <ContentLayout
       layout={layout}
       className="gap-2"
       secondary={<Card className="surface-lords">Secondary</Card>}
@@ -48,7 +51,7 @@ const Layout = ({ layout }: { layout: LayoutName }) => {
           <p key={index}>{it}</p>
         ))}
       </Card>
-    </PageLayout>
+    </ContentLayout>
   );
 };
 

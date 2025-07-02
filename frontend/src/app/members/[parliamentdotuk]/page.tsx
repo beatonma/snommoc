@@ -1,19 +1,14 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import React, { ReactNode } from "react";
 import { getOr404 } from "@/api";
-import type {
-  ConstituencyMini,
-  HouseType,
-  MemberProfile,
-  Party,
-} from "@/api/schema";
+import type { ConstituencyMini, HouseType, MemberProfile } from "@/api/schema";
 import { FullCareer } from "@/app/members/[parliamentdotuk]/_components/career";
 import { PhysicalAddress } from "@/app/members/_components/address";
-import { InlineButton } from "@/components/button";
 import { Date } from "@/components/datetime";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 import { HeaderCard } from "@/features/cards";
+import { ConstituencyLink, PartyLink } from "@/features/linked-data";
 import { MemberPortrait } from "@/features/member-portrait";
 import { itemThemeCss } from "@/features/themed/item-theme";
 import { WebLinks } from "@/features/weblinks";
@@ -48,16 +43,24 @@ export default async function MemberProfilePage({ params }: PageProps) {
   const member = await getMember(parliamentdotuk);
 
   return (
-    <div className="space-y-8">
-      <PageLayout layout="CenteredReadable" style={itemThemeCss(member.party)}>
+    <main className="space-y-8">
+      <ContentLayout
+        layout="CenteredReadable"
+        mainElement="div"
+        style={itemThemeCss(member.party)}
+      >
         <MemberCard member={member} />
         <MemberDetail member={member} className="px-edge" />
-      </PageLayout>
+      </ContentLayout>
 
-      <PageLayout layout="CenteredFeed" style={itemThemeCss(member.party)}>
+      <ContentLayout
+        layout="CenteredFeed"
+        mainElement="div"
+        style={itemThemeCss(member.party)}
+      >
         <FullCareer parliamentdotuk={member.parliamentdotuk} />
-      </PageLayout>
-    </div>
+      </ContentLayout>
+    </main>
   );
 }
 
@@ -86,7 +89,7 @@ const MemberCard = (props: MemberComponentProps) => {
         <WebLinks links={[...member.address.web, member.wikipedia]} />
 
         <div className="flex flex-wrap gap-1">
-          <Party party={member.party} />
+          <PartyLink title="Party" party={member.party} />
           <Status
             status={member.status}
             house={member.house}
@@ -101,15 +104,6 @@ const MemberCard = (props: MemberComponentProps) => {
         />
       </HeaderCard>
     </section>
-  );
-};
-
-const Party = ({ party }: { party: Party | null }) => {
-  if (!party) return null;
-  return (
-    <InlineButton title="Party" href={`/parties/${party.parliamentdotuk}/`}>
-      {party.name}
-    </InlineButton>
   );
 };
 
@@ -130,12 +124,7 @@ const Status = (props: {
     if (constituency) {
       titleParts.push(
         " for ",
-        <InlineButton
-          title="Constituency"
-          href={`/constituencies/${constituency.parliamentdotuk}/`}
-        >
-          {constituency.name}
-        </InlineButton>,
+        <ConstituencyLink title="Constituency" constituency={constituency} />,
       );
     }
   } else if (house === "Lords") {

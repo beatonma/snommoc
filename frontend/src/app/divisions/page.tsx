@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 import { DivisionsList } from "./divisions";
 
 export const metadata: Metadata = {
@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default async function DivisionsListPage() {
   return (
-    <PageLayout layout="CenteredFeed">
+    <ContentLayout layout="CenteredFeed">
       <DivisionsList />
-    </PageLayout>
+    </ContentLayout>
   );
 }

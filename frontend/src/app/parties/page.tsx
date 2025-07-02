@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
 import { PartyList } from "@/app/parties/parties";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
   title: "Parties",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default async function PartyListPage() {
   return (
-    <PageLayout layout="CenteredFeed">
+    <ContentLayout layout="CenteredFeed">
       <PartyList />
-    </PageLayout>
+    </ContentLayout>
   );
 }

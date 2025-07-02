@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
 import { ConstituencyList } from "@/app/constituencies/constituencies";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
   title: "Constituencies",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default async function ConstituencyListPage() {
   return (
-    <PageLayout layout="CenteredFeed">
+    <ContentLayout layout="CenteredFeed">
       <ConstituencyList />
-    </PageLayout>
+    </ContentLayout>
   );
 }

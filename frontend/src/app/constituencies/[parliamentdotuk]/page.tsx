@@ -6,7 +6,7 @@ import { InlineLink } from "@/components/button";
 import { Date, DateRange } from "@/components/datetime";
 import { Percentage, int } from "@/components/number";
 import { Optional } from "@/components/optional";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 import { HeaderCard, MemberItemCard } from "@/features/cards";
 import { PartyLink, PersonLink } from "@/features/linked-data";
 import { itemThemeCss } from "@/features/themed/item-theme";
@@ -41,7 +41,7 @@ export default async function ConstituencyDetailPage({ params }: PageProps) {
   const constituency = await getConstituency(parliamentdotuk);
 
   return (
-    <PageLayout
+    <ContentLayout
       layout="CenteredReadable"
       style={itemThemeCss(constituency.mp?.party)}
     >
@@ -82,7 +82,7 @@ export default async function ConstituencyDetailPage({ params }: PageProps) {
       <section>
         <ElectionResults results={constituency.results} />
       </section>
-    </PageLayout>
+    </ContentLayout>
   );
 }
 

@@ -9,7 +9,7 @@ import {
 import { MembersList } from "@/app/members/members";
 import { OptionalSvg } from "@/components/image";
 import { OptionalDiv } from "@/components/optional";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 import { HeaderCard } from "@/features/cards";
 import { itemThemeCss } from "@/features/themed/item-theme";
 import { WebLinks } from "@/features/weblinks";
@@ -52,7 +52,7 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
 
   return (
     <>
-      <PageLayout layout="CenteredReadable" style={itemThemeCss(party)}>
+      <ContentLayout layout="CenteredReadable" style={itemThemeCss(party)}>
         <section>
           <HeaderCard
             themeSource={party}
@@ -94,14 +94,14 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
         <section className="px-edge">
           <Demographics party={party} />
         </section>
-      </PageLayout>
+      </ContentLayout>
 
-      <PageLayout layout="CenteredFeed" mainElement="aside">
+      <ContentLayout layout="CenteredFeed" mainElement="aside">
         <MembersList
           header={<h2>Members</h2>}
           immutableFilters={peopleImmutableFilters}
         />
-      </PageLayout>
+      </ContentLayout>
     </>
   );
 };

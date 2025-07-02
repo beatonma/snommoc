@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
 import { ComponentsOverview } from "@/app/dev/components";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
   title: "UI component preview",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default async function ComponentsPage() {
   return (
-    <PageLayout layout="CenteredFeed">
+    <ContentLayout layout="CenteredFeed">
       <ComponentsOverview />
-    </PageLayout>
+    </ContentLayout>
   );
 }

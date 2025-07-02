@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
 import { MembersList } from "@/app/members/members";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 
 export const metadata: Metadata = {
   title: "Members",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default async function MembersListPage() {
   return (
-    <PageLayout layout="CenteredFeed">
+    <ContentLayout layout="CenteredFeed">
       <MembersList />
-    </PageLayout>
+    </ContentLayout>
   );
 }

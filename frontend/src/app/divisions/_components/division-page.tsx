@@ -5,7 +5,7 @@ import {
 } from "@/app/divisions/_components/votes";
 import { InlineButton } from "@/components/button";
 import { Date, DateFormat } from "@/components/datetime";
-import { PageLayout } from "@/components/page-layout";
+import { ContentLayout } from "@/components/page-layout";
 import { Prose } from "@/components/prose";
 import { Row } from "@/components/row";
 import { houseSurface } from "@/features/themed/tailwind";
@@ -21,8 +21,12 @@ export const DivisionPage = ({
   votes: DivisionVotesProps;
 }) => {
   return (
-    <div className="space-y-16">
-      <PageLayout layout="CenteredReadable" mainClassName="space-y-4">
+    <main className="space-y-16">
+      <ContentLayout
+        layout="CenteredReadable"
+        mainElement="div"
+        mainClassName="space-y-4"
+      >
         <div className="space-y-1">
           <Row className="gap-x-2">
             <House house={division.house} />
@@ -37,15 +41,15 @@ export const DivisionPage = ({
         </div>
 
         <Verdict division={division} />
-      </PageLayout>
+      </ContentLayout>
 
-      <PageLayout layout="CenteredFeed">
+      <ContentLayout layout="CenteredFeed" mainElement="div">
         <DivisionVotes
           path={votes.path}
           parliamentdotuk={votes.parliamentdotuk}
         />
-      </PageLayout>
-    </div>
+      </ContentLayout>
+    </main>
   );
 };
 

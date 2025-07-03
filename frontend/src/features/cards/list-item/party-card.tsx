@@ -14,18 +14,12 @@ export const PartyItemCard = (props: Props<"a", { party: Party }>) => {
     <ListItemCard
       href={navigationHref("party", party.parliamentdotuk)}
       themeSource={party}
-      defaultTheme={{
-        primary: "var(--surface)",
-        on_primary: "var(--on-surface)",
-        accent: "var(--surface)",
-        on_accent: "var(--on-surface)",
-      }}
       image={onlyIf(
         party.logo,
         <OptionalSvg
           src={party.logo}
           alt={party.name}
-          className="bg-light-surface/75 p-2"
+          className="bg-white/75 p-2"
         />,
       )}
       {...rest}

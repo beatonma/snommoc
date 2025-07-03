@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useId, useState } from "react";
+import { useGet } from "@/api/hooks";
 import * as Sample from "@/app/(default-layout)/dev/sample";
 import { InlineButton, TintedButton } from "@/components/button";
 import Icon, { _private as Icon_private } from "@/components/icon";
@@ -301,6 +302,7 @@ const ThemeColors = () => {
         <div className="surface">surface</div>
         <div className="surface-alt">surface-alt</div>
         <div className="surface-primary">primary</div>
+        <div className="surface-primary-container">primary-container</div>
         <div className="surface-accent">accent</div>
       </div>
 
@@ -309,6 +311,9 @@ const ThemeColors = () => {
         <div className="surface">invert surface</div>
         <div className="surface-alt">invert surface-alt</div>
         <div className="surface-primary">invert primary</div>
+        <div className="surface-primary-container">
+          invert primary-container
+        </div>
         <div className="surface-accent">invert accent</div>
       </div>
 
@@ -333,6 +338,10 @@ const ThemeColors = () => {
       </div>
 
       <div className={gridClass}>
+        <PartyColors />
+      </div>
+
+      <div className={gridClass}>
         <div style={{ backgroundColor: color, color: getOnColor(color) }}>
           background
         </div>
@@ -351,6 +360,26 @@ const ThemeColors = () => {
         />
       </div>
     </Section>
+  );
+};
+
+const PartyColors = () => {
+  const parties = useGet("/api/parties/");
+  if (parties === "loading") return <LoadingSpinner />;
+  if (!parties) return null;
+
+  return (
+    <>
+      {parties.items.map((party) => (
+        <div
+          key={party.parliamentdotuk}
+          style={itemThemeCss(party)}
+          className="surface-primary-container"
+        >
+          {party.name}
+        </div>
+      ))}
+    </>
   );
 };
 

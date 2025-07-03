@@ -1,8 +1,11 @@
 import { Nullish } from "@/types/common";
 
-type ThreeChannel = [number, number, number];
+type RGB = [number, number, number];
+type HSL = [number, number, number];
+const rgbToString = ([r, g, b]: RGB) => `rgb(${r}, ${g}, ${b})`;
 
-const WcagContrast = 8; // https://www.w3.org/TR/WCAG21/#contrast-minimum
+const WcagContrast = 4.5; // https://www.w3.org/TR/WCAG21/#contrast-minimum
+const PreferredContrast = 8;
 
 export const getOnColor = (
   backgroundColor: string | undefined,
@@ -17,14 +20,41 @@ export const getOnColor = (
     return undefined;
   }
 
-  const [r, g, b] = adjustForegroundContrast(resolvedBg, resolvedFg);
-  return `rgb(${r}, ${g}, ${b})`;
+  const adjusted = adjustContrast(resolvedBg, resolvedFg);
+  return rgbToString(adjusted);
+};
+
+export const getContainerColor = (
+  sourceColor: string | undefined,
+  foregroundColor: string | undefined,
+  maxSaturation: number = 0.25,
+): string | undefined => {
+  const resolvedSource = resolveToRgb(sourceColor);
+  const resolvedForeground = resolveToRgb(foregroundColor);
+
+  if (!resolvedSource || !resolvedForeground) return undefined;
+
+  const adjusted = adjustContrast(
+    resolvedForeground,
+    reduceSaturation(resolvedSource, maxSaturation),
+  );
+  return rgbToString(adjusted);
+};
+
+const reduceSaturation = (color: RGB, maxSaturation: number): RGB => {
+  const hsl = rgbToHsl(color);
+
+  maxSaturation = Math.max(0, Math.min(1, maxSaturation));
+  const saturation = hsl[1];
+  hsl[1] = Math.min(saturation, maxSaturation);
+
+  return hslToRgb(hsl);
 };
 
 const resolveToRgb = (
   color: string | undefined,
   element?: HTMLElement | Nullish,
-): ThreeChannel | undefined => {
+): RGB | undefined => {
   if (!color) return undefined;
 
   if (color.includes("--")) {
@@ -39,34 +69,29 @@ const resolveToRgb = (
   return rgbToRgb(color) ?? hexToRgb(color);
 };
 
-const adjustForegroundContrast = (
-  background: ThreeChannel,
-  foreground: ThreeChannel,
-): ThreeChannel => {
-  const backgroundLuminance = getLuminance(background);
+/**
+ * Return a variant of `foreground` which has a sufficient contrast ratio with `background`.
+ */
+const adjustContrast = (
+  relativeTo: RGB,
+  adjustable: RGB,
+  minContrast: number = PreferredContrast,
+): RGB => {
+  if (minContrast < WcagContrast) {
+    console.warn(
+      `adjustContrast minContrast should be at least ${WcagContrast} (got ${minContrast})`,
+    );
+  }
+  const againstLuminance = getLuminance(relativeTo);
 
   const step = 5;
 
   // Try and find a suitable contrast by adjusting towards black
-  let adjusted: ThreeChannel = [...foreground];
-  // console.log(`original: ${adjusted}`);
-  // if (
-  //   adjust(backgroundLuminance, adjusted, (it) => Math.max(0, it - step), 0)
-  // ) {
-  //   console.log(`towards black: ${adjusted}`);
-  //   return adjusted;
-  // }
-  //
-  // // Try and find a suitable contrast by adjusting towards white
-  // adjusted = [...foreground];
-  // adjust(backgroundLuminance, adjusted, (it) => Math.min(255, it + step), 255);
-  // console.log(`towards white: ${adjusted}`);
-  // return adjusted;
+  let adjusted: RGB = [...adjustable];
 
   for (let i = 0; i < 100; i++) {
     if (
-      getContrastRatio(backgroundLuminance, getLuminance(adjusted)) >
-      WcagContrast
+      getContrastRatio(againstLuminance, getLuminance(adjusted)) > minContrast
     ) {
       return adjusted;
     }
@@ -85,11 +110,10 @@ const adjustForegroundContrast = (
     ];
   }
 
-  adjusted = [...foreground];
+  adjusted = [...adjustable];
   for (let i = 0; i < 100; i++) {
     if (
-      getContrastRatio(backgroundLuminance, getLuminance(adjusted)) >
-      WcagContrast
+      getContrastRatio(againstLuminance, getLuminance(adjusted)) > minContrast
     ) {
       return adjusted;
     }
@@ -110,39 +134,13 @@ const adjustForegroundContrast = (
   return adjusted;
 };
 
-const adjust = (
-  backgroundLuminance: number,
-  adjusted: ThreeChannel,
-  _adjust: (component: number) => number,
-  limit: number,
-): ThreeChannel | undefined => {
-  for (let i = 0; i < 100; i++) {
-    if (
-      getContrastRatio(backgroundLuminance, getLuminance(adjusted)) >
-      WcagContrast
-    ) {
-      // Suitable contrast found.
-      return adjusted;
-    }
-
-    if (adjusted.every((it) => it === limit)) {
-      // Limit reached on all components.
-      break;
-    }
-
-    adjusted[0] = _adjust(adjusted[0]);
-    adjusted[1] = _adjust(adjusted[1]);
-    adjusted[2] = _adjust(adjusted[2]);
-  }
-};
-
-const getLuminance = (rgb: ThreeChannel): number => {
+const getLuminance = (rgb: RGB): number => {
   const [r, g, b] = rgb.map((val) => {
     const sRGB = val / 255;
     return sRGB <= 0.03928
       ? sRGB / 12.92
       : Math.pow((sRGB + 0.055) / 1.055, 2.4);
-  }) as ThreeChannel;
+  }) as RGB;
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
@@ -152,7 +150,10 @@ const getContrastRatio = (luminance1: number, luminance2: number): number => {
   return (lighter + 0.05) / (darker + 0.05);
 };
 
-const rgbToRgb = (rgb: string): ThreeChannel | undefined => {
+/*
+ * Color format conversions
+ */
+const rgbToRgb = (rgb: string): RGB | undefined => {
   try {
     return rgb
       .match(/^(?:rgba?\()?(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:[/,\s\d.]+)?\)?$/)
@@ -162,14 +163,14 @@ const rgbToRgb = (rgb: string): ThreeChannel | undefined => {
         if (isNaN(asNumber))
           throw new Error(`Failed to parse color as RGB: ${rgb} ${it}`);
         return asNumber;
-      }) as ThreeChannel;
+      }) as RGB;
   } catch (e) {
     console.debug(e);
     return undefined;
   }
 };
 
-const hexToRgb = (hex: string): ThreeChannel | undefined => {
+const hexToRgb = (hex: string): RGB | undefined => {
   hex = hex.replace("#", "");
 
   const pattern = {
@@ -188,11 +189,76 @@ const hexToRgb = (hex: string): ThreeChannel | undefined => {
         if (isNaN(asNumber))
           throw new Error(`Failed to convert hex to RGB: ${hex}`);
         return asNumber;
-      }) as ThreeChannel;
+      }) as RGB;
   } catch (e) {
     console.debug(e);
     return undefined;
   }
+};
+
+const rgbToHsl = ([r, g, b]: RGB): HSL => {
+  const red = r / 255;
+  const green = g / 255;
+  const blue = b / 255;
+
+  const max = Math.max(red, green, blue);
+  const min = Math.min(red, green, blue);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0;
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case red:
+        h = (green - blue) / d + (green < blue ? 6 : 0);
+        break;
+      case green:
+        h = (blue - red) / d + 2;
+        break;
+      case blue:
+        h = (red - green) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return [h, s, l];
+};
+
+const hslToRgb = ([hue, saturation, lightness]: HSL): RGB => {
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  if (saturation === 0) {
+    r = g = b = lightness; // achromatic
+  } else {
+    const hue2rgb = (p: number, q: number, t: number) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    const q =
+      lightness < 0.5
+        ? lightness * (1 + saturation)
+        : lightness + saturation - lightness * saturation;
+    const p = 2 * lightness - q;
+
+    r = hue2rgb(p, q, hue + 1 / 3);
+    g = hue2rgb(p, q, hue);
+    b = hue2rgb(p, q, hue - 1 / 3);
+  }
+
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 };
 
 export const _private = { resolveToRgb };

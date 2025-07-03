@@ -1,17 +1,12 @@
 import React from "react";
 import type { ItemTheme as LocalTheme, Party, PartyDetail } from "@/api/schema";
 import { MaskedSvg } from "@/components/image";
-import { getOnColor } from "@/features/themed/color";
+import { getContainerColor, getOnColor } from "@/features/themed/color";
 import { Nullish } from "@/types/common";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-type ItemThemeProvider =
-  | { theme: LocalTheme | Nullish }
-  | Party
-  | PartyDetail
-  | LocalTheme
-  | Nullish;
+type ItemThemeProvider = { theme: LocalTheme | Nullish } | LocalTheme | Nullish;
 export interface ItemThemeableProps {
   themeSource: ItemThemeProvider;
   defaultTheme?: LocalTheme | Nullish;
@@ -62,17 +57,33 @@ export const itemThemeCss = (
   merge?: object,
 ): React.CSSProperties => {
   const theme = resolveTheme(themeSource, defaultTheme);
+
+  const primary = cssColor("primary", theme?.primary);
+  const primaryContainer = cssColor(
+    "primary-container",
+    getContainerColor(primary["--primary"], primary["--on-primary"]),
+  );
+  const accent = cssColor("accent", theme?.accent);
+
   return {
     ...(merge ?? {}),
     ...Object.fromEntries(
       Object.entries({
-        "--primary": theme?.primary,
-        "--on-primary": getOnColor(theme?.primary),
-        "--accent": theme?.accent,
-        "--on-accent": getOnColor(theme?.accent),
+        ...primary,
+        ...primaryContainer,
+        ...accent,
         accentColor: theme?.primary,
       }).filter(([_, value]) => !!value),
     ),
+  };
+};
+const cssColor = (name: string, color: string | undefined) => {
+  const background = color;
+  const foreground = getOnColor(color);
+
+  return {
+    [`--${name}`]: background,
+    [`--on-${name}`]: foreground,
   };
 };
 

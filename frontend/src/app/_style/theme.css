@@ -31,9 +31,14 @@
   --color-on-primary-light: var(--text-white);
   --color-on-primary-dark: var(--text-white);
 
+  --color-primary-container-light: rgb(24, 120, 62);
+  --color-on-primary-container-light: var(--text-white);
+  --color-primary-container-dark: rgb(29, 89, 53);
+  --color-on-primary-container-dark: var(--text-white);
+
   --color-accent-light: rgb(206, 218, 245);
-  --color-accent-dark: rgb(206, 218, 245);
   --color-on-accent-light: --alpha(rgb(40, 71, 119) / var(--text-opacity));
+  --color-accent-dark: rgb(206, 218, 245);
   --color-on-accent-dark: --alpha(rgb(40, 71, 119) / var(--text-opacity));
 }
 
@@ -67,6 +72,8 @@
   --on-alt: var(--color-on-surface-light);
   --primary: var(--color-primary-light);
   --on-primary: var(--color-on-primary-light);
+  --primary-container: var(--color-primary-container-light);
+  --on-primary-container: var(--color-on-primary-container-light);
   --accent: var(--color-accent-light);
   --on-accent: var(--color-on-accent-light);
 }
@@ -80,6 +87,8 @@
   --on-alt: var(--color-on-surface-dark);
   --primary: var(--color-primary-dark);
   --on-primary: var(--color-on-primary-dark);
+  --primary-container: var(--color-primary-container-dark);
+  --on-primary-container: var(--color-on-primary-container-dark);
   --accent: var(--color-accent-dark);
   --on-accent: var(--color-on-accent-dark);
 }
@@ -88,6 +97,7 @@
   @media (prefers-color-scheme: light) {
     @apply colorscheme-light;
   }
+
   @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
     @apply colorscheme-dark;
   }
@@ -109,6 +119,8 @@
   --color-on-alt: var(--on-alt);
   --color-primary: var(--primary);
   --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
 

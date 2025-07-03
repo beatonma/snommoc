@@ -96,7 +96,11 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
         </section>
       </ContentLayout>
 
-      <ContentLayout layout="CenteredFeed" mainElement="aside">
+      <ContentLayout
+        layout="CenteredFeed"
+        mainElement="aside"
+        style={itemThemeCss(party)}
+      >
         <MembersList
           header={<h2>Members</h2>}
           immutableFilters={peopleImmutableFilters}

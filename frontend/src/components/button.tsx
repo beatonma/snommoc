@@ -61,7 +61,12 @@ export const Button = (props: ButtonProps) => {
  * A button styled with the current `primary` theme color.
  */
 export const TintedButton = (props: ButtonProps) => {
-  return <Button colors="surface-primary hover-surface-primary" {...props} />;
+  return (
+    <Button
+      colors="surface-primary-container hover-surface-primary-container"
+      {...props}
+    />
+  );
 };
 
 /**

@@ -58,7 +58,7 @@ export const useTooltip = (props: TooltipProps): TooltipAttributes => {
         tooltip,
         className:
           classes(
-            "opacity-0 fixed surface-primary chip chip-content my-0.5",
+            "opacity-0 fixed surface-primary-container chip chip-content my-0.5",
             "text-sm text-center font-bold",
             "max-w-(--tooltip-max-width)",
           ) ?? "",

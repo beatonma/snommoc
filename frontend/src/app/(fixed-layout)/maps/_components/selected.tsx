@@ -117,12 +117,7 @@ const ManySelected = (props: Multi) => {
                 <li key={item.parliamentdotuk}>
                   <ConstituencyLink
                     constituency={item}
-                    icon={
-                      <span
-                        className="size-1 rounded-xs"
-                        style={{ backgroundColor: group.party.theme?.primary }}
-                      ></span>
-                    }
+                    dotColor={group.party.theme?.primary}
                   />
                 </li>
               ))}

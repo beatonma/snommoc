@@ -25,32 +25,6 @@ const resolveTheme = (
   return isTheme(obj) ? obj : (obj.theme ?? null);
 };
 
-const itemSurfaceThemes = (
-  themeSource: ItemThemeProvider,
-  defaultTheme?: LocalTheme | Nullish,
-): { primary: React.CSSProperties; accent: React.CSSProperties } | null => {
-  const theme = resolveTheme(themeSource, defaultTheme);
-  if (!theme) return null;
-
-  const { primary, on_primary, accent, on_accent } = theme;
-
-  // If both components of a theme are CSS variables, use them directly.
-  // Otherwise, generate a suitable content color.
-  const primaryIsVariable = primary.includes("--") && on_primary.includes("--");
-  const accentIsVariable = accent.includes("--") && on_accent.includes("--");
-
-  return {
-    primary: {
-      backgroundColor: primary,
-      color: primaryIsVariable ? on_primary : getOnColor(primary),
-    },
-    accent: {
-      backgroundColor: accent,
-      color: accentIsVariable ? on_accent : getOnColor(accent),
-    },
-  };
-};
-
 export const itemThemeCss = (
   themeSource: ItemThemeProvider,
   defaultTheme?: LocalTheme | Nullish,
@@ -106,7 +80,6 @@ export const PartyIconBackground = (props: DivProps<ItemThemeableProps>) => {
     defaultTheme,
     ...rest
   } = props;
-  const theme = itemSurfaceThemes(themeSource, defaultTheme)?.primary;
   const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
 
   if (
@@ -114,7 +87,12 @@ export const PartyIconBackground = (props: DivProps<ItemThemeableProps>) => {
     (!themeSource?.logo_mask && !themeSource?.logo)
   ) {
     return (
-      <div style={{ ...theme, ...themedStyle }} {...rest}>
+      <div
+        style={{
+          ...themedStyle,
+        }}
+        {...addClass(rest, "surface-primary-container")}
+      >
         {children}
       </div>
     );
@@ -124,9 +102,8 @@ export const PartyIconBackground = (props: DivProps<ItemThemeableProps>) => {
     <div
       style={{
         ...themedStyle,
-        ...theme,
       }}
-      {...addClass(rest, "relative overflow-hidden")}
+      {...addClass(rest, "relative overflow-hidden surface-primary-container")}
     >
       <MaskedSvg
         src={themeSource.logo_mask ?? themeSource.logo}

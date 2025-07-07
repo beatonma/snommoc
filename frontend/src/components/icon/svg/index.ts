@@ -62,3 +62,4 @@ export const SvgIcons = {
   QuestionMark,
 };
 export type AppIcon = keyof typeof SvgIcons;
+export const isIcon = (name: string): boolean => name in SvgIcons;

@@ -1,8 +1,8 @@
 import { Nullish } from "@/types/common";
 import { Props } from "@/types/react";
-import { AppIcon, SvgIcons } from "./svg";
+import { type AppIcon, SvgIcons } from "./svg";
 
-export { type AppIcon };
+export { type AppIcon, isIcon } from "./svg";
 
 export type IconProps<T extends object = object> = Props<
   "svg",

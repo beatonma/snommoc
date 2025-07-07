@@ -121,7 +121,7 @@ type DateRangeItemProps = DivProps<{
 export const DateRangeItem = (props: DateRangeItemProps) => {
   const { children, start, end, capitalized = true, ...rest } = props;
   return (
-    <div {...rest}>
+    <span {...rest}>
       {children}
       <DateRange
         className={SecondaryStyle}
@@ -129,7 +129,7 @@ export const DateRangeItem = (props: DateRangeItemProps) => {
         end={end}
         capitalized={capitalized}
       />
-    </div>
+    </span>
   );
 };
 export const InlineDateRangeItem = (props: DateRangeItemProps) => (

@@ -30,13 +30,10 @@ export const PartyLink = (
         !("onClick" in rest),
         navigationHref("party", party.parliamentdotuk),
       )}
-      icon={onlyIf(
-        showDot,
-        <span
-          className="inline-block size-ch rounded-xs border-1 border-current/50"
-          style={{ backgroundColor: color }}
-        />,
-      )}
+      iconProps={onlyIf(showDot, {
+        className: "rounded-xs border-1 border-current/50",
+        style: { backgroundColor: color },
+      })}
       {...rest}
     >
       {party.name}
@@ -64,13 +61,10 @@ export const HouseLink = (
   return (
     <InlineButton
       title={title || `House of ${house}`}
-      icon={onlyIf(
-        showDot,
-        <span
-          className="inline-block size-ch rounded-full"
-          style={{ backgroundColor: color }}
-        />,
-      )}
+      iconProps={onlyIf(showDot, {
+        className: "rounded-full",
+        style: { backgroundColor: color },
+      })}
     >
       {text}
     </InlineButton>
@@ -103,15 +97,20 @@ export const PersonLink = (
 export const ConstituencyLink = (
   props: {
     constituency: Pick<ConstituencyMini, "name" | "parliamentdotuk"> | Nullish;
+    dotColor?: string;
   } & ButtonProps,
 ) => {
-  const { constituency, title, ...rest } = props;
+  const { constituency, dotColor, title, ...rest } = props;
   if (!constituency) return null;
 
   return (
     <InlineButton
       href={navigationHref("constituency", constituency.parliamentdotuk)}
       title={title || constituency.name}
+      iconProps={onlyIf(!!dotColor, {
+        className: "rounded-xs border-1 border-current/50",
+        style: { backgroundColor: dotColor },
+      })}
       {...rest}
     >
       {constituency.name}

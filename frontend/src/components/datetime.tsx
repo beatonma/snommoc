@@ -58,20 +58,20 @@ export const DateRange = (
 
   if (start && end) {
     return (
-      <div {...rest}>
+      <span {...rest}>
         <Date date={start} dateFormat={dateFormat} />-
         <Date date={end} dateFormat={dateFormat} />
-      </div>
+      </span>
     );
   }
 
   if (start) {
     const prefix = "since";
     return (
-      <div {...rest}>
+      <span {...rest}>
         {`${capitalized ? capitalize(prefix) : prefix}`}{" "}
         <Date date={start} dateFormat={dateFormat} />
-      </div>
+      </span>
     );
   }
 };

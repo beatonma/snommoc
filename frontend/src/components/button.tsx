@@ -1,15 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { Children as ReactChildren, ReactNode } from "react";
-import Icon, { type AppIcon } from "@/components/icon";
+import { CSSProperties, Children as ReactChildren, ReactNode } from "react";
+import Icon, { type AppIcon, isIcon } from "@/components/icon";
+import { onlyIf } from "@/components/optional";
 import { useTooltip } from "@/components/tooltip";
 import { Nullish } from "@/types/common";
-import { ClassNameProps, Props, PropsExcept } from "@/types/react";
+import { ClassNameProps, Props } from "@/types/react";
 import { addClass, classes } from "@/util/transforms";
 
+interface ButtonIconProps {
+  icon?: AppIcon | string;
+  iconProps?: {
+    className?: string;
+    style?: CSSProperties;
+  };
+}
+
 interface ButtonContentProps {
-  icon?: AppIcon | ReactNode;
   tooltip?: string;
 
   contentClass?: string;
@@ -26,7 +34,8 @@ type ContainerElementProps = Props<
   "span",
   Props<typeof Link, { href?: string | Nullish } & Props<"button">>
 >;
-export type ButtonProps = ButtonContentProps &
+export type ButtonProps = ButtonIconProps &
+  ButtonContentProps &
   ButtonColors &
   ContainerElementProps;
 
@@ -81,6 +90,7 @@ export const InlineLink = (props: ButtonProps) => {
 const BaseButton = (props: ButtonProps) => {
   const {
     icon,
+    iconProps,
     tooltip,
     colors: _colors,
     reverseLayout,
@@ -103,6 +113,7 @@ const BaseButton = (props: ButtonProps) => {
       <span className="absolute size-full touch-target pointer:hidden" />
       <ButtonContent
         icon={icon}
+        iconProps={iconProps}
         reverseLayout={reverseLayout}
         contentClass={contentClass}
       >
@@ -156,54 +167,57 @@ const isButton = (obj: any): obj is Props<"button"> => {
 };
 
 const ButtonContent = (
-  props: ButtonContentProps & { children?: ReactNode },
+  props: ButtonContentProps & ButtonIconProps & { children?: ReactNode },
 ) => {
-  const { icon, children, contentClass, reverseLayout = false } = props;
+  const {
+    icon,
+    iconProps,
+    children,
+    contentClass,
+    reverseLayout = false,
+  } = props;
 
   if (icon && ReactChildren.count(children) === 0)
     return <ButtonIcon icon={icon} />;
 
-  const commonWrapperClassName = classes(contentClass, "grid items-center");
-  const commonContentClassName = "line-clamp-1 break-all overflow-ellipsis";
-
-  if (reverseLayout) {
-    // Put the icon to the right side of the button
-    return (
-      <span className={classes(commonWrapperClassName, "grid-cols-[1fr_auto]")}>
-        <span className={commonContentClassName}>{children}</span>
-        <ButtonIcon icon={icon} className="ms-1" />
-      </span>
-    );
-  }
-
-  // Icon on the left side of the button by default.
   return (
-    <span className={classes(commonWrapperClassName, "grid-cols-[auto_1fr]")}>
-      <ButtonIcon icon={icon} className="me-1" />
-      <span className={classes("col-start-2", commonContentClassName)}>
+    <span
+      className={classes(
+        contentClass,
+        "grid items-center space-x-1",
+        "grid-cols-[auto_1fr]",
+        "grid-rows-1",
+        onlyIf(reverseLayout, "[direction:rtl]"),
+      )}
+    >
+      <ButtonIcon icon={icon} iconProps={iconProps} className="col-start-1" />
+      <span className="line-clamp-1 break-all overflow-ellipsis leading-none col-start-2">
         {children}
       </span>
     </span>
   );
 };
 
-const ButtonIcon = (props: ButtonContentProps & ClassNameProps) => {
-  const { icon, ...rest } = addClass(props, "fill-current/90");
+const ButtonIcon = (props: ButtonIconProps & ClassNameProps) => {
+  const { icon, iconProps, ...rest } = addClass(
+    props,
+    props.iconProps?.className || "fill-current/90",
+  );
 
-  if (!icon) return null;
+  if (!icon && !iconProps) return null;
 
-  if (typeof icon === "string") {
-    return <Icon icon={icon as AppIcon} {...rest} />;
+  if (icon && isIcon(icon)) {
+    return <Icon icon={icon as AppIcon} style={iconProps?.style} {...rest} />;
   }
-
   return (
-    <span
-      {...addClass(
-        rest,
-        "inline-flex items-center justify-center text-sm size-em leading-none",
-      )}
-    >
-      {icon}
+    <span>
+      <span
+        {...addClass(
+          rest,
+          "inline-flex items-center justify-center w-ch aspect-square",
+        )}
+        style={iconProps?.style}
+      />
     </span>
   );
 };

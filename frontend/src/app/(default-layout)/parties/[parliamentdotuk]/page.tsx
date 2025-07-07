@@ -56,7 +56,7 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
         <section>
           <HeaderCard
             themeSource={party}
-            image={
+            inlineImage={
               <OptionalSvg
                 src={party.logo}
                 alt={party.name}

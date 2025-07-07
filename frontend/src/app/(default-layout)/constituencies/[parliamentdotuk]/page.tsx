@@ -45,15 +45,15 @@ export default async function ConstituencyDetailPage({ params }: PageProps) {
       layout="CenteredReadable"
       style={itemThemeCss(constituency.mp?.party)}
     >
-      <section className="gap-y-0 overflow-hidden sm:rounded-lg">
-        <ConstituencyMap
-          constituency={constituency}
-          className="aspect-square max-h-[50vh] w-full"
-        />
-
+      <section>
         <HeaderCard
-          themeSource={constituency.mp?.party}
-          className="w-full! rounded-none!"
+          themeSource={undefined}
+          hero={
+            <ConstituencyMap
+              constituency={constituency}
+              className="aspect-square max-h-[50vh] w-full"
+            />
+          }
         >
           <h1>{constituency.name}</h1>
 
@@ -66,14 +66,12 @@ export default async function ConstituencyDetailPage({ params }: PageProps) {
           <Optional
             value={constituency.mp}
             block={(it) => (
-              <div className="mt-4">
-                <div className="text-sm">Current MP:</div>
-                <MemberItemCard
-                  className="w-fit max-w-none! *:p-0! [&]:hover:after:inset-[-0.5rem]"
-                  member={it}
-                  showConstituency={false}
-                />
-              </div>
+              <MemberItemCard
+                className="w-full max-w-none [box-shadow:none]"
+                member={it}
+                showConstituency={false}
+                label="Current MP"
+              />
             )}
           />
         </HeaderCard>

@@ -196,7 +196,7 @@ const CardComponents = () => (
     <Section name="<HeaderCard />">
       <HeaderCard
         themeSource={Sample.LabourParty}
-        image={
+        inlineImage={
           <MaskedSvg
             src={Sample.LabourParty.logo}
             className="bg-primary size-48"
@@ -214,6 +214,14 @@ const CardComponents = () => (
 
       <HeaderCard themeSource={undefined}>
         <h1>No party</h1>
+        <p>{LoremIpsum.slice(0, 1)}</p>
+      </HeaderCard>
+
+      <HeaderCard
+        themeSource={Sample.InvernessConstituency.mp?.party}
+        hero={<div className="surface-primary h-40 w-full" />}
+      >
+        <h1>Hero</h1>
         <p>{LoremIpsum.slice(0, 1)}</p>
       </HeaderCard>
     </Section>

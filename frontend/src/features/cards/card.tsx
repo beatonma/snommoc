@@ -11,10 +11,6 @@ import {
 import type { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-type CardProps = {
-  image?: ReactNode;
-} & ItemThemeableProps;
-
 const DefaultTheme: Theme = {
   primary: "var(--surface)",
   on_primary: "var(--on-surface)",
@@ -22,38 +18,43 @@ const DefaultTheme: Theme = {
   on_accent: "var(--on-primary)",
 };
 
-type HeaderCardProps = DivProps<CardProps>;
+type HeaderCardProps = DivProps<
+  { hero?: ReactNode; inlineImage?: ReactNode } & ItemThemeableProps
+>;
 export const HeaderCard = (props: HeaderCardProps) => {
-  const { image, children, themeSource, ...rest } = addClass(
-    props,
-    "@container card overflow-hidden w-full readable gap-4",
-    "py-2 sm:p-4",
-    "sm:rounded-lg sm:min-w-[600px]",
-    "grid md:grid-cols-[auto_1fr] surface-primary-tint",
-  );
+  const { inlineImage, hero, children, themeSource, ...rest } = props;
 
   return (
-    <ItemTheme themeSource={themeSource} {...rest}>
+    <ItemTheme
+      themeSource={themeSource}
+      {...addClass(
+        rest,
+        "@container grid card w-full readable grid-cols-[auto_1fr] grid-rows-[auto-auto] surface-primary-tint",
+        "[--x-spacing:--spacing(2)] sm:[--x-spacing:--spacing(4)]",
+      )}
+    >
       <Optional
-        value={image}
-        block={(it) => (
-          <div className="flex justify-center overflow-hidden md:rounded-lg">
-            {it}
-          </div>
-        )}
+        value={hero}
+        block={(it) => <div className="col-span-full">{it}</div>}
       />
 
-      <div className="column max-sm:px-edge">{children}</div>
+      <div className="grid grid-rows-subgrid grid-cols-subgrid space-x-(--x-spacing) px-(--x-spacing) py-4 col-span-full">
+        <Optional value={inlineImage} block={(it) => <>{it}</>} />
+        <div className="col-start-2">{children}</div>
+      </div>
     </ItemTheme>
   );
 };
 
-type ListItemCardProps = Props<typeof Link, { label?: ReactNode } & CardProps>;
+type ListItemCardProps = Props<
+  typeof Link,
+  { image?: ReactNode; label?: ReactNode } & ItemThemeableProps
+>;
 export const ListItemCard = (props: ListItemCardProps) => {
   const { image, children, themeSource, defaultTheme, label, style, ...rest } =
     addClass(
       props,
-      "@container max-w-listitem-card card surface-primary-tint-hover",
+      "@container max-w-listitem-card card surface-primary-tint-hover block",
     );
 
   const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
@@ -70,7 +71,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
         )}
 
         <div className="w-full p-2 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
-          <div className="chip chip-content bg-primary/60 text-on-primary float-right w-fit rounded-sm text-xs empty:hidden">
+          <div className="chip chip-content surface-primary-container float-right w-fit rounded-sm text-xs empty:hidden">
             {label}
           </div>
 

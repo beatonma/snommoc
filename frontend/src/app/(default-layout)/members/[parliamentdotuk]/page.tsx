@@ -73,7 +73,7 @@ const MemberCard = (props: MemberComponentProps) => {
     <section {...rest}>
       <HeaderCard
         themeSource={member.party}
-        image={onlyIf(member.portrait, (portrait) => (
+        inlineImage={onlyIf(member.portrait, (portrait) => (
           <a href={portrait.full ?? undefined}>
             <MemberPortrait
               name={member.name}

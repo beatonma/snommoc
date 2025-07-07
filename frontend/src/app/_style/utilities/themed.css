@@ -1,0 +1,16 @@
+/* Apply the base surface color with a hint of the current primary color. */
+@utility themed-surface {
+  @apply surface;
+
+  @variant dark {
+    background-color: color-mix(in srgb, var(--primary) 3%, var(--surface));
+  }
+}
+
+/* Apply themed-surface, with a more saturated color on hover. */
+@utility themed-surface-clickable {
+  @apply themed-surface transition-colors;
+  &:hover {
+    background-color: color-mix(in srgb, var(--primary) 7.5%, var(--surface));
+  }
+}

@@ -124,16 +124,6 @@
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
 
-  --color-mix-primary-background: color-mix(
-    in srgb,
-    var(--primary),
-    var(--background)
-  );
-  --color-tint-surface-current: color-mix(
-    in srgb,
-    currentColor 5%,
-    var(--surface)
-  );
   --color-bg: var(--bg);
   --color-fg: var(--fg);
   --color-hover: color-mix(in srgb, var(--hover, var(--fg)) 10%, transparent);

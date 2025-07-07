@@ -403,7 +403,7 @@
 
   .prose-kbd,
   .prose kbd {
-    @apply surface-primary shadow-sm;
+    @apply surface-primary-container shadow-sm;
     font-weight: 500;
     font-family: inherit;
     font-size: 0.875em;

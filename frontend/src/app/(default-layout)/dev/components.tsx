@@ -219,7 +219,7 @@ const CardComponents = () => (
 
       <HeaderCard
         themeSource={Sample.InvernessConstituency.mp?.party}
-        hero={<div className="surface-primary h-40 w-full" />}
+        hero={<div className="surface-primary-container h-40 w-full" />}
       >
         <h1>Hero</h1>
         <p>{LoremIpsum.slice(0, 1)}</p>

@@ -1,5 +1,6 @@
 @import "./button.css";
 @import "./surface.css";
+@import "./themed.css";
 
 @utility card {
   @apply overflow-hidden shadow-md sm:rounded-lg;

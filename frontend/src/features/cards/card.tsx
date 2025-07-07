@@ -1,23 +1,14 @@
 import Link from "next/link";
 import React, { ReactNode } from "react";
-import { type ItemTheme as Theme } from "@/api/schema";
-import { Optional } from "@/components/optional";
+import { Optional, onlyIf } from "@/components/optional";
 import { Row } from "@/components/row";
 import {
   ItemTheme,
   ItemThemeableProps,
-  PartyIconBackground,
   itemThemeCss,
 } from "@/features/themed/item-theme";
 import type { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
-
-const DefaultTheme: Theme = {
-  primary: "var(--surface)",
-  on_primary: "var(--on-surface)",
-  accent: "var(--primary)",
-  on_accent: "var(--on-primary)",
-};
 
 type HeaderCardProps = DivProps<
   { hero?: ReactNode; inlineImage?: ReactNode } & ItemThemeableProps
@@ -30,7 +21,7 @@ export const HeaderCard = (props: HeaderCardProps) => {
       themeSource={themeSource}
       {...addClass(
         rest,
-        "@container grid card w-full readable grid-cols-[auto_1fr] grid-rows-[auto-auto] surface-primary-tint",
+        "@container grid card w-full readable grid-cols-[auto_1fr] grid-rows-[auto-auto] themed-surface",
         "[--x-spacing:--spacing(2)] sm:[--x-spacing:--spacing(4)]",
       )}
     >
@@ -55,7 +46,8 @@ export const ListItemCard = (props: ListItemCardProps) => {
   const { image, children, themeSource, defaultTheme, label, style, ...rest } =
     addClass(
       props,
-      "@container max-w-listitem-card card surface-primary-tint-hover block",
+      "@container max-w-listitem-card card themed-surface-clickable block",
+      onlyIf(!props.image, "rounded-s-xs"),
     );
 
   const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
@@ -64,48 +56,21 @@ export const ListItemCard = (props: ListItemCardProps) => {
     <Link style={themedStyle} {...rest}>
       <Row className="size-full" vertical="items-start">
         {image ? (
-          <div className="bg-mix-primary-background border-primary m-2 flex flex-col items-start aspect-square size-20 shrink-0 overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-2xs:hidden">
+          <div className="bg-[color-mix(in_srgb,var(--primary),var(--background))] border-primary border-1 m-2 aspect-square size-20 shrink-0 rounded-md overflow-hidden *:w-full empty:hidden @max-2xs:hidden">
             {image}
           </div>
         ) : (
-          <div className="bg-primary h-full w-1" />
+          <div className="bg-primary h-full w-2 me-2" />
         )}
 
         <div className="w-full p-2 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
-          <div className="chip chip-content surface-primary-container float-right w-fit rounded-sm text-xs empty:hidden">
+          <div className="chip chip-content surface-primary-container float-right w-fit text-xs empty:hidden">
             {label}
           </div>
 
           {children}
         </div>
       </Row>
-    </Link>
-  );
-};
-
-export const ListItemCardVibrant = (props: ListItemCardProps) => {
-  const { image, children, themeSource, defaultTheme, label, ...rest } =
-    addClass(props, "flex max-w-listitem-card sm:rounded-lg overflow-hidden ");
-
-  return (
-    <Link {...rest}>
-      <PartyIconBackground
-        themeSource={themeSource}
-        defaultTheme={defaultTheme === undefined ? DefaultTheme : defaultTheme}
-        className="hover-overlay column w-full p-3"
-      >
-        <div className="flex w-full gap-3">
-          <div className="size-16 shrink-0 overflow-hidden rounded-md empty:hidden">
-            {image}
-          </div>
-          <div className="w-full">
-            <div className="float-right w-fit text-sm opacity-50">{label}</div>
-            <div className="column gap-0.5 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
-              {children}
-            </div>
-          </div>
-        </div>
-      </PartyIconBackground>
     </Link>
   );
 };

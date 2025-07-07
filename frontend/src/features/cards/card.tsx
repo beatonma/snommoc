@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { ReactNode } from "react";
 import { type ItemTheme as Theme } from "@/api/schema";
 import { Optional } from "@/components/optional";
+import { Row } from "@/components/row";
 import {
   ItemTheme,
   ItemThemeableProps,
@@ -61,9 +62,9 @@ export const ListItemCard = (props: ListItemCardProps) => {
 
   return (
     <Link style={themedStyle} {...rest}>
-      <div className="flex size-full flex-row">
+      <Row className="size-full" vertical="items-start">
         {image ? (
-          <div className="bg-mix-primary-background border-primary m-2 flex aspect-square size-20 shrink-0 flex-col items-start overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-2xs:hidden">
+          <div className="bg-mix-primary-background border-primary m-2 flex flex-col items-start aspect-square size-20 shrink-0 overflow-hidden rounded-md border-1 *:w-full empty:hidden @max-2xs:hidden">
             {image}
           </div>
         ) : (
@@ -77,7 +78,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
 
           {children}
         </div>
-      </div>
+      </Row>
     </Link>
   );
 };

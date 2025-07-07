@@ -1,8 +1,29 @@
 import React from "react";
+import { onlyIf } from "@/components/optional";
 import { DivProps } from "@/types/react";
+import { AlignItems, JustifyContent } from "@/types/tailwind";
 import { addClass } from "@/util/transforms";
 
-export const Row = (props: DivProps) => <div {...addClass(props, "row")} />;
+interface RowProps {
+  overflow?: "scroll" | "wrap" | undefined;
+  vertical?: AlignItems;
+  horizontal?: JustifyContent;
+}
+export const Row = (props: DivProps<RowProps>) => {
+  const { overflow, horizontal, vertical = "items-center", ...rest } = props;
+  return (
+    <div
+      {...addClass(
+        rest,
+        "row",
+        onlyIf(overflow === "wrap", "row-wrap"),
+        onlyIf(overflow === "scroll", "row-scroll"),
+        horizontal,
+        vertical,
+      )}
+    />
+  );
+};
 
 export const SeparatedRow = (props: DivProps) => (
   <div

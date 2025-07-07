@@ -3,9 +3,9 @@ import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
 import { LoadingSpinner } from "@/components/loading";
 import { onlyIf } from "@/components/optional";
+import { Row } from "@/components/row";
 import { Nullish } from "@/types/common";
 import { DivProps, Props } from "@/types/react";
-import { addClass } from "@/util/transforms";
 
 export const SecondaryStyle = "text-reduced text-sm";
 
@@ -45,12 +45,16 @@ export const SectionLayout = (
   return (
     <section id={id} {...rest}>
       {toolbar ? (
-        <div className="flex flex-row justify-between">
+        <Row overflow="wrap" horizontal="justify-between">
           {titleHeader}
-          <div className="flex flex-row items-center gap-x-8 *:flex *:flex-row *:items-center *:gap-x-2">
+          <Row
+            overflow="wrap"
+            vertical="items-center"
+            className="gap-x-8 *:flex *:flex-row *:items-center *:gap-x-2"
+          >
             {toolbar}
-          </div>
-        </div>
+          </Row>
+        </Row>
       ) : (
         titleHeader
       )}
@@ -133,8 +137,7 @@ export const DateRangeItem = (props: DateRangeItemProps) => {
   );
 };
 export const InlineDateRangeItem = (props: DateRangeItemProps) => (
-  <DateRangeItem
-    capitalized={false}
-    {...addClass(props, "flex items-baseline gap-1")}
-  />
+  <DateRangeItem capitalized={false} {...props} />
 );
+
+// {/*{...addClass(props, "flex items-baseline gap-1")}*/}

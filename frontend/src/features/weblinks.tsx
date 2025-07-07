@@ -16,8 +16,8 @@ type LinkGroupProps = DivProps<{
 export const WebLinks = (props: LinkGroupProps) => {
   const { links, layout, children, ...rest } = addClass(
     props,
-    "flex flex-wrap gap-x-4 gap-y-0",
-    props.layout === "column" ? "flex-col" : "flex-row",
+    props.layout === "column" ? "column" : "row-wrap",
+    "gap-x-4 gap-y-1",
   );
 
   if (links) {

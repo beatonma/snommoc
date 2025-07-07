@@ -38,7 +38,13 @@
   }
 
   .row {
-    @apply flex flex-row items-center *:shrink-0;
+    @apply flex flex-row;
+  }
+  .row-wrap {
+    @apply flex flex-row flex-wrap;
+  }
+  .row-scroll {
+    @apply flex flex-row overflow-x-auto overflow-y-hidden *:shrink-0;
   }
   .column {
     @apply flex flex-col;

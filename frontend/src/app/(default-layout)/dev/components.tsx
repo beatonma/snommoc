@@ -106,7 +106,7 @@ const InputComponents = () => {
 const ButtonComponents = () => (
   <>
     <Section name="<InlineButton />">
-      <Row className="flex-wrap gap-2">
+      <Row overflow="wrap" className="gap-2">
         <InlineButton>InlineButton</InlineButton>
         <InlineButton href="#">InlineButton</InlineButton>
         <InlineButton href="#" icon="Wikipedia">
@@ -126,7 +126,7 @@ const ButtonComponents = () => (
     </Section>
 
     <Section name="<TintedButton />">
-      <Row className="flex-wrap gap-2">
+      <Row overflow="wrap" className="gap-2">
         <TintedButton>TintedButton</TintedButton>
         <TintedButton href="#">TintedButton</TintedButton>
         <TintedButton href="#" icon="Wikipedia">
@@ -417,7 +417,7 @@ const TailwindUtilities = () => {
         <pre>Tailwind utilities</pre>
       </h1>
 
-      <Row className="flex-wrap gap-4 items-start">
+      <Row overflow="wrap" vertical="items-start" className="gap-4">
         {windowInsets.map((outer, index) => (
           <Utility key={index} utility={outer} className="surface card">
             {windowInsets.map((inner, index) => (
@@ -440,7 +440,7 @@ const Section = (props: Props<"section", { name: string }>) => {
     "border-2 pb-4 border-dotted border-current/20 overflow-hidden px-edge gap-y-4",
   );
   return (
-    <section id={props.name.replaceAll(/[^\w]/g, "")} {...rest}>
+    <section id={props.name.replaceAll(/\W/g, "")} {...rest}>
       <h1>
         <pre>{props.name}</pre>
       </h1>

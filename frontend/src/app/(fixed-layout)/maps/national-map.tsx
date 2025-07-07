@@ -133,18 +133,10 @@ const NationalMapWithLocation = ({
     <div
       className={classes(
         styles.nationalMapLayout,
-        "map-layout",
         "h-full gap-2 overflow-hidden",
       )}
     >
-      <Map
-        map={map}
-        className={classes(
-          styles.map,
-          "map-layout--map",
-          "card surface size-full",
-        )}
-      >
+      <Map map={map} className={classes(styles.map, "card surface size-full")}>
         <HoveredConstituency
           constituency={hoveredConstituency}
           className="touch:hidden absolute bottom-0 right-0 z-10 m-2"
@@ -158,7 +150,6 @@ const NationalMapWithLocation = ({
       <div
         className={classes(
           styles.overlays,
-          "map-layout--overlays",
           "contents max-h-full overflow-y-hidden",
         )}
       >
@@ -166,8 +157,7 @@ const NationalMapWithLocation = ({
           parties={territories}
           className={classes(
             styles.key,
-            "map-layout--key",
-            "px-edge flex flex-row items-center gap-2 overflow-x-auto overflow-y-hidden py-4 text-base *:shrink-0",
+            "px-edge row-scroll items-center gap-x-4 gap-y-2 py-4 text-base",
           )}
           focussedPartyId={focussedPartyId}
           onClickParty={filterByParty}
@@ -177,7 +167,6 @@ const NationalMapWithLocation = ({
           constituencies={focussedConstituencies}
           className={classes(
             styles.info,
-            "map-layout--info",
             "mx-auto h-fit max-h-full overflow-hidden",
           )}
         />

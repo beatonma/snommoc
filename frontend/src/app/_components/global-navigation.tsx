@@ -4,7 +4,7 @@ import { Props } from "@/types/react";
 
 export const GlobalNavigation = () => (
   <nav>
-    <ul className="list-none row flex gap-y-2 gap-x-4 px-edge text-lg overflow-auto">
+    <ul className="list-none row-scroll items-center gap-y-2 gap-x-4 px-edge text-lg">
       <Destination destination="people">People</Destination>
       <Destination destination="parties">Parties</Destination>
       <Destination destination="constituencies">Constituencies</Destination>

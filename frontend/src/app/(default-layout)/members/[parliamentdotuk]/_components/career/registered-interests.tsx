@@ -46,16 +46,19 @@ export const RegisteredInterests = ({
     },
   });
 
-  const subheader: ListSubheader<Interest, typeof sortedBy> = {
-    category: {
-      subheader: (obj) => obj.category,
-      compare: (obj) => obj?.category,
-    },
-    date: {
-      subheader: (obj) => <Date date={obj.created} />,
-      compare: (obj) => formatDate(obj?.created),
-    },
-  };
+  const subheader: ListSubheader<Interest, typeof sortedBy> = useMemo(
+    () => ({
+      category: {
+        subheader: (obj) => obj.category,
+        compare: (obj) => obj?.category,
+      },
+      date: {
+        subheader: (obj) => <Date date={obj.created} />,
+        compare: (obj) => formatDate(obj?.created),
+      },
+    }),
+    [],
+  );
   const [showDates, setShowDates] = useState(false);
   const showDatesId = useId();
 

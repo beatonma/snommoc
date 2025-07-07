@@ -139,7 +139,7 @@ export const SearchListLayout = <P extends SearchablePath>(
             className={`column max-w-[600px] items-center gap-4 p-4 ${onlyIf(hasHeader, "md:items-end")}`}
           >
             <form
-              className="row flex-wrap items-center justify-center gap-2"
+              className="row-wrap items-center justify-center gap-2"
               onSubmit={(ev) => {
                 ev.preventDefault();
                 onSearch();

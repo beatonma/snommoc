@@ -79,7 +79,7 @@ const Verdict = ({ division }: { division: Division }) => {
       <p className="pb-0">
         The motion {division.is_passed ? "passed" : "did not pass"}.
       </p>
-      <Row className="flex-wrap gap-x-4 text-sm">
+      <Row overflow="wrap" className="gap-x-4 text-sm">
         <InlineButton icon="Upvote">
           {division.ayes} voted in favour
         </InlineButton>

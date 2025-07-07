@@ -10,6 +10,7 @@ import { MembersList } from "@/app/(default-layout)/members/members";
 import { OptionalSvg } from "@/components/image";
 import { OptionalDiv } from "@/components/optional";
 import { ContentLayout } from "@/components/page-layout";
+import { Row } from "@/components/row";
 import { HeaderCard } from "@/features/cards";
 import { itemThemeCss } from "@/features/themed/item-theme";
 import { WebLinks } from "@/features/weblinks";
@@ -118,10 +119,10 @@ const Demographics = (props: { party: PartyDetail }) => {
   return (
     <>
       <h2>Demographics</h2>
-      <div className="flex flex-row flex-wrap gap-4">
+      <Row overflow="wrap" className="gap-4">
         <_GenderDemographics demographics={party.gender_demographics} />
         <_LordsDemographics demographics={party.lords_demographics} />
-      </div>
+      </Row>
     </>
   );
 };

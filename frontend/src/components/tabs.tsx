@@ -66,7 +66,7 @@ const TabBar = <T extends string>(
 ) => {
   const { tabs, currentTab, onClickTab, tabProps, ...rest } = addClass(
     props,
-    "flex flex-row gap-2 overflow-x-auto",
+    "row-scroll gap-2",
   );
 
   return (

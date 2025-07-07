@@ -3,9 +3,10 @@ import React, { CSSProperties, ReactNode } from "react";
 import { getOr404 } from "@/api/client";
 import { type ElectionResult } from "@/api/schema";
 import { InlineLink } from "@/components/button";
+import { Callout } from "@/components/callout";
 import { Date, DateRange } from "@/components/datetime";
 import { Percentage, int } from "@/components/number";
-import { Optional } from "@/components/optional";
+import { Optional, onlyIf } from "@/components/optional";
 import { ContentLayout } from "@/components/page-layout";
 import { HeaderCard, MemberItemCard } from "@/features/cards";
 import { PartyLink, PersonLink } from "@/features/linked-data";
@@ -47,33 +48,46 @@ export default async function ConstituencyDetailPage({ params }: PageProps) {
     >
       <section>
         <HeaderCard
-          themeSource={undefined}
-          hero={
+          themeSource={undefined} /* Inherit from ContentLayout */
+          hero={onlyIf(
+            constituency.boundary,
             <ConstituencyMap
               constituency={constituency}
               className="aspect-square max-h-[50vh] w-full"
-            />
-          }
+            />,
+          )}
         >
-          <h1>{constituency.name}</h1>
+          <div className="space-y-2">
+            <h1>{constituency.name}</h1>
 
-          <Optional
-            value={constituency.end != null}
-            block={() => (
-              <DateRange start={constituency.start} end={constituency.end} />
-            )}
-          />
-          <Optional
-            value={constituency.mp}
-            block={(it) => (
-              <MemberItemCard
-                className="w-full max-w-none [box-shadow:none]"
-                member={it}
-                showConstituency={false}
-                label="Current MP"
-              />
-            )}
-          />
+            <Optional
+              value={constituency.end != null}
+              block={() => (
+                <>
+                  <DateRange
+                    start={constituency.start}
+                    end={constituency.end}
+                  />
+                  <Callout>
+                    This is a historical constituency - available data may be
+                    limited.
+                  </Callout>
+                </>
+              )}
+            />
+
+            <Optional
+              value={constituency.mp}
+              block={(it) => (
+                <MemberItemCard
+                  className="w-full max-w-none [box-shadow:none]"
+                  member={it}
+                  showConstituency={false}
+                  label="Current MP"
+                />
+              )}
+            />
+          </div>
         </HeaderCard>
       </section>
 

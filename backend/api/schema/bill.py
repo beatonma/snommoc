@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from api.schema.includes import MemberMiniSchema
+from api.schema.includes import MemberMiniSchema, OrganisationSchema
 from api.schema.types import ParliamentSchema, Url, field
 from ninja import Schema
 from repository.models.bill import BillStage
@@ -34,15 +34,10 @@ class Session(ParliamentSchema):
     name: str | None
 
 
-class SponsorOrganisation(Schema):
-    name: str
-    url: Url
-
-
 class Sponsor(Schema):
     id: int
     profile: MemberMiniSchema | None = field("member", default=None)
-    organisation: SponsorOrganisation | None
+    organisation: OrganisationSchema | None
 
 
 class Stage(Schema):

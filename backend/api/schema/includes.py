@@ -134,3 +134,4 @@ class BillMiniSchema(ParliamentSchema):
 class OrganisationSchema(Schema):
     name: str
     url: str | None
+    slug: str

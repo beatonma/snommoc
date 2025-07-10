@@ -139,7 +139,7 @@ const Status = (props: {
         value={status.since}
         block={(it) => (
           <>
-            Inactive since <Date date={it} />
+            Inactive since <Date date={it} dateFormat="Short" />
             <OptionalSpan
               value={status.description}
               block={(it) => `: ${it}`}

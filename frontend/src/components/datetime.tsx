@@ -4,17 +4,18 @@ import { addClass, capitalize } from "@/util/transforms";
 
 type ParseableDate = Date | string | number | Nullish;
 
-export namespace DateFormat {
-  export const Default: Intl.DateTimeFormatOptions = {
+const DateFormat = {
+  Short: {
     year: "numeric",
     month: "long",
-  };
-  export const FullDate: Intl.DateTimeFormatOptions = {
+  },
+  FullDate: {
     day: "numeric",
     year: "numeric",
     month: "long",
-  };
-}
+  },
+} satisfies Record<string, Intl.DateTimeFormatOptions>;
+type DateFormat = keyof typeof DateFormat;
 
 export const parseDate = (dt: ParseableDate): Date | null => {
   if (!dt) return null;
@@ -27,10 +28,14 @@ export const parseDate = (dt: ParseableDate): Date | null => {
 
 export const formatDate = (
   dt: ParseableDate,
-  dateFormat: Intl.DateTimeFormatOptions = DateFormat.Default,
+  dateFormat: Intl.DateTimeFormatOptions | DateFormat = DateFormat.FullDate,
 ): string | null => {
   const parsed = parseDate(dt);
   if (!parsed) return null;
+
+  if (typeof dateFormat === "string") {
+    dateFormat = DateFormat[dateFormat];
+  }
 
   return parsed.toLocaleDateString(undefined, dateFormat);
 };
@@ -42,7 +47,7 @@ export const DateRange = (
   props: DivPropsNoChildren<{
     start: ParseableDate;
     end: ParseableDate;
-    dateFormat?: Intl.DateTimeFormatOptions;
+    dateFormat?: Intl.DateTimeFormatOptions | DateFormat;
     capitalized?: boolean;
   }>,
 ) => {
@@ -81,12 +86,12 @@ export const Date = (
     "time",
     {
       date: ParseableDate;
-      dateFormat?: Intl.DateTimeFormatOptions;
+      dateFormat?: Intl.DateTimeFormatOptions | DateFormat;
     },
     "dateTime" | "children" | "title"
   >,
 ) => {
-  const { date, dateFormat = DateFormat.Default, ...rest } = props;
+  const { date, dateFormat = DateFormat.FullDate, ...rest } = props;
   const parsed = parseDate(date);
 
   if (parsed == null) return null;

@@ -4,7 +4,7 @@ import {
   DivisionVotesProps,
 } from "@/app/(default-layout)/divisions/_components/votes";
 import { InlineButton } from "@/components/button";
-import { Date, DateFormat } from "@/components/datetime";
+import { Date } from "@/components/datetime";
 import { ContentLayout } from "@/components/page-layout";
 import { Prose } from "@/components/prose";
 import { Row } from "@/components/row";
@@ -31,11 +31,7 @@ export const DivisionPage = ({
           <Row className="gap-x-2">
             <House house={division.house} />
 
-            <Date
-              className="text-sm"
-              date={division.date}
-              dateFormat={DateFormat.FullDate}
-            />
+            <Date className="text-sm" date={division.date} />
           </Row>
           <h1>{division.title}</h1>
         </div>

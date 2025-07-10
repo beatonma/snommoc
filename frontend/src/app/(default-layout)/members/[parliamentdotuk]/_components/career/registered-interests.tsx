@@ -3,7 +3,7 @@
 import React, { useId, useMemo, useState } from "react";
 import { MemberCareer } from "@/api/schema";
 import { InlineLink } from "@/components/button";
-import { Date, DateFormat, formatDate, parseDate } from "@/components/datetime";
+import { Date, formatDate, parseDate } from "@/components/datetime";
 import { Highlight, Highlighter } from "@/components/highlight";
 import { useSortable } from "@/components/sortable";
 import { Links } from "@/links";
@@ -53,7 +53,7 @@ export const RegisteredInterests = ({
         compare: (obj) => obj?.category,
       },
       date: {
-        subheader: (obj) => <Date date={obj.created} />,
+        subheader: (obj) => <Date date={obj.created} dateFormat="Short" />,
         compare: (obj) => formatDate(obj?.created),
       },
     }),
@@ -154,7 +154,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
     () => [
       {
         pattern: "Dates",
-        block: (it) => <Date dateFormat={DateFormat.FullDate} date={it} />,
+        block: (it) => <Date date={it} />,
       },
       {
         pattern: /(?<=Company, registration )(\d+)/g,
@@ -199,7 +199,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
                   <tr key={rowIndex} className="align-top">
                     <th>{title}</th>
                     <td>
-                      <Date date={date} dateFormat={DateFormat.FullDate} />
+                      <Date date={date} />
                     </td>
                   </tr>
                 ),

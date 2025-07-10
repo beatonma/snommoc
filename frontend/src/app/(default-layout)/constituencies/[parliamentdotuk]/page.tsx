@@ -124,7 +124,7 @@ const ElectionResult = (props: { result: ElectionResult }) => {
     <section>
       <div className="px-edge flex flex-wrap items-baseline gap-2">
         <h3>{result.election.name}</h3>
-        <Date date={result.election.date} />
+        <Date date={result.election.date} dateFormat="Short" />
       </div>
 
       <div className="border-l-primary my-2 border-l pl-2 sm:pl-4">

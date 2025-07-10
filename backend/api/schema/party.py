@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from api.schema.includes import BasePartySchema
-from api.schema.types import Name, Url, WikipediaPath, field
+from api.schema.types import PersonName, Url, WikipediaPath, field
 from ninja import Schema
 
 __all__ = ["PartyFullSchema"]
@@ -25,9 +25,9 @@ class LordsDemographics(Schema):
 
 
 class PartyFullSchema(BasePartySchema):
-    name: Name
-    short_name: Name | None
-    long_name: Name | None
+    name: PersonName
+    short_name: PersonName | None
+    long_name: PersonName | None
     homepage: Url | None
     year_founded: int | None
     wikipedia: WikipediaPath | None

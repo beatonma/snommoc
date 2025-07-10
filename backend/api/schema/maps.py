@@ -1,5 +1,5 @@
 from api.schema.includes import MinimalMemberSchema, PartyMiniSchema
-from api.schema.types import Name, ParliamentSchema, field
+from api.schema.types import AdministrativeName, ParliamentSchema, field
 
 
 class ConstituencyMapMP(MinimalMemberSchema):
@@ -7,7 +7,7 @@ class ConstituencyMapMP(MinimalMemberSchema):
 
 
 class ConstituencyMapSchema(ParliamentSchema):
-    name: Name
+    name: AdministrativeName
     mp: ConstituencyMapMP | None
     boundary: str | None = field("boundary.simple_json", default=None)
 

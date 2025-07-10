@@ -1,10 +1,19 @@
 from datetime import date, datetime
 
-from api.schema.types import DivisionVoteType, Name, ParliamentSchema, field
+from api.schema.types import (
+    AdministrativeName,
+    DivisionVoteType,
+    House,
+    ParliamentSchema,
+    PersonName,
+    Safe,
+    Title,
+    Url,
+    field,
+)
 from ninja import Schema
 from pydantic import Field
 from repository.models import Constituency
-from repository.models.houses import HouseType
 
 __all__ = [
     "ConstituencyMiniSchema",
@@ -13,10 +22,10 @@ __all__ = [
     "MemberMiniSchema",
     "MinimalMemberSchema",
     "OrganisationSchema",
+    "BasePartySchema",
     "PartyMiniSchema",
     "ItemThemeSchema",
     "BaseDivisionVote",
-    "IncludeHouse",
 ]
 
 
@@ -40,7 +49,7 @@ class BasePartySchema(ParliamentSchema):
 
 
 class PartyMiniSchema(BasePartySchema):
-    name: Name
+    name: AdministrativeName
     logo: str | None
     logo_mask: str | None
     active_member_count: int
@@ -54,12 +63,12 @@ class PartyMiniSchema(BasePartySchema):
 class _ConstituencyMemberSchema(ParliamentSchema):
     """Simple member data for embedding in constituency"""
 
-    name: Name
+    name: PersonName
     party: PartyMiniSchema | None
 
 
 class ConstituencyMiniSchema(ParliamentSchema):
-    name: Name
+    name: AdministrativeName
     start: date | None
     end: date | None
     mp: _ConstituencyMemberSchema | None
@@ -68,19 +77,19 @@ class ConstituencyMiniSchema(ParliamentSchema):
 class _MemberConstituencySchema(ParliamentSchema):
     """Simple constituency data for embedding in member"""
 
-    name: Name
+    name: AdministrativeName
     start: date | None
     end: date | None
 
 
 class MinimalMemberSchema(ParliamentSchema):
-    name: Name
-    portrait: str | None = None
-    # portrait: str | None = field("memberportrait.square_url", default=None)
+    name: PersonName
+    portrait: Url | None = None
+    # portrait: Url | None = field("memberportrait.square_url", default=None)
 
 
 class MemberMiniSchema(MinimalMemberSchema):
-    name: Name
+    name: PersonName
     current_posts: list[str]
     party: PartyMiniSchema | None
     constituency: _MemberConstituencySchema | None
@@ -98,16 +107,9 @@ class MemberMiniSchema(MinimalMemberSchema):
         return obj.current_posts()
 
 
-class IncludeHouse(Schema):
-    house: HouseType
-
-    @staticmethod
-    def resolve_house(obj):
-        return obj.house.name
-
-
-class DivisionMiniSchema(IncludeHouse, ParliamentSchema):
-    title: str
+class DivisionMiniSchema(ParliamentSchema):
+    title: Title
+    house: House
     date: date
     is_passed: bool
 
@@ -126,12 +128,13 @@ class BaseDivisionVote(Schema):
 
 
 class BillMiniSchema(ParliamentSchema):
-    title: str
+    title: Title
     description: str | None = field("summary", default=None)
     last_update: datetime
+    current_house: Safe[House]
 
 
 class OrganisationSchema(Schema):
-    name: str
-    url: str | None
+    name: AdministrativeName
     slug: str
+    url: Url | None

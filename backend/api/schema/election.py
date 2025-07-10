@@ -1,6 +1,6 @@
 from datetime import date
 
-from api.schema.types import Name, ParliamentSchema, field
+from api.schema.types import AdministrativeName, ParliamentSchema, field
 from ninja import Schema
 
 __all__ = [
@@ -9,6 +9,6 @@ __all__ = [
 
 
 class ElectionSchema(ParliamentSchema, Schema):
-    name: Name
+    name: AdministrativeName
     date: date | None
     election_type: str | None = field("election_type.name", default=None)

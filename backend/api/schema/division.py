@@ -1,9 +1,12 @@
 from datetime import date
 
-from api.schema.includes import (BaseDivisionVote, IncludeHouse,
-                                 MemberMiniSchema, MinimalMemberSchema,
-                                 PartyMiniSchema)
-from api.schema.types import ParliamentSchema, field
+from api.schema.includes import (
+    BaseDivisionVote,
+    MemberMiniSchema,
+    MinimalMemberSchema,
+    PartyMiniSchema,
+)
+from api.schema.types import House, ParliamentSchema, field
 
 __all__ = [
     "CommonsDivisionSchema",
@@ -20,8 +23,9 @@ class VoteWithPersonSchema(BaseDivisionVote):
     person: DivisionVoteMemberSchema
 
 
-class CommonsDivisionSchema(IncludeHouse, ParliamentSchema):
+class CommonsDivisionSchema(ParliamentSchema):
     title: str
+    house: House
     date: date
     is_deferred_vote: bool
     is_passed: bool
@@ -30,8 +34,9 @@ class CommonsDivisionSchema(IncludeHouse, ParliamentSchema):
     did_not_vote: int
 
 
-class LordsDivisionSchema(IncludeHouse, ParliamentSchema):
+class LordsDivisionSchema(ParliamentSchema):
     title: str
+    house: House
     date: date
     description: str | None = field("amendment_motion_notes")
     sponsor: MemberMiniSchema | None = field("sponsoring_member", default=None)

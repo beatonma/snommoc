@@ -4,13 +4,13 @@ from ninja import Schema
 
 from .election import ElectionSchema
 from .includes import MemberMiniSchema, PartyMiniSchema
-from .types import Name, ParliamentSchema, field
+from .types import AdministrativeName, ParliamentSchema, PersonName, field
 
 __all__ = ["ConstituencyFullSchema"]
 
 
 class ConstituencyCandidateSchema(Schema):
-    name: Name
+    name: PersonName
     profile: MemberMiniSchema | None = field("person", default=None)
     party: PartyMiniSchema | None
     order: int
@@ -32,7 +32,7 @@ class ResultsSchema(Schema):
 
 
 class ConstituencyFullSchema(ParliamentSchema):
-    name: Name
+    name: AdministrativeName
     start: date | None
     end: date | None
     mp: MemberMiniSchema | None

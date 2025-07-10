@@ -13,12 +13,12 @@ from .includes import (
     PartyMiniSchema,
 )
 from .types import (
+    AdministrativeName,
     EmailAddress,
-    Name,
     ParliamentId,
     ParliamentSchema,
+    PersonName,
     PhoneNumber,
-    SplitString,
     Url,
     WikipediaPath,
     field,
@@ -51,8 +51,8 @@ class AddressSchema(Schema):
 
 
 class TownSchema(Schema):
-    town: Name
-    country: Name
+    town: AdministrativeName
+    country: AdministrativeName
 
 
 class ConstituencyRepresentation(Schema):
@@ -71,7 +71,7 @@ class ExperienceSchema(Schema):
 
 class CommitteeMemberSchema(ParliamentSchema):
     parliamentdotuk: ParliamentId = field("committee.parliamentdotuk")
-    name: Name = field("committee.name")
+    name: AdministrativeName = field("committee.name")
     start: date | None
     end: date | None
 
@@ -115,7 +115,7 @@ class PartyAffiliationSchema(Schema):
 class PostSchema(ParliamentSchema):
     parliamentdotuk: ParliamentId = field("post.parliamentdotuk")
     type: str = field("post.type")
-    name: Name = field("post.name")
+    name: AdministrativeName = field("post.name")
     hansard: str | None = field("post.hansard_name")
     start: date | None
     end: date | None
@@ -137,7 +137,7 @@ class MemberStatus(Schema):
 
 
 class MemberProfile(MemberMiniSchema, ParliamentSchema):
-    name: Name
+    name: PersonName
     current_posts: list[str]
     party: PartyMiniSchema | None
     constituency: ConstituencyMiniSchema | None

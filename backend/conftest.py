@@ -1,8 +1,14 @@
 import pytest
 
 
-def pytest_addoption(parser):
-    parser.addoption("--fragile", action="store_true", default=False)
+def pytest_addoption(parser: pytest.Parser):
+    parser.addoption(
+        "--skip_database",
+        "--skip-database",
+        dest="skip_database",
+        action="store_true",
+        default=False,
+    )
 
 
 @pytest.fixture(autouse=True)

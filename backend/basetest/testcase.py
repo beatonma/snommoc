@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import pytest
 from django.test import TestCase as DjangoTestCase
 
 
@@ -12,6 +13,7 @@ class SimpleTestCase(TestCase):
         self.assertEqual(len(collection), expected_length, msg=msg)
 
 
+@pytest.mark.skipif("config.getoption('skip_database')")
 class DatabaseTestCase(SimpleTestCase, DjangoTestCase):
     """Base class for tests that need database access."""
 

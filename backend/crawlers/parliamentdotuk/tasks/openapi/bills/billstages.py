@@ -57,8 +57,10 @@ def _update_bill_stage(response_data: dict, context: TaskContext, func_kwargs: d
     for sitting in data.stage_sittings:
         BillStageSitting.objects.update_or_create(
             parliamentdotuk=sitting.id,
-            stage_id=data.id,
-            date=sitting.date,
+            defaults={
+                "stage_id": data.id,
+                "date": sitting.date,
+            },
         )
 
 

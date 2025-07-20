@@ -1,33 +1,64 @@
 import React from "react";
-import type { ItemTheme as LocalTheme, Party, PartyDetail } from "@/api/schema";
+import type {
+  HouseType,
+  ItemTheme as LocalTheme,
+  Party,
+  PartyDetail,
+} from "@/api/schema";
 import { MaskedSvg } from "@/components/image";
 import { getContainerColor, getOnColor } from "@/features/themed/color";
-import { Nullish } from "@/types/common";
+import { NullableValues, Nullish } from "@/types/common";
 import { DivProps } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-type ItemThemeProvider = { theme: LocalTheme | Nullish } | LocalTheme | Nullish;
+type Theme = Partial<NullableValues<LocalTheme>>;
+type MaybeTheme = Theme | Nullish;
+type ItemThemeProvider = { theme: MaybeTheme } | MaybeTheme | HouseType;
 export interface ItemThemeableProps {
   themeSource: ItemThemeProvider;
-  defaultTheme?: LocalTheme | Nullish;
+  defaultTheme?: MaybeTheme;
 }
 
-const isTheme = (obj: ItemThemeProvider): obj is LocalTheme =>
-  obj != null && "primary" in obj;
+const isTheme = (obj: ItemThemeProvider): obj is Theme =>
+  obj != null && typeof obj === "object" && "primary" in obj;
 const isPartyLike = (obj: ItemThemeProvider): obj is Party | PartyDetail =>
-  obj != null && "logo" in obj;
+  obj != null && typeof obj === "object" && "logo" in obj;
 
 const resolveTheme = (
   obj: ItemThemeProvider,
-  defaultTheme?: LocalTheme | Nullish,
-): LocalTheme | null => {
+  defaultTheme?: MaybeTheme,
+): Theme | null => {
   if (!obj) return defaultTheme ?? null;
+
+  if (typeof obj === "string") {
+    return getHouseTheme(obj);
+  }
+
   return isTheme(obj) ? obj : (obj.theme ?? null);
+};
+
+const getHouseTheme = (house: HouseType): Theme => {
+  switch (house) {
+    case "Commons":
+      return {
+        primary: "var(--color-house-commons)",
+        on_primary: undefined,
+        accent: undefined,
+        on_accent: undefined,
+      };
+    case "Lords":
+      return {
+        primary: "var(--color-house-lords)",
+        on_primary: undefined,
+        accent: undefined,
+        on_accent: undefined,
+      };
+  }
 };
 
 export const itemThemeCss = (
   themeSource: ItemThemeProvider,
-  defaultTheme?: LocalTheme | Nullish,
+  defaultTheme?: MaybeTheme,
   merge?: object,
 ): React.CSSProperties => {
   const theme = resolveTheme(themeSource, defaultTheme);
@@ -51,7 +82,7 @@ export const itemThemeCss = (
     ),
   };
 };
-const cssColor = (name: string, color: string | undefined) => {
+const cssColor = (name: string, color: string | Nullish) => {
   const background = color;
   const foreground = getOnColor(color);
 

@@ -19,6 +19,7 @@ __all__ = [
     "ParliamentId",
     "ParliamentSchema",
     "PhoneNumber",
+    "Safe",
     "Url",
     "WikipediaPath",
 ]

@@ -8,8 +8,8 @@ const WcagContrast = 4.5; // https://www.w3.org/TR/WCAG21/#contrast-minimum
 const PreferredContrast = 8;
 
 export const getOnColor = (
-  backgroundColor: string | undefined,
-  foregroundColor?: string | undefined,
+  backgroundColor: string | Nullish,
+  foregroundColor?: string | Nullish,
   element?: HTMLElement | Nullish,
 ): string | undefined => {
   if (!backgroundColor) return undefined;
@@ -25,8 +25,8 @@ export const getOnColor = (
 };
 
 export const getContainerColor = (
-  sourceColor: string | undefined,
-  foregroundColor: string | undefined,
+  sourceColor: string | Nullish,
+  foregroundColor: string | Nullish,
   maxSaturation: number = 0.25,
 ): string | undefined => {
   const resolvedSource = resolveToRgb(sourceColor);
@@ -52,7 +52,7 @@ const reduceSaturation = (color: RGB, maxSaturation: number): RGB => {
 };
 
 const resolveToRgb = (
-  color: string | undefined,
+  color: string | Nullish,
   element?: HTMLElement | Nullish,
 ): RGB | undefined => {
   if (!color) return undefined;
@@ -60,10 +60,17 @@ const resolveToRgb = (
   if (color.includes("--")) {
     const cssName = color.match(/var\((--[^)\s]+)\)/)?.[1];
     if (!cssName) return undefined;
-
-    return resolveToRgb(
-      (element ?? document.body).computedStyleMap().get(cssName)?.toString(),
-    );
+    try {
+      return resolveToRgb(
+        (element ?? document.body).computedStyleMap().get(cssName)?.toString(),
+      );
+    } catch (e) {
+      if (e instanceof ReferenceError) {
+        // document not available on server
+        return undefined;
+      }
+      throw e;
+    }
   }
 
   return rgbToRgb(color) ?? hexToRgb(color);

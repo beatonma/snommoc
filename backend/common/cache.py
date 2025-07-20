@@ -8,7 +8,8 @@ log = logging.getLogger(__name__)
 
 def invalidate_cache(cache_key: str):
     try:
-        cache.delete_pattern(f"*{cache_key}*")
+        if count := cache.delete_pattern(f"*{cache_key}*"):
+            log.info(f"Deleted {count} items from the cache.")
     except AttributeError:
         if not settings.DEBUG:
             log.warning(f"Failed to invalidate cache '{cache_key}'")

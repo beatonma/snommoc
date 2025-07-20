@@ -32,6 +32,9 @@ class OrganisationQuerySet(BaseQuerySet):
 
         return super().get_or_create(defaults=defaults, **kwargs)
 
+    def search(self, query: str):
+        return self.filter(name__icontains=query)
+
     @staticmethod
     def _normalise(obj: dict | None):
         if obj and "name" in obj:
@@ -63,6 +66,7 @@ class Organisation(BaseModel):
         def _titlecase_with_acronyms(match):
             word: str = match[0]
             if re.fullmatch(r"([A-Z]\.?){2,}", word):
+                # Remove dot separators from acronyms
                 return word.replace(".", "")
             if re.fullmatch(r"(of|the|an?|to)", word):
                 return word

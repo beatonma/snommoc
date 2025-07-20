@@ -24,18 +24,22 @@ export type Organisation = schema["OrganisationSchema"];
 export type Post = Omit<schema["PostSchema"], "start" | "end">;
 export type Committee = Omit<schema["CommitteeMemberSchema"], "start" | "end">;
 export type Division = schema["DivisionMiniSchema"];
+export type Bill = schema["BillMiniSchema"];
+export type BillDetail = schema["BillFullSchema"];
 export type CommonsDivision = schema["CommonsDivisionSchema"];
 export type LordsDivision = schema["LordsDivisionSchema"];
 export type DivisionVoteType = schema["DivisionVoteType"];
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace Fixtures {
-  export const HouseTypeValues: HouseType[] = ["Commons", "Lords"];
-  export const MemberStatusValues: StatusFilter[] = [
-    "current",
-    "inactive",
-    "historical",
-    "all",
-  ];
-  export const VoteTypes: DivisionVoteType[] = ["aye", "no", "did_not_vote"];
-}
+const HouseTypeValues: HouseType[] = ["Commons", "Lords"];
+const MemberStatusValues: StatusFilter[] = [
+  "current",
+  "inactive",
+  "historical",
+  "all",
+];
+const VoteTypes: DivisionVoteType[] = ["aye", "no", "did_not_vote"];
+export const Fixtures = {
+  HouseTypeValues,
+  MemberStatusValues,
+  VoteTypes,
+};

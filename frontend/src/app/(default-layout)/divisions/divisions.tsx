@@ -12,7 +12,7 @@ export const DivisionsList = () => (
     )}
     style={
       {
-        "--spacing-listitem-card": "var(--_spacing-listitem-card-wide)",
+        "--spacing-listitem-card": "var(--spacing-listitem-card-wide)",
       } as CSSProperties
     }
   />

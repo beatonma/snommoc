@@ -1,6 +1,6 @@
-from common.models import BaseModel
+from common.models import BaseModel, BaseQuerySet
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import Q, UniqueConstraint
 from phonenumber_field.modelfields import PhoneNumberField
 from repository.models.mixins import ParliamentDotUkMixin, SocialMixin
 from util.strings import ellipsise
@@ -52,6 +52,9 @@ class BillStage(ParliamentDotUkMixin, BaseModel):
 
     def __str__(self):
         return f"{self.description}: {self.bill}"
+
+    class Meta:
+        ordering = ["-sittings__date"]
 
 
 class BillStageSitting(ParliamentDotUkMixin, BaseModel):
@@ -184,7 +187,17 @@ class BillPublicationLink(ParliamentDotUkMixin, BaseModel):
         return ellipsise(self.title)
 
 
+class BillQuerySet(BaseQuerySet):
+    def search(self, query: str):
+        return self.filter(
+            Q(title__icontains=query)
+            | Q(summary__icontains=query)
+            | Q(promoters__name__icontains=query)
+        )
+
+
 class Bill(SocialMixin, ParliamentDotUkMixin, BaseModel):
+    objects = BillQuerySet.as_manager()
     title = models.CharField(max_length=255)
     long_title = models.TextField(null=True, blank=True)
     summary = models.TextField(

@@ -1,5 +1,5 @@
 import { Division, HouseType, ItemTheme } from "@/api/schema";
-import { Date, DateFormat } from "@/components/datetime";
+import { Date } from "@/components/datetime";
 import Icon, { IconProps } from "@/components/icon";
 import { onlyIf } from "@/components/optional";
 import { SeparatedRow } from "@/components/row";
@@ -32,7 +32,7 @@ export const DivisionItemCard = (
     "themeSource" | "href"
   >,
 ) => {
-  const { division, showPassedImage = true, children, ...rest } = props;
+  const { division, showPassedImage = true, children, title, ...rest } = props;
 
   return (
     <ListItemCard
@@ -42,7 +42,7 @@ export const DivisionItemCard = (
         division.house,
         division.parliamentdotuk,
       )}
-      title={division.title}
+      title={title || division.title}
       image={onlyIf(
         showPassedImage,
         <PassIcon
@@ -54,7 +54,7 @@ export const DivisionItemCard = (
     >
       <h1 className="text-base font-bold line-clamp-2">{division.title}</h1>
       <SeparatedRow>
-        <Date date={division.date} dateFormat={DateFormat.FullDate} />
+        <Date date={division.date} />
         <HouseLink house={division.house} showDot={false} longFormat={true} />
       </SeparatedRow>
       {children}

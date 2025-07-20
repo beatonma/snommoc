@@ -9,6 +9,7 @@ export const GlobalNavigation = () => (
       <Destination destination="parties">Parties</Destination>
       <Destination destination="constituencies">Constituencies</Destination>
       <Destination destination="nationalMap">Map</Destination>
+      <Destination destination="bills">Bills</Destination>
       <Destination destination="divisions">Divisions</Destination>
     </ul>
   </nav>

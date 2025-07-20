@@ -12,6 +12,7 @@
 
 :root {
   --prose-list-indent: 0.8125em;
+  --prose-paragraph-margin-block: 1.25em;
 
   /* Tailwind md */
   @media (width >= 48rem) {
@@ -126,10 +127,10 @@
 
   .prose-p,
   .prose p {
-    margin-block: 1.25em;
+    margin-block: var(--prose-paragraph-margin-block);
 
     &.lead {
-      margin-block: 1.2em;
+      --prose-paragraph-margin-block: 1.2em;
     }
   }
 
@@ -203,7 +204,7 @@
   .prose-ol,
   .prose ol {
     list-style-type: decimal;
-    margin-block: 1.25em;
+    margin-block: var(--prose-paragraph-margin-block);
     padding-inline-start: var(--prose-list-indent);
 
     > li {
@@ -219,7 +220,7 @@
   .prose-ul,
   .prose ul {
     list-style-type: square;
-    margin-block: 1.25em;
+    margin-block: var(--prose-paragraph-margin-block);
     padding-inline-start: var(--prose-list-indent);
 
     > li {
@@ -236,19 +237,19 @@
   }
 
   .prose > ul > li > p:first-child {
-    margin-top: 1.25em;
+    margin-top: var(--prose-paragraph-margin-block);
   }
 
   .prose > ul > li > p:last-child {
-    margin-bottom: 1.25em;
+    margin-bottom: var(--prose-paragraph-margin-block);
   }
 
   .prose > ol > li > p:first-child {
-    margin-top: 1.25em;
+    margin-top: var(--prose-paragraph-margin-block);
   }
 
   .prose > ol > li > p:last-child {
-    margin-bottom: 1.25em;
+    margin-bottom: var(--prose-paragraph-margin-block);
   }
 
   .prose ul ul,
@@ -260,14 +261,14 @@
 
   .prose-dl,
   .prose dl {
-    margin-block: 1.25em;
+    margin-block: var(--prose-paragraph-margin-block);
   }
 
   .prose-dt,
   .prose dt {
     @apply text-current/95;
     font-weight: 600;
-    margin-top: 1.25em;
+    margin-top: var(--prose-paragraph-margin-block);
   }
 
   .prose-dd,
@@ -278,7 +279,6 @@
 
   .prose-a,
   .prose a {
-    color: var(--link-color, var(--primary));
     font-weight: 500;
 
     &:hover {
@@ -290,6 +290,12 @@
   .prose hr {
     @apply border-primary border-[1px] border-solid;
     margin-block: 3em;
+  }
+
+  .prose-break,
+  .prose .break {
+    display: block;
+    height: calc(0.5 * var(--prose-paragraph-margin-block));
   }
 
   .prose-blockquote,

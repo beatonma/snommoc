@@ -321,9 +321,9 @@ def _update_registered_interests(
         for index, interest in enumerate(item.interests):
             parent, _ = RegisteredInterest.objects.update_or_create(
                 parliamentdotuk=interest.interest_id,
-                category=category,
                 person=person,
                 defaults={
+                    "category": category,
                     "description": interest.description,
                     "description_data": interest.description_data,
                     "created": interest.created_at,
@@ -336,16 +336,16 @@ def _update_registered_interests(
             for child in interest.child_interests:
                 RegisteredInterest.objects.update_or_create(
                     parliamentdotuk=child.interest_id,
-                    category=category,
                     person=person,
-                    parent=parent,
                     defaults={
+                        "category": category,
                         "description": child.description,
                         "description_data": child.description_data,
                         "created": child.created_at,
                         "amended": child.last_amended_at,
                         "deleted": child.deleted_at,
                         "is_correction": child.is_correction,
+                        "parent": parent,
                     },
                 )
 

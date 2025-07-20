@@ -13,8 +13,13 @@ router = Router(tags=["Bills"])
 @router.get("/", response=list[BillMiniSchema])
 @paginate
 @cache_crawled_data_view
-def bills(request: HttpRequest):
-    return Bill.objects.all()
+def bills(request: HttpRequest, query: str = None):
+    qs = Bill.objects.all()
+
+    if query:
+        qs = qs.search(query)
+
+    return qs
 
 
 @router.get("/{parliamentdotuk}/", response=BillFullSchema)

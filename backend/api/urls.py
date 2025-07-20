@@ -7,6 +7,7 @@ from api.routers import (
     election_router,
     maps_router,
     members_router,
+    organisations_router,
     party_router,
     zeitgeist_router,
 )
@@ -27,12 +28,13 @@ ninja_api = NinjaAPI(
 proxy_router = Router(
     auth=ApiReadAuth() if snommoc_settings.auth.api_read_requires_auth else NOT_SET,
 )
-proxy_router.add_router("members/", members_router)
 proxy_router.add_router("bills/", bills_router)
 proxy_router.add_router("constituencies/", constituency_router)
 proxy_router.add_router("divisions/", division_router)
 proxy_router.add_router("elections/", election_router)
 proxy_router.add_router("maps/", maps_router)
+proxy_router.add_router("members/", members_router)
+proxy_router.add_router("organisations/", organisations_router)
 proxy_router.add_router("parties/", party_router)
 proxy_router.add_router("zeitgeist/", zeitgeist_router)
 

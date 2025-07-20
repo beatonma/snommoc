@@ -1,10 +1,9 @@
 from datetime import datetime
 
 from api.schema.includes import MemberMiniSchema, OrganisationSchema
-from api.schema.types import ParliamentSchema, Url, field
+from api.schema.types import House, ParliamentSchema, Safe, Url, field
 from ninja import Schema
 from repository.models.bill import BillStage
-from repository.models.houses import HouseType
 
 __all__ = [
     "BillFullSchema",
@@ -41,18 +40,14 @@ class Sponsor(Schema):
 
 
 class Stage(Schema):
-    sittings: list[datetime]
     session: Session
-    house: HouseType = field("house.name")
-    latest_sitting: datetime | None
+    house: Safe[House]
+    description: str | None
+    sittings: list[datetime]
 
     @staticmethod
     def resolve_sittings(stage: BillStage):
         return stage.sittings.values_list("date", flat=True)
-
-    @staticmethod
-    def resolve_latest_sitting(stage: BillStage) -> datetime:
-        return stage.sittings.order_by("-date").first().date
 
 
 class BillFullSchema(ParliamentSchema):

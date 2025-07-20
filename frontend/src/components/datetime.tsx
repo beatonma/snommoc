@@ -100,6 +100,7 @@ export const Date = (
     <time
       dateTime={parsed.toDateString()}
       title={parsed.toDateString()}
+      suppressHydrationWarning
       {...rest}
     >
       {formatDate(parsed, dateFormat)}

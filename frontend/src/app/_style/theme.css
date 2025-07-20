@@ -36,6 +36,9 @@
   --color-primary-container-dark: rgb(29, 89, 53);
   --color-on-primary-container-dark: var(--text-white);
 
+  --color-link-light: rgb(23, 72, 40);
+  --color-link-dark: rgb(154, 229, 184);
+
   --color-accent-light: rgb(206, 218, 245);
   --color-on-accent-light: --alpha(rgb(40, 71, 119) / var(--text-opacity));
   --color-accent-dark: rgb(206, 218, 245);
@@ -56,9 +59,10 @@
   --color-scrim: rgb(0 0 0 / 70%);
   --color-on-scrim: var(--color-white);
 
-  --color-positive: rgb(2, 113, 45);
+  /* Green/red already used frequently so avoid using them for 'good' or 'bad' */
+  --color-positive: rgb(2, 111, 113);
   --color-on-positive: var(--color-white);
-  --color-negative: rgb(163, 6, 40);
+  --color-negative: rgb(163, 64, 6);
   --color-on-negative: var(--color-white);
 }
 
@@ -76,6 +80,7 @@
   --on-primary-container: var(--color-on-primary-container-light);
   --accent: var(--color-accent-light);
   --on-accent: var(--color-on-accent-light);
+  --link: var(--color-link-light);
 }
 @utility colorscheme-dark {
   --background: var(--color-background-dark);
@@ -91,15 +96,37 @@
   --on-primary-container: var(--color-on-primary-container-dark);
   --accent: var(--color-accent-dark);
   --on-accent: var(--color-on-accent-dark);
+  --link: var(--color-link-dark);
+}
+
+@utility theme-light {
+  @apply colorscheme-light;
+  .invert-theme {
+    @apply colorscheme-dark;
+  }
+}
+@utility theme-dark {
+  @apply colorscheme-dark;
+  .invert-theme {
+    @apply colorscheme-light;
+  }
 }
 
 :root {
   @media (prefers-color-scheme: light) {
-    @apply colorscheme-light;
+    @apply theme-light;
+
+    &:has(body[data-theme="dark"]) {
+      @apply theme-dark;
+    }
   }
 
   @media (prefers-color-scheme: dark) or (prefers-color-scheme: no-preference) {
-    @apply colorscheme-dark;
+    @apply theme-dark;
+
+    &:has(body[data-theme="light"]) {
+      @apply theme-light;
+    }
   }
 
   --color-list-marker: currentColor;
@@ -123,6 +150,7 @@
   --color-on-primary-container: var(--on-primary-container);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
+  --color-link: var(--link);
 
   --color-bg: var(--bg);
   --color-fg: var(--fg);
@@ -130,22 +158,14 @@
 }
 
 @layer base {
-  body {
-    &[data-theme="light"] {
-      @apply colorscheme-light;
+  a {
+    color: var(--link-color, var(--fg));
+  }
+}
 
-      .invert-theme {
-        @apply colorscheme-dark;
-      }
-    }
-
-    &[data-theme="dark"] {
-      @apply colorscheme-dark;
-
-      .invert-theme {
-        @apply colorscheme-light;
-      }
-    }
+@layer components {
+  .colorful-links {
+    --link-color: var(--color-link);
   }
 }
 

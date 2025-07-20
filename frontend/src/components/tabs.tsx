@@ -104,3 +104,20 @@ const Tab = (props: DivProps<TabProps, "id" | "role">) => {
 
   return <div id={tabId} role="tab" onClick={() => onClick(tabId)} {...rest} />;
 };
+
+interface MaybeTabContent<T extends string> {
+  title: T;
+  condition?: boolean;
+  content: () => ReactNode;
+}
+export const useTabContent = <T extends string>(
+  content: MaybeTabContent<T>[],
+): TabContent<T>[] => {
+  return useMemo(
+    () =>
+      content
+        .filter((it) => it.condition !== false)
+        .map((it) => [it.title, it.content]),
+    [content],
+  );
+};

@@ -7,3 +7,5 @@ export type Nullish = null | undefined;
 export type XOR<A, B> =
   | (A & { [K in Exclude<keyof B, keyof A>]?: never })
   | (B & { [K in Exclude<keyof A, keyof B>]?: never });
+
+export type NullableValues<T> = { [K in keyof T]: T[K] | Nullish };

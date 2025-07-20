@@ -4,9 +4,12 @@ import React, { useId, useState } from "react";
 import { useGet } from "@/api/hooks";
 import * as Sample from "@/app/(default-layout)/dev/sample";
 import { InlineButton, TintedButton } from "@/components/button";
+import { Date } from "@/components/datetime";
+import { Highlight } from "@/components/highlight";
 import Icon, { _private as Icon_private } from "@/components/icon";
 import { MaskedSvg } from "@/components/image";
 import { LoadingBar, LoadingSpinner } from "@/components/loading";
+import { Prose } from "@/components/prose";
 import { Row } from "@/components/row";
 import { useSortable } from "@/components/sortable";
 import { TabLayout } from "@/components/tabs";
@@ -47,6 +50,7 @@ export const ComponentsOverview = () => (
   // />
   <>
     <InputComponents />
+    <TextComponents />
     <ButtonComponents />
     <Icons />
     <CardComponents />
@@ -431,6 +435,28 @@ const TailwindUtilities = () => {
         ))}
       </Row>
     </section>
+  );
+};
+
+const TextComponents = () => {
+  return (
+    <Section name="Text">
+      <Prose>
+        <Highlight
+          text="This is text with a date 2025-05-16 and some money $50 and some other money £50,000 and another date 16 May 1987."
+          highlighters={[
+            {
+              pattern: "Dates",
+              block: (it) => <Date date={it} className="text-blue-500" />,
+            },
+            {
+              pattern: "Money",
+              className: "text-amber-500",
+            },
+          ]}
+        />
+      </Prose>
+    </Section>
   );
 };
 

@@ -5,6 +5,7 @@ from api.schema.zeitgeist import ZeitgeistSchema
 from django.http import HttpRequest
 from ninja import Router
 from repository.models import Bill, CommonsDivision, LordsDivision, Person
+from surface.cache import API_VIEW_CACHE
 from surface.models import MessageOfTheDay, ZeitgeistItem
 from util.time import get_today
 
@@ -12,7 +13,7 @@ router = Router(tags=["Zeitgeist"])
 
 
 @router.get("/", response=ZeitgeistSchema)
-@cache_view(timeout=timedelta(hours=6).total_seconds(), cache_key="zeitgeist")
+@cache_view(timeout=timedelta(seconds=6).total_seconds(), cache_key=API_VIEW_CACHE)
 def zeitgeist(request: HttpRequest):
     today = get_today()
     items = ZeitgeistItem.objects.all()

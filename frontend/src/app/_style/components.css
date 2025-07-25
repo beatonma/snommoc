@@ -4,6 +4,11 @@
   .overflow-y-auto,
   .row,
   .row-scroll {
+    scrollbar-color: transparent transparent;
+    &:hover {
+      scrollbar-color: var(--fg) transparent;
+    }
+
     @media (pointer: coarse) {
       scrollbar-width: none;
     }

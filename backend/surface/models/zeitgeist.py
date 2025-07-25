@@ -12,8 +12,10 @@ class ZeitgeistItemQuerySet(BaseQuerySet):
 
 
 class ZeitgeistItem(GenericTargetMixin, BaseModel):
-    REASON_FEATURE = "feature"
-    REASON_SOCIAL = "social"
+    class Reason(models.TextChoices):
+        FEATURE = "feature"
+        SOCIAL = "social"
+        DEFAULT = "default"
 
     objects = ZeitgeistItemQuerySet.as_manager()
 
@@ -23,10 +25,8 @@ class ZeitgeistItem(GenericTargetMixin, BaseModel):
     """
     reason = models.CharField(
         max_length=24,
-        choices=[
-            (REASON_FEATURE, REASON_FEATURE),
-            (REASON_SOCIAL, REASON_SOCIAL),
-        ],
+        choices=Reason.choices,
+        default=Reason.DEFAULT,
     )
 
     """

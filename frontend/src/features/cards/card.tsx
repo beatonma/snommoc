@@ -69,6 +69,7 @@ export const ListItemCard = (props: ListItemCardProps) => {
         rest,
         "@container card grid grid-cols-[auto_1fr] grid-rows-[auto-auto] ",
         "themed-surface-clickable w-listitem-card [--x-spacing:--spacing(2)] sm:[--x-spacing:--spacing(4)]",
+        "[&_h2]:text-xl",
       )}
     >
       {onlyIf(hero, <div className="col-span-full">{hero}</div>)}

@@ -8,9 +8,16 @@ interface RowProps {
   overflow?: "scroll" | "wrap" | undefined;
   vertical?: AlignItems;
   horizontal?: JustifyContent;
+  padEdge?: boolean;
 }
 export const Row = (props: DivProps<RowProps>) => {
-  const { overflow, horizontal, vertical = "items-center", ...rest } = props;
+  const {
+    overflow,
+    horizontal,
+    vertical = "items-center",
+    padEdge,
+    ...rest
+  } = props;
   return (
     <div
       {...addClass(
@@ -18,6 +25,7 @@ export const Row = (props: DivProps<RowProps>) => {
         "row",
         onlyIf(overflow === "wrap", "row-wrap"),
         onlyIf(overflow === "scroll", "row-scroll"),
+        onlyIf(padEdge, "*:first:ms-edge *:last:me-edge"),
         horizontal,
         vertical,
       )}
@@ -25,11 +33,15 @@ export const Row = (props: DivProps<RowProps>) => {
   );
 };
 
-export const SeparatedRow = (props: DivProps) => (
-  <div
-    {...addClass(
-      props,
-      `[&>*:not(:last-child)]:after:content-['·'] [&>*:not(:last-child)]:after:mx-1 flex flex-wrap`,
-    )}
-  />
-);
+export const SeparatedRow = (props: DivProps<RowProps>) => {
+  const { overflow = "wrap", ...rest } = props;
+  return (
+    <Row
+      overflow={overflow}
+      {...addClass(
+        rest,
+        "*:not-last:after:content-['·'] *:not-last:after:mx-ch",
+      )}
+    />
+  );
+};

@@ -34,7 +34,7 @@ def normalize_name(raw_name: str) -> str:
     - Strip any extraneous whitespace
     - Convert `Surname, Forename` format to `Forename Surname`
     """
-    name = re.sub(_honorifics_regex, "", raw_name, re.IGNORECASE)
+    name = re.sub(_honorifics_regex, "", raw_name)
 
     if "," in name:
         parts = [x.strip() for x in name.split(",", maxsplit=1)]

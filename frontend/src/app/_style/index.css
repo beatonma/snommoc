@@ -64,12 +64,17 @@
   --spacing-readable: 800px;
   --spacing-max-grid-width: 1350px;
   --spacing-listitem-card-default: 400px;
+  --spacing-listitem-card-narrow: 320px;
   --spacing-listitem-card-wide: 650px;
   --spacing-listitem-card-image: --spacing(20);
   --spacing-listitem-card: min(100%, var(--spacing-listitem-card-default));
 }
 
 @layer components {
+  .narrow-cards {
+    --spacing-listitem-card: min(100%, var(--spacing-listitem-card-narrow));
+  }
+
   .wide-cards {
     --spacing-listitem-card: min(100%, var(--spacing-listitem-card-wide));
   }

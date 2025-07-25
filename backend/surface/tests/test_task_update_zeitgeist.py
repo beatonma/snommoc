@@ -64,11 +64,11 @@ class UpdateZeitgeistTaskTest(DatabaseTestCase):
         self.assertEqual(zeitgeist.count(), 6)
 
         anna = zeitgeist.get(target_id=37)
-        self.assertEqual(anna.reason, ZeitgeistItem.REASON_FEATURE)
+        self.assertEqual(anna.reason, ZeitgeistItem.Reason.FEATURE)
         self.assertEqual(anna.target.name, "Anna McMorrin")
 
         boris = zeitgeist.get(target_id=11)
-        self.assertEqual(boris.reason, ZeitgeistItem.REASON_SOCIAL)
+        self.assertEqual(boris.reason, ZeitgeistItem.Reason.SOCIAL)
         self.assertEqual(boris.target.name, "Boris Johnson")
 
         bill = zeitgeist.get(target_id=175)

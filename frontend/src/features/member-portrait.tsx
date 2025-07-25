@@ -45,22 +45,28 @@ export const MemberPortrait = (props: PortraitProps) => {
     ...rest
   } = props;
 
-  if (!src) {
-    return (
-      <Icon
-        icon="Commons"
-        className={className}
-        width={width}
-        height={width}
-        {...rest}
-      />
-    );
-  }
-
   const resolvedAspect = PortraitAspectValues[aspect];
   const resolvedWidth =
     width === "parliament-thumbnail" ? ParliamentThumbnailSize : width;
   const height = Math.ceil(resolvedWidth / resolvedAspect.ratio);
+
+  if (!src) {
+    return (
+      <div
+        className={classes(
+          className,
+          resolvedAspect.className,
+          "flex items-center justify-center",
+        )}
+        {...rest}
+      >
+        <Icon
+          icon="Commons"
+          className="max-h-32 max-w-32 size-full aspect-square"
+        />
+      </div>
+    );
+  }
 
   return (
     <Image

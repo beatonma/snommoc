@@ -1,5 +1,10 @@
 @utility surface {
-  @apply bg-surface text-on-surface fill-on-surface;
+  --bg: var(--color-surface);
+  --fg: var(--color-on-surface);
+
+  background-color: var(--bg);
+  color: var(--fg);
+  fill: var(--fg);
 }
 
 @utility surface-commons {

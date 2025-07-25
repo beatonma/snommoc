@@ -115,10 +115,7 @@ export const SearchListLayout = <P extends SearchablePath>(
   props: DivPropsNoChildren<ListPageProps<P> & { state: SearchListState<P> }>,
 ) => {
   const hasHeader = !!props.header;
-  const { state, header, itemComponent, gridClassName, ...rest } = addClass(
-    props,
-    `${props.gridClassName ?? DefaultGridClass} my-2 mb-96 justify-center sm:mx-2`,
-  );
+  const { state, header, itemComponent, gridClassName, ...rest } = props;
 
   const { pagination, queryState, filtersState, onSearch } = state;
   const [query, setQuery] = queryState;
@@ -126,7 +123,11 @@ export const SearchListLayout = <P extends SearchablePath>(
 
   return (
     <InfiniteScroll
-      {...rest}
+      {...addClass(
+        rest,
+        gridClassName ?? DefaultGridClass,
+        "my-2 mb-96 justify-center sm:mx-2",
+      )}
       pagination={pagination}
       itemComponent={itemComponent}
       header={

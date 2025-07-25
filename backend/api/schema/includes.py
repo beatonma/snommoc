@@ -82,10 +82,18 @@ class _MemberConstituencySchema(ParliamentSchema):
     end: date | None
 
 
+class MemberPortrait(Schema):
+    fullsize_url: Url | None
+    square_url: Url | None
+    tall_url: Url | None
+    wide_url: Url | None
+
+
 class MinimalMemberSchema(ParliamentSchema):
     name: PersonName
     portrait: Url | None = None
     # portrait: Url | None = field("memberportrait.square_url", default=None)
+    portrait: MemberPortrait | None = field("memberportrait", default=None)
 
 
 class MemberMiniSchema(MinimalMemberSchema):

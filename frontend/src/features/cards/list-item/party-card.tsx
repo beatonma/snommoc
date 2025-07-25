@@ -14,7 +14,7 @@ export const PartyItemCard = (props: Props<"a", { party: Party }>) => {
     <ListItemCard
       href={navigationHref("party", party.parliamentdotuk)}
       themeSource={party}
-      image={onlyIf(
+      inlineImage={onlyIf(
         party.logo,
         <OptionalSvg
           src={party.logo}

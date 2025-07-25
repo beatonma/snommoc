@@ -538,13 +538,20 @@ export interface components {
         MemberMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["PersonName"];
-            portrait?: components["schemas"]["Url"] | null;
+            portrait?: components["schemas"]["MemberPortrait"] | null;
             /** Current Posts */
             current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
             constituency: components["schemas"]["_MemberConstituencySchema"] | null;
             /** Lord Type */
             lord_type?: string | null;
+        };
+        /** MemberPortrait */
+        MemberPortrait: {
+            fullsize_url: components["schemas"]["Url"] | null;
+            square_url: components["schemas"]["Url"] | null;
+            tall_url: components["schemas"]["Url"] | null;
+            wide_url: components["schemas"]["Url"] | null;
         };
         /** OrganisationSchema */
         OrganisationSchema: {
@@ -760,7 +767,7 @@ export interface components {
         DivisionVoteMemberSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["PersonName"];
-            portrait?: components["schemas"]["Url"] | null;
+            portrait?: components["schemas"]["MemberPortrait"] | null;
             party: components["schemas"]["PartyMiniSchema"];
         };
         /** PagedVoteWithPersonSchema */
@@ -828,7 +835,7 @@ export interface components {
         ConstituencyMapMP: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["PersonName"];
-            portrait?: components["schemas"]["Url"] | null;
+            portrait?: components["schemas"]["MemberPortrait"] | null;
             party: components["schemas"]["PartyMiniSchema"] | null;
         };
         /** ConstituencyMapSchema */

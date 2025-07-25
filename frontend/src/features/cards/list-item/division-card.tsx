@@ -43,7 +43,7 @@ export const DivisionItemCard = (
         division.parliamentdotuk,
       )}
       title={title || division.title}
-      image={onlyIf(
+      inlineImage={onlyIf(
         showPassedImage,
         <PassIcon
           isPassed={division.is_passed}

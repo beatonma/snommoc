@@ -1,6 +1,5 @@
 "use client";
 
-import { CSSProperties } from "react";
 import { DivisionItemCard } from "@/features/cards";
 import { SearchList } from "@/features/paginated/search-list";
 
@@ -10,10 +9,6 @@ export const DivisionsList = () => (
     itemComponent={(division) => (
       <DivisionItemCard key={division.parliamentdotuk} division={division} />
     )}
-    style={
-      {
-        "--spacing-listitem-card": "var(--spacing-listitem-card-wide)",
-      } as CSSProperties
-    }
+    className="wide-cards"
   />
 );

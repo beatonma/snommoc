@@ -1,22 +1,25 @@
 import React, { ReactNode } from "react";
 import { MemberMiniSchema } from "@/api/schema";
-import { OptionalDiv } from "@/components/optional";
+import { OptionalDiv, onlyIf } from "@/components/optional";
 import { SeparatedRow } from "@/components/row";
 import { ListItemCard } from "@/features/cards";
 import { MemberPortrait } from "@/features/member-portrait";
 import { ItemThemeableProps } from "@/features/themed/item-theme";
 import { navigationHref } from "@/navigation";
-import { Props } from "@/types/react";
+import { DivPropsNoChildren, Props } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
+type Member = Partial<MemberMiniSchema> &
+  Pick<MemberMiniSchema, "parliamentdotuk" | "name">;
 interface MemberItemProps {
-  member: Partial<MemberMiniSchema> &
-    Pick<MemberMiniSchema, "parliamentdotuk" | "name">;
+  member: Member;
   badge?: ReactNode;
   label?: ReactNode;
   image?: ReactNode;
   showParty?: boolean;
   showConstituency?: boolean;
   usePartyTheme?: boolean;
+  layout?: "inline" | "hero";
 }
 
 export const MemberItemCard = (
@@ -33,6 +36,7 @@ export const MemberItemCard = (
     image,
     badge,
     children,
+    layout = "inline",
     usePartyTheme = true,
     ...rest
   } = props;
@@ -41,12 +45,41 @@ export const MemberItemCard = (
     <ListItemCard
       href={navigationHref("person", member.parliamentdotuk)}
       themeSource={usePartyTheme ? member.party : null}
-      image={
-        <div className="relative size-full">
-          {image ?? <MemberPortrait name={member.name} src={member.portrait} />}
-          <div className="absolute bottom-0 right-0 m-1">{badge}</div>
-        </div>
-      }
+      hero={onlyIf(
+        layout === "hero",
+        <Image
+          member={member}
+          badge={badge}
+          image={
+            image ?? (
+              <MemberPortrait
+                name={member.name}
+                src={member.portrait?.fullsize_url}
+                aspect="aspect-wide"
+                className="object-top"
+                width={400}
+              />
+            )
+          }
+        />,
+      )}
+      inlineImage={onlyIf(
+        layout === "inline",
+        <Image
+          member={member}
+          badge={badge}
+          image={
+            image ?? (
+              <MemberPortrait
+                name={member.name}
+                src={member.portrait?.square_url}
+                aspect="aspect-square"
+                width="parliament-thumbnail"
+              />
+            )
+          }
+        />,
+      )}
       {...rest}
     >
       <h2>{member.name}</h2>
@@ -55,6 +88,7 @@ export const MemberItemCard = (
         value={member.current_posts}
         className="line-clamp-1"
       />
+
       <SeparatedRow>
         <OptionalDiv
           title="Party"
@@ -71,5 +105,19 @@ export const MemberItemCard = (
       </SeparatedRow>
       {children}
     </ListItemCard>
+  );
+};
+
+const Image = (
+  props: DivPropsNoChildren<
+    Pick<MemberItemProps, "member" | "image" | "badge">
+  >,
+) => {
+  const { member, image, badge, ...rest } = props;
+  return (
+    <div {...addClass(rest, "relative")}>
+      {image}
+      <div className="absolute bottom-0 right-0 m-1">{badge}</div>
+    </div>
   );
 };

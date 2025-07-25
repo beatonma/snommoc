@@ -237,6 +237,13 @@ const CardComponents = () => (
           <MemberItemCard key={it.parliamentdotuk} member={it} />
         ))}
       </div>
+      <div>
+        <MemberItemCard
+          layout="hero"
+          member={Sample.KeirStarmerItem}
+          label="Featured"
+        />
+      </div>
     </Section>
 
     <Section name="<PartyItemCard />">

@@ -52,8 +52,16 @@ export const LabourParty: PartyDetail = {
 export const KeirStarmerItem: MemberMiniSchema = {
   parliamentdotuk: 4514,
   name: "Keir Starmer",
-  portrait:
-    "https://members-api.parliament.uk/api/Members/4514/Portrait?cropType=OneOne",
+  portrait: {
+    fullsize_url:
+      "https://members-api.parliament.uk/api/Members/4514/Portrait?cropType=FullSize",
+    square_url:
+      "https://members-api.parliament.uk/api/Members/4514/Portrait?cropType=OneOne",
+    tall_url:
+      "https://members-api.parliament.uk/api/Members/4514/Portrait?cropType=ThreeFour",
+    wide_url:
+      "https://members-api.parliament.uk/api/Members/4514/Portrait?cropType=ThreeTwo",
+  },
   current_posts: [
     "Prime Minister and First Lord of the Treasury",
     "Leader of the Labour Party",
@@ -430,8 +438,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5131,
     name: "Jack Abbott",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5131/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5131/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5131/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5131/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5131/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 100015,
@@ -458,8 +474,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 172,
     name: "Diane Abbott",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/172/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/172/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/172/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/172/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/172/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -486,8 +510,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 3898,
     name: "Lord Aberdare",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/3898/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/3898/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/3898/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/3898/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/3898/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 6,
@@ -509,8 +541,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 4212,
     name: "Debbie Abrahams",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/4212/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/4212/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/4212/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/4212/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/4212/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -537,8 +577,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5120,
     name: "Shockat Adam",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5120/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5120/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5120/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5120/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5120/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 8,
@@ -587,8 +635,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 3453,
     name: "Lord Addington",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/3453/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/3453/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/3453/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/3453/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/3453/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 17,
@@ -632,8 +688,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 3743,
     name: "Lord Adonis",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/3743/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/3743/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/3743/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/3743/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/3743/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -678,8 +742,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 4210,
     name: "Lord Ahmad of Wimbledon",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/4210/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/4210/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/4210/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/4210/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/4210/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 4,
@@ -702,8 +774,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5213,
     name: "Zubir Ahmed",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5213/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5213/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5213/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5213/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5213/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -730,8 +810,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5112,
     name: "Luke Akehurst",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5112/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5112/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5112/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5112/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5112/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -758,8 +846,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5312,
     name: "Sadik Al-Hassan",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5312/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5312/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5312/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5312/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5312/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -786,8 +882,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5097,
     name: "Bayo Alaba",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5097/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5097/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5097/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5097/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5097/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -814,8 +918,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 3478,
     name: "Lord Alderdice",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/3478/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/3478/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/3478/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/3478/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/3478/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 17,
@@ -837,8 +949,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 5172,
     name: "Dan Aldridge",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/5172/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/5172/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/5172/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/5172/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/5172/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -865,8 +985,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 4038,
     name: "Heidi Alexander",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/4038/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/4038/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/4038/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/4038/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/4038/Portrait?cropType=ThreeTwo",
+    },
     current_posts: ["Minister of State (Ministry of Justice)"],
     party: {
       parliamentdotuk: 15,
@@ -893,8 +1021,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 632,
     name: "Douglas Alexander",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/632/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/632/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/632/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/632/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/632/Portrait?cropType=ThreeTwo",
+    },
     current_posts: ["Minister of State (Department for Business and Trade)"],
     party: {
       parliamentdotuk: 100015,
@@ -921,8 +1057,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 4138,
     name: "Rushanara Ali",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/4138/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/4138/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/4138/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/4138/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/4138/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [
       "Parliamentary Under-Secretary (Housing, Communities and Local Government)",
     ],
@@ -951,8 +1095,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 4747,
     name: "Tahir Ali",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/4747/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/4747/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/4747/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/4747/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/4747/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 15,
@@ -979,8 +1131,16 @@ export const MemberList: MemberMiniSchema[] = [
   {
     parliamentdotuk: 397,
     name: "Lord Allan of Hallam",
-    portrait:
-      "https://members-api.parliament.uk/api/Members/397/Portrait?cropType=OneOne",
+    portrait: {
+      fullsize_url:
+        "https://members-api.parliament.uk/api/members/397/Portrait?cropType=FullSize",
+      square_url:
+        "https://members-api.parliament.uk/api/members/397/Portrait?cropType=OneOne",
+      tall_url:
+        "https://members-api.parliament.uk/api/members/397/Portrait?cropType=ThreeFour",
+      wide_url:
+        "https://members-api.parliament.uk/api/members/397/Portrait?cropType=ThreeTwo",
+    },
     current_posts: [],
     party: {
       parliamentdotuk: 49,

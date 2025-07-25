@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React, { ReactNode } from "react";
-import { Optional, onlyIf } from "@/components/optional";
-import { Row } from "@/components/row";
+import { onlyIf } from "@/components/optional";
 import {
   ItemTheme,
   ItemThemeableProps,
@@ -21,17 +20,18 @@ export const HeaderCard = (props: HeaderCardProps) => {
       themeSource={themeSource}
       {...addClass(
         rest,
-        "@container grid card w-full readable grid-cols-[auto_1fr] grid-rows-[auto-auto] themed-surface",
+        "@container grid card w-full readable",
+        "grid-cols-[auto_1fr] grid-rows-[auto-auto] themed-surface",
         "[--x-spacing:--spacing(2)] sm:[--x-spacing:--spacing(4)]",
       )}
     >
-      <Optional
-        value={hero}
-        block={(it) => <div className="col-span-full">{it}</div>}
-      />
+      {onlyIf(hero, <div className="col-span-full">{hero}</div>)}
 
-      <div className="grid grid-rows-subgrid grid-cols-subgrid space-x-(--x-spacing) px-(--x-spacing) py-4 col-span-full">
-        <Optional value={inlineImage} block={(it) => <>{it}</>} />
+      <div
+        className="grid grid-rows-subgrid grid-cols-subgrid
+      space-x-(--x-spacing) px-(--x-spacing) py-4 col-span-full"
+      >
+        {onlyIf(inlineImage, <>{inlineImage}</>)}
         <div className="col-start-2">{children}</div>
       </div>
     </ItemTheme>
@@ -40,37 +40,69 @@ export const HeaderCard = (props: HeaderCardProps) => {
 
 type ListItemCardProps = Props<
   typeof Link,
-  { image?: ReactNode; label?: ReactNode } & ItemThemeableProps
+  {
+    hero?: ReactNode;
+    inlineImage?: ReactNode;
+    label?: ReactNode;
+    border?: boolean;
+  } & ItemThemeableProps
 >;
 export const ListItemCard = (props: ListItemCardProps) => {
-  const { image, children, themeSource, defaultTheme, label, style, ...rest } =
-    addClass(
-      props,
-      "@container max-w-listitem-card card themed-surface-clickable block",
-      onlyIf(!props.image, "rounded-s-xs"),
-    );
+  const {
+    inlineImage,
+    hero,
+    children,
+    themeSource,
+    defaultTheme,
+    border = false,
+    label,
+    style,
+    ...rest
+  } = props;
 
   const themedStyle = itemThemeCss(themeSource, defaultTheme, style);
 
   return (
-    <Link style={themedStyle} {...rest}>
-      <Row className="size-full" vertical="items-start">
-        {image ? (
-          <div className="bg-[color-mix(in_srgb,var(--primary),var(--background))] border-primary border-1 m-2 aspect-square size-listitem-card-image shrink-0 rounded-md overflow-hidden *:w-full empty:hidden @max-2xs:hidden">
-            {image}
-          </div>
-        ) : (
-          <div className="bg-primary h-full w-2 me-2" />
+    <Link
+      style={themedStyle}
+      {...addClass(
+        rest,
+        "@container card grid grid-cols-[auto_1fr] grid-rows-[auto-auto] ",
+        "themed-surface-clickable w-listitem-card [--x-spacing:--spacing(2)] sm:[--x-spacing:--spacing(4)]",
+      )}
+    >
+      {onlyIf(hero, <div className="col-span-full">{hero}</div>)}
+
+      <div
+        className="grid grid-rows-subgrid grid-cols-subgrid
+      space-x-(--x-spacing) px-(--x-spacing) py-4 col-span-full"
+      >
+        {onlyIf(
+          inlineImage,
+          <div
+            className="bg-[color-mix(in_srgb,var(--primary),var(--background))]
+            border-primary border-1 aspect-square size-listitem-card-image shrink-0
+            rounded-md overflow-hidden *:w-full empty:hidden @max-2xs:hidden"
+          >
+            {inlineImage}
+          </div>,
         )}
 
-        <div className="w-full p-2 text-sm [&>h2]:text-xl [&>h2]:font-semibold">
-          <div className="chip chip-content surface-primary-container float-right w-fit text-xs empty:hidden">
-            {label}
-          </div>
+        {onlyIf(
+          border && !inlineImage,
+          <div className="bg-primary h-full w-[calc(var(--x-spacing)/2)]" />,
+        )}
 
+        <div className="col-start-2">
+          {onlyIf(
+            label,
+            <div className="chip chip-content surface-primary-container float-right w-fit text-xs">
+              {label}
+            </div>,
+          )}
           {children}
         </div>
-      </Row>
+      </div>
     </Link>
   );
 };

@@ -15,6 +15,7 @@ export const ConstituencyItemCard = (props: {
     <ListItemCard
       href={navigationHref("constituency", parliamentdotuk)}
       themeSource={mp?.party}
+      border={true}
     >
       <h2>{name}</h2>
 

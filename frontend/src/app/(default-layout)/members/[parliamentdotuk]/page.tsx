@@ -9,7 +9,10 @@ import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
 import { ContentLayout } from "@/components/page-layout";
 import { HeaderCard } from "@/features/cards";
 import { ConstituencyLink, PartyLink } from "@/features/linked-data";
-import { MemberPortrait } from "@/features/member-portrait";
+import {
+  MemberPortrait,
+  ParliamentThumbnailSize,
+} from "@/features/member-portrait";
 import { itemThemeCss } from "@/features/themed/item-theme";
 import { WebLinks } from "@/features/weblinks";
 import { Nullish } from "@/types/common";
@@ -78,8 +81,22 @@ const MemberCard = (props: MemberComponentProps) => {
             <MemberPortrait
               name={member.name}
               src={portrait.wide}
-              aspectClassName="aspect-3/2"
-              className="h-[220px] sm:w-auto [:has(>img)]:w-full"
+              aspect="aspect-wide"
+              width={ParliamentThumbnailSize}
+              className="max-sm:hidden"
+              priority
+            />
+          </a>
+        ))}
+        hero={onlyIf(member.portrait, (portrait) => (
+          <a href={portrait.full ?? undefined}>
+            <MemberPortrait
+              name={member.name}
+              src={portrait.full}
+              aspect="aspect-wide"
+              width={640}
+              className="sm:hidden object-top"
+              priority
             />
           </a>
         ))}

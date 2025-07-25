@@ -114,7 +114,9 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
 const Demographics = (props: { party: PartyDetail }) => {
   const { party } = props;
 
-  if (!party.gender_demographics && !party.lords_demographics) return null;
+  if (!party.gender_demographics.length && !party.lords_demographics) {
+    return null;
+  }
 
   return (
     <>
@@ -129,6 +131,7 @@ const Demographics = (props: { party: PartyDetail }) => {
 
 const _GenderDemographics = (props: { demographics: GenderDemographics[] }) => {
   const { demographics } = props;
+  if (!demographics?.length) return null;
   return (
     <table>
       <thead>

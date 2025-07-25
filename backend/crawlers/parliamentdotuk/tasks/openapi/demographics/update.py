@@ -40,6 +40,8 @@ def update_demographics(context: TaskContext, for_date: date | None = None):
         context=context,
     )
 
+    update_demographics_from_local_data(context=context)
+
 
 def _update_party_demographics(
     response_data: dict, context: TaskContext, func_kwargs: dict
@@ -56,8 +58,8 @@ def _update_party_demographics(
         party=party,
         house=house,
         defaults={
-            "male_member_count": data.male_member_count,
             "female_member_count": data.female_member_count,
+            "male_member_count": data.male_member_count,
             "non_binary_member_count": data.non_binary_member_count,
             "total_member_count": data.total_member_count,
         },
@@ -85,3 +87,42 @@ def _update_lords_demographics(response_data: dict, context: TaskContext):
             "total_count": data.total_count,
         },
     )
+
+
+def update_demographics_from_local_data(context: TaskContext=None):
+    """Use local data to update demographics for parties that are not listed in Parliament API data.
+
+    e.g. Labour (Co-op) data is aggregated with the main Labour party in Parliament data.
+    """
+
+    parties = Party.objects.filter(active_member_count=0).prefetch_related("person_set")
+    houses = (House.objects.commons(), House.objects.lords())
+
+    for party in parties:
+        all_members = party.person_set.current()
+        active_members_count = 0
+
+        for house in houses:
+            house_members = all_members.filter(house=house)
+            house_members_count = house_members.count()
+            male_member_count = house_members.filter(gender="M").count()
+            female_member_count = house_members.filter(gender="F").count()
+
+            # As of 2025-07-25, no members are registered as non-binary in available Parliament API data.
+            # This should be updated when that changes, but until then we don't know for certain what code
+            # will be used to reference them and we will refrain from guessing.
+            non_binary_member_count = 0
+
+            PartyGenderDemographics.objects.update_or_create(
+                party=party,
+                house=house,
+                defaults={
+                    "female_member_count": female_member_count,
+                    "male_member_count": male_member_count,
+                    "non_binary_member_count": non_binary_member_count,
+                    "total_member_count": house_members_count,
+                }
+            )
+            active_members_count += house_members_count
+        party.active_member_count = active_members_count
+        party.save(update_fields=["active_member_count"])

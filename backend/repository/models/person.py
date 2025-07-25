@@ -70,6 +70,12 @@ class PersonQuerySet(BaseQuerySet):
     def for_house(self, house: str) -> Self:
         return self.filter(house__name__iexact=house)
 
+    def mps(self) -> Self:
+        return self.filter(house__name__iexact=HOUSE_OF_COMMONS)
+
+    def lords(self) -> Self:
+        return self.filter(house__name__iexact=HOUSE_OF_LORDS)
+
     def for_party_id(self, party_id: int) -> Self:
         from repository.models.party import PartyQuerySet
 
@@ -275,7 +281,8 @@ class PersonStatus(PersonMixin, PeriodMixin, BaseModel):
     is_active = models.BooleanField(
         db_index=True,
         help_text=_(
-            "Whether this person is currently using their seat. May be false if they are on leave or suspended in some way."
+            "Whether this person is currently using their seat. "
+            "May be false if they are on leave or suspended in some way."
         ),
     )
     description = models.TextField(null=True, blank=True)

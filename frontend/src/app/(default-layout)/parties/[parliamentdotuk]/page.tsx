@@ -147,7 +147,7 @@ const _GenderDemographics = (props: { demographics: GenderDemographics[] }) => {
   const { demographics } = props;
   if (!demographics?.length) return null;
   return (
-    <table>
+    <table className="card surface">
       <thead>
         <tr>
           <th />
@@ -196,7 +196,7 @@ const _LordsDemographics = (props: {
   if (!demographics) return null;
 
   return (
-    <table>
+    <table className="card surface">
       <thead>
         <tr>
           <th colSpan={2} className="text-center">

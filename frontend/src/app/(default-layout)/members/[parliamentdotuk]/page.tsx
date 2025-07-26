@@ -7,6 +7,7 @@ import { PhysicalAddress } from "@/app/(default-layout)/members/_components/addr
 import { Date } from "@/components/datetime";
 import { OptionalDiv, OptionalSpan, onlyIf } from "@/components/optional";
 import { ContentLayout } from "@/components/page-layout";
+import { Row } from "@/components/row";
 import { HeaderCard } from "@/features/cards";
 import { ConstituencyLink, PartyLink } from "@/features/linked-data";
 import {
@@ -203,11 +204,11 @@ const MemberDetail = (props: MemberComponentProps) => {
   return (
     <section {...rest}>
       <h2>Contact</h2>
-      <div className="flex max-w-full flex-wrap gap-4 overflow-x-auto">
+      <Row overflow="scroll" vertical="items-start" className="gap-4">
         {member.address.physical.map((it) => (
-          <PhysicalAddress key={it.address} className="shrink-0 p-1" {...it} />
+          <PhysicalAddress key={it.address} className="p-1" {...it} />
         ))}
-      </div>
+      </Row>
     </section>
   );
 };

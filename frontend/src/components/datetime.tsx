@@ -57,7 +57,7 @@ export const DateRange = (
     dateFormat,
     capitalized = true,
     ...rest
-  } = addClass(props, "flex gap-x-0.5");
+  } = addClass(props, "row gap-x-0.5");
   const start = parseDate(props.start);
   const end = parseDate(props.end);
 

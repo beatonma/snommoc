@@ -142,7 +142,7 @@ const ElectionResult = (props: { result: ElectionResult }) => {
           </div>
         </div>
 
-        <table className="w-full">
+        <table className="w-full card surface">
           <thead>
             <tr>
               <th className="text-left">Candidate</th>

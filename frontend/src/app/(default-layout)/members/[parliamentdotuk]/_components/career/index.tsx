@@ -1,13 +1,13 @@
 "use client";
 
-import React, { ReactNode, useMemo } from "react";
+import React from "react";
 import { ResponseOf } from "@/api/client";
 import { useGet } from "@/api/hooks";
 import { MemberCareer } from "@/api/schema";
 import { DateRange } from "@/components/datetime";
 import { LoadingSpinner } from "@/components/loading";
 import { SeparatedRow } from "@/components/row";
-import { TabContent } from "@/components/tabs";
+import { useTabContent } from "@/components/tabs";
 import { TabLayout } from "@/components/tabs";
 import {
   CommitteeLink,
@@ -17,7 +17,6 @@ import {
   PartyLink,
   PostLink,
 } from "@/features/linked-data";
-import { Nullish } from "@/types/common";
 import {
   type CareerSummary as CareerSummaryData,
   DateRangeItem,
@@ -38,80 +37,72 @@ export const FullCareer = (props: { parliamentdotuk: number }) => {
     path: { parliamentdotuk },
   });
 
-  const tabs: TabContent<string>[] | null = useMemo(() => {
-    if (career === "loading" || !career) return null;
-    return [
-      ...getCareerTabs(career),
-      [
-        "Voting history",
-        () => (
-          <SectionLayout title="Voting History">
-            <MemberVotingHistory parliamentdotuk={parliamentdotuk} />
-          </SectionLayout>
-        ),
-      ],
-    ];
-  }, [parliamentdotuk, career]);
-
   if (career === "loading") return <LoadingSpinner />;
   if (!career) return null;
-  if (!tabs) return null;
 
   return (
     <div className="surface card card-content space-y-2">
       <h2>Career</h2>
-      <TabLayout contentProps={{ className: "py-8" }} tabs={tabs} />
+      <CareerTabLayout parliamentdotuk={parliamentdotuk} career={career} />
     </div>
   );
 };
 
-const getCareerTabs = (career: Career | Nullish): TabContent<string>[] => {
-  if (!career) return [];
-  return [
-    [
-      "Summary",
-      () => (
+const CareerTabLayout = (props: {
+  parliamentdotuk: number;
+  career: Career;
+}) => {
+  const { parliamentdotuk, career } = props;
+
+  const tabs = useTabContent([
+    {
+      title: "Summary",
+      content: () => (
         <CareerSummary
           houses={career.houses}
           parties={career.parties}
           constituencies={career.constituencies}
         />
       ),
-    ],
-    section(
-      "Subjects",
-      career.subjects_of_interest,
-      (it) => Object.keys(it).length > 0,
-      () => <SubjectsOfInterest subjects={career.subjects_of_interest} />,
-    ),
-    section("Posts", career.posts, NotEmpty, () => (
-      <Posts posts={career.posts} />
-    )),
-    section("Committees", career.committees, NotEmpty, () => (
-      <Committees committees={career.committees} />
-    )),
-    section("Registered Interests", career.interests, NotEmpty, () => (
-      <RegisteredInterests interests={career.interests} />
-    )),
-    section("Experiences", career.experiences, NotEmpty, () => (
-      <Experiences experiences={career.experiences} />
-    )),
-  ].filter(Boolean) as TabContent<string>[];
-};
+    },
+    {
+      title: "Subjects",
+      condition: Object.keys(career.subjects_of_interest).length > 0,
+      content: () => (
+        <SubjectsOfInterest subjects={career.subjects_of_interest} />
+      ),
+    },
+    {
+      title: "Posts",
+      condition: career.posts.length > 0,
+      content: () => <Posts posts={career.posts} />,
+    },
+    {
+      title: "Committees",
+      condition: career.committees.length > 0,
+      content: () => <Committees committees={career.committees} />,
+    },
+    {
+      title: "Registered Interests",
+      condition: career.interests.length > 0,
+      content: () => <RegisteredInterests interests={career.interests} />,
+    },
+    {
+      title: "Experiences",
+      condition: career.experiences.length > 0,
+      content: () => <Experiences experiences={career.experiences} />,
+    },
+    {
+      title: "Voting History",
+      content: () => (
+        <SectionLayout>
+          <MemberVotingHistory parliamentdotuk={parliamentdotuk} />
+        </SectionLayout>
+      ),
+    },
+  ]);
 
-const NotEmpty = (list: unknown[]) => list.length > 0;
-
-const section = <T,>(
-  name: string,
-  items: T,
-  condition: (items: T) => boolean,
-  block: () => ReactNode,
-): TabContent<string> | null => {
-  if (!condition(items)) {
-    return null;
-  }
-
-  return [name, block];
+  return <TabLayout contentProps={{ className: "py-8" }} tabs={tabs} />;
 };
 
 /**
@@ -123,15 +114,19 @@ const CareerSummary = (props: CareerSummaryData) => {
   if (!houses.length && !parties.length && !constituencies.length) return null;
 
   return (
-    <section>
+    <section className="space-y-2">
       {parties.map((it) => (
         <InlineDateRangeItem key={it.start} start={it.start} end={it.end}>
-          <PartyLink party={it.party} />
+          <span>
+            <PartyLink party={it.party} /> member
+          </span>
         </InlineDateRangeItem>
       ))}
       {constituencies.map((it) => (
         <InlineDateRangeItem key={it.start} start={it.start} end={it.end}>
-          MP for <ConstituencyLink constituency={it.constituency} />
+          <span>
+            MP for <ConstituencyLink constituency={it.constituency} />
+          </span>
         </InlineDateRangeItem>
       ))}
       {houses.map((it) => (
@@ -145,7 +140,6 @@ const CareerSummary = (props: CareerSummaryData) => {
 
 const Posts = ({ posts }: { posts: MemberCareer["posts"] }) => (
   <ListSection
-    title="Posts"
     data={posts}
     block={(post) => (
       <DateRangeItem start={post.start} end={post.end}>
@@ -161,7 +155,6 @@ const Committees = ({
   committees: MemberCareer["committees"];
 }) => (
   <ListSection
-    title="Committees"
     data={committees}
     block={(it) => (
       <DateRangeItem start={it.start} end={it.end}>
@@ -178,7 +171,6 @@ const Experiences = ({
 }) => {
   return (
     <ListSection
-      title="Non-parliamentary experience"
       data={experiences}
       block={(it) => (
         <div>
@@ -205,7 +197,6 @@ const SubjectsOfInterest = ({
 }) => (
   <Section
     className="gap-y-4"
-    title="Subjects of interest"
     data={subjects}
     block={(data) =>
       Object.entries(data).map(([category, items]) => (

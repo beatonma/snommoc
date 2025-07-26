@@ -68,7 +68,7 @@
   }
 
   table {
-    @apply card surface w-fit sm:rounded-lg;
+    @apply w-fit sm:rounded-lg;
 
     thead th:not(:empty) {
       @apply border-primary/25 border-b-[0.1px] py-2;

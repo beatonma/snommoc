@@ -5,9 +5,12 @@ import { MemberCareer } from "@/api/schema";
 import { InlineLink } from "@/components/button";
 import { Date, formatDate, parseDate } from "@/components/datetime";
 import { Highlight, Highlighter } from "@/components/highlight";
+import { onlyIf } from "@/components/optional";
+import { Row } from "@/components/row";
 import { useSortable } from "@/components/sortable";
 import { Links } from "@/links";
 import { DivProps } from "@/types/react";
+import { addClass } from "@/util/transforms";
 import { DateRangeItem, ListSection, ListSubheader } from "./components";
 
 const sortByCategory = (a: Interest, b: Interest) =>
@@ -65,10 +68,9 @@ export const RegisteredInterests = ({
   return (
     <ListSection
       className="gap-y-4"
-      title="Registered Interests"
       toolbar={
         <>
-          <div>
+          <Row className="space-x-2">
             <label htmlFor={showDatesId}>Show all dates</label>
             <input
               id={showDatesId}
@@ -76,8 +78,8 @@ export const RegisteredInterests = ({
               checked={showDates}
               onChange={(el) => setShowDates(el.currentTarget.checked)}
             />
-          </div>
-          <div>{sortBySelectElement}</div>
+          </Row>
+          <Row className="space-x-2">{sortBySelectElement}</Row>
         </>
       }
       data={sortedData}
@@ -89,7 +91,7 @@ export const RegisteredInterests = ({
               current={lst[index]}
               compare={(it) => subheader[sortedBy].compare(it)}
               subheader={(it) => (
-                <h4 className="mt-4">{subheader[sortedBy].subheader(it)}</h4>
+                <h4 className="mt-8">{subheader[sortedBy].subheader(it)}</h4>
               )}
             />
 
@@ -109,6 +111,7 @@ type RegisteredInterestsProps = DivProps<{
   interest: Interest;
   showDates: boolean;
   showCategory: boolean;
+  isNested?: boolean;
 }>;
 
 const RegisteredInterest = (props: RegisteredInterestsProps) => {
@@ -139,7 +142,7 @@ const RegisteredInterestDateRangeItem = (props: RegisteredInterestsProps) => {
     <DateRangeItem
       start={description.start}
       end={description.end}
-      className="card card-content surface"
+      className="card-content block"
       {...rest}
     >
       {description.additional_values[0]}
@@ -148,7 +151,7 @@ const RegisteredInterestDateRangeItem = (props: RegisteredInterestsProps) => {
 };
 
 const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
-  const { interest, showDates, showCategory, ...rest } = props;
+  const { interest, showDates, showCategory, isNested, ...rest } = props;
 
   const highlighters: Highlighter[] = useMemo(
     () => [
@@ -167,7 +170,13 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
   );
 
   return (
-    <div {...rest}>
+    <div
+      {...addClass(
+        rest,
+        "colorful-links",
+        onlyIf(!isNested, "border-b-1 border-current/20"),
+      )}
+    >
       <table className="w-full table-fixed">
         <colgroup>
           <col className="w-40" />
@@ -214,6 +223,7 @@ const RegisteredInterestTable = (props: RegisteredInterestsProps) => {
           interest={child}
           showDates={showDates}
           showCategory={false}
+          isNested={true}
           className="border-primary my-2 ml-1 border-l-4 pl-4"
         />
       ))}

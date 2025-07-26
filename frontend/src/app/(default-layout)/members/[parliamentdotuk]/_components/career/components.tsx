@@ -6,11 +6,11 @@ import { onlyIf } from "@/components/optional";
 import { Row } from "@/components/row";
 import { Nullish } from "@/types/common";
 import { DivProps, Props } from "@/types/react";
+import { addClass } from "@/util/transforms";
 
 export const SecondaryStyle = "text-reduced text-sm";
 
 interface SectionHeaderProps {
-  title: string | undefined;
   toolbar?: ReactNode;
 }
 interface BlockProps<T> extends SectionHeaderProps {
@@ -32,31 +32,20 @@ export const Section = <T,>(props: SectionProps<BlockProps<T>>) => {
   return <SectionLayout {...rest}>{block(data)}</SectionLayout>;
 };
 
-export const SectionLayout = (
-  props: Props<"section", { title: string | undefined; toolbar?: ReactNode }>,
-) => {
+export const SectionLayout = (props: Props<"section", SectionHeaderProps>) => {
   const { title, toolbar, children, ...rest } = props;
   const id = useId();
-  const titleHeader = onlyIf(
-    title,
-    <h3 className="text-lg text-reduced">{title}</h3>,
-  );
 
   return (
     <section id={id} {...rest}>
-      {toolbar ? (
-        <Row overflow="wrap" horizontal="justify-between">
-          {titleHeader}
-          <Row
-            overflow="wrap"
-            vertical="items-center"
-            className="gap-x-8 *:flex *:flex-row *:items-center *:gap-x-2"
-          >
-            {toolbar}
-          </Row>
-        </Row>
-      ) : (
-        titleHeader
+      {onlyIf(
+        toolbar,
+        <Row
+          overflow="wrap"
+          className="gap-x-8 border-1 border-primary/50 px-4 py-2 rounded-sm w-fit surface-primary-container"
+        >
+          {toolbar}
+        </Row>,
       )}
 
       {children}
@@ -137,7 +126,8 @@ export const DateRangeItem = (props: DateRangeItemProps) => {
   );
 };
 export const InlineDateRangeItem = (props: DateRangeItemProps) => (
-  <DateRangeItem capitalized={false} {...props} />
+  <DateRangeItem
+    capitalized={false}
+    {...addClass(props, "row-wrap items-baseline gap-x-1")}
+  />
 );
-
-// {/*{...addClass(props, "flex items-baseline gap-1")}*/}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useId, useMemo, useState } from "react";
+import { DependencyList, ReactNode, useId, useMemo, useState } from "react";
 import {
   DivProps,
   DivPropsNoChildren,
@@ -112,12 +112,13 @@ interface MaybeTabContent<T extends string> {
 }
 export const useTabContent = <T extends string>(
   content: MaybeTabContent<T>[],
+  deps?: DependencyList,
 ): TabContent<T>[] => {
   return useMemo(
     () =>
       content
         .filter((it) => it.condition !== false)
         .map((it) => [it.title, it.content]),
-    [content],
+    [deps],
   );
 };

@@ -78,4 +78,8 @@
   .wide-cards {
     --spacing-listitem-card: min(100%, var(--spacing-listitem-card-wide));
   }
+
+  .full-cards {
+    --spacing-listitem-card: 100%;
+  }
 }

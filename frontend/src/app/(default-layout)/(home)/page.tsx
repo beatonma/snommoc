@@ -75,13 +75,13 @@ export default async function Home() {
         </Prose>
       </section>
 
-      <div className={classes(styles.zeitgeist, "gap-8")}>
+      <div className={classes(styles.zeitgeist, "gap-y-8")}>
         <People people={people} className={classes(styles.people, "gap-x-4")} />
         <Divisions
           divisions={divisions}
-          className={classes(styles.divisions, "wide-cards")}
+          className={classes(styles.divisions, "full-cards")}
         />
-        <Bills bills={bills} className={classes(styles.bills, "wide-cards")} />
+        <Bills bills={bills} className={classes(styles.bills, "full-cards")} />
       </div>
     </ContentLayout>
   );
@@ -153,7 +153,7 @@ const Divisions = (props: DivPropsNoChildren<{ divisions: Division[] }>) => {
           <DivisionItemCard
             key={it.target.parliamentdotuk}
             division={it.target}
-            className="max-w-listitem-card"
+            className=""
           />
         ))}
       </div>
@@ -171,7 +171,11 @@ const Bills = (props: DivPropsNoChildren<{ bills: Bill[] }>) => {
     >
       <div className="space-y-4">
         {bills.map((it) => (
-          <BillItemCard key={it.target.parliamentdotuk} bill={it.target} />
+          <BillItemCard
+            key={it.target.parliamentdotuk}
+            bill={it.target}
+            className=""
+          />
         ))}
       </div>
     </ZeitgeistSection>
@@ -187,7 +191,7 @@ const ZeitgeistSection = (
 ) => {
   const { title, moreHref, children, ...rest } = props;
   return (
-    <div {...addClass(rest, "space-y-1")}>
+    <div {...addClass(rest, "space-y-4")}>
       <h2 className="px-edge">
         <InlineLink href={moreHref}>{title}</InlineLink>
       </h2>

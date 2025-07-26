@@ -20,13 +20,17 @@ export const Sponsors = (
   const { sponsors, ...rest } = props;
   return (
     <div {...rest}>
-      <strong>Sponsors:</strong>
+      <h2 className="prose-h3">Sponsors</h2>
 
-      <Row overflow="scroll" className="gap-x-4 *:w-listitem-card *:block">
+      <Row
+        overflow="scroll"
+        className="gap-x-4 narrow-cards"
+        vertical="items-start"
+      >
         {sponsors.map((it) => (
           <Fragment key={it.id}>
             {onlyIf(it.profile, (profile) => (
-              <MemberItemCard member={profile} />
+              <MemberItemCard member={profile} layout="hero" />
             ))}
             {onlyIf(it.organisation, (org) => (
               <OrganisationItemCard organisation={org} />

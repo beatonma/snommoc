@@ -57,7 +57,7 @@ export default async function BillDetailPage({ params }: PageProps) {
           <Html html={bill.description} />
         </Prose>
       )}
-      <Sponsors sponsors={bill.sponsors} />
+      <Sponsors sponsors={bill.sponsors} className="space-y-2" />
       <BillType type={bill.type} className="card card-content surface" />
 
       <BillTabs bill={bill} className="card card-content surface" />

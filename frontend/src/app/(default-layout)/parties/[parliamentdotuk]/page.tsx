@@ -10,7 +10,7 @@ import { MembersList } from "@/app/(default-layout)/members/members";
 import { OptionalSvg } from "@/components/image";
 import { OptionalDiv } from "@/components/optional";
 import { ContentLayout } from "@/components/page-layout";
-import { Row } from "@/components/row";
+import { Row, SeparatedRow } from "@/components/row";
 import { HeaderCard } from "@/features/cards";
 import { itemThemeCss } from "@/features/themed/item-theme";
 import { WebLinks } from "@/features/weblinks";
@@ -68,25 +68,39 @@ const PartyPage = ({ party }: { party: PartyDetail }) => {
           >
             <h1>{party.name}</h1>
 
-            <OptionalDiv
-              value={party.short_name}
-              condition={(it) => it !== party.name}
-            />
-            <OptionalDiv
-              value={party.long_name}
-              condition={(it) => it !== party.name}
-            />
-            <OptionalDiv
-              value={party.year_founded}
-              condition={Boolean}
-              block={(founded) => `Founded ${founded}`}
-            />
-            <OptionalDiv
-              value={party.active_member_count}
-              block={(count) =>
-                `${plural("Member", count).toLowerCase()} in Parliament`
-              }
-            />
+            <SeparatedRow>
+              <OptionalDiv
+                value={party.short_name}
+                condition={(it) => it !== party.name}
+              />
+              <OptionalDiv
+                value={party.long_name}
+                condition={(it) => it !== party.name}
+              />
+            </SeparatedRow>
+
+            <SeparatedRow>
+              <OptionalDiv
+                value={party.year_founded}
+                condition={Boolean}
+                block={(founded) => `Founded ${founded}`}
+              />
+              <OptionalDiv
+                value={
+                  (party.active_mp_count ?? 0) + (party.active_lord_count ?? 0)
+                }
+                block={(count) => (
+                  <>
+                    <span>
+                      {plural("Member", count).toLowerCase()} in
+                      Parliament:{" "}
+                    </span>
+                    <span>{plural("MP", party.active_mp_count ?? 0)}</span>,{" "}
+                    <span>{plural("Lord", party.active_lord_count ?? 0)}</span>
+                  </>
+                )}
+              />
+            </SeparatedRow>
 
             <WebLinks links={[party.homepage, party.wikipedia]} />
           </HeaderCard>

@@ -12,7 +12,6 @@ from api.schema.types import (
     field,
 )
 from ninja import Schema
-from pydantic import Field
 from repository.models import Constituency
 
 __all__ = [
@@ -52,8 +51,8 @@ class PartyMiniSchema(BasePartySchema):
     name: AdministrativeName
     logo: str | None
     logo_mask: str | None
-    active_member_count: int
-    active_commons_members: int | None = Field(default=None)
+    active_mp_count: int | None = None
+    active_lord_count: int | None = None
 
     @staticmethod
     def resolve_name(obj):

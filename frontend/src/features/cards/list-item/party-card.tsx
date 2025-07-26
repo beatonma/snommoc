@@ -32,8 +32,8 @@ export const PartyItemCard = (props: Props<"a", { party: Party }>) => {
 };
 
 const partyMemberSummary = (party: Party) => {
-  const mps = party.active_commons_members;
-  const lords = party.active_member_count - (party.active_commons_members ?? 0);
+  const mps = party.active_mp_count;
+  const lords = party.active_lord_count;
 
   const parts = [];
   if (mps) parts.push(plural("MP", mps));

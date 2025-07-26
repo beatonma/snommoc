@@ -152,7 +152,25 @@ class Party(
     logo = models.FileField(upload_to="party_logo", null=True, blank=True)
     logo_mask = models.FileField(upload_to="party_logo_mask", null=True, blank=True)
 
-    active_member_count = models.PositiveSmallIntegerField(default=0)
+    def active_mp_count(self) -> int:
+        count = self.person_set.active().mps().count()
+
+        if self.parliamentdotuk == _LABOUR_ID and (
+            coop := Party.objects.get_or_none(parliamentdotuk=_LABOUR_COOP_ID)
+        ):
+            count += coop.active_mp_count()
+
+        return count
+
+    def active_lord_count(self) -> int:
+        count = self.person_set.active().lords().count()
+
+        if self.parliamentdotuk == _LABOUR_ID and (
+            coop := Party.objects.get_or_none(parliamentdotuk=_LABOUR_COOP_ID)
+        ):
+            count += coop.active_lord_count()
+
+        return count
 
     def save(self, *args, **kwargs):
         self.update_ascii_name(self.name)

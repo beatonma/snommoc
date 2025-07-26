@@ -6,7 +6,6 @@ from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.parties.update import update_party
 from crawlers.parliamentdotuk.tasks.openapi.schema import ResponseItem
 from dateutil.utils import today
-from django.db.models import F
 from repository.models import (
     House,
     Party,
@@ -20,9 +19,8 @@ from . import schema
 
 @task_context(cache_name=caches.DEMOGRAPHICS)
 def update_demographics(context: TaskContext, for_date: date | None = None):
-    # Important: Party.active_member_count is updated through _update_party_demographics
-    # so it must be reset to zero at the start of this process.
-    Party.objects.update(active_member_count=0)
+    PartyGenderDemographics.objects.all().delete()
+    PartyLordsDemographics.objects.all().delete()
 
     houses: list[HouseType] = ["Commons", "Lords"]
     for_date: date = for_date or today()
@@ -65,11 +63,6 @@ def _update_party_demographics(
         },
     )
 
-    # Important: Party.active_member_count must be reset to 0 at start
-    # of this task so that active_member_count is accurate
-    party.active_member_count = F("active_member_count") + data.total_member_count
-    party.save(update_fields=["active_member_count"])
-
 
 def _update_lords_demographics(response_data: dict, context: TaskContext):
     data = (
@@ -89,18 +82,18 @@ def _update_lords_demographics(response_data: dict, context: TaskContext):
     )
 
 
-def update_demographics_from_local_data(context: TaskContext=None):
+def update_demographics_from_local_data(context: TaskContext = None):
     """Use local data to update demographics for parties that are not listed in Parliament API data.
 
     e.g. Labour (Co-op) data is aggregated with the main Labour party in Parliament data.
     """
-
-    parties = Party.objects.filter(active_member_count=0).prefetch_related("person_set")
+    parties = Party.objects.filter(gender_demographics__isnull=True).prefetch_related(
+        "person_set"
+    )
     houses = (House.objects.commons(), House.objects.lords())
 
     for party in parties:
         all_members = party.person_set.current()
-        active_members_count = 0
 
         for house in houses:
             house_members = all_members.filter(house=house)
@@ -121,8 +114,5 @@ def update_demographics_from_local_data(context: TaskContext=None):
                     "male_member_count": male_member_count,
                     "non_binary_member_count": non_binary_member_count,
                     "total_member_count": house_members_count,
-                }
+                },
             )
-            active_members_count += house_members_count
-        party.active_member_count = active_members_count
-        party.save(update_fields=["active_member_count"])

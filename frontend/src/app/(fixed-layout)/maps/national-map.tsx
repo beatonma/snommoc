@@ -5,11 +5,7 @@ import { get } from "@/api";
 import { ConstituencyMiniBoundary, PartyTerritory } from "@/api/schema";
 import { LoadingBar, LoadingSpinner } from "@/components/loading";
 import { onlyIf } from "@/components/optional";
-import {
-  ConstituencyLink,
-  PartyLink,
-  PersonLink,
-} from "@/features/linked-data";
+import { SeparatedRow } from "@/components/row";
 import { type LayerKey, Map, useMap } from "@/features/map";
 import { GeoLocation, UkParliamentLocation } from "@/features/map/geography";
 import { usePassiveGeoLocation } from "@/features/map/geolocation";
@@ -238,21 +234,22 @@ const HoveredConstituency = (
   }>,
 ) => {
   const { constituency, ...rest } = props;
+  if (!constituency) return null;
 
   return (
     <div {...rest}>
       <PartyIconBackground
-        themeSource={constituency?.mp?.party}
-        className="chip chip-content pointer-events-none"
+        themeSource={constituency.mp?.party}
+        className="card card-content pointer-events-none"
       >
-        <div className="column items-end">
-          <ConstituencyLink constituency={constituency} className="text-lg" />
+        <div className="space text-end">
+          <div className="text-lg font-bold">{constituency.name}</div>
 
-          {onlyIf(constituency?.mp, (mp) => (
-            <>
-              <PersonLink person={mp} />
-              <PartyLink party={mp?.party} showDot={false} />
-            </>
+          {onlyIf(constituency.mp, (mp) => (
+            <SeparatedRow separator="comma">
+              <span>{mp.name}</span>
+              <span>{mp.party?.name}</span>
+            </SeparatedRow>
           ))}
         </div>
       </PartyIconBackground>

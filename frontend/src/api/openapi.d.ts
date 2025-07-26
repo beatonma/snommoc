@@ -538,7 +538,7 @@ export interface components {
         MemberMiniSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["PersonName"];
-            portrait?: components["schemas"]["MemberPortrait"] | null;
+            portrait: components["schemas"]["MemberPortrait"] | null;
             /** Current Posts */
             current_posts: string[];
             party: components["schemas"]["PartyMiniSchema"] | null;
@@ -569,10 +569,10 @@ export interface components {
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
-            /** Active Member Count */
-            active_member_count: number;
-            /** Active Commons Members */
-            active_commons_members?: number | null;
+            /** Active Mp Count */
+            active_mp_count?: number | null;
+            /** Active Lord Count */
+            active_lord_count?: number | null;
         };
         PersonName: string;
         /** Publication */
@@ -767,7 +767,7 @@ export interface components {
         DivisionVoteMemberSchema: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["PersonName"];
-            portrait?: components["schemas"]["MemberPortrait"] | null;
+            portrait: components["schemas"]["MemberPortrait"] | null;
             party: components["schemas"]["PartyMiniSchema"];
         };
         /** PagedVoteWithPersonSchema */
@@ -835,7 +835,7 @@ export interface components {
         ConstituencyMapMP: {
             parliamentdotuk: components["schemas"]["ParliamentId"];
             name: components["schemas"]["PersonName"];
-            portrait?: components["schemas"]["MemberPortrait"] | null;
+            portrait: components["schemas"]["MemberPortrait"] | null;
             party: components["schemas"]["PartyMiniSchema"] | null;
         };
         /** ConstituencyMapSchema */
@@ -868,10 +868,10 @@ export interface components {
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
-            /** Active Member Count */
-            active_member_count: number;
-            /** Active Commons Members */
-            active_commons_members?: number | null;
+            /** Active Mp Count */
+            active_mp_count?: number | null;
+            /** Active Lord Count */
+            active_lord_count?: number | null;
             /** Territory */
             territory?: string | null;
         };
@@ -1185,8 +1185,10 @@ export interface components {
             logo: string | null;
             /** Logo Mask */
             logo_mask: string | null;
-            /** Active Member Count */
-            active_member_count: number;
+            /** Active Mp Count */
+            active_mp_count?: number | null;
+            /** Active Lord Count */
+            active_lord_count?: number | null;
             /** Gender Demographics */
             gender_demographics: components["schemas"]["GenderDemographics"][];
             lords_demographics?: components["schemas"]["LordsDemographics"] | null;

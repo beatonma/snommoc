@@ -4,32 +4,35 @@ import React from "react";
 import { GridSectionHeader } from "@/components/grid";
 import { PartyItemCard } from "@/features/cards";
 import { SearchList } from "@/features/paginated/search-list";
+import { plural } from "@/util/plurals";
 
 export const PartyList = () => (
   <SearchList
     path="/api/parties/"
     itemComponent={(party, index, arr) => {
-      if (
-        index > 0 &&
-        party.active_commons_members === null &&
-        (arr[index - 1]?.active_commons_members ?? null) !== null
-      ) {
+      const previous = arr[index - 1];
+
+      if (party.active_mp_count === 0 && previous?.active_mp_count) {
         return (
           <React.Fragment key={party.parliamentdotuk}>
-            <GridSectionHeader>No current MPs</GridSectionHeader>
+            <GridSectionHeader>
+              No current {plural("MP", 0, (it) => it)}
+            </GridSectionHeader>
             <PartyItemCard party={party} />
           </React.Fragment>
         );
       }
 
       if (
-        index > 0 &&
-        party.active_member_count === 0 &&
-        (arr[index - 1]?.active_member_count ?? 0) > 0
+        party.active_mp_count === 0 &&
+        party.active_lord_count === 0 &&
+        (previous?.active_mp_count || previous?.active_lord_count)
       ) {
         return (
           <React.Fragment key={party.parliamentdotuk}>
-            <GridSectionHeader>No current Members</GridSectionHeader>
+            <GridSectionHeader>
+              No current {plural("Member", 0, (it) => it)}
+            </GridSectionHeader>
             <PartyItemCard party={party} />
           </React.Fragment>
         );

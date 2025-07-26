@@ -32,7 +32,7 @@ export const HeaderCard = (props: HeaderCardProps) => {
       space-x-(--x-spacing) px-(--x-spacing) py-4 col-span-full"
       >
         {onlyIf(inlineImage, <>{inlineImage}</>)}
-        <div className="col-start-2">{children}</div>
+        <div className="col-start-2 space-y-2">{children}</div>
       </div>
     </ItemTheme>
   );

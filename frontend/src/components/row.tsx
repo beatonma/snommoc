@@ -28,20 +28,20 @@ export const Row = (props: DivProps<RowProps>) => {
         onlyIf(padEdge, "*:first:ms-edge *:last:me-edge"),
         horizontal,
         vertical,
+        "empty:hidden",
       )}
     />
   );
 };
 
-export const SeparatedRow = (props: DivProps<RowProps>) => {
-  const { overflow = "wrap", ...rest } = props;
-  return (
-    <Row
-      overflow={overflow}
-      {...addClass(
-        rest,
-        "*:not-last:after:content-['·'] *:not-last:after:mx-ch",
-      )}
-    />
-  );
+const Separator = {
+  middot: "*:not-last:after:content-['·'] *:not-last:after:mx-ch",
+  comma: "*:not-last:after:content-[','] *:not-last:after:me-[0.5ch]",
+};
+export const SeparatedRow = (
+  props: DivProps<RowProps & { separator?: keyof typeof Separator }>,
+) => {
+  const { overflow = "wrap", separator = "middot", ...rest } = props;
+
+  return <Row overflow={overflow} {...addClass(rest, Separator[separator])} />;
 };

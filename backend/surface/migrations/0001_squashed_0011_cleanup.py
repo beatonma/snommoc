@@ -14,20 +14,6 @@ class Migration(migrations.Migration):
         ("repository", "0001_squashed_0132_cleanup"),
     ]
 
-    replaces = [
-        ("surface", "0001_initial"),
-        ("surface", "0002_featuredcommonsdivision_featuredlordsdivision"),
-        ("surface", "0003_messageoftheday"),
-        ("surface", "0004_auto_20200820_1823"),
-        ("surface", "0005_zeitgeistitem"),
-        ("surface", "0006_auto_20210426_1554"),
-        ("surface", "0007_auto_20210902_1733"),
-        ("surface", "0008_delete_featuredbill"),
-        ("surface", "0009_featuredbill"),
-        ("surface", "0010_rename_created_on_featuredbill_created_at_and_more"),
-        ("surface", "0011_alter_zeitgeistitem_reason"),
-    ]
-
     operations = [
         migrations.CreateModel(
             name="MessageOfTheDay",

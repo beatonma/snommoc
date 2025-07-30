@@ -12,14 +12,6 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    replaces = [
-        ("social", "0001_squashed_0007_auto_20210902_1733"),
-        ("social", "0008_alter_vote_vote_type_delete_votetype"),
-        ("social", "0009_remove_usertoken_provider_and_more"),
-        ("social", "0010_alter_usertoken_oauth_session"),
-        ("social", "0011_rename_created_on_comment_created_at_and_more"),
-    ]
-
     dependencies = [
         ("contenttypes", "0002_remove_content_type_name"),
     ]

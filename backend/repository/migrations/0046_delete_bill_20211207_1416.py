@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("repository", "0045_auto_20211124_1731"),
-        ("surface", "0008_delete_featuredbill"),
+        # ("surface", "0008_delete_featuredbill"),
     ]
 
     operations = [

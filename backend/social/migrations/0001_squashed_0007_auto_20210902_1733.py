@@ -11,17 +11,6 @@ import util.time
 
 
 class Migration(migrations.Migration):
-
-    replaces = [
-        ("social", "0001_initial"),
-        ("social", "0002_signinserviceprovider_usertoken"),
-        ("social", "0003_auto_20200414_1507"),
-        ("social", "0004_auto_20200414_1605"),
-        ("social", "0005_auto_20200604_0954"),
-        ("social", "0006_auto_20200820_1823"),
-        ("social", "0007_auto_20210902_1733"),
-    ]
-
     initial = True
 
     dependencies = [

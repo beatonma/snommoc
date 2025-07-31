@@ -90,8 +90,6 @@ class MemberPortrait(Schema):
 
 class MinimalMemberSchema(ParliamentSchema):
     name: PersonName
-    portrait: Url | None = None
-    # portrait: Url | None = field("memberportrait.square_url", default=None)
     portrait: MemberPortrait | None = field("memberportrait", default=None)
 
 

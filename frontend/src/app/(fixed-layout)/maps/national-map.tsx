@@ -132,7 +132,20 @@ const NationalMapWithLocation = ({
         "h-full gap-2 overflow-hidden",
       )}
     >
-      <Map map={map} className={classes(styles.map, "card surface size-full")}>
+      <Map
+        map={map}
+        className={classes(styles.map, "card surface size-full")}
+        permissionUi={(button) => (
+          <div
+            className={classes(
+              styles.map,
+              "surface-alt flex items-center justify-center",
+            )}
+          >
+            {button}
+          </div>
+        )}
+      >
         <HoveredConstituency
           constituency={hoveredConstituency}
           className="touch:hidden absolute bottom-0 right-0 z-10 m-2"

@@ -13,8 +13,12 @@ interface RemoteContentProps {
   provider: RemoteContentProvider;
   content: () => ReactNode;
 }
-export const RemoteContent = (props: RemoteContentProps) => {
-  const { provider, content } = props;
+export const RemoteContent = (
+  props: RemoteContentProps & {
+    permissionUi?: (button: ReactNode) => ReactNode;
+  },
+) => {
+  const { provider, content, permissionUi } = props;
   const [isAllowed, setIsAllowed] = useState<boolean>();
 
   useEffect(() => {
@@ -29,11 +33,32 @@ export const RemoteContent = (props: RemoteContentProps) => {
   if (isAllowed === undefined) return <LoadingSpinner />;
   if (isAllowed) return <>{content()}</>;
 
-  return (
-    <TintedButton onClick={() => setIsAllowed(true)}>
-      {`Click to allow content from ${provider.domain}`}
+  const button = (
+    <TintedButton
+      onClick={() => setIsAllowed(true)}
+      className="self-center place-self-center"
+    >
+      Click to allow content from {provider.domain}
     </TintedButton>
   );
+
+  if (permissionUi) {
+    return permissionUi(button);
+  }
+  return button;
+
+  // const { children, ...rest } = permissionProps ?? {};
+  // return (
+  //   <div {...addClass(rest, "relative flex")}>
+  //     <div className="absolute size-full">{children}</div>
+  //     <TintedButton
+  //       onClick={() => setIsAllowed(true)}
+  //       className="self-center place-self-center"
+  //     >
+  //       Click to allow content from {provider.domain}
+  //     </TintedButton>
+  //   </div>
+  // );
 };
 
 const storageKeyOf = (provider: RemoteContentProvider) =>

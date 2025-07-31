@@ -156,8 +156,8 @@ const ElectionResult = (props: { result: ElectionResult }) => {
               let extra: ReactNode;
               if (!depositLost && it.votes < depositForfeitLimit) {
                 extra = (
-                  <tr className="hover:bg-inherit">
-                    <th colSpan={100} className="text-left">
+                  <tr className="hover:bg-inherit colorful-links">
+                    <th colSpan={100} className="text-left border-r-0">
                       <div className="border-y-[2px] border-dashed border-current/20 py-2 text-sm font-normal">
                         <span>Candidates with less than 5% of the vote </span>
                         <InlineLink

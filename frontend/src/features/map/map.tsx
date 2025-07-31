@@ -23,7 +23,7 @@ import {
   RemoteContentProvider,
 } from "@/components/remote-content";
 import { Nullish } from "@/types/common";
-import { DivProps } from "@/types/react";
+import { DivProps, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 import {
   Extents,
@@ -82,12 +82,18 @@ export const useMap = (options?: MapOptions) => {
   return map;
 };
 
-export const Map = (props: MapProps) => (
-  <RemoteContent
-    provider={OpenStreetMapsProvider}
-    content={() => <MapView {...props} />}
-  />
-);
+export const Map = (
+  props: MapProps & Pick<Props<typeof RemoteContent>, "permissionUi">,
+) => {
+  const { permissionUi, ...rest } = props;
+  return (
+    <RemoteContent
+      provider={OpenStreetMapsProvider}
+      content={() => <MapView {...props} />}
+      permissionUi={permissionUi}
+    />
+  );
+};
 
 interface MapProvider {
   source: () => ImageTile | TileImage;

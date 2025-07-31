@@ -31,5 +31,15 @@ export const ConstituencyMap = (props: ConstituencyMapProps) => {
     }
   }, [map, constituency]);
 
-  return <Map map={map} {...rest} />;
+  return (
+    <Map
+      map={map}
+      permissionUi={(button) => (
+        <div className="surface-alt flex items-center justify-center w-full p-4">
+          {button}
+        </div>
+      )}
+      {...rest}
+    />
+  );
 };

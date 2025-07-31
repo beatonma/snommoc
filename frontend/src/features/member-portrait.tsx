@@ -1,9 +1,10 @@
 import Image from "next/image";
 import React from "react";
 import Icon from "@/components/icon";
+import { ImageWithFallback } from "@/components/image";
 import { Nullish } from "@/types/common";
-import { Props } from "@/types/react";
-import { classes } from "@/util/transforms";
+import { DivPropsNoChildren, Props } from "@/types/react";
+import { addClass, classes } from "@/util/transforms";
 
 export const ParliamentThumbnailSize = 260; // Parliament-sourced thumbnail size
 
@@ -52,31 +53,35 @@ export const MemberPortrait = (props: PortraitProps) => {
 
   if (!src) {
     return (
-      <div
-        className={classes(
-          className,
-          resolvedAspect.className,
-          "flex items-center justify-center",
-        )}
-        {...rest}
-      >
-        <Icon
-          icon="Commons"
-          className="max-h-32 max-w-32 size-full aspect-square"
-        />
-      </div>
+      <FallbackImage className={classes(className, resolvedAspect.className)} />
     );
   }
 
   return (
-    <Image
+    <ImageWithFallback
+      src={src}
+      fallback={
+        <FallbackImage
+          className={classes(className, resolvedAspect.className)}
+        />
+      }
       loading={priority ? undefined : "lazy"}
       width={resolvedWidth}
       height={height}
-      src={src}
       alt={`Portrait of ${name}`}
       className={classes(className, resolvedAspect.className)}
       {...rest}
     />
+  );
+};
+
+const FallbackImage = (props: DivPropsNoChildren) => {
+  return (
+    <div {...addClass(props, "flex items-center justify-center")}>
+      <Icon
+        icon="Commons"
+        className="max-h-32 max-w-32 size-full aspect-square"
+      />
+    </div>
   );
 };

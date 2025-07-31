@@ -1,14 +1,17 @@
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { ImageProps, default as NextImage } from "next/image";
-import React from "react";
+"use client";
+
+import { default as NextImage } from "next/image";
+import React, { ReactNode, useState } from "react";
 import { Nullish } from "@/types/common";
-import { DivPropsNoChildren } from "@/types/react";
+import { DivPropsNoChildren, Props } from "@/types/react";
 import { addClass } from "@/util/transforms";
 
-interface OptionalImage {
-  src: string | StaticImport | undefined | null;
-}
-type OptionalImageProps = Omit<ImageProps, keyof OptionalImage> & OptionalImage;
+type NextImageSrc = Props<typeof NextImage>["src"];
+type OptionalImageProps = Props<
+  typeof NextImage,
+  { src: NextImageSrc | Nullish }
+>;
+
 export const OptionalImage = (props: OptionalImageProps) => {
   const { src, ...rest } = props;
   if (src) {
@@ -31,3 +34,29 @@ export const MaskedSvg = (
     style={{ maskImage: `url('${props.src}')`, ...props.style }}
   />
 );
+
+export const ImageWithFallback = (
+  props: OptionalImageProps & { fallback: ReactNode },
+) => {
+  const { src: preferredSrc, fallback, ...rest } = props;
+
+  const [src, setSrc] = useState(preferredSrc);
+
+  if (src) {
+    return (
+      <NextImage
+        src={src}
+        onError={() => {
+          if (typeof fallback === "string") {
+            setSrc(fallback);
+          } else {
+            setSrc(undefined);
+          }
+        }}
+        {...rest}
+      />
+    );
+  }
+
+  return <>{fallback}</>;
+};

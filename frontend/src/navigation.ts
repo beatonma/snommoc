@@ -16,6 +16,8 @@ const Navigation = {
   party: (parliamentdotuk: number) => `/parties/${parliamentdotuk}/`,
   people: () => "/members/",
   person: (parliamentdotuk: number) => `/members/${parliamentdotuk}/`,
+  about: (section?: "privacy" | "moderation") =>
+    section ? `/about/${section}/` : "/about/",
 };
 type Navigable = keyof typeof Navigation;
 export type NavDestination = {

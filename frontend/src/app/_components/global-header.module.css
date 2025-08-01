@@ -12,6 +12,7 @@
   .toolbar {
     grid-area: toolbar;
     display: flex;
+    flex-direction: row;
     justify-content: end;
     font-size: var(--text-sm);
   }
@@ -19,7 +20,7 @@
     grid-area: nav;
   }
 
-  @media (width >= 800px) {
+  @media (width >= 900px) {
     grid-template-areas: "h1 nav toolbar";
     grid-template-columns: auto 1fr auto;
 

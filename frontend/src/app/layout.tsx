@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import "./_style/index.css";
 
 export const metadata: Metadata = {
-  title: "Commons",
-  description: "Commons browser",
+  title: { default: "Commons", template: "%s - Commons" },
+  description: "A client for browsing UK Parliament data",
 };
 
 export default function RootLayout({

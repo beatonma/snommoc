@@ -22,6 +22,8 @@ type Person = Zeitgeist["people"][number];
 type Division = Zeitgeist["divisions"][number];
 type Bill = Zeitgeist["bills"][number];
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const zeitgeist = await getOrNull("/api/zeitgeist/");
 
@@ -37,32 +39,16 @@ export default async function Home() {
           <h2>Welcome</h2>
 
           <p>
-            This project started as an attempt to make UK politics more
-            engaging. It uses UK parliament data and attempts to display it in
-            readable, searchable, hopefully useful formats.
-          </p>
-
-          <p>
-            Somewhere along the way I realised that I don&#39;t have solid
-            vision of what it&#38;s actually supposed to be. Why should people
-            use it, and why should they keep coming back to it? I still
-            don&#39;t have a good answer for that. For a little more on its
-            development history please see{" "}
-            <a href="https://beatonma.org/apps/org-beatonma-commons/">here</a>.
-          </p>
-
-          <p>
-            I still work on it for learning purposes but have no real intention
-            of reaching a 1.0 release. It is now primarily a learning playground
-            and, hopefully, a portfolio piece.
-          </p>
-
-          <p>
-            All that is to say: the site you are viewing now is for{" "}
+            The site you are viewing now is for{" "}
             <strong>demo purposes only</strong>. You are welcome to look around
             but beware that data is incomplete and not scheduled for regular
             updates because, for demo purposes, that would just be a waste of
-            electricity.
+            electricity. User accounts are also disabled.
+          </p>
+
+          <p>
+            For more information on Commons see{" "}
+            <InlineLink href={navigationHref("about")}>here</InlineLink>.
           </p>
 
           <p>

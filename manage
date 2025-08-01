@@ -1,268 +1,76 @@
 #!/usr/bin/env bash
 
-# cd into location of script to ensure relative paths resolve correctly.
-BASE_DIR="$(dirname "$0")"
-cd "$BASE_DIR" || exit 1
+usage="$(basename "$0")
+  demo ...
+  dev  ...
+  test [...]
 
-flavor="$1"  # dev | production
+  openapi [port=8000]  Update API in frontend from server running on given port.
+"
+
+# cd into location of script to ensure relative paths resolve correctly.
+cd "$(dirname "$0")" || exit 1
+
+# Runtime variables
+context="$1"
 shift
 
-COMPOSE_PRODUCTION="compose.production.yml"
-COMPOSE_DEV="compose.dev.yml"
-
-DOT_ENV_PRODUCTION=".env.production"
-DOT_ENV_DEV=".env.dev"
-
-# Data import/export
-ARCHIVE_DIRNAME="data-archive"
-ARCHIVE_DB="backup.sql"
-DOCKER_CONTAINER_POSTGRES="snommoc_postgres"
-
-compose_file="NOT_SET"
-env_file="NOT_SET"
 
 log() {
   echo "$*" >"$(tty)"
 }
 
-show_help() {
-  log './manage (dev | production | certbot)'
-  log ''
-  log 'dev ( build | up | down ) [CONTAINER]'
-  log 'production ( build | up | down ) [CONTAINER]'
-  log 'certbot ( init | renew )'
-}
-command_error() {
-  log "Unhandled arguments '$*'"
-  log ''
-  show_help
-  log ''
-  exit 1
-}
-
 run_command() {
   log "COMMAND: '$*'"
   "$@"
-}
-
-docker_compose() {
-  run_command docker compose --env-file "$env_file" -f "$compose_file" "$@"
-}
-
-docker_compose_build() {
-  docker_compose --progress=plain build "$@"
-}
-
-production_build() {
-  source "$DOT_ENV_PRODUCTION"
-  docker_compose_build \
-    --build-arg SITE_NAME="$SITE_NAME" \
-    "$@"
-}
-
-docker_certbot() {
-  run_command docker run --rm \
-    --name certbot_renew \
-    --volume letsencrypt_keys:/etc/letsencrypt:rw \
-    --volume letsencrypt_webroot:/var/www/letsencrypt:rw \
-    --entrypoint "" \
-    -p 80:80 \
-    certbot/certbot:latest \
-    "$@"
-}
-certbot_init() {
-  # Run this before first run of production server
-  docker_certbot sh -c "certbot certonly --standalone $*"
-}
-certbot_renew() {
-  # Run this periodically to update.
-  # Server should be up for this but may need restarted once it's done
-  docker_certbot sh -c "certbot certonly --webroot -w /var/www/letsencrypt $*"
-}
-certbot() {
-  certbot_args_list=(
-    "-d ${DOMAIN_NAME}"
-    "-d www.${DOMAIN_NAME}"
-    "--email ${DOMAIN_EMAIL}"
-    "--rsa-key-size 4096"
-    "--keep-until-expiring"
-    "--agree-tos"
-    "--non-interactive"
-  )
-  # Concat list to string
-  certbot_args=$(printf "%s " "${certbot_args_list[@]}")
-
-  command="$1"
-  shift
-  case "$command" in
-  "init")
-    certbot_init "$certbot_args"
-    exit 0
-    ;;
-  "renew")
-    certbot_renew "$certbot_args"
-    exit 0
-    ;;
-  *)
-    command_error "$*"
-    ;;
-  esac
-}
-
-create_superuser() {
-  container_name="NOT_SET"
-  if [ "$flavor" = "dev" ]; then
-    container_name="dev_django"
-  elif [ "$flavor" = "production" ]; then
-    container_name="django"
+  exit_code=$?
+  if [ "$exit_code" -ne 0 ]; then
+    log "Command failed with code $exit_code:"
+    log "  '$*'"
+    exit "$exit_code"
   fi
-
-  run_command docker exec -it "$container_name" python manage.py createsuperuser
 }
 
-set_env() {
-  env_file="$*"
-  source "$env_file"
-}
+case "$context" in
+  "openapi")
+    run_command npx openapi-typescript "http://localhost:${1:-8000}/api/openapi.json" -o frontend/src/api/openapi.d.ts
+    exit 0
+    ;;
 
-export_data() {
-  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
-  output_filename="archive-$(date +%F).tar.gz"
-  docker_temp_db_path="/tmp/$ARCHIVE_DB"
+  "demo")
+    source "./tools/manage/prod_demo.sh"
+    ;;
+  "dev")
+    source "./tools/manage/dev.sh"
+    ;;
+  "test")
+    source "./tools/manage/test.sh"
+    ;;
+esac
 
-  # copy important files
-  run_command mkdir -p "$local_temp_path/"
-
-  # dump database
-  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
-    pg_dump --clean --create --no-owner \
-    --format=custom \
-    --username="$POSTGRES_USER" \
-    --file="$docker_temp_db_path" \
-    "$POSTGRES_DB"
-  run_command docker cp "${DOCKER_CONTAINER_POSTGRES}:$docker_temp_db_path" "$local_temp_path"
-
-  # build archive
-  run_command tar -czvf "$output_filename" -C "/tmp" "$ARCHIVE_DIRNAME"
-
-  # cleanup
-  run_command rm -r "$local_temp_path"
-  run_command docker exec "$DOCKER_CONTAINER_POSTGRES" \
-    rm "$docker_temp_db_path"
-
-  exit 0
-}
-
-import_data() {
-  archive_file="$1"
-  local_temp_path="/tmp/$ARCHIVE_DIRNAME"
-  docker_temp_db_path="/tmp/$ARCHIVE_DB"
-
-  # extract archive
-  run_command tar -xzvf "$archive_file" -C "/tmp"
-
-  # restore database
-  run_command docker cp "$local_temp_path/$ARCHIVE_DB" "$DOCKER_CONTAINER_POSTGRES:$docker_temp_db_path"
-  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" \
-    pg_restore --clean \
-    --verbose \
-    --no-owner \
-    --username="$POSTGRES_USER" \
-    --dbname="$POSTGRES_DB" \
-    "$docker_temp_db_path"
-
-  # cleanup
-  run_command rm -r "$local_temp_path"
-  run_command docker exec -i "$DOCKER_CONTAINER_POSTGRES" rm "$docker_temp_db_path"
-
-  exit 0
-}
-
-dev() {
-  case "$1" in
-  "up" | "down" | "restart" | "--")
+action="$1"
+# Common actions
+case "$action" in
+  "up" | "down" | "restart")
+    # Common docker commands
     docker_compose "$@"
     exit 0
     ;;
   "build")
+    # Docker build
     shift
     docker_compose_build "$@"
     exit 0
     ;;
-  "create_superuser")
-    create_superuser
-    exit 0
-    ;;
-  *)
-    command_error "$*"
-    ;;
-  esac
-}
-
-production() {
-  case "$1" in
-  "build")
-    production_build "$@"
-    exit 0
-    ;;
-  "up" | "down" | "--")
+  "--")
+    # Arbitrary docker command
+    shift
     docker_compose "$@"
     exit 0
     ;;
-  "create_superuser")
-    create_superuser
-    exit 0
-    ;;
-  *)
-    command_error "$*"
-    ;;
-  esac
-}
-case $flavor in
-"production")
-  set_env "$DOT_ENV_PRODUCTION"
-  compose_file=$COMPOSE_PRODUCTION
-  production "$@"
-  exit 0
-  ;;
-"dev")
-  set_env "$DOT_ENV_DEV"
-  compose_file=$COMPOSE_DEV
-  dev "$@"
-  exit 0
-  ;;
-"certbot")
-  source "$DOT_ENV_PRODUCTION"
-  certbot "$@"
-  exit 0
-  ;;
-"export")
-  set_env "$DOT_ENV_PRODUCTION"
-  export_data
-  exit 0
-  ;;
-"import")
-  set_env "$DOT_ENV_PRODUCTION"
-  import_data "$@"
-  exit 0
-  ;;
-"openapi")
-  npx openapi-typescript http://localhost:8000/api/openapi.json -o frontend/src/api/openapi.d.ts
-  exit 0
-  ;;
-"shell")
-  set_env "$DOT_ENV_DEV"
-  compose_file=$COMPOSE_DEV
-  docker_compose --profile manage run --rm "$@" django_manage
-  exit 0
-  ;;
-"jest")
-  set_env "$DOT_ENV_DEV"
-  compose_file=$COMPOSE_DEV
-  docker_compose --profile manage run --rm "$@" next_manage
-  exit 0
-  ;;
-*)
-  command_error "$flavor"
-  ;;
 esac
+
+# Context-specific actions, implemented in each context script
+if type run_action >/dev/null 2>&1; then run_action "$@"; fi
+
+log "$usage"

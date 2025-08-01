@@ -7,9 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "openapi": "tsc --noEmit",
-    "test": "jest --watchAll",
-    "test:once": "jest"
+    "jest": "jest",
+    "jest:watch": "jest --watchAll"
   },
   "dependencies": {
     "html-react-parser": "^5.2.5",

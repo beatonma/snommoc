@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const SERVER = process.env.SERVER;
 const nextConfig: NextConfig = {
+  output: "standalone",
   trailingSlash: true,
   async redirects() {
     return [

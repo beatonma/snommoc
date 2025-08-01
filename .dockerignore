@@ -1,6 +1,8 @@
 *.env
 *.gitbundle
 *.tar.gz
+*.sqlite
+*.sqlite3
 
 **/.git/
 **/.github/

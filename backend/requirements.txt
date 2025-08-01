@@ -14,6 +14,7 @@ django-phonenumber-field~=8.1
 django-redis>=5.4.0
 fuzzywuzzy~=0.18
 google-auth~=2.40
+gunicorn>=21.2
 Markdown~=3.8
 nh3~=0.2
 phonenumberslite~=9.0

@@ -1,0 +1,81 @@
+name: snommoc_demo
+
+volumes:
+  postgres_snommoc:
+  snommoc_media:
+  snommoc_static:
+
+
+x-common: &common
+  env_file:
+    - ".env.production"
+  restart: unless-stopped
+
+
+services:
+  postgres:
+    <<: *common
+    extends:
+      file: ./compose.common.yml
+      service: postgres
+    container_name: snommoc_postgres
+
+  redis:
+    <<: *common
+    extends:
+      file: ./compose.common.yml
+      service: redis
+    ports:
+      - "6379:6379"
+
+  django:
+    <<: *common
+    container_name: snommoc_demo-django
+    build:
+      target: productiondemo_django
+    extends:
+      file: ./compose.common.yml
+      service: django
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - snommoc_media:/var/www/media
+      - snommoc_static:/var/www/static
+      - /var/log/snommoc
+
+  next:
+    <<: *common
+    build:
+      target: productiondemo_nextjs
+    extends:
+      file: compose.common.yml
+      service: next
+    depends_on:
+      django:
+        condition: service_healthy
+
+  nginx:
+    <<: *common
+    hostname: snommoc_demo_nginx
+    build:
+      target: productiondemo_nginx
+    volumes:
+      - snommoc_media:/var/www/media
+      - snommoc_static:/var/www/static
+      - /var/log/snommoc
+    depends_on:
+      django:
+        condition: service_healthy
+      next:
+        condition: service_healthy
+    networks:
+      - default
+      - bma_shared_host
+    ports:
+      - "80:80"
+
+
+networks:
+  bma_shared_host:
+    external: true

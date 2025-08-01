@@ -43,7 +43,7 @@ services:
     extends:
       file: ./compose.common.yml
       service: postgres
-    container_name: snommoc_postgres
+    container_name: snommoc_postgres_dev
 
   redis:
     <<: *common

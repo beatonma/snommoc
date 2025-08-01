@@ -1,0 +1,57 @@
+name: bma_test
+
+volumes:
+    postgres_snommoc:
+        name: postgres_snommoc
+
+x-common: &common
+  env_file: "./.env.dev"
+  restart: "no"
+  tty: true
+
+x-volume-django: &volume-django
+  - type: bind
+    source: ./backend
+    target: /django
+    read_only: true
+
+services:
+  postgres:
+    <<: *common
+    extends:
+      file: ./compose.common.yml
+      service: postgres
+
+  django:
+    <<: *common
+    build:
+      target: test_django
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extends:
+      file: ./compose.common.yml
+      service: django
+    volumes:
+      - <<: *volume-django
+      - /var/www/media
+      - /var/www/static
+
+  next:
+    <<: *common
+    build:
+      target: test_nextjs
+    extends:
+      file: compose.common.yml
+      service: next
+
+  jest:
+    <<: *common
+    build:
+      target: dev_nextjs
+    extends:
+      file: compose.common.yml
+      service: next
+    entrypoint: ["npm", "run", "jest"]
+    volumes:
+      - "./frontend:/app"

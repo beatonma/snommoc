@@ -15,6 +15,7 @@ from .email import (
     SERVER_EMAIL,
 )
 from .environment import (
+    ADMIN_URL,
     DEBUG,
     DOMAIN_NAME,
     G_CLIENT_ID,
@@ -35,8 +36,6 @@ APPEND_SLASH = False
 # URLs
 MEDIA_URL = "/media/"
 STATIC_URL = "/static/"
-ADMIN_URL = "admin/"
-DASHBOARD_URL = "dashboard/"
 LOGIN_URL = urljoin(ADMIN_URL, "login/")
 
 ALLOWED_HOSTS = ["localhost", "django", environment.DOMAIN_NAME]
@@ -66,7 +65,7 @@ SNOMMOC = {
         "CRAWLER_CACHE_ROOT": "/tmp/snommoc/crawler_cache/",
     },
     "AUTH": {
-        "API_READ_REQUIRES_AUTH": True,
+        "API_READ_REQUIRES_AUTH": False,
     },
 }
 

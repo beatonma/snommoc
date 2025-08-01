@@ -62,17 +62,6 @@ const NationalMapWithLocation = ({
       return constituencies.items.find((it) => it.parliamentdotuk === hovered);
     }, [hovered, constituencies.items]);
 
-  const map = useMap({
-    provider: null,
-    viewOptions: {
-      minResolution: 75,
-    },
-    events: {
-      onHover: (id) => setHovered(id),
-      onSelect: (ids) => onSelectFeatures(ids),
-    },
-  });
-
   const onSelectFeatures = useCallback(
     (layers: LayerKey[], resetPartyFocus: boolean = true) => {
       setFocussedConstituencyIds(layers);
@@ -81,6 +70,22 @@ const NationalMapWithLocation = ({
       }
     },
     [],
+  );
+
+  const map = useMap(
+    useMemo(
+      () => ({
+        provider: null,
+        viewOptions: {
+          minResolution: 75,
+        },
+        events: {
+          onHover: (id) => setHovered(id),
+          onSelect: (ids) => onSelectFeatures(ids),
+        },
+      }),
+      [onSelectFeatures],
+    ),
   );
 
   const filterByParty = useCallback(
@@ -117,13 +122,7 @@ const NationalMapWithLocation = ({
     }
 
     constituencies.loadNext?.();
-  }, [
-    map,
-    constituencies.items,
-    constituencies.loadNext,
-    filterByParty,
-    focussedPartyId,
-  ]);
+  }, [map, constituencies, filterByParty, focussedPartyId]);
 
   return (
     <div

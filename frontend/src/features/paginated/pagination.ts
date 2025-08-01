@@ -177,8 +177,7 @@ export const usePagination = <P extends PathWithPagination>(
     }
   }, [
     path,
-    config?.query,
-    config?.load,
+    config,
     loader,
     setError,
     setIsLoading,

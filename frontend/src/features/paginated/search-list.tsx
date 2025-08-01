@@ -1,7 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import React, { type ReactNode, useId, useMemo, useState } from "react";
+import React, {
+  type ReactNode,
+  Suspense,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import type { PageItemType, Params, Query, SearchablePath } from "@/api/client";
 import { TintedButton } from "@/components/button";
 import { GridSpan } from "@/components/grid";
@@ -97,6 +103,16 @@ interface ListPageProps<P extends SearchablePath> {
   gridClassName?: string;
 }
 export const SearchList = <P extends SearchablePath>(
+  props: DivPropsNoChildren<ListStateProps<P> & ListPageProps<P>>,
+) => {
+  return (
+    <Suspense>
+      <SearchListImpl {...props} />
+    </Suspense>
+  );
+};
+
+const SearchListImpl = <P extends SearchablePath>(
   props: DivPropsNoChildren<ListStateProps<P> & ListPageProps<P>>,
 ) => {
   const { path, params, immutableFilters, searchFilters, ...rest } = props;

@@ -47,7 +47,7 @@ export const MemberItemCard = (
       themeSource={usePartyTheme ? member.party : null}
       hero={onlyIf(
         layout === "hero",
-        <Image
+        <CardImage
           member={member}
           badge={badge}
           image={
@@ -65,7 +65,7 @@ export const MemberItemCard = (
       )}
       inlineImage={onlyIf(
         layout === "inline",
-        <Image
+        <CardImage
           member={member}
           badge={badge}
           image={
@@ -108,7 +108,7 @@ export const MemberItemCard = (
   );
 };
 
-const Image = (
+const CardImage = (
   props: DivPropsNoChildren<
     Pick<MemberItemProps, "member" | "image" | "badge">
   >,

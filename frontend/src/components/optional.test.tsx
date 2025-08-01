@@ -2,9 +2,9 @@ import { describe, test } from "@jest/globals";
 import "@testing-library/jest-dom";
 import "@testing-library/jest-dom/jest-globals";
 import { render, screen } from "@testing-library/react";
-import { Optional } from "./optional";
-import React from "react";
 import expect from "expect";
+import React from "react";
+import { Optional } from "./optional";
 
 describe("<Optional />", () => {
   test("value only", () => {
@@ -17,7 +17,7 @@ describe("<Optional />", () => {
     render(<Optional value={undefined} />);
     expect(screen.queryByText("undefined")).not.toBeInTheDocument();
 
-    render(<Optional value={"undefined"} />);
+    render(<Optional value="undefined" />);
     expect(screen.queryByText("undefined")).toBeInTheDocument();
 
     render(<Optional value={[]} block={() => `empty`} />);

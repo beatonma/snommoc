@@ -73,7 +73,7 @@ export const useMap = (options?: MapOptions) => {
 
     initialized.current = true;
     setMap(new MapRenderer(options));
-  }, []);
+  }, [options]);
 
   useEffect(() => {
     map?.setEventHandlers(options?.events);
@@ -89,7 +89,7 @@ export const Map = (
   return (
     <RemoteContent
       provider={OpenStreetMapsProvider}
-      content={() => <MapView {...props} />}
+      content={() => <MapView {...rest} />}
       permissionUi={permissionUi}
     />
   );

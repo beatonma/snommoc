@@ -114,7 +114,7 @@ export const usePassiveGeoLocation = (_default?: GeoLocation) => {
           setLocation(_default);
         }
       });
-  }, []);
+  }, [_default]);
 
   return location;
 };

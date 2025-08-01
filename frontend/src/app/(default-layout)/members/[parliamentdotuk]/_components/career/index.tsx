@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { ResponseOf } from "@/api/client";
 import { useGet } from "@/api/hooks";
 import { MemberCareer } from "@/api/schema";
@@ -54,53 +54,58 @@ const CareerTabLayout = (props: {
 }) => {
   const { parliamentdotuk, career } = props;
 
-  const tabs = useTabContent([
-    {
-      title: "Summary",
-      content: () => (
-        <CareerSummary
-          houses={career.houses}
-          parties={career.parties}
-          constituencies={career.constituencies}
-        />
-      ),
-    },
-    {
-      title: "Subjects",
-      condition: Object.keys(career.subjects_of_interest).length > 0,
-      content: () => (
-        <SubjectsOfInterest subjects={career.subjects_of_interest} />
-      ),
-    },
-    {
-      title: "Posts",
-      condition: career.posts.length > 0,
-      content: () => <Posts posts={career.posts} />,
-    },
-    {
-      title: "Committees",
-      condition: career.committees.length > 0,
-      content: () => <Committees committees={career.committees} />,
-    },
-    {
-      title: "Registered Interests",
-      condition: career.interests.length > 0,
-      content: () => <RegisteredInterests interests={career.interests} />,
-    },
-    {
-      title: "Experiences",
-      condition: career.experiences.length > 0,
-      content: () => <Experiences experiences={career.experiences} />,
-    },
-    {
-      title: "Voting History",
-      content: () => (
-        <SectionLayout>
-          <MemberVotingHistory parliamentdotuk={parliamentdotuk} />
-        </SectionLayout>
-      ),
-    },
-  ]);
+  const tabs = useTabContent(
+    useMemo(
+      () => [
+        {
+          title: "Summary",
+          content: () => (
+            <CareerSummary
+              houses={career.houses}
+              parties={career.parties}
+              constituencies={career.constituencies}
+            />
+          ),
+        },
+        {
+          title: "Subjects",
+          condition: Object.keys(career.subjects_of_interest).length > 0,
+          content: () => (
+            <SubjectsOfInterest subjects={career.subjects_of_interest} />
+          ),
+        },
+        {
+          title: "Posts",
+          condition: career.posts.length > 0,
+          content: () => <Posts posts={career.posts} />,
+        },
+        {
+          title: "Committees",
+          condition: career.committees.length > 0,
+          content: () => <Committees committees={career.committees} />,
+        },
+        {
+          title: "Registered Interests",
+          condition: career.interests.length > 0,
+          content: () => <RegisteredInterests interests={career.interests} />,
+        },
+        {
+          title: "Experiences",
+          condition: career.experiences.length > 0,
+          content: () => <Experiences experiences={career.experiences} />,
+        },
+        {
+          title: "Voting History",
+          content: () => (
+            <SectionLayout>
+                <MemberVotingHistory parliamentdotuk={parliamentdotuk} />
+            </SectionLayout>
+          ),
+        },
+      ],
+      [career, parliamentdotuk],
+    ),
+  );
 
   return <TabLayout contentProps={{ className: "py-8" }} tabs={tabs} />;
 };

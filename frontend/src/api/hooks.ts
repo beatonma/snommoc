@@ -20,7 +20,7 @@ export const useGet = <P extends PathWithGet>(
     getter(path, params ?? {}, signal).then((response) =>
       setData(response.data),
     );
-  }, []);
+  }, [getter, path, params, signal]);
 
   return data;
 };

@@ -1,4 +1,4 @@
-name: bma_test
+name: snommoc_test
 
 volumes:
     postgres_snommoc:

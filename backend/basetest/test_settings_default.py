@@ -7,8 +7,7 @@ from snommoc.settings import INSTALLED_APPS  # noqa
 from snommoc.settings import MIDDLEWARE  # noqa
 from snommoc.settings import ROOT_URLCONF  # noqa
 from snommoc.settings import STATIC_URL  # noqa
-
-TEST_RUNNER = "basetest.runner.PytestTestRunner"
+from snommoc.settings import TEST_RUNNER  # noqa
 
 ALLOWED_HOSTS = ["localhost"]
 ADMIN_URL = "/test-admin/"
@@ -58,6 +57,9 @@ SNOMMOC = {
         contract.CACHE_CRAWLER_TTL: int(timedelta(days=10_000).total_seconds()),
         contract.CACHE_WIKI_TTL: int(timedelta(days=5).total_seconds()),
         contract.CRAWLER_CACHE_ROOT: "/tmp/snommoc/test/crawler_cache/",
+    },
+    contract.AUTH: {
+        contract.AUTH_API_READ_REQUIRES_AUTH: True,
     },
 }
 

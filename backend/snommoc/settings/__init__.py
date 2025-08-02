@@ -28,6 +28,8 @@ from .logging import LOGGING
 from .middleware import MIDDLEWARE
 from .templates import TEMPLATES
 
+TEST_RUNNER = "basetest.runner.PytestTestRunner"
+
 WSGI_APPLICATION = "snommoc.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 ROOT_URLCONF = "snommoc.urls"

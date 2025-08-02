@@ -19,7 +19,7 @@ jestWatch() {
 }
 
 django() {
-  docker_compose run --rm --entrypoint="python -m pytest $*" django
+  docker_compose run --rm --entrypoint="python -m pytest -rs $*" django
 }
 
 unittests() {

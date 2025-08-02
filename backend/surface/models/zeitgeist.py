@@ -1,9 +1,10 @@
 from typing import Type
 
-from common.models import BaseModel, BaseQuerySet
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from social.models.mixins import GenericTargetMixin
+
+from common.models import BaseModel, BaseQuerySet
+from common.models.generic import GenericTargetMixin
 
 
 class ZeitgeistItemQuerySet(BaseQuerySet):

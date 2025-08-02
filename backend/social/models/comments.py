@@ -1,6 +1,7 @@
 from common.models import BaseModel
 from django.db import models
-from social.models.mixins import DeletionPendingMixin, GenericTargetMixin, UserMixin
+from common.models.generic import GenericTargetMixin
+from social.models.mixins import DeletionPendingMixin, UserMixin
 
 
 class Comment(DeletionPendingMixin, UserMixin, GenericTargetMixin, BaseModel):

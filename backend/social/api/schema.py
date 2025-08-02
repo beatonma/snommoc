@@ -5,11 +5,12 @@ from django.shortcuts import get_object_or_404
 from ninja import Schema
 from pydantic import Field
 from pydantic_core import PydanticUndefined
+
+from common.models.generic import GenericTargetMixin
 from repository.models import Bill, CommonsDivision, Constituency, LordsDivision, Person
 from repository.models.mixins import SocialMixin
 from social.models import UserToken, Vote
 
-from ..models.mixins import GenericTargetMixin
 from . import types
 from .errors import BadUserToken
 

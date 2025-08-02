@@ -1,6 +1,7 @@
 from typing import Annotated, cast
 
 from pydantic import AfterValidator, BeforeValidator
+
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS, HouseType
 
 from .common import StringOrNone

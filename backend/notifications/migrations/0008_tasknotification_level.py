@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0007_auto_20210419_1343'),
+        ("notifications", "0007_auto_20210419_1343"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tasknotification',
-            name='level',
+            model_name="tasknotification",
+            name="level",
             field=models.PositiveSmallIntegerField(default=2),
         ),
     ]

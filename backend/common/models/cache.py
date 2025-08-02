@@ -1,8 +1,9 @@
 import logging
 
-from common.cache import invalidate_cache as invalidate_cache_impl
 from django.db import models
 from django.db.models import QuerySet
+
+from common.cache import invalidate_cache as invalidate_cache_impl
 
 log = logging.getLogger(__name__)
 

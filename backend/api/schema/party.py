@@ -1,8 +1,9 @@
 from datetime import datetime
 
+from ninja import Schema
+
 from api.schema.includes import BasePartySchema
 from api.schema.types import PersonName, Url, WikipediaPath, field
-from ninja import Schema
 
 __all__ = ["PartyFullSchema"]
 

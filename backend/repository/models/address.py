@@ -1,6 +1,7 @@
-from common.models import BaseModel
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+
+from common.models import BaseModel
 from repository.models.mixins import ParliamentDotUkMixin, PersonMixin
 
 

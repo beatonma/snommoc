@@ -2,11 +2,12 @@ import logging
 from urllib.parse import urlparse, urlunparse
 
 import requests
+from django.conf import settings
+
 from api import status
 from common.network.rate_limit import rate_limit
 from crawlers.network import JsonCache
 from crawlers.network.exceptions import HttpClientError, HttpNoContent, HttpServerError
-from django.conf import settings
 
 log = logging.getLogger(__name__)
 

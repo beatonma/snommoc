@@ -1,9 +1,10 @@
 from typing import Callable, Literal, Union
 
+from pydantic import ValidationError
+
 from crawlers.context import TaskContext
 from crawlers.network import get_json
 from crawlers.network.exceptions import HttpError, HttpServerError
-from pydantic import ValidationError
 
 """
 ItemFunc receives:
@@ -24,15 +25,13 @@ continue: Something went mildly wrong but it's probably fine.
 type ItemFuncStatus = Literal["continue", "exit"]
 
 
-def _apply_item_func[
-    T
-](
+def _apply_item_func[T](
     item: dict,
     item_func: ItemFunc[T],
     context: TaskContext,
     report: Callable[[], str],
     func_kwargs: dict | None,
-) -> (T | ItemFuncStatus):
+) -> T | ItemFuncStatus:
     """
     :param report: A function that describes the item for useful error logging.
     :return: True if the caller should continue its task, False if the caller should halt the task.
@@ -165,9 +164,7 @@ def foreach(
             return
 
 
-def get[
-    T
-](
+def get[T](
     endpoint_url: str,
     item_func: ItemFunc[T],
     context: TaskContext,

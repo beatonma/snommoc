@@ -2,9 +2,10 @@ import json
 import re
 from dataclasses import asdict, dataclass
 
-from common.models import BaseModel, BaseQuerySet
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import GEOSGeometry, Point
+
+from common.models import BaseModel, BaseQuerySet
 
 
 class ConstituencyBoundaryQuerySet(BaseQuerySet):

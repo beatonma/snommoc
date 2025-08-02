@@ -3,10 +3,11 @@
 import django.contrib.gis.db.models.fields
 import django.db.models.deletion
 import phonenumber_field.modelfields
+from django.db import migrations, models
+
 import repository.models.mixins
 import util.cleanup
 import util.time
-from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

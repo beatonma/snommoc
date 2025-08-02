@@ -1,7 +1,8 @@
 from datetime import date
 
-from basetest.testcase import SimpleTestCase
 from pydantic import BaseModel as Schema
+
+from basetest.testcase import SimpleTestCase
 from util.time import tzdatetime
 
 from . import (

@@ -3,6 +3,9 @@ from collections import OrderedDict
 from datetime import date, datetime
 from typing import Self
 
+from pydantic import BaseModel as Schema
+from pydantic import model_validator
+
 from crawlers.parliamentdotuk.tasks.types import (
     DateTimeOrNone,
     List,
@@ -10,8 +13,6 @@ from crawlers.parliamentdotuk.tasks.types import (
     StringOrNoneKeepBreaks,
     field,
 )
-from pydantic import BaseModel as Schema
-from pydantic import model_validator
 
 
 class RegisteredInterest(Schema):

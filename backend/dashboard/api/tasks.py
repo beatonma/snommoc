@@ -1,9 +1,10 @@
 from typing import Callable
 
-from api import status
-from crawlers.parliamentdotuk import tasks
 from django.http import HttpRequest
 from ninja import Router
+
+from api import status
+from crawlers.parliamentdotuk import tasks
 
 router = Router(tags=["Tasks"])
 

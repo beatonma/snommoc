@@ -1,10 +1,11 @@
 import logging
 
-from api import status
-from common.models.generic import GenericTargetMixin
 from django.db.models import Count
 from django.http import HttpRequest
 from ninja import Router
+
+from api import status
+from common.models.generic import GenericTargetMixin
 from social.models import Comment, Vote
 
 from . import schema

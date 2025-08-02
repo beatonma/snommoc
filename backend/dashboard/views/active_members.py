@@ -1,7 +1,8 @@
 import logging
 
-from dashboard.views.dashboard import StaffView
 from django.http import HttpResponse, JsonResponse
+
+from dashboard.views.dashboard import StaffView
 from repository.models import Person
 
 log = logging.getLogger(__name__)

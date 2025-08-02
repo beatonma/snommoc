@@ -1,10 +1,11 @@
 import datetime
 from datetime import date
 
-from common.models import BaseQuerySet
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+
+from common.models import BaseQuerySet
 from util.time import in_range, is_current
 
 

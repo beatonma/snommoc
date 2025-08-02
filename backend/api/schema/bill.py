@@ -1,8 +1,9 @@
 from datetime import datetime
 
+from ninja import Schema
+
 from api.schema.includes import MemberMiniSchema, OrganisationSchema
 from api.schema.types import House, ParliamentSchema, Safe, Url, field
-from ninja import Schema
 from repository.models.bill import BillStage
 
 __all__ = [

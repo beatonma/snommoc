@@ -1,5 +1,8 @@
 """Viewmodels for parsing responses from Division OpenAPI endpoints."""
 
+from pydantic import BaseModel as Schema
+from pydantic import model_validator
+
 from crawlers.parliamentdotuk.tasks.types import (
     DateOrNone,
     DateTimeOrNone,
@@ -9,8 +12,6 @@ from crawlers.parliamentdotuk.tasks.types import (
     StringOrNone,
     field,
 )
-from pydantic import BaseModel as Schema
-from pydantic import model_validator
 
 
 class Member:

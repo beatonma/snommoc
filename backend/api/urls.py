@@ -1,3 +1,8 @@
+from django.http import HttpRequest
+from django.urls import path
+from ninja import NinjaAPI, Router
+from ninja.constants import NOT_SET
+
 from api import status
 from api.auth import ApiKeyDisabled, ApiKeyDoesNotExist, ApiKeyInvalid, ApiReadAuth
 from api.routers import (
@@ -11,10 +16,6 @@ from api.routers import (
     party_router,
     zeitgeist_router,
 )
-from django.http import HttpRequest
-from django.urls import path
-from ninja import NinjaAPI, Router
-from ninja.constants import NOT_SET
 from util.settings import snommoc_settings
 
 ninja_api = NinjaAPI(

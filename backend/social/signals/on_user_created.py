@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from social.models import OAuthToken
 from social.models.token import UserToken
 

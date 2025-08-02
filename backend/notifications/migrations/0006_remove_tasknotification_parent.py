@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0005_auto_20200112_1521'),
+        ("notifications", "0005_auto_20200112_1521"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='tasknotification',
-            name='parent',
+            model_name="tasknotification",
+            name="parent",
         ),
     ]

@@ -1,9 +1,10 @@
 import sys
 from typing import Callable
 
+from django.core.management import CommandParser
+
 from crawlers import tasks as multi_source
 from crawlers.parliamentdotuk import tasks as parliament
-from django.core.management import CommandParser
 from util.management.task_command import TaskCommand
 
 

@@ -3,8 +3,9 @@ import traceback
 import uuid as uuid
 from functools import wraps
 
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from notifications import permissions
 from util.time import get_now
 

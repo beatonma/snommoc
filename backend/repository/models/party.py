@@ -1,9 +1,10 @@
 import re
 from typing import Self, Union, cast
 
-from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import Q
+
+from common.models import BaseModel, BaseQuerySet
 from repository.models.mixins import (
     AsciiNameMixin,
     ParliamentDotUkMixin,

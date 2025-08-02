@@ -1,5 +1,6 @@
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from common.models.generic import GenericTargetMixin
 from social.models.mixins import DeletionPendingMixin, UserMixin
 

@@ -1,6 +1,7 @@
-from common.admin import BaseAdmin, register_models_to_default_admin
 from django.contrib import admin
 from django.db.models import QuerySet
+
+from common.admin import BaseAdmin, register_models_to_default_admin
 from repository.apps import RepositoryConfig
 from repository.models import (
     Constituency,

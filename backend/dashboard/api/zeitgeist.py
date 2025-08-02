@@ -3,6 +3,7 @@ from typing import Type
 
 from django.http import HttpRequest
 from ninja import Router
+
 from surface.models import (
     FeaturedBill,
     FeaturedCommonsDivision,

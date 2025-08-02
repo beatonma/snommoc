@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from pydantic import AfterValidator, Field
+
 from social.models import UserToken
 from social.validation.username import BlockedUsername, is_username_blocked
 from util.strings import sanitize_html

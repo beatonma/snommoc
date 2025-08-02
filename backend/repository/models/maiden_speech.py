@@ -1,5 +1,6 @@
-from common.models import BaseModel
 from django.db import models
+
+from common.models import BaseModel
 from repository.models.mixins import PersonMixin
 from util.cleanup import Deprecated
 

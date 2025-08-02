@@ -1,8 +1,9 @@
 import uuid
 
-from api.permissions import READ_SNOMMOC_API
 from django.conf import settings
 from django.db import models
+
+from api.permissions import READ_SNOMMOC_API
 
 
 class ApiKey(models.Model):

@@ -1,6 +1,7 @@
+from pydantic import BaseModel as Schema
+
 from crawlers.parliamentdotuk.tasks.openapi.parties.schema import Party
 from crawlers.parliamentdotuk.tasks.types import field
-from pydantic import BaseModel as Schema
 
 
 class PartyGenderDemographics(Schema):

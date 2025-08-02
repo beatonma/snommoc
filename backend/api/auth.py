@@ -1,12 +1,13 @@
 import logging
 
-from api import permissions
-from api.models import ApiKey
-from api.permissions import has_read_snommoc_api_permission
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from ninja.security import APIKeyQuery
+
+from api import permissions
+from api.models import ApiKey
+from api.permissions import has_read_snommoc_api_permission
 
 log = logging.getLogger(__name__)
 

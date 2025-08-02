@@ -1,8 +1,9 @@
 import logging
 
-from api import status
 from django.http import HttpRequest
 from ninja import Router
+
+from api import status
 
 from . import schema
 

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0002_tasknotification_read'),
+        ("notifications", "0002_tasknotification_read"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tasknotification',
-            name='timestamp',
+            model_name="tasknotification",
+            name="timestamp",
             field=models.DateTimeField(auto_now_add=True, null=True),
         ),
     ]

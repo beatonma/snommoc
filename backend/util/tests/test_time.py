@@ -1,8 +1,9 @@
 from datetime import date, datetime
 from typing import Optional
 
-from basetest.testcase import SimpleTestCase
 from dateutil import tz
+
+from basetest.testcase import SimpleTestCase
 from util import time as timeutil
 from util.time import coerce_timezone
 

@@ -1,7 +1,8 @@
-from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import Q, UniqueConstraint
 from phonenumber_field.modelfields import PhoneNumberField
+
+from common.models import BaseModel, BaseQuerySet
 from repository.models.mixins import ParliamentDotUkMixin, SocialMixin
 from util.strings import ellipsise
 

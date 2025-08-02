@@ -1,13 +1,14 @@
 import logging
 from typing import Literal
 
-from api.cache import cache_crawled_data_view
-from api.schema.includes import MemberMiniSchema
-from api.schema.member import DivisionWithVoteSchema, MemberCareerHistory, MemberProfile
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
+
+from api.cache import cache_crawled_data_view
+from api.schema.includes import MemberMiniSchema
+from api.schema.member import DivisionWithVoteSchema, MemberCareerHistory, MemberProfile
 from repository.models import Person
 from repository.models.houses import HouseType
 from util.collections import all_none

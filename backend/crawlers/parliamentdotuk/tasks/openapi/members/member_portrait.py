@@ -2,11 +2,12 @@ import logging
 import re
 from typing import Optional
 
+from django.db.models import QuerySet
+
 from crawlers.context import TaskContext
 from crawlers.network import get_json
 from crawlers.network.exceptions import HttpNoContent
 from crawlers.parliamentdotuk.tasks.openapi import endpoints
-from django.db.models import QuerySet
 from repository.models import Person
 from repository.models.portrait import MemberPortrait
 

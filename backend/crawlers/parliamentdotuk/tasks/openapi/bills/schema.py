@@ -3,6 +3,9 @@
 import enum
 from typing import Annotated
 
+from pydantic import BaseModel as Schema
+from pydantic import BeforeValidator, Field
+
 from crawlers.parliamentdotuk.tasks.types import (
     Color,
     DateTimeOrNone,
@@ -12,8 +15,6 @@ from crawlers.parliamentdotuk.tasks.types import (
     StringOrNone,
     field,
 )
-from pydantic import BaseModel as Schema
-from pydantic import BeforeValidator, Field
 
 
 @enum.unique

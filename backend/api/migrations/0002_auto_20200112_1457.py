@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0001_initial'),
+        ("api", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='apikey',
-            options={'permissions': (('read_snommoc_api', 'Can read data from the snommoc API.'),)},
+            name="apikey",
+            options={
+                "permissions": (
+                    ("read_snommoc_api", "Can read data from the snommoc API."),
+                )
+            },
         ),
     ]

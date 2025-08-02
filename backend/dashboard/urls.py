@@ -1,8 +1,9 @@
+from django.urls import path, re_path
+
 from dashboard.api import api
 from dashboard.views.active_members import ActiveMembersView
 from dashboard.views.dashboard import DashboardView
 from dashboard.views.search import DashboardSearch
-from django.urls import path, re_path
 
 urlpatterns = [
     path("api/", api.urls),

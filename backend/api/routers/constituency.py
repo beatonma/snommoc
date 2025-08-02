@@ -1,12 +1,13 @@
-from api.cache import cache_crawled_data_view
-from api.schema.constituency import ConstituencyFullSchema
-from api.schema.includes import ConstituencyMiniSchema
-from api.schema.types import ParliamentId
 from django.db.models import F
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.pagination import paginate
+
+from api.cache import cache_crawled_data_view
+from api.schema.constituency import ConstituencyFullSchema
+from api.schema.includes import ConstituencyMiniSchema
+from api.schema.types import ParliamentId
 from repository.models import Constituency
 
 router = Router(tags=["Constituencies"])

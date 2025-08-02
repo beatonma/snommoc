@@ -2,9 +2,10 @@ import logging
 from datetime import timedelta
 from functools import wraps
 
-from crawlers.caches import API_VIEW_CACHE
 from django.views.decorators.cache import cache_page
 from ninja.decorators import decorate_view
+
+from crawlers.caches import API_VIEW_CACHE
 
 log = logging.getLogger(__name__)
 

@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+
 from util.time import get_now
 
 

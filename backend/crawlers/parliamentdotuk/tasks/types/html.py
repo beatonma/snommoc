@@ -2,6 +2,7 @@ import re
 from typing import Annotated
 
 from pydantic import AfterValidator
+
 from util.strings import sanitize_html
 
 from .common import StringOrNone

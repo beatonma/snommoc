@@ -1,5 +1,8 @@
 from datetime import date
 
+from pydantic import BaseModel as Schema
+from pydantic import Field, model_validator
+
 from crawlers.parliamentdotuk.tasks.openapi.parties.schema import Party
 from crawlers.parliamentdotuk.tasks.types import (
     DateOrNone,
@@ -10,8 +13,6 @@ from crawlers.parliamentdotuk.tasks.types import (
     StringOrNone,
     field,
 )
-from pydantic import BaseModel as Schema
-from pydantic import Field, model_validator
 from repository.models.houses import HOUSE_OF_LORDS
 
 from .registeredinterest import RegisteredInterestCategory

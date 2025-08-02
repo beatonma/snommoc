@@ -1,9 +1,10 @@
 from typing import Optional
 
-from dashboard.views.dashboard import StaffView
 from django.db.models import Q
 from django.http import JsonResponse
 from django.urls import reverse
+
+from dashboard.views.dashboard import StaffView
 from repository.models import (
     Bill,
     CommonsDivision,

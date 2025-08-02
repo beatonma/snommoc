@@ -20,9 +20,7 @@ default_params = {
 }
 
 
-def for_each_page[
-    T
-](
+def for_each_page[T](
     page_titles: list[str],
     block: Callable[[str, T], None],
     page_class: Type[T],
@@ -58,9 +56,9 @@ def _chunks(lst: list[str], size: int):
         yield lst[i : i + size]
 
 
-def _get_batch_pages[
-    T: schema.Page
-](batch, t: Type[T], context: TaskContext, **params) -> tuple[dict, list[T]]:
+def _get_batch_pages[T: schema.Page](
+    batch, t: Type[T], context: TaskContext, **params
+) -> tuple[dict, list[T]]:
     """
     Get data for a batch of page titles.
     Returns a dictionary with corrected page titles, and the list of page data.

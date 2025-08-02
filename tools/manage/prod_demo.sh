@@ -13,7 +13,7 @@ usage="$(basename "$0") demo
 source ./tools/manage/common.sh
 
 django_shell() {
-  run_command docker exec -it snommoc_demo-django-1 sh
+  run_command docker exec -it snommoc_demo-django sh
   exit 0
 }
 

@@ -1,5 +1,7 @@
 from datetime import date, datetime
 
+from ninja import Schema
+
 from api.schema.types import (
     AdministrativeName,
     DivisionVoteType,
@@ -11,7 +13,6 @@ from api.schema.types import (
     Url,
     field,
 )
-from ninja import Schema
 from repository.models import Constituency
 
 __all__ = [

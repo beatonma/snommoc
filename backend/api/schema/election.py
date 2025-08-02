@@ -1,7 +1,8 @@
 from datetime import date
 
-from api.schema.types import AdministrativeName, ParliamentSchema, field
 from ninja import Schema
+
+from api.schema.types import AdministrativeName, ParliamentSchema, field
 
 __all__ = [
     "ElectionSchema",

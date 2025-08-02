@@ -1,11 +1,12 @@
 from datetime import date
 
+from dateutil.utils import today
+
 from crawlers import caches
 from crawlers.context import TaskContext, task_context
 from crawlers.parliamentdotuk.tasks.openapi import endpoints, openapi_client
 from crawlers.parliamentdotuk.tasks.openapi.parties.update import update_party
 from crawlers.parliamentdotuk.tasks.openapi.schema import ResponseItem
-from dateutil.utils import today
 from repository.models import (
     House,
     Party,

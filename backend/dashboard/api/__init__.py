@@ -1,10 +1,11 @@
 import logging
 
-from dashboard.api.schema import DashboardTaskNotificationSchema
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpRequest
 from ninja import NinjaAPI
 from ninja.pagination import paginate
+
+from dashboard.api.schema import DashboardTaskNotificationSchema
 from notifications.models import TaskNotification
 
 from .tasks import router as tasks_router

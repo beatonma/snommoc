@@ -1,8 +1,9 @@
 from datetime import date
 
-from common.models import BaseModel
 from django.db import models
 from django.db.models import Q
+
+from common.models import BaseModel
 from repository.models.mixins import PeriodMixin, PeriodQuerySet
 
 

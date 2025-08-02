@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import QuerySet
+
 from util.time import get_now
 
 

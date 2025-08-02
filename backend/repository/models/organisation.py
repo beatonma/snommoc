@@ -1,8 +1,9 @@
 import re
 
-from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.utils.text import slugify
+
+from common.models import BaseModel, BaseQuerySet
 
 
 class OrganisationQuerySet(BaseQuerySet):

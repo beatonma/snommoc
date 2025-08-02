@@ -1,7 +1,8 @@
-from api import status
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest
 from ninja import NinjaAPI
+
+from api import status
 
 from .account import router as account_router
 from .auth import router as auth_router

@@ -1,15 +1,14 @@
 from typing import Callable
 
+from django.urls import reverse
+
 from api import permissions, status
 from basetest.test_util import create_sample_user
 from basetest.testcase import DatabaseTestCase
-from django.urls import reverse
 from repository.tests.data.create import (
-    create_constituency_result_detail,
     create_sample_bill,
     create_sample_commons_division,
     create_sample_constituency,
-    create_sample_election,
     create_sample_lords_division,
     create_sample_party,
     create_sample_person,

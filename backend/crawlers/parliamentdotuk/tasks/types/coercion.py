@@ -5,6 +5,7 @@ Functions for retrieving a specific type of data from data which may be of some 
 from datetime import date, datetime
 
 import dateutil.parser as date_parser
+
 from util.time import coerce_timezone, year_only_date
 
 __all__ = [

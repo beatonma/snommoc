@@ -2,12 +2,13 @@ import logging
 from functools import wraps
 
 from celery import shared_task
+from requests import Session
+
 from common.cache import invalidate_cache
 from crawlers.caches import API_VIEW_CACHE
 from crawlers.network import JsonCache, json_cache
 from notifications.models import TaskNotification
 from notifications.models.task_notification import task_notification
-from requests import Session
 
 
 class TaskContext:

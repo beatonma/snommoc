@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class SurfaceConfig(AppConfig):
-    name = 'surface'
+    name = "surface"

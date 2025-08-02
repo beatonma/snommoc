@@ -1,10 +1,16 @@
 from typing import Self
 
-from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import Q
-from repository.models.mixins import (AsciiNameMixin, ParliamentDotUkMixin,
-                                      PeriodMixin, PersonMixin, SocialMixin)
+
+from common.models import BaseModel, BaseQuerySet
+from repository.models.mixins import (
+    AsciiNameMixin,
+    ParliamentDotUkMixin,
+    PeriodMixin,
+    PersonMixin,
+    SocialMixin,
+)
 
 
 class ConstituencyQuerySet(BaseQuerySet):

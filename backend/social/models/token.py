@@ -1,8 +1,9 @@
 import uuid
 
-from common.models import BaseModel, BaseQuerySet
 from django.core.validators import RegexValidator
 from django.db import models
+
+from common.models import BaseModel, BaseQuerySet
 from social.models.mixins import DeletionPendingMixin
 
 

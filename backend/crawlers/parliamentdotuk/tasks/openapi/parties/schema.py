@@ -1,5 +1,6 @@
-from crawlers.parliamentdotuk.tasks.types import Color, StringOrNone, field
 from pydantic import BaseModel as Schema
+
+from crawlers.parliamentdotuk.tasks.types import Color, StringOrNone, field
 
 
 class Party(Schema):

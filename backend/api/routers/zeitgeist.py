@@ -1,9 +1,10 @@
 from datetime import timedelta
 
-from api.cache import cache_view
-from api.schema.zeitgeist import ZeitgeistSchema
 from django.http import HttpRequest
 from ninja import Router
+
+from api.cache import cache_view
+from api.schema.zeitgeist import ZeitgeistSchema
 from repository.models import Bill, CommonsDivision, LordsDivision, Person
 from surface.cache import API_VIEW_CACHE
 from surface.models import MessageOfTheDay, ZeitgeistItem

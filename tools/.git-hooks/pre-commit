@@ -1,0 +1,18 @@
+#!/bin/sh
+
+: '
+Installation (from project root):
+  ln -s ../../tools/.git-hooks/pre-commit ./.git/hooks/pre-commit
+'
+
+
+PYTHON_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$')
+
+if [ -z "$PYTHON_FILES" ]; then
+  echo "No Python files to format. Skipping black and isort."
+  exit 0
+fi
+
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+$PROJECT_ROOT/backend/env/bin/isort $PYTHON_FILES
+$PROJECT_ROOT/backend/env/bin/black $PYTHON_FILES

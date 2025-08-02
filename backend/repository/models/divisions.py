@@ -1,7 +1,8 @@
-from common.models import BaseModel, BaseQuerySet
 from django.db import models
 from django.db.models import Q, UniqueConstraint
 from django.utils.translation import gettext_lazy as _
+
+from common.models import BaseModel, BaseQuerySet
 from repository.models.event import ParliamentaryEvent
 from repository.models.houses import HOUSE_OF_COMMONS, HOUSE_OF_LORDS
 from repository.models.mixins import SocialMixin

@@ -1,10 +1,11 @@
-from api import status
-from crawlers.network.exceptions import HttpError
 from django.conf import settings
 from django.http import HttpRequest
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from ninja import Router
+
+from api import status
+from crawlers.network.exceptions import HttpError
 from social.models import OAuthToken, UserToken
 
 from . import schema

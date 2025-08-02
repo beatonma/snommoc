@@ -8,8 +8,7 @@ from typing import List
 from api import status
 from basetest.testcase import DatabaseTestCase
 from social.models.token import UsernameChanged, UserToken
-from social.tests import reverse_api
-from social.tests.util import create_sample_usertoken
+from social.tests.util import create_sample_usertoken, reverse_api
 
 VIEWNAME_GET = reverse_api("get_account")
 VIEWNAME_RENAME = reverse_api("rename_account")

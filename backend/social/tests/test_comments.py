@@ -1,15 +1,15 @@
 import uuid
 
-from api import status
-from basetest.testcase import DatabaseTestCase
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
+
+from api import status
+from basetest.testcase import DatabaseTestCase
 from repository.models import Person
 from repository.tests.data.create import create_sample_person
 from social.models import Comment
 from social.models.token import UserToken
-from social.tests import reverse_api
-from social.tests.util import create_sample_usertoken
+from social.tests.util import create_sample_usertoken, reverse_api
 
 _COMMENT = "This is a simple comment"
 _TEST_USERNAME = "comments"

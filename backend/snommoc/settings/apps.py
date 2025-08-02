@@ -21,8 +21,8 @@ INSTALLED_PROJECT_APPS = [
     "repository",
     "crawlers",
     "notifications",
-    "dashboard",
-    "social",
+    # "dashboard",
+    # "social",
     "surface",
 ]
 if environment.DEBUG and not environment.TEST:

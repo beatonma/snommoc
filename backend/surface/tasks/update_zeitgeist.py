@@ -3,13 +3,13 @@ from datetime import date
 from typing import Type
 
 from celery import shared_task
-from common.cache import invalidate_cache
-from common.models import BaseModel
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+
+from common.cache import invalidate_cache
+from common.models import BaseModel
 from notifications.models.task_notification import task_notification
 from repository.models import Bill, CommonsDivision, LordsDivision, Person
-from social.models import Comment, Vote
 from surface import cache
 from surface.models import (
     FeaturedBill,
@@ -57,6 +57,12 @@ def _update_from_featured(today: date):
 
 
 def _update_from_social():
+    try:
+        from social.models import Comment, Vote
+    except ImportError:
+        log.warning("Social app is not installed.")
+        return
+
     for model in ZEITGEIST_TARGET_MODELS:
         ct = ContentType.objects.get_for_model(model)
         comments = _filter_social_content(Comment, ct)

@@ -1,9 +1,16 @@
 import uuid
 
 from django.db import models
+from django.urls import reverse_lazy
+
+from social.api import api
 from social.models import Comment, OAuthToken, Vote
 from social.models.mixins import get_target_kwargs
 from social.models.token import UserToken
+
+
+def reverse_api(view_name: str, *args, **kwargs):
+    return reverse_lazy(f"{api.urls_namespace}:{view_name}", args=args, kwargs=kwargs)
 
 
 def create_sample_usertoken(

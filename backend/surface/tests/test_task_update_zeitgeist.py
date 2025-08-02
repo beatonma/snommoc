@@ -1,3 +1,6 @@
+import pytest
+from django.conf import settings
+
 from basetest.test_util import create_sample_dates
 from basetest.testcase import DatabaseTestCase
 from repository.models import Person
@@ -7,11 +10,6 @@ from repository.tests.data.create import (
     create_sample_lords_division,
     create_sample_person,
 )
-from social.tests.util import (
-    create_sample_comment,
-    create_sample_usertoken,
-    create_sample_vote,
-)
 from surface.models import FeaturedPerson, ZeitgeistItem
 from surface.tasks import update_zeitgeist
 
@@ -20,8 +18,18 @@ def _create_featured_person(person: Person):
     return FeaturedPerson.objects.create(target=person)
 
 
+@pytest.mark.skipif(
+    "social" not in settings.INSTALLED_APPS,
+    reason="App 'social' not found in settings.INSTALLED_APPS",
+)
 class UpdateZeitgeistTaskTest(DatabaseTestCase):
     def setUp(self):
+        from social.tests.util import (
+            create_sample_comment,
+            create_sample_usertoken,
+            create_sample_vote,
+        )
+
         dates = create_sample_dates(count=10)
 
         user1 = create_sample_usertoken()

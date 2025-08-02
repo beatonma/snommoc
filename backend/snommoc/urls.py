@@ -8,6 +8,7 @@ from django.urls import include, path
 
 urlpatterns = (
     [
+        path("api/notifications/", include("notifications.urls")),
         # path("api/social/", include("social.urls")),   # Disabled for public demo
         path("api/", include("api.urls")),
         path(settings.ADMIN_URL, admin.site.urls),

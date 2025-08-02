@@ -1,9 +1,10 @@
 from unittest.mock import patch
 
 import google.oauth2.id_token
+
 from basetest.testcase import DatabaseTestCase
 from social.models import UserToken
-from social.tests import reverse_api
+from social.tests.util import reverse_api
 
 
 def _patched_id_token(oauth_token: str, request, audience: str | None):

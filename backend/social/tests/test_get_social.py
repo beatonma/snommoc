@@ -2,11 +2,11 @@ import uuid
 
 from basetest.testcase import DatabaseTestCase
 from repository.tests.data.create import create_sample_person
-from social.tests import reverse_api
 from social.tests.util import (
     create_sample_comment,
     create_sample_usertoken,
     create_sample_vote,
+    reverse_api,
 )
 
 _VALID_USER = "valid-user"

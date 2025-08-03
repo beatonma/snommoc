@@ -30,7 +30,6 @@ services:
 
   django:
     <<: *common
-    hostname: snommoc_demo_django
     container_name: snommoc_demo-django
     build:
       target: productiondemo_django
@@ -58,6 +57,9 @@ services:
 
   nginx:
     <<: *common
+    extends:
+      file: compose.common.yml
+      service: nginx
     hostname: snommoc_demo_nginx
     build:
       target: productiondemo_nginx

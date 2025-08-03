@@ -27,7 +27,6 @@ FROM python AS builder_django
 WORKDIR /django/
 COPY ./backend/requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip,id=pipcache pip install -r ./requirements.txt
-EXPOSE 8000
 
 ###
 FROM python AS core_base_django
@@ -123,7 +122,7 @@ ENTRYPOINT ["python", "-m", "celery", "-A", "snommoc", "worker", "-l", "info"]
 ###
 FROM core_nginx AS productiondemo_nginx
 
-COPY tools/docker/nginx/nginx.prod-demo.conf /etc/nginx/nginx.conf
+COPY ./tools/docker/nginx/nginx.prod-demo.conf /etc/nginx/nginx.conf
 COPY ./tools/docker/nginx/templates /etc/nginx/templates
 
 COPY --from=builder_productiondemo_nextjs --chown=nginx:nginx /app/.next/static /var/www/static-nextjs

@@ -20,7 +20,7 @@ docker_compose() {
 }
 
 docker_compose_build() {
-  docker_compose build --progress=plain --ssh=default "$@"
+  docker_compose build --progress=plain "$@"
 }
 
 

@@ -3,6 +3,7 @@ from datetime import date
 from typing import Type
 
 from celery import shared_task
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 
@@ -57,9 +58,13 @@ def _update_from_featured(today: date):
 
 
 def _update_from_social():
+    if "social" not in settings.INSTALLED_APPS:
+        log.warning("Social app is not installed.")
+        return
+
     try:
         from social.models import Comment, Vote
-    except ImportError:
+    except (ImportError, RuntimeError):
         log.warning("Social app is not installed.")
         return
 

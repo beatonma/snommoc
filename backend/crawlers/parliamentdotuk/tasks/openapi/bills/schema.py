@@ -139,7 +139,7 @@ class BillPublicationLink(Schema):
 class BillPublicationType(Schema):
     id: int
     name: str
-    description: str
+    description: StringOrNone
 
 
 class BillPublication(Schema):

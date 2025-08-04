@@ -144,7 +144,7 @@ class BillSponsor(BaseModel):
 
 class BillPublicationType(ParliamentDotUkMixin, BaseModel):
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return ellipsise(self.name)

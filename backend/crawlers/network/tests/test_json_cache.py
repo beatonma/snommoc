@@ -94,10 +94,10 @@ class JsonCacheTest(SimpleTestCase):
 class JsonCacheDecoratorTest(SimpleTestCase):
     """@json_cache decorator tests"""
 
-    root_url = "https://snommoc.org/example/request/root.json"
+    root_url = "https://commons.beatonma.org/example/request/root.json"
     root_data = {"abc": 123}
 
-    child_url = "https://snommoc.org/example/request/child.json"
+    child_url = "https://commons.beatonma.org/example/request/child.json"
     child_data = {"def": 456}
 
     @json_cache(name="decorated-root")

@@ -152,7 +152,7 @@ class CommentTests(DatabaseTestCase):
             {
                 "token": self.valid_token,
                 "text": (
-                    'blah <a href="https://snommoc.org/">just the text</a><script>'
+                    'blah <a href="https://commons.beatonma.org/">just the text</a><script>'
                 ),
                 "target": "person",
                 "target_id": 4837,
@@ -169,7 +169,7 @@ class CommentTests(DatabaseTestCase):
             {
                 "token": self.valid_token,
                 "text": (
-                    '<a href="https://snommoc.org/">This should be flagged for'
+                    '<a href="https://commons.beatonma.org/">This should be flagged for'
                     " review</a><script>"
                 ),
                 "target": "person",

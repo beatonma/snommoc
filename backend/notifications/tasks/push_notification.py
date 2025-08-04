@@ -11,7 +11,7 @@ except ImportError:
 def push_notification(
     title: str,
     content: str,
-    tag: str = "snommoc.org",
+    tag: str = "commons",
     important: bool = False,
 ):
     try:
@@ -25,7 +25,7 @@ def push_notification(
             body=content,
             tag=tag,
             sound=sound,
-            icon="snommoc.org",
+            icon="commons",
             color="#48406e",
         ).send()
 

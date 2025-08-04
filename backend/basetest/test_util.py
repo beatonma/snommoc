@@ -14,7 +14,7 @@ from util.time import tzdatetime
 def create_sample_user(
     username: str = "default-test-user",
     password: str = uuid.uuid4().hex,
-    email: str = "testuser@snommoc.org",
+    email: str = "testuser@beatonma.org",
 ) -> User:
     print(f"create_sample_user: [{username}|{password}|{email}]")
     user = User.objects.create(username=username, password=password, email=email)

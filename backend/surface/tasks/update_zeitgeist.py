@@ -95,6 +95,9 @@ def _update_from_recent(today: date):
 
         qs = model.objects.order_by("-created_at")
         for item in qs:
+            if created_count >= try_to_make_n:
+                break
+
             obj, created = ZeitgeistItem.objects.get_or_create(
                 target_type=ct,
                 target_id=item.pk,
@@ -106,8 +109,6 @@ def _update_from_recent(today: date):
             if created:
                 log.info(f"Created {obj}")
                 created_count += 1
-            if created_count >= try_to_make_n:
-                break
 
 
 def _reset_zeitgeist():

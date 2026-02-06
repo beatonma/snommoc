@@ -31,8 +31,8 @@ export const MemberItemCard = (
 ) => {
   const {
     member,
-    showParty,
-    showConstituency,
+    showParty = true,
+    showConstituency = true,
     image,
     badge,
     children,
@@ -40,6 +40,13 @@ export const MemberItemCard = (
     usePartyTheme = true,
     ...rest
   } = props;
+
+  const partyAndConstituency = [
+    onlyIf(showParty, member.party?.name),
+    onlyIf(showConstituency, member.constituency?.name),
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <ListItemCard
@@ -89,20 +96,8 @@ export const MemberItemCard = (
         className="line-clamp-1"
       />
 
-      <SeparatedRow>
-        <OptionalDiv
-          title="Party"
-          value={member.party?.name}
-          condition={() => showParty !== false}
-          className="line-clamp-1"
-        />
-        <OptionalDiv
-          title="Constituency"
-          value={member.constituency?.name}
-          condition={() => showConstituency !== false}
-          className="line-clamp-1"
-        />
-      </SeparatedRow>
+      <OptionalDiv className="line-clamp-1" value={partyAndConstituency} />
+
       {children}
     </ListItemCard>
   );

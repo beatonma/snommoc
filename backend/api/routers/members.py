@@ -74,14 +74,3 @@ def member_votes(request: HttpRequest, parliamentdotuk: int, query: str = None):
         qs = qs.filter(division__title__icontains=query)
 
     return qs
-
-    # commons_qs = person.commons_votes.all()
-    # lords_qs = person.lords_votes.all()
-    #
-    # if query:
-    #     commons_qs = commons_qs.filter(division__title__icontains=query)
-    #     lords_qs = lords_qs.filter(division__title__icontains=query)
-    #
-    # return sorted(
-    #     chain(commons_qs, lords_qs), key=lambda x: x.division.date, reverse=True
-    # )

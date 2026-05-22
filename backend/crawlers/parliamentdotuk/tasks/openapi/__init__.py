@@ -13,3 +13,4 @@ from .constituencies import (
 from .demographics import update_demographics
 from .divisions import update_commons_divisions, update_lords_divisions
 from .members import update_members
+from .parties import update_party_territories

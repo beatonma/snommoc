@@ -1,5 +1,8 @@
+from crawlers import caches
+from crawlers.context import TaskContext, task_context
 from crawlers.parliamentdotuk.tasks.openapi.parties import schema
 from repository.models import Party
+from repository.models.geography.boundaries import PartyTerritory
 from repository.models.party import PartyTheme
 
 
@@ -23,3 +26,8 @@ def update_party(data: schema.Party | None, update: bool = False) -> Party:
         )
 
     return party
+
+
+@task_context(cache_name=caches.CONSTITUENCIES)
+def update_party_territories(context: TaskContext):
+    PartyTerritory.objects.generate()

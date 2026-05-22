@@ -7,4 +7,5 @@ from .openapi import (
     update_election_results,
     update_lords_divisions,
     update_members,
+    update_party_territories,
 )

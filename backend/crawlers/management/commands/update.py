@@ -39,6 +39,7 @@ class Command(TaskCommand):
         ).add_subparsers(dest="scope")
         members.add_parser("active", help="Update detailed data for active members")
         members.add_parser("portraits", help="Update member portraits")
+        command.add_parser("parties", help="Update party territory data")
 
     def handle(self, *args, command: str, **kwargs):
         func: Callable | None = None
@@ -53,6 +54,8 @@ class Command(TaskCommand):
             func = self.handle_divisions(**kwargs)
         elif command == "members":
             func = self.handle_members(**kwargs)
+        elif command == "parties":
+            func = parliament.update_party_territories
 
         if not func:
             self.print_help("manage.py", "update")

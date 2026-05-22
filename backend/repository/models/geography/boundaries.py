@@ -130,7 +130,7 @@ class PartyTerritoryQuerySet(BaseQuerySet):
         for constituency in constituencies:
             try:
                 party_pk = constituency.mp.party.pk
-            except ValueError:
+            except (AttributeError, ValueError):
                 print(f"could not get party pk {constituency.name}")
                 continue
 

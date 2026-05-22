@@ -103,7 +103,7 @@ class PartyQuerySet(BaseQuerySet):
             # ID but are generally consider to be distinct.
             parliamentdotuk = _LABOUR_COOP_ID
 
-        if parliamentdotuk and name:
+        if parliamentdotuk is not None and name is not None:
             defaults["name"] = name
 
             func = self.update_or_create if update else self.get_or_create

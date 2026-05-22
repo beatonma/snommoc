@@ -1,5 +1,3 @@
-from . import environment
-
 INSTALLED_DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -24,8 +22,6 @@ INSTALLED_PROJECT_APPS = [
     # "social",
     "surface",
 ]
-if environment.DEBUG and not environment.TEST:
-    INSTALLED_THIRD_PARTY_APPS.append("debug_toolbar")
 
 
 INSTALLED_APPS = (

@@ -9,6 +9,3 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-if environment.DEBUG and not environment.TEST:
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")

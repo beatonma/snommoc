@@ -89,8 +89,3 @@ HTTP_REQUEST_HEADERS_JSON = {
 
 NINJA_PAGINATION_PER_PAGE = 24
 NINJA_PAGINATION_CLASS = "api.pagination.LimitOffsetPagination"
-
-# Debug
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: environment.DEBUG and not environment.TEST,
-}

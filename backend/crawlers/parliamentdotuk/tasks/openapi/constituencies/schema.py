@@ -18,7 +18,9 @@ class Constituency(Schema):
     name: str
     start_date: DateOrNone = field("startDate")
     end_date: DateOrNone = field("endDate")
-    member: MemberBasic | None = field("currentRepresentation.member.value")
+    member: MemberBasic | None = field(
+        "currentRepresentation.member.value", default=None
+    )
 
 
 class ConstituencyBoundary(Schema):

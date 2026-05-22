@@ -21,10 +21,11 @@ def _field(
     default: Any = PydanticUndefined,
     default_factory: Any = PydanticUndefined,
 ) -> Any:
+    if default_factory is not PydanticUndefined:
+        return Field(validation_alias=alias, default_factory=default_factory)
     return Field(
         validation_alias=alias,
         default=default,
-        default_factory=default_factory,
     )
 
 

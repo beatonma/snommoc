@@ -17,14 +17,13 @@ def field(
     if "." in validation_alias:
         validation_alias = AliasPath(*validation_alias.split("."))
 
-    default_factory = PydanticUndefined
     if callable(default):
-        default_factory = default
-        default = PydanticUndefined
+        return Field(
+            default_factory=default,
+            validation_alias=validation_alias,
+            description=description,
+        )
 
     return Field(
-        default=default,
-        default_factory=default_factory,
-        validation_alias=validation_alias,
-        description=description,
+        default=default, validation_alias=validation_alias, description=description
     )

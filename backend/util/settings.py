@@ -14,12 +14,16 @@ def _field(
     default: Any = PydanticUndefined,
     default_factory: Any = PydanticUndefined,
 ) -> Any:
-    return Field(
-        validation_alias=alias,
-        default=default,
-        default_factory=default_factory,
-        validate_default=True,
-    )
+    if default:
+        return Field(validation_alias=alias, default=default, validate_default=True)
+    if default_factory:
+        return Field(
+            validation_alias=alias,
+            default_factory=default_factory,
+            validate_default=True,
+        )
+
+    raise Exception("_field: One of default or default_factory must be provided")
 
 
 def _validate_path(path: Path | str) -> Path:

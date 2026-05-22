@@ -2,7 +2,7 @@ from typing import Annotated
 
 from phonenumber_field.phonenumber import PhoneNumber as PhoneNumberField
 from phonenumbers import NumberParseException
-from pydantic import BeforeValidator, Field
+from pydantic import BeforeValidator
 
 from .common import StringOrNone
 
@@ -25,5 +25,4 @@ def _coerce_phonenumber(obj: str | None) -> str | None:
 type PhoneNumber = Annotated[
     StringOrNone,
     BeforeValidator(_coerce_phonenumber),
-    Field(default=None),
 ]

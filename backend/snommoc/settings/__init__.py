@@ -1,6 +1,8 @@
 from datetime import timedelta
 from urllib.parse import urljoin
 
+import util.settings_contract as contract
+
 from .apps import INSTALLED_APPS
 from .auth import AUTH_PASSWORD_VALIDATORS
 from .caching import CACHES
@@ -62,12 +64,16 @@ PHONENUMBER_DEFAULT_REGION = "GB"
 # Internal settings
 # API Crawler
 SNOMMOC = {
-    "CACHE": {
-        "CRAWLER_CACHE_TTL": int(timedelta(days=365).total_seconds()),
-        "CRAWLER_CACHE_ROOT": "/tmp/snommoc/crawler_cache/",
+    contract.CACHE: {
+        contract.CACHE_CRAWLER_TTL: int(timedelta(days=365).total_seconds()),
+        contract.CRAWLER_CACHE_ROOT: "/tmp/snommoc/crawler_cache/",
     },
-    "AUTH": {
-        "API_READ_REQUIRES_AUTH": False,
+    contract.AUTH: {
+        contract.AUTH_API_READ_REQUIRES_AUTH: False,
+    },
+    contract.SOCIAL: {
+        contract.SOCIAL_USERNAME_BLOCKED_EXACT: [],
+        contract.SOCIAL_USERNAME_BLOCKED_SUBSTRINGS: [],
     },
 }
 

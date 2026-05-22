@@ -20,7 +20,6 @@ type DateTimeOrNone = Annotated[datetime | None, BeforeValidator(coerce_to_datet
 type List[T] = Annotated[
     list[T],
     BeforeValidator(coerce_to_list),
-    Field(default_factory=list),
 ]
 
 

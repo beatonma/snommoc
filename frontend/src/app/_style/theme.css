@@ -132,6 +132,8 @@
   --color-list-marker: currentColor;
   --bg: var(--background);
   --fg: var(--on-background);
+  --hover: currentColor;
+  --link-color: currentColor;
 }
 
 @theme inline {
@@ -167,16 +169,4 @@
   .colorful-links {
     --link-color: var(--color-link);
   }
-}
-
-@property --link-color {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: none;
-}
-
-@property --hover {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: none;
 }

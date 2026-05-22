@@ -10,7 +10,7 @@ x-common: &common
   tty: true
 
 x-volume-django: &volume-django
-  - type: bind
+    type: bind
     source: ./backend
     target: /django
     read_only: true

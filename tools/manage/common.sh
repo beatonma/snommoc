@@ -16,11 +16,11 @@ ARCHIVE_DB="backup.sql"
 
 
 docker_compose() {
-  run_command docker compose -f "$FILE_COMPOSE" "$@"
+  run_command docker compose --progress=plain -f "$FILE_COMPOSE" "$@"
 }
 
 docker_compose_build() {
-  docker_compose build --progress=plain "$@"
+  docker_compose build "$@"
 }
 
 

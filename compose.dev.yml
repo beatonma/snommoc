@@ -5,19 +5,19 @@ volumes:
         name: postgres_snommoc
 
 x-volume-django-manage: &volume-django-manage
-  - type: bind
+    type: bind
     source: ./backend
     target: /django
 x-volume-logs: &volume-logs
-  - type: bind
+    type: bind
     source: ./runtime-dev/log
     target: /var/log/snommoc
 x-volume-static: &volume-static
-  - type: bind
+    type: bind
     source: ./runtime-dev/static
     target: /var/www/static
 x-volume-media: &volume-media
-  - type: bind
+    type: bind
     source: ./runtime-dev/media
     target: /var/www/media
 

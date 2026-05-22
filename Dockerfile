@@ -1,6 +1,6 @@
-ARG PYTHON_VERSION=3.13
+ARG PYTHON_VERSION=3.14
 ARG NODE_VERSION=25
-ARG NGINX_VERSION=1.29
+ARG NGINX_VERSION=1.31
 
 ##########################
 #                        #

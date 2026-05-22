@@ -26,15 +26,14 @@ class RegisteredInterest(Schema):
     child_interests: List[Self] = field("childInterests")
 
     @model_validator(mode="after")
-    @classmethod
-    def validate_description_data(cls, obj: Self):
+    def validate_description_data(self):
         """Parse as many known fields from the description as possible and
         store the serialized result for frontend API use."""
-        obj.description_data = _parse_description(obj.description).model_dump(
+        self.description_data = _parse_description(self.description).model_dump(
             mode="json"
         )
 
-        return obj
+        return self
 
 
 class RegisteredInterestCategory(Schema):

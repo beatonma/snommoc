@@ -29,8 +29,6 @@ const ProgressLoadingBar = (
       timeoutId = setTimeout(() => {
         setVisible(false);
       }, 3000);
-    } else if (progress < 100 && !isVisible) {
-      setVisible(true);
     }
     return () => clearTimeout(timeoutId);
   }, [isVisible, progress]);

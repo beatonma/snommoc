@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useEffect, useId, useState } from "react";
+import React, { ReactNode, useId, useMemo, useState } from "react";
 import { Optional } from "@/components/optional";
 
 interface SortBy<T> {
@@ -39,7 +39,6 @@ export const useSortable = <T, O extends SortOptions<T>>(
   props: SortableProps<T, O>,
 ): SortedResult<T, keyof O> => {
   const { data, defaultSort, uiElementOptions } = props;
-  const [sortedData, setSortedData] = useState<T[]>();
   const selectElementId = useId();
 
   // Map props.sortOptions (a Record<string, SortBy>) to InternalSortBy[].
@@ -51,9 +50,7 @@ export const useSortable = <T, O extends SortOptions<T>>(
     chooseSort(sortOptions, defaultSort as string),
   );
 
-  useEffect(() => {
-    setSortedData(data.toSorted(sortBy.sort));
-  }, [data, sortBy]);
+  const sortedData = useMemo(() => data.toSorted(sortBy.sort), [data, sortBy]);
 
   return {
     sortedBy: sortBy.key,

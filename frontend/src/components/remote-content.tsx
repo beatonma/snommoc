@@ -19,14 +19,11 @@ export const RemoteContent = (
   },
 ) => {
   const { provider, content, permissionUi } = props;
-  const [isAllowed, setIsAllowed] = useState<boolean>();
+  const [isAllowed, setIsAllowed] = useState<boolean>(
+    getSavedPreference(provider),
+  );
 
   useEffect(() => {
-    if (isAllowed === undefined) {
-      setIsAllowed(getSavedPreference(provider));
-      return;
-    }
-
     setSavedPreference(provider, isAllowed);
   }, [provider, isAllowed]);
 
@@ -46,19 +43,6 @@ export const RemoteContent = (
     return permissionUi(button);
   }
   return button;
-
-  // const { children, ...rest } = permissionProps ?? {};
-  // return (
-  //   <div {...addClass(rest, "relative flex")}>
-  //     <div className="absolute size-full">{children}</div>
-  //     <TintedButton
-  //       onClick={() => setIsAllowed(true)}
-  //       className="self-center place-self-center"
-  //     >
-  //       Click to allow content from {provider.domain}
-  //     </TintedButton>
-  //   </div>
-  // );
 };
 
 const storageKeyOf = (provider: RemoteContentProvider) =>

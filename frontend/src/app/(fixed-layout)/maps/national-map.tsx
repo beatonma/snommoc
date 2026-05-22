@@ -11,8 +11,9 @@ import { GeoLocation, UkParliamentLocation } from "@/features/map/geography";
 import { usePassiveGeoLocation } from "@/features/map/geolocation";
 import { MapRenderer } from "@/features/map/map";
 import { usePagination } from "@/features/paginated";
+import { Paginated } from "@/features/paginated/pagination";
 import { PartyIconBackground } from "@/features/themed/item-theme";
-import { DivPropsNoChildren } from "@/types/react";
+import { DivPropsNoChildren, StateSetter } from "@/types/react";
 import { classes } from "@/util/transforms";
 import { PartyTerritoryKey } from "./_components/party-filter";
 import { SelectedConstituenciesInfo } from "./_components/selected";
@@ -27,49 +28,22 @@ export const NationalMap = () => {
   return <NationalMapWithLocation userLocation={userLocation} />;
 };
 
-const NationalMapWithLocation = ({
-  userLocation,
-}: {
-  userLocation: GeoLocation;
-}) => {
-  const [territories, setTerritories] = useState<PartyTerritory[]>();
+const NationalMapWithLocation = (props: { userLocation: GeoLocation }) => {
+  const { userLocation } = props;
   const constituencies = usePagination("/api/maps/constituencies/", {
     query: userLocation,
   });
+  const partyTerritories = usePartyTerritories();
+  const [focussedConstituencies, setFocussedConstituencyIds] =
+    useFocussedConstituencies(constituencies);
+  const [hoveredConstituency, setHoveredConstituency] =
+    useHoveredConstituency(constituencies);
+
   const loadingProgress = useMemo(
     () =>
       (constituencies.items.length / (constituencies.availableItems || 1)) *
       100,
     [constituencies],
-  );
-
-  const [focussedPartyId, setFocussedPartyId] = useState<number>();
-  const [focussedConstituencyIds, setFocussedConstituencyIds] = useState<
-    LayerKey[]
-  >([]);
-  const focussedConstituencies = useMemo(
-    () =>
-      constituencies.items.filter((it) =>
-        focussedConstituencyIds.includes(it.parliamentdotuk),
-      ),
-    [focussedConstituencyIds, constituencies.items],
-  );
-
-  const [hovered, setHovered] = useState<LayerKey>();
-  const hoveredConstituency: ConstituencyMiniBoundary | undefined =
-    useMemo(() => {
-      if (!hovered) return undefined;
-      return constituencies.items.find((it) => it.parliamentdotuk === hovered);
-    }, [hovered, constituencies.items]);
-
-  const onSelectFeatures = useCallback(
-    (layers: LayerKey[], resetPartyFocus: boolean = true) => {
-      setFocussedConstituencyIds(layers);
-      if (resetPartyFocus) {
-        setFocussedPartyId(undefined);
-      }
-    },
-    [],
   );
 
   const map = useMap(
@@ -80,50 +54,79 @@ const NationalMapWithLocation = ({
           minResolution: 75,
         },
         events: {
-          onHover: (id) => setHovered(id),
-          onSelect: (ids) => onSelectFeatures(ids),
+          onHover: (id) => setHoveredConstituency(id),
+          onSelect: (ids) => setFocussedConstituencyIds(ids),
         },
       }),
-      [onSelectFeatures],
+      [setFocussedConstituencyIds, setHoveredConstituency],
     ),
   );
 
   const filterByParty = useCallback(
     (partyId: number) => {
       map?.selectFeatures("partyId", partyId, { fit: true });
-      setFocussedPartyId(partyId);
-      onSelectFeatures(
+      setFocussedConstituencyIds(
         constituencies.items
           .filter((it) => it.mp?.party?.parliamentdotuk === partyId)
           .map((it) => it.parliamentdotuk),
-        false,
       );
     },
-    [map, constituencies.items, onSelectFeatures],
+    [map, constituencies.items, setFocussedConstituencyIds],
   );
 
   useEffect(() => {
-    get("/api/maps/parties/").then((it) => {
-      setTerritories(it.data);
-    });
-  }, []);
-
-  useEffect(() => {
     if (!map) return;
-    if (!territories) return;
-    addPartyTerritories(territories, map);
-  }, [map, territories]);
+    if (!partyTerritories) return;
+    addPartyTerritories(partyTerritories, map);
+  }, [map, partyTerritories]);
 
   useEffect(() => {
     if (!map) return;
     addConstituencyBoundaries(constituencies.items, map);
-    if (focussedPartyId) {
-      filterByParty(focussedPartyId);
-    }
-
     constituencies.loadNext?.();
-  }, [map, constituencies, filterByParty, focussedPartyId]);
+  }, [map, constituencies]);
 
+  return (
+    <NationalMapLayout
+      map={map}
+      hoveredConstituency={hoveredConstituency}
+      focussedConstituencies={focussedConstituencies}
+      territories={partyTerritories}
+      onClickParty={filterByParty}
+      loadingProgress={loadingProgress}
+    />
+  );
+};
+
+const LoadingMessage = (props: DivPropsNoChildren<{ progress: number }>) => {
+  const { progress, ...rest } = props;
+  return (
+    <div {...rest}>
+      {onlyIf(
+        progress < 100,
+        <p className="chip-content">Loading constituency maps…</p>,
+      )}
+      <LoadingBar progress={progress} />
+    </div>
+  );
+};
+
+const NationalMapLayout = (props: {
+  map: MapRenderer | undefined;
+  hoveredConstituency: ConstituencyMiniBoundary | undefined;
+  focussedConstituencies: ConstituencyMiniBoundary[];
+  territories: PartyTerritory[] | undefined;
+  onClickParty: (partyId: number) => void;
+  loadingProgress: number;
+}) => {
+  const {
+    map,
+    hoveredConstituency,
+    focussedConstituencies,
+    territories,
+    onClickParty,
+    loadingProgress,
+  } = props;
   return (
     <div
       className={classes(
@@ -167,8 +170,7 @@ const NationalMapWithLocation = ({
             styles.key,
             "px-edge row-scroll items-center gap-x-4 gap-y-2 py-4 text-base",
           )}
-          focussedPartyId={focussedPartyId}
-          onClickParty={filterByParty}
+          onClickParty={onClickParty}
         />
 
         <SelectedConstituenciesInfo
@@ -183,17 +185,77 @@ const NationalMapWithLocation = ({
   );
 };
 
-const LoadingMessage = (props: DivPropsNoChildren<{ progress: number }>) => {
-  const { progress, ...rest } = props;
+const HoveredConstituency = (
+  props: DivPropsNoChildren<{
+    constituency: ConstituencyMiniBoundary | undefined;
+  }>,
+) => {
+  const { constituency, ...rest } = props;
+  if (!constituency) return null;
+
   return (
     <div {...rest}>
-      {onlyIf(
-        progress < 100,
-        <p className="chip-content">Loading constituency maps…</p>,
-      )}
-      <LoadingBar progress={progress} />
+      <PartyIconBackground
+        themeSource={constituency.mp?.party}
+        className="card card-content pointer-events-none"
+      >
+        <div className="space text-end">
+          <div className="text-lg font-bold">{constituency.name}</div>
+
+          {onlyIf(constituency.mp, (mp) => (
+            <SeparatedRow separator="comma">
+              <span>{mp.name}</span>
+              <span>{mp.party?.name}</span>
+            </SeparatedRow>
+          ))}
+        </div>
+      </PartyIconBackground>
     </div>
   );
+};
+
+const usePartyTerritories = (): PartyTerritory[] | undefined => {
+  const [territories, setTerritories] = useState<PartyTerritory[]>();
+  useEffect(() => {
+    get("/api/maps/parties/").then((it) => {
+      setTerritories(it.data);
+    });
+  }, []);
+
+  return territories;
+};
+
+const useFocussedConstituencies = (
+  constituencies: Paginated<ConstituencyMiniBoundary>,
+): [ConstituencyMiniBoundary[], StateSetter<LayerKey[]>] => {
+  const [focussedConstituencyIds, setFocussedConstituencyIds] = useState<
+    LayerKey[]
+  >([]);
+  const focussedConstituencies = useMemo(
+    () =>
+      constituencies.items.filter((it) =>
+        focussedConstituencyIds.includes(it.parliamentdotuk),
+      ),
+    [focussedConstituencyIds, constituencies.items],
+  );
+
+  return [focussedConstituencies, setFocussedConstituencyIds];
+};
+
+const useHoveredConstituency = (
+  constituencies: Paginated<ConstituencyMiniBoundary>,
+): [
+  ConstituencyMiniBoundary | undefined,
+  StateSetter<LayerKey | undefined>,
+] => {
+  const [hovered, setHovered] = useState<LayerKey>();
+  const hoveredConstituency: ConstituencyMiniBoundary | undefined =
+    useMemo(() => {
+      if (!hovered) return undefined;
+      return constituencies.items.find((it) => it.parliamentdotuk === hovered);
+    }, [hovered, constituencies.items]);
+
+  return [hoveredConstituency, setHovered];
 };
 
 const addPartyTerritories = (
@@ -238,33 +300,4 @@ const addConstituencyBoundaries = (
       });
     }
   });
-};
-
-const HoveredConstituency = (
-  props: DivPropsNoChildren<{
-    constituency: ConstituencyMiniBoundary | undefined;
-  }>,
-) => {
-  const { constituency, ...rest } = props;
-  if (!constituency) return null;
-
-  return (
-    <div {...rest}>
-      <PartyIconBackground
-        themeSource={constituency.mp?.party}
-        className="card card-content pointer-events-none"
-      >
-        <div className="space text-end">
-          <div className="text-lg font-bold">{constituency.name}</div>
-
-          {onlyIf(constituency.mp, (mp) => (
-            <SeparatedRow separator="comma">
-              <span>{mp.name}</span>
-              <span>{mp.party?.name}</span>
-            </SeparatedRow>
-          ))}
-        </div>
-      </PartyIconBackground>
-    </div>
-  );
 };

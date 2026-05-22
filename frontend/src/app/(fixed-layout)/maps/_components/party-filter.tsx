@@ -8,16 +8,12 @@ export const PartyTerritoryKey = (
   props: Props<
     "ul",
     {
-      focussedPartyId: number | undefined;
       parties: PartyTerritory[] | undefined;
       onClickParty: (partyId: number) => void;
     }
   >,
 ) => {
-  const { parties, focussedPartyId, onClickParty, ...rest } = addClass(
-    props,
-    "list-none",
-  );
+  const { parties, onClickParty, ...rest } = addClass(props, "list-none");
   if (!parties) return null;
   return (
     <ul {...rest}>

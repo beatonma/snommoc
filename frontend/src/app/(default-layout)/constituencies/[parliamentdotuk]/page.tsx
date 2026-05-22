@@ -114,12 +114,6 @@ const ElectionResults = ({ results }: { results: ElectionResult[] }) => {
 const ElectionResult = (props: { result: ElectionResult }) => {
   const { result } = props;
 
-  /** Any candidate with <5% of votes loses their £500 deposit.
-   * {@link Links.ElectoralCommission.CandidateDeposit}.
-   * */
-  const depositForfeitLimit = result.turnout * 0.05;
-  let depositLost = false;
-
   return (
     <section>
       <div className="px-edge flex flex-wrap items-baseline gap-2">
@@ -152,50 +146,105 @@ const ElectionResult = (props: { result: ElectionResult }) => {
             </tr>
           </thead>
           <tbody>
-            {result.candidates.map((it) => {
-              let extra: ReactNode;
-              if (!depositLost && it.votes < depositForfeitLimit) {
-                extra = (
-                  <tr className="hover:bg-inherit colorful-links">
-                    <th colSpan={100} className="text-left border-r-0">
-                      <div className="border-y-[2px] border-dashed border-current/20 py-2 text-sm font-normal">
-                        <span>Candidates with less than 5% of the vote </span>
-                        <InlineLink
-                          style={
-                            { "--primary": "currentColor" } as CSSProperties
-                          }
-                          href={Links.ElectoralCommission.CandidateDeposit}
-                        >
-                          forfeit their deposit
-                        </InlineLink>
-                        .
-                      </div>
-                    </th>
-                  </tr>
-                );
-                depositLost = true;
-              }
-              return (
-                <React.Fragment key={it.name}>
-                  {extra}
-                  <tr>
-                    <td>
-                      <PersonLink person={it.profile} fallback={it.name} />
-                    </td>
-                    <td>
-                      <PartyLink party={it.party} />
-                    </td>
-                    <td className="text-right">{int(it.votes)}</td>
-                    <td className="text-right">
-                      <Percentage value={(it.votes / result.turnout) * 100} />
-                    </td>
-                  </tr>
-                </React.Fragment>
-              );
-            })}
+            <Candidates
+              candidates={result.candidates}
+              turnout={result.turnout}
+            />
           </tbody>
         </table>
       </div>
     </section>
+  );
+};
+
+type Candidate = ElectionResult["candidates"][number];
+type CandidateOrMessage = Candidate | "DEPOSIT_LOST";
+
+const Candidates = (props: {
+  candidates: ElectionResult["candidates"];
+  turnout: number;
+}) => {
+  const { candidates, turnout } = props;
+
+  /** Any candidate with <5% of votes loses their £500 deposit.
+   * {@link Links.ElectoralCommission.CandidateDeposit}.
+   * */
+  const depositForfeitLimit = turnout * 0.05;
+  const depositLostIndex = candidates.findIndex(
+    (it) => it.votes < depositForfeitLimit,
+  );
+  const annotatedCandidates: CandidateOrMessage[] = [...candidates];
+  if (depositLostIndex >= 0) {
+    // depositLostIndex will be -1 if all candidates kept their deposit
+    annotatedCandidates.splice(depositLostIndex, 0, "DEPOSIT_LOST");
+  }
+
+  return (
+    <AnnotatedCandidates candidates={annotatedCandidates} turnout={turnout} />
+  );
+};
+
+const AnnotatedCandidates = (props: {
+  candidates: CandidateOrMessage[];
+  turnout: number;
+}) => {
+  const { candidates, turnout } = props;
+
+  return (
+    <>
+      {candidates.map((item) => {
+        if (item == "DEPOSIT_LOST") {
+          return <DepositLostTableRow key={item} />;
+        } else {
+          return (
+            <CandidateTableRow
+              key={item.name}
+              candidate={item}
+              turnout={turnout}
+            />
+          );
+        }
+      })}
+    </>
+  );
+};
+
+const CandidateTableRow = (props: {
+  candidate: Candidate;
+  turnout: number;
+}) => {
+  const { candidate, turnout } = props;
+  return (
+    <tr>
+      <td>
+        <PersonLink person={candidate.profile} fallback={candidate.name} />
+      </td>
+      <td>
+        <PartyLink party={candidate.party} />
+      </td>
+      <td className="text-right">{int(candidate.votes)}</td>
+      <td className="text-right">
+        <Percentage value={(candidate.votes / turnout) * 100} />
+      </td>
+    </tr>
+  );
+};
+
+const DepositLostTableRow = () => {
+  return (
+    <tr className="hover:bg-inherit colorful-links">
+      <th colSpan={100} className="text-left border-r-0">
+        <div className="border-y-[2px] border-dashed border-current/20 py-2 text-sm font-normal">
+          <span>Candidates with less than 5% of the vote </span>
+          <InlineLink
+            style={{ "--primary": "currentColor" } as CSSProperties}
+            href={Links.ElectoralCommission.CandidateDeposit}
+          >
+            forfeit their deposit
+          </InlineLink>
+          .
+        </div>
+      </th>
+    </tr>
   );
 };

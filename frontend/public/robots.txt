@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /bills/
+Disallow: /constituencies/
+Disallow: /divisions/
+Disallow: /members/
+Disallow: /organisations/
+Disallow: /parties/
